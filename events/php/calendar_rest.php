@@ -1,7 +1,17 @@
 <?php
 
+
     $month = $_GET['month'];
     $year = $_GET['year'];
+    $day = $_GET['day'];
+
+
+    if (is_null($month) || is_null($year) || is_null($day) ){
+        $month = date('n');
+        $year = date('Y');
+        $day = date('j');
+    }
+
 
     // Set the month and year if it isn't passed in GET
 

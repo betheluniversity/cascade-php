@@ -164,7 +164,7 @@
         var hashParams = extractHashParameters(window.location.toString());
         var controller = new CalendarController('#main');
         controller.init();
-        if (hashParams.count() > 0) {
+        if (hashParams.count() >= 0) {
             updateCalendar();
         }
 
