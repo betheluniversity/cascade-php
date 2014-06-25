@@ -139,7 +139,7 @@ function draw_calendar($month,$year, $day=1){
                             $calendar .= '</span>';
                             $calendar .= '<ul class="categories" style="display:none">';
                                 foreach($event['md'] as $md){
-                                    $calendar .= '<li class="category">' . $md . '</li>';
+                                    $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
                                 }
                             $calendar .= '</ul>';
                         $calendar .= '</dd>';
@@ -283,7 +283,7 @@ function inspect_page($xml){
             //$page_info['md'] = array_merge($page_info['md'], $md->value);
             foreach($md->value as $value ){
                 if ($value != "None"){
-                    array_push($page_info['md'], $value);
+                    array_push($page_info['md'], $value . '-' . $name);
                 }
             }
         }

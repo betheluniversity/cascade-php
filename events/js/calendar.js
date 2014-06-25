@@ -62,6 +62,55 @@
             link.attr('href').replace(/\?.*$/, qs));
     }
 
+    function getGoodCategories(){
+        var goodCategories = [];
+        $('.subject').each(function(){
+            if (this.checked){
+                goodCategories.push(this.value);
+            }
+        });
+        return goodCategories;
+    }
+
+    function createCategoryCookie(){
+        var goodCategories = getGoodCategories();
+        $.cookie('calendar-categories', JSON.stringify(goodCategories), { expires: 365 });
+    }
+
+
+    function checkEventCategories(){
+        // Get all categores that are checked
+        goodCategories = JSON.parse($.cookie('calendar-categories'));
+        if (!goodCategories){
+            goodCategories = getGoodCategories();
+        }else{
+            // Unceck any that shouldn't be checked (for example, on page reload)
+            $(".subject").each(function(){
+               if (goodCategories.indexOf(this.value) == -1){
+                   $(this).attr('checked', false);
+               }
+            });
+        }
+        $(".vevent").each(function(){
+            var categories = $(this).find('.categories').children();
+            // Hide by default unless we find a good category
+            var hide = true;
+            for (var index = 0; index < categories.length; ++index) {
+                var category = $(categories[index]).data()['category'];
+                if (goodCategories.indexOf(category) > -1){
+                    hide = false;
+                }
+            }
+            if (hide){
+                $(this).hide();
+            }else{
+                //just in case it is currently hidden
+                $(this).show();
+            }
+        });
+    }
+
+
     function objectToQuery(object) {
         var qs = [];
         for (key in object) {
@@ -137,6 +186,7 @@
                 '&mode=' + $('#time-mode a.active').attr('name');
         $.getJSON(loc, function(data){
             controller.update(data);
+            checkEventCategories();
         });
     }
 
@@ -167,6 +217,11 @@
         if (hashParams.count() >= 0) {
             updateCalendar();
         }
+
+        $('.subject').change(function() {
+            createCategoryCookie();
+            checkEventCategories();
+        });
 
         //hide the dropdown if it's open and a click happens outside it
         $("body").click(function(event) {
@@ -260,6 +315,7 @@
                 default:
                     break;
             }
+            checkEventCategories();
             return false;
         });
 
