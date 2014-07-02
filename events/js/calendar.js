@@ -62,42 +62,90 @@
             link.attr('href').replace(/\?.*$/, qs));
     }
 
-    function getGoodCategories(){
-        var goodCategories = [];
-        $('.subject').each(function(){
+    function getExternalCategories(){
+
+        try{
+            externalCategories = JSON.parse($.cookie('external-categories'));
+        }catch (err){
+            var externalCategories = createExternalList();
+        }
+
+        return externalCategories;
+    }
+    function getInternalCategories(){
+
+        try{
+            var internalCategories = JSON.parse($.cookie('internal-categories'));
+        }catch (err){
+            var internalCategories = createInternalList();
+        }
+
+        return internalCategories;
+    }
+
+    function createInternalList(){
+        var internalCategories = [];
+        $('.subject-internal').each(function(){
             if (this.checked){
-                goodCategories.push(this.value);
+                internalCategories.push(this.value);
             }
         });
-        return goodCategories;
+        return internalCategories;
+    }
+    function createExternalList(){
+        var externalCategories = [];
+        $('.subject-external').each(function(){
+            if (this.checked){
+                externalCategories.push(this.value);
+            }
+        });
+        return externalCategories;
     }
 
-    function createCategoryCookie(){
-        var goodCategories = getGoodCategories();
-        $.cookie('calendar-categories', JSON.stringify(goodCategories), { expires: 365 });
+    function createCategoryCookie(username){
+        var externalCategories = createExternalList();
+        var internalCategories = createInternalList();
+        $.cookie('external-categories', JSON.stringify(externalCategories), { expires: 365 });
+        $.cookie('internal-categories', JSON.stringify(internalCategories), { expires: 365 });
     }
-
 
     function checkEventCategories(){
+
+        var username = $.cookie('cal-user');
+
         // Get all categores that are checked
-        goodCategories = JSON.parse($.cookie('calendar-categories'));
-        if (!goodCategories){
-            goodCategories = getGoodCategories();
-        }else{
-            // Unceck any that shouldn't be checked (for example, on page reload)
-            $(".subject").each(function(){
-               if (goodCategories.indexOf(this.value) == -1){
-                   $(this).attr('checked', false);
-               }
+        var externalCategories = getExternalCategories();
+
+        // Unceck any that shouldn't be checked (for example, on page reload)
+        $(".subject-external").each(function(){
+            if (externalCategories.indexOf(this.value) == -1){
+                $(this).attr('checked', false);
+            }else{
+                $(this).attr('checked', true);
+            }
+        });
+        if (username){
+            var internalCategories = getInternalCategories();
+            $(".subject-internal").each(function(){
+                if (internalCategories.indexOf(this.value) == -1){
+                    $(this).attr('checked', false);
+                }else{
+                    $(this).attr('checked', true);
+                }
             });
         }
+
         $(".vevent").each(function(){
             var categories = $(this).find('.categories').children();
             // Hide by default unless we find a good category
+            var username = $.cookie('cal-user');
             var hide = true;
             for (var index = 0; index < categories.length; ++index) {
                 var category = $(categories[index]).data()['category'];
-                if (goodCategories.indexOf(category) > -1){
+                if (internalCategories.indexOf(category) > -1 && username != "null"){
+                    hide = false;
+                }
+                if (externalCategories.indexOf(category) > -1){
                     hide = false;
                 }
             }
@@ -141,6 +189,17 @@
     CalendarController.prototype.update = function(data) {
         var loc = window.location.toString().replace(/#.*/, '');
         this.title.text(data['month_title']);
+
+        if (data['remote_user']){
+            $("#bu-topbar-welcome").html("Welcome " + data['remote_user']);
+        }else{
+            var append = document.URL.replace("#", "?");
+            var url = "https://auth.bethel.edu/cas/login?service=" + append;
+            //url = url.replace("https", "http");
+            $.removeCookie('MOD_CAS_G');
+            $("#bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
+        }
+
         if (data['next_month_qs'] !== null) {
             this.next_month_link.attr('href', loc + "#" + data['next_month_qs']);
             this.next_month_link.html(data['next_title'] + ' &raquo;');
@@ -180,12 +239,25 @@
 
     function updateCalendar() {
         var controller = new CalendarController('#main'),
-            h = window.location.hash.replace(/^\#/, '?') || '?',
-            loc = 'http://staging.bethel.edu/code/events/php/calendar_rest' +
+            h = window.location.hash.replace(/^\#/, '?') || '?';
+            if (h == "?"){
+                //using query params instead of hash
+                h = window.location.search.replace(/^\#/, '?') || '?';
+            }
+            loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' +
                 h +
                 '&mode=' + $('#time-mode a.active').attr('name');
+
         $.getJSON(loc, function(data){
             controller.update(data);
+            if (!(data['remote_user'])){
+                //remove the internal categories so they can't be selected via select-all
+                $("#filter-list-internal").remove();
+                $.cookie('cal-user', null);
+
+            }else{
+                $.cookie('cal-user', data['remote_user']);
+            }
             checkEventCategories();
         });
     }
@@ -214,7 +286,7 @@
         var hashParams = extractHashParameters(window.location.toString());
         var controller = new CalendarController('#main');
         controller.init();
-        if (hashParams.count() >= 0) {
+        if (hashParams.count() >= 0 || queryParams >= 0) {
             updateCalendar();
         }
 
@@ -237,9 +309,10 @@
         // Calendar filter big dropdown
         $('#filter .button').click(function() {
             $('#filter-dropdown').toggle(0, function(){
+                debugger;
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
-                    order = ['Academics', 'General', 'Offices', 'Internal','Arts &amp; Performances', 'Arts'],
+                    order = ['Academics', 'General', 'Offices', 'Internal'],
                     el = $(this);
                 if (h5s.length == 4) { // if not authenticated, sort alphabetically
                     order.sort();
@@ -305,6 +378,7 @@
 
         $('#filter-content .filter-actions').bind('click', function(event) {
             var target = $(event.target);
+            $.removeCookie('calendar-categories');
             switch (target.attr('name')) {
                 case 'none':
                     set_all_subjects(false);
@@ -315,6 +389,7 @@
                 default:
                     break;
             }
+            createCategoryCookie();
             checkEventCategories();
             return false;
         });
@@ -413,7 +488,7 @@
                         href = inst.input.next().attr('href');
                     href = href.replace(/month=\d\d?/,'month='+(sunday.getMonth()+1)).
                         replace(/year=\d\d\d?\d?/, 'year='+sunday.getFullYear()).
-                        replace(/day=\d\d?/, 'day='+sunday.getDate())
+                        replace(/day=\d\d?/, 'day='+sunday.getDate());
                     window.location.href = href;
                 }
             });

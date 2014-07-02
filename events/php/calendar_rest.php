@@ -1,6 +1,7 @@
 <?php
 
 
+
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -32,8 +33,11 @@
     $data['grid'] = draw_calendar($month, $year);
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
+    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+    $data['server'] = $_SERVER;
 
     echo json_encode($data);
+
 
 function get_prev_month($month, $year, $day=1){
     $date = new DateTime();
