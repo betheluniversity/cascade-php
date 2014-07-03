@@ -237,17 +237,9 @@
         }
     }
 
-    function updateCalendar() {
-        var controller = new CalendarController('#main'),
-            h = window.location.hash.replace(/^\#/, '?') || '?';
-            if (h == "?"){
-                //using query params instead of hash
-                h = window.location.search.replace(/^\#/, '?') || '?';
-            }
-            loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' +
-                h +
-                '&mode=' + $('#time-mode a.active').attr('name');
 
+    function changeCalendarLocation(loc){
+        var controller = new CalendarController('#main');
         $.getJSON(loc, function(data){
             controller.update(data);
             if (!(data['remote_user'])){
@@ -261,6 +253,24 @@
             checkEventCategories();
         });
     }
+
+    function updateCalendar() {
+        var h = window.location.hash.replace(/^\#/, '?') || '?';
+        if (h == "?"){
+            //using query params instead of hash
+            h = window.location.search.replace(/^\#/, '?') || '?';
+        }
+        loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' + h;
+        changeCalendarLocation(loc);
+    }
+
+    $("#list-mode").click(function(){
+        $.cookie('cal-mode', "LIST");
+    });
+
+    $("#grid-mode").click(function(){
+        $.cookie('cal-mode', "GRID");
+    });
 
     function checked_subjects() {
         var checkboxes = $('#filter-content input[name=subjects]:checked');
@@ -278,6 +288,30 @@
             checkboxes.removeAttr('checked');
         }
     }
+
+    $("#today").click(function(){
+        var today = new Date();
+        var month = today.getMonth() +1;
+        var year = today.getFullYear();
+        var day = today.getDate();
+
+        h = "?month=" + month + "&day=" + day + "&year=" + year;
+        var mode = $("#view-mode li .active").text();
+        if (mode == "LIST"){
+            h += "&mode=list"
+        }
+        loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' + h;
+
+        changeCalendarLocation(loc);
+
+        var search = "[name=" + day + "]";
+        if(mode == "LIST"){
+            $('html,body').animate({
+                scrollTop:  $(search).offset().top
+            });
+        }
+
+    });
 
     $(window).bind('jQuery.hashchange', updateCalendar);
 
@@ -309,7 +343,6 @@
         // Calendar filter big dropdown
         $('#filter .button').click(function() {
             $('#filter-dropdown').toggle(0, function(){
-                debugger;
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
                     order = ['Academics', 'General', 'Offices', 'Internal'],
@@ -558,7 +591,6 @@
                         hd.append(next.children().clone());
                         // if hover overflows right side of window, display on left
                         // side instead
-                        //debugger;
                         if (hover_left + hd.outerWidth() > $(calendar_main).width() ) {
                             hover_left = pos.left - hd.width();
                         }
@@ -641,6 +673,14 @@
                 }
             );
         })();
+
+
+        if ($.cookie('cal-mode') == "LIST"){
+            debugger;
+            $("#list-mode").addClass("active");
+            $("#grid-mode").removeClass("active");
+            $('#view-mode a').click();
+        }
     });
 
 })(jQuery);

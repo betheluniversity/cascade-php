@@ -115,7 +115,7 @@ function draw_calendar($month,$year, $day=1){
     for($list_day = 1; $list_day <= $days_in_month; $list_day++){
         $calendar.= '<li class="' . $classes[$days_in_this_week] . ' event">';
         /* add in the day number */
-        $calendar.= '<span>'.$list_day.'</span>';
+        $calendar.= '<span name="' . $list_day .  '">'. $list_day . '</span>';
 
         $date = new DateTime($year . '-' . $month . "-" . $list_day);
         $key = $date->format('Y-m-d');
@@ -139,7 +139,6 @@ function draw_calendar($month,$year, $day=1){
                             }
                             $calendar .= $start . '<br>';
                                 $calendar .= '<span class="location">' . $event['location'] . '</span>';
-                                // What does this do ?$calendar .= '<span class="dtstart">2014-06-19T00:00:00-05:00</span>';
                             $calendar .= '</span>';
                             $calendar .= '<ul class="categories" style="display:none">';
                                 foreach($event['md'] as $md){
