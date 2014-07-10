@@ -196,7 +196,6 @@
             var append = document.URL.replace("#", "?");
             var url = "https://auth.bethel.edu/cas/login?service=" + append;
             //url = url.replace("https", "http");
-            $.removeCookie('MOD_CAS_G');
             $("#bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
 
@@ -562,7 +561,7 @@
                 calendar_main = $('#calendar-main'),
                 active_dt,
                 display = function(dt) { // display hover, given a dt jquery object
-                    if (!calendar_mode.hasClass('grid'))
+                    if (!calendar_mode.hasClass('calendar-grid'))
                         return;
 
                     if (dt.get(0) == active_dt) // do not redisplay if dt is active
@@ -616,7 +615,7 @@
                     }
                 },
                 hide = function(dt) { // hide hover, given a dt jquery object
-                    if (!calendar_mode.hasClass('grid'))
+                    if (!calendar_mode.hasClass('calendar-grid'))
                         return;
                     var next = dt.next(),
                         hd = hover_div;
@@ -676,7 +675,6 @@
 
 
         if ($.cookie('cal-mode') == "LIST"){
-            debugger;
             $("#list-mode").addClass("active");
             $("#grid-mode").removeClass("active");
             $('#view-mode a').click();

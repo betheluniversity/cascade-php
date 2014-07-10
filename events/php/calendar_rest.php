@@ -77,8 +77,8 @@ function draw_calendar($month,$year, $day=1){
     $date = new DateTime($year . '-' . $month . "-" . $day);
 
     /* table headings */
-    $headings = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
-    $calendar.= '<ul id="days-of-the-week"><li>'.implode('</li><li>',$headings).'</li></ul>';
+    //$headings = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
+    //$calendar.= '<ul id="days-of-the-week"><li>'.implode('</li><li>',$headings).'</li></ul>';
 
     $classes = array(
         1 => 'sun',
@@ -124,6 +124,8 @@ function draw_calendar($month,$year, $day=1){
         if (isset($xml[$key])){
             $calendar .= '<dl>';
             foreach($xml[$key] as $event){
+                $all_day = $event['dates'][0]->{'all-day'}->{'value'};
+                //echo "Your current time now is : " . gmdate("Y-m-d\TH:i:s\Z");
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
                         $calendar .= '<dt class="summary">';
@@ -131,13 +133,36 @@ function draw_calendar($month,$year, $day=1){
                         $calendar .= '</dt>';
                         $calendar .= '<dd>';
                             // Star time calculation
-                            $start = gmdate("g:i a", $event['start'] / 1000);
+                            if($all_day){
+                                $start = '';
+                                $end = '';
+
+                            }else{
+                                $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                                $start_date->setTimestamp($event['dates'][0]->{'start-date'}[0] / 1000);
+                                $start = $start_date->format("g:i a");
+                                if (substr($start, -6, 3) == ':00'){
+                                    $start = $start_date->format("g a");
+                                }
+                                $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                                $end_date->setTimestamp($event['dates'][0]->{'end-date'}[0] / 1000);
+                                $end = $end_date->format("g:i a");
+                                if (substr($end, -6, 3) == ':00'){
+                                    $end = $end_date->format("g a");
+                                }
+
+                                //test
+                            }
                             $calendar .= '<span class="event-description">';
-                            $calendar .= $event['title'] . '<br/>';
                             if ($event['description']){
                                 $calendar .= $event['description']. '</br> ';
                             }
-                            $calendar .= $start . '<br>';
+                            if ($start && $end){
+                                if ($start == $end)
+                                    $calendar .= $start . '<br>';
+                                else
+                                    $calendar .= $start . '-' . $end . '<br>';
+                            }
                                 $calendar .= '<span class="location">' . $event['location'] . '</span>';
                             $calendar .= '</span>';
                             $calendar .= '<ul class="categories" style="display:none">';
@@ -185,26 +210,42 @@ function draw_calendar($month,$year, $day=1){
     return $calendar;
 }
 
-
 function get_event_xml(){
+
+    ##Create a list of categories the calendar uses
+    $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/calendar-categories.xml");
+    $categories = array();
+    $xml = $xml->{'system-page'};
+    foreach ($xml->children() as $child) {
+        if($child->getName() == "dynamic-metadata"){
+            foreach($child->children() as $metadata){
+                if($metadata->getName() == "value"){
+                    array_push($categories, (string)$metadata);
+                }
+                //$metadata;
+            }
+        }
+    }
+
+    //print_r($categories);
 
     $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/events.xml");
     $dates = array();
-    $dates = traverse_folder($xml, $dates);
+    $dates = traverse_folder($xml, $dates, $categories);
     return $dates;
 
 }
 
-function traverse_folder($xml, $dates){
+function traverse_folder($xml, $dates, $categories){
 
     foreach ($xml->children() as $child) {
 
         $name = $child->getName();
 
         if ($name == 'system-folder'){
-            $dates = traverse_folder($child, $dates);
+            $dates = traverse_folder($child, $dates, $categories);
         }elseif ($name == 'system-page'){
-            $page_data = inspect_page($child);
+            $page_data = inspect_page($child, $categories);
             $new_dates = add_event_to_array($dates, $page_data);
             $dates = array_merge($dates, $new_dates);
         }
@@ -244,7 +285,7 @@ function add_event_to_array($dates, $page_data){
     return $dates;
 }
 
-function inspect_page($xml){
+function inspect_page($xml, $categories){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -277,18 +318,26 @@ function inspect_page($xml){
     }
     $page_info['location'] = $location;
 
+
     foreach ($xml->{'dynamic-metadata'} as $md){
 
         $name = $md->name;
+
         $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal');
 
-        if (in_array($name,$options)){
-            //$page_info['md'] = array_merge($page_info['md'], $md->value);
-            foreach($md->value as $value ){
-                if ($value != "None"){
+        foreach($md->value as $value ){
+            if($value == "None"){
+                continue;
+            }
+            if (in_array($name,$options)){
+                //Is this a calendar category?
+                if (in_array($value, $categories)){
                     array_push($page_info['md'], $value . '-' . $name);
+                }else{
+                    array_push($page_info['md'], 'other');
                 }
             }
+
         }
     }
 
