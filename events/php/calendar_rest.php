@@ -232,24 +232,22 @@ function get_event_xml(){
 
     $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/events.xml");
     $dates = array();
-    $dates = array_merge($dates, traverse_folder($xml, $categories));
-
+    $dates = traverse_folder($xml, $dates, $categories);
     return $dates;
 
 }
 
-function traverse_folder($xml, $categories){
-    $dates = array();
+function traverse_folder($xml, $dates, $categories){
     foreach ($xml->children() as $child) {
 
         $name = $child->getName();
 
         if ($name == 'system-folder'){
-            $dates = array_merge($dates, traverse_folder($child, $categories));
+            $dates = traverse_folder($child, $dates, $categories);
         }elseif ($name == 'system-page'){
 
             $page_data = inspect_page($child, $categories);
-            $new_dates = add_event_to_array($page_data);
+            $new_dates = add_event_to_array($dates, $page_data);
             $dates = array_merge($dates, $new_dates);
         }
     }
@@ -257,9 +255,8 @@ function traverse_folder($xml, $categories){
     return $dates;
 }
 
-function add_event_to_array($page_data){
+function add_event_to_array($dates, $page_data){
 
-    $dates = array();
 
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
@@ -323,6 +320,8 @@ function inspect_page($xml, $categories){
         "dates" => array(),
         "md" => array(),
     );
+
+
 
     $ds = $xml->{'system-data-structure'};
 
