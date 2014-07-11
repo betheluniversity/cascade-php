@@ -130,7 +130,7 @@ function draw_calendar($month,$year, $day=1){
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
                         $calendar .= '<dt class="summary">';
-                        $calendar .= '<a href="/' . $event['path'] . '">' . $event['title'] . '</a>';
+                        $calendar .= '<a href="//www.bethel.edu/' . $event['path'] . '">' . $event['title'] . '</a>';
                         $calendar .= '</dt>';
                         $calendar .= '<dd>';
                             // Star time calculation
