@@ -326,12 +326,6 @@ function inspect_page($xml, $categories){
         "md" => array(),
     );
 
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> b4adb243f4934f395d61af1056d85b8e90f156d8
     $ds = $xml->{'system-data-structure'};
 
 
