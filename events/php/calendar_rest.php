@@ -130,7 +130,7 @@ function draw_calendar($month,$year, $day=1){
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
                         $calendar .= '<dt class="summary">';
-                        $calendar .= '<a href="//staging.bethel.edu/' . $event['path'] . '">' . $event['title'] . '</a>';
+                        $calendar .= '<a href="/' . $event['path'] . '">' . $event['title'] . '</a>';
                         $calendar .= '</dt>';
                         $calendar .= '<dd>';
                             // Star time calculation
@@ -214,7 +214,7 @@ function draw_calendar($month,$year, $day=1){
 function get_event_xml(){
 
     ##Create a list of categories the calendar uses
-    $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/calendar-categories.xml");
+    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
     $categories = array();
     $xml = $xml->{'system-page'};
     foreach ($xml->children() as $child) {
@@ -230,7 +230,7 @@ function get_event_xml(){
 
     //print_r($categories);
 
-    $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/events.xml");
+    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
     $dates = array();
     $dates = traverse_folder($xml, $dates, $categories);
     return $dates;
