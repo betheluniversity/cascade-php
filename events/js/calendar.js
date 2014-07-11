@@ -673,7 +673,6 @@
             );
         })();
 
-
         if ($.cookie('cal-mode') == "LIST"){
             $("#list-mode").addClass("active");
             $("#grid-mode").removeClass("active");

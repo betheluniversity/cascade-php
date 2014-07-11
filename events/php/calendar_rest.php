@@ -122,6 +122,7 @@ function draw_calendar($month,$year, $day=1){
 
         // Probably seperate this out.
         if (isset($xml[$key])){
+
             $calendar .= '<dl>';
             foreach($xml[$key] as $event){
                 $all_day = $event['dates'][0]->{'all-day'}->{'value'};
@@ -231,22 +232,24 @@ function get_event_xml(){
 
     $xml = simplexml_load_file("/var/www/staging/public/_shared-content/xml/events.xml");
     $dates = array();
-    $dates = traverse_folder($xml, $dates, $categories);
+    $dates = array_merge($dates, traverse_folder($xml, $categories));
+
     return $dates;
 
 }
 
-function traverse_folder($xml, $dates, $categories){
-
+function traverse_folder($xml, $categories){
+    $dates = array();
     foreach ($xml->children() as $child) {
 
         $name = $child->getName();
 
         if ($name == 'system-folder'){
-            $dates = traverse_folder($child, $dates, $categories);
+            $dates = array_merge($dates, traverse_folder($child, $categories));
         }elseif ($name == 'system-page'){
+
             $page_data = inspect_page($child, $categories);
-            $new_dates = add_event_to_array($dates, $page_data);
+            $new_dates = add_event_to_array($page_data);
             $dates = array_merge($dates, $new_dates);
         }
     }
@@ -254,24 +257,19 @@ function traverse_folder($xml, $dates, $categories){
     return $dates;
 }
 
-function add_event_to_array($dates, $page_data){
+function add_event_to_array($page_data){
+
+    $dates = array();
 
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
-        $start = gmdate("Y-n-j", $date->{'start-date'} / 1000);
-        // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
-        $end = gmdate("Y-n-j", strtotime('+1 day', $date->{'end-date'} / 1000));
-        // Create a date period for each of the dates this event-date spans.
-        // This will put it on the calendar each day.
-        $period = new DatePeriod(
-            new DateTime($start),
-            new DateInterval('P1D'),
-            new DateTime($end)
-        );
 
-        // Add a listng to the array for each event / event date
-        foreach ($period as $date) {
-            $key = $date->format('Y-m-d');
+        $start_date = $date->{'start-date'} / 1000;
+        $end_date = $date->{'end-date'} / 1000;
+
+        if($start_date == $end_date){
+            //Don't need a date range.
+            $key = date("Y-m-d", $start_date);
             // Check if this date has events already
             if (isset($dates[$key])) {
                 array_push($dates[$key], $page_data);
@@ -280,12 +278,42 @@ function add_event_to_array($dates, $page_data){
                 $new_value = array($page_data);
                 $dates[$key] = $new_value;
             }
+        }else{
+
+            $start = date("Y-n-j", $start_date);
+            // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
+            $end = date("Y-n-j", strtotime('+1 day', $end_date));
+            // Create a date period for each of the dates this event-date spans.
+            // This will put it on the calendar each day.
+
+            $period = new DatePeriod(
+                new DateTime($start),
+                new DateInterval('P1D'),
+                new DateTime($end)
+            );
+
+
+            // Add a listng to the array for each event / event date
+            foreach ($period as $date) {
+                $key = $date->format('Y-m-d');
+
+                // Check if this date has events already
+                if (isset($dates[$key])) {
+                    array_push($dates[$key], $page_data);
+                    //Otherwise add a new array with this event for this date.
+                } else {
+                    $new_value = array($page_data);
+                    $dates[$key] = $new_value;
+                }
+            }
         }
+
     }
     return $dates;
 }
 
 function inspect_page($xml, $categories){
+    //echo "inspecting page";
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
