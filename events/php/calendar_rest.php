@@ -1,7 +1,6 @@
 <?php
 
 
-
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -129,7 +128,12 @@ function draw_calendar($month,$year, $day=1){
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
                         $calendar .= '<dt class="summary">';
-                        $calendar .= '<a href="//staging.bethel.edu/' . $event['path'] . '">' . $event['title'] . '</a>';
+                        if( $event['external-link'] != ""){
+                            $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
+                        }
+                        else{
+                            $calendar .= '<a href="//staging.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
+                        }
                         $calendar .= '</dt>';
                         $calendar .= '<dd>';
                             // Star time calculation
@@ -255,9 +259,10 @@ function traverse_folder($xml, $dates, $categories){
 }
 
 function add_event_to_array($dates, $page_data){
-
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
+
+
         $start = gmdate("Y-n-j", $date->{'start-date'} / 1000);
         // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
         $end = gmdate("Y-n-j", strtotime('+1 day', $date->{'end-date'} / 1000));
@@ -269,9 +274,11 @@ function add_event_to_array($dates, $page_data){
             new DateTime($end)
         );
 
-        // Add a listng to the array for each event / event date
+
+        // Add a listing to the array for each event / event date
         foreach ($period as $date) {
             $key = $date->format('Y-m-d');
+
             // Check if this date has events already
             if (isset($dates[$key])) {
                 array_push($dates[$key], $page_data);
@@ -296,7 +303,15 @@ function inspect_page($xml, $categories){
         "md" => array(),
     );
 
+
+
+
     $ds = $xml->{'system-data-structure'};
+
+
+    $page_info["external-link"] = $ds->{'link'};
+
+
 
     // Add the dates
     $dates = $ds->{'event-dates'};
@@ -315,6 +330,9 @@ function inspect_page($xml, $categories){
     $other = $ds->{'other-on-campus'};
     if ($other[0]){
         $location = $other;
+    }
+    if ($location == "none"){
+        $location = "";
     }
     $page_info['location'] = $location;
 
