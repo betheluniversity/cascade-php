@@ -5,29 +5,41 @@
  * Date: 7/16/14
  * Time: 3:36 PM
  */
-
+    /////////////////////////////////////////////////////////////////////
     // These are placeholders of the featured events.
     // They are globals to make it easier.
-    $firstFeaturedEvent;
-    $secondFeaturedEvent;
-    $featuredEventOneOptions = $_GET["featuredEventOneOptions"];
-    $featuredEventTwoOptions = $_GET["featuredEventTwoOptions"];
+    // The only reason this is not an array, is to specify which featured event goes first. This could definitely be made into an array later when it is needed.
+        // You could combine this with the $featuredEventOptions as index 3: The html of the event.
+    /////////////////////////////////////////////////////////////////////
+//    $firstFeaturedEvent;
+//    $secondFeaturedEvent;
+
+    /////////////////////////////////////////////////////////////////////
+    // These are the variables passed over from Cascade.
+    /////////////////////////////////////////////////////////////////////
+
+    $eventFeedCategories;
+    $featuredEventOptions;
+        // index 0: url
+        // index 1: description (if("") use metadata description else use description)
+        // index 2: hide date (yes or no)
+        // index 3: final html of the event. Start out = "".
+
+    $NumEvents;
+    $Heading;
+    $HideWhenNone;
+    $AddFeaturedEvents;
+
+    //button
+    $addbutton;
+    $moreeventslink;
+    $buttontext;
+
+    /////////////////////////////////////////////////////////////////////
 
     function get_event_xml(){
-
-        ##Create a list of categories the calendar uses
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
-        $categories = array();
-        $xml = $xml->{'system-page'};
-        foreach ($xml->children() as $child) {
-            if($child->getName() == "dynamic-metadata"){
-                foreach($child->children() as $metadata){
-                    if($metadata->getName() == "value"){
-                        array_push($categories, (string)$metadata);
-                    }
-                }
-            }
-        }
+        global $eventFeedCategories;
+        $categories = $eventFeedCategories;
 
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
         $events = array();
@@ -71,6 +83,7 @@
             "display-on-feed" => "No",
             "external-link" => "",
             "image" => "",
+            "has-multiple-dates" => "No",
         );
 
         $ds = $xml->{'system-data-structure'};
@@ -103,15 +116,18 @@
         // Only include the first date after today.
         ///////////////////////////////////////////
         $dates = $ds->{'event-dates'};
+        if( sizeof( $dates) > 1){
+            $page_info['has-multiple-dates'] = "Yes";
+        }
         $displayableDate = get_displayable_date($page_info, $dates);
         $currentDate = time();
+        $page_info['date'] = $displayableDate;
 
         // There are 259200 seconds in 3 days.
         // After 3 days of being on the calendar, do not display it anymore.
-        if( sizeof( $displayableDate) != 0 && $displayableDate['start-date']+259200 > $currentDate )//&& $page_info["display-on-feed"] == "Metadata Matches")
+        if( $displayableDate['start-date'] != "" && $displayableDate['start-date']+259200 > $currentDate && $page_info["display-on-feed"] == "Metadata Matches")
         {
             $page_info["display-on-feed"] = "Yes";
-            $page_info['date'] = $displayableDate;
         }
         ///////////////////////////////////////////
 
@@ -136,20 +152,22 @@
 
         $page_info['html'] = get_event_html($page_info);
 
+
         // Get the image.
         $page_info['image'] = $ds->{'image'}->path;
 
-        global $featuredEventOneOptions;
-        global $featuredEventTwoOptions;
-
-        //Check if it is a featured Event.
-        if( $page_info['path'] == $featuredEventOneOptions[0]){
-            GLOBAL $firstFeaturedEvent;
-            $firstFeaturedEvent = get_featured_event_html( $page_info, $featuredEventOneOptions);
-        }
-        if( $page_info['path'] == $featuredEventTwoOptions[0]){
-            GLOBAL $secondFeaturedEvent;
-            $secondFeaturedEvent = get_featured_event_html( $page_info, $featuredEventTwoOptions);
+        global $featuredEventOptions;
+        global $AddFeaturedEvents;
+        // Check if it is a featured Event.
+        // If so, get the featured event html.
+        if ( $AddFeaturedEvents == "Yes"){
+            foreach( $featuredEventOptions as $key=>$featuredEvent)
+            {
+                // Check if the url of the event = the url of the desired feature event.
+                if( $page_info['path'] == $featuredEvent[0]){
+                    $featuredEventOptions[$key][3] = get_featured_event_html( $page_info, $featuredEvent);
+                }
+            }
         }
 
 
@@ -175,9 +193,14 @@
                             $html .= '<h3><a href="http://bethel.edu'.$event['path'].'">'.$event['title'].'</a></h3>';
 
                             if( $featuredEventOptions[2] == "No"){
-                                $formattedDate = format_featured_event_date($event['date']);
-                                if($formattedDate != "" )
-                                $html .= "<p>".$formattedDate."</p>";
+                                if( $event['has-multiple-dates'] == "Yes")
+                                {
+                                    $html .= "<p>Various Dates</p>";
+                                }
+                                else{
+                                    $formattedDate = format_featured_event_date($event['date']);
+                                    $html .= "<p>".$formattedDate."</p>";
+                                }
                             }
 
                             if( $featuredEventOptions[1] != "" )
@@ -236,7 +259,6 @@
         // Description
         $html .= '<p>'.$event['description'].'</p>';
         $html .= '</div></div>';
-        $html .= $event["caleb-option"];
 
 
 
@@ -286,28 +308,6 @@
         return $returnedDate;
     }
 
-    // Get the 1st date that we want to display it as.
-    function get_displayable_date( $page_info, $dates ){
-        $currentDate = time();
-        $displayableDate = array();
-        foreach ($dates as $date){
-            $start_date = $date->{'start-date'} / 1000;
-            $end_date = $date->{'end-date'} / 1000;
-            $allDay = $date->{'all-day'}->{'value'};
-
-            if( $currentDate < $start_date)
-            {
-                // If there is no date yet or if a different date occurs earlier.
-                if( sizeof($displayableDate) == 0 || $displayableDate['start-date'] > $start_date){
-                    $displayableDate['start-date'] = $start_date;
-                    $displayableDate['end-date'] = $end_date;
-                    $displayableDate['all-day'] = $allDay;
-                }
-            }
-        }
-        return $displayableDate;
-    }
-
     // Returns a formatted date correctly for an event.
     // Both $startdate and $endDate are timestamps
     function format_fancy_event_date( $date){
@@ -337,6 +337,28 @@
         }
         // Dummy return.
         return $date;
+    }
+
+    // Get the date that we want to display it as.
+    function get_displayable_date( $page_info, $dates ){
+        $currentDate = time();
+        $displayableDate = array();
+        foreach ($dates as $date){
+            $start_date = $date->{'start-date'} / 1000;
+            $end_date = $date->{'end-date'} / 1000;
+            $allDay = $date->{'all-day'}->{'value'};
+
+            if( $currentDate < $start_date)
+            {
+                // If there is no date yet or if a different date occurs earlier.
+                if( sizeof($displayableDate) == 0 || $displayableDate['start-date'] > $start_date){
+                    $displayableDate['start-date'] = $start_date;
+                    $displayableDate['end-date'] = $end_date;
+                    $displayableDate['all-day'] = $allDay;
+                }
+            }
+        }
+        return $displayableDate;
     }
 
     // Returns the correct link to be used.
@@ -374,39 +396,70 @@
     // Create the Featured Events.
     function create_featured_event_array(){
         $featuredEvents = array();
-        GLOBAL $firstFeaturedEvent;
-        GLOBAL $secondFeaturedEvent;
-        array_push($featuredEvents, $firstFeaturedEvent, $secondFeaturedEvent);
+
+        global $featuredEventOptions;
+
+        foreach( $featuredEventOptions as $key=>$featuredEvent ){
+            if( $featuredEvent[3] != "null" && $featuredEvent[3] != ""){
+                array_push($featuredEvents, $featuredEvent[3]);
+            }
+        }
         return $featuredEvents;
     }
 
     // Create the Event Feed events.
     function create_event_feed(){
-        // Currently this is being passed an array of "titles".
+      // EVENT FEED
         $arrayOfEvents = get_event_xml();
-
-        // Once you get the events, Sort them.
         $sortedEvents = sort_events($arrayOfEvents);
 
-        // Then make them into the correct form and send um over.
-        $finalArray = array();
+        // Only grab the first X number of events.
+        global $NumEvents;
+        $numEventsToFind = $NumEvents;
+        $sortedEvents = array_slice($sortedEvents, 0, $numEventsToFind, true);
+
+        $eventsArray = array();
         foreach( $sortedEvents as $event){
-            array_push($finalArray, $event['html']);
+            array_push($eventsArray, $event['html']);
         }
 
-        // Only grab the first X number of events.
-        $numEventsToFind = $_GET["numEvents"];
-        $finalArray = array_slice($finalArray, 0, $numEventsToFind, true);
+      // HEADING
+        global $Heading;
+        $heading = array("<h2>".$Heading."</h2>");
 
-        // Create the featured Events.
+      // FEATURED EVENTS
         $featuredEvents = create_featured_event_array();
 
+      // BUTTON
+        global $addbutton;
+        global $moreeventslink;
+        global $buttontext;
+        $buttonHTML = array("");
+        if( $addbutton == "Yes")
+        {
+            array_push( $buttonHTML, '<a id="event-feed-button" class="btn center" href="http://www.bethel.edu/' . $moreeventslink . '">' . $buttontext . '</a>');
+        }
 
-        $combinedArray = array($featuredEvents, $finalArray);
-        return json_encode($combinedArray);
+      // Hide if None
+        global $HideWhenNone;
+        if( sizeOf( $eventsArray) == 0){
+            if( $HideWhenNone == "Yes"){
+                $heading = array();
+                $eventsArray = array();
+            }
+            else{
+                $eventsArray = array("<p>No upcoming events.</p>");
+            }
+        }
+
+        $combinedArray = array_merge($featuredEvents, $heading, $eventsArray, $buttonHTML);
+        return $combinedArray;
     }
 
-    // The starter that returns a 2D array of arrays (Featured Events, Events Feed Events).
-    echo create_event_feed();
+    // Display. Loop over every element.
+    $eventFeed = create_event_feed();
+    foreach( $eventFeed as $pageElement){
+        echo $pageElement;
+    }
 
 ?>
