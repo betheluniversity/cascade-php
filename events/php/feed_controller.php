@@ -19,12 +19,12 @@
 
     function create_feed($feedType){
         $feedHTMLArray = array();
-        if( $feedType == "Event Feed" ){
-            include "/var/www/staging/public/code/events/php/feed_events.php";
+        if( $feedType == "Event Feed" ){ //staging/public
+            include "feed_events.php";
             $feedHTMLArray = create_event_feed();
         }
         elseif( $feedType == "News Article Feed" ){
-            include "/var/www/staging/public/code/events/php/feed_news_articles.php";
+            include "feed_news_articles.php";
             $feedHTMLArray = create_news_article_feed();
         }
 
