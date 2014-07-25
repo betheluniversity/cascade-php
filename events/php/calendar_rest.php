@@ -253,8 +253,15 @@ function traverse_folder($xml, $dates, $categories){
         }elseif ($name == 'system-page'){
 
             $page_data = inspect_page($child, $categories);
-            $new_dates = add_event_to_array($dates, $page_data);
-            $dates = array_merge($dates, $new_dates);
+
+            // Child is the xml in this case.
+            // Only add the to the calendar if it is an event.
+            $dataDefinition = $child->{'system-data-structure'}['definition-path'];
+            if( $dataDefinition == "Event")
+            {
+                $new_dates = add_event_to_array($dates, $page_data);
+                $dates = array_merge($dates, $new_dates);
+            }
         }
     }
 
