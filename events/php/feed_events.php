@@ -150,7 +150,7 @@
 
 
             ///////////////////////////////////////////
-            // Only include the first date after today.
+            // Dates
             ///////////////////////////////////////////
             $dates = $ds->{'event-dates'};
             if( sizeof( $dates) > 1){
@@ -159,10 +159,6 @@
             $displayableDate = get_displayable_date($page_info, $dates);
 
             $page_info['date'] = $displayableDate;
-
-            $page_info['display-on-feed'] = display_on_feed($page_info, $dates);
-
-
             $page_info['date-for-sorting'] = $displayableDate['start-date'];
             ///////////////////////////////////////////
 
@@ -183,10 +179,16 @@
             }
             $page_info['location'] = $location;
 
-            $page_info['html'] = get_event_html($page_info);
-
             // Get the image.
             $page_info['image'] = $ds->{'image'}->path;
+
+            ///////////////////////////////////////////
+            // Display
+            ///////////////////////////////////////////
+            $page_info['display-on-feed'] = display_on_feed($page_info, $dates);
+            $page_info['html'] = get_event_html($page_info);
+
+
 
             // Featured Events
             global $featuredEventOptions;
@@ -216,7 +218,7 @@
             global $StartDate;
             global $EndDate;
 
-            // Check if it falls between the given range.
+            //Check if it falls between the given range.
             if( $StartDate != "" && $EndDate != "" ){
 
                 $modifiedStartDate = $StartDate / 1000;
@@ -225,14 +227,15 @@
 
                 if( $latestDate != ""){
                     if( $modifiedStartDate < $page_info['date']['start-date'] && $latestDate < $modifiedEndDate ){
-                        $page_info["display-on-feed"] = "Yes";
+                        return "Yes";
                     }
                 }
             }
             else{
-                $page_info["display-on-feed"] = "Yes";
+                return "Yes";
             }
         }
+        return "No";
     }
 
     // Returns the featured Event html.
