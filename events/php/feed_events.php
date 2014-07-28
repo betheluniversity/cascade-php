@@ -137,7 +137,6 @@
             "image" => "",
             "has-multiple-dates" => "No",
         );
-
         $ds = $xml->{'system-data-structure'};
 
         $page_info['display-on-feed'] = match_metadata($xml, $categories);
@@ -147,8 +146,6 @@
         if( $dataDefinition == "Event")
         {
             $page_info["external-link"] = $ds->{'link'};
-
-
             ///////////////////////////////////////////
             // Dates
             ///////////////////////////////////////////
@@ -259,7 +256,7 @@
             $html .= '<div class="medium-grid-pad-1x">';
 
             if( $event['title'] != "")
-                $html .= '<h3><a href="http://bethel.edu'.$event['path'].'">'.$event['title'].'</a></h3>';
+                $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
 
             if( $featuredEventOptions[2] == "No"){
                 if( $event['has-multiple-dates'] == "Yes")
