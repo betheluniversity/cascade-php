@@ -19,7 +19,7 @@
 
     function create_feed($feedType){
         $feedHTMLArray = array();
-        if( $feedType == "Event Feed" ){ //staging/public
+        if( $feedType == "Event Feed" ){
             include "feed_events.php";
             $feedHTMLArray = create_event_feed();
         }
@@ -42,7 +42,7 @@
         return $events;
     }
 
-    function get_event_xml($fileToLoad, $categories){
+    function get_xml($fileToLoad, $categories){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
         $pages = traverse_folder($xml, $pages, $categories);

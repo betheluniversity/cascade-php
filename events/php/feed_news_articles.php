@@ -24,7 +24,7 @@
 
         global $newsArticleFeedCategories;
         $categories = $newsArticleFeedCategories;
-        $arrayOfEvents = get_event_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
+        $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
         $sortedEvents = sort_events($arrayOfEvents);
 
         // Only grab the first X number of events.

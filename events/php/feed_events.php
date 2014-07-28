@@ -36,7 +36,7 @@
         global $eventFeedCategories;
         $categories = $eventFeedCategories;
 
-        $arrayOfEvents = get_event_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
+        $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         $sortedEvents = sort_events($arrayOfEvents);
 
         // Only grab the first X number of events.
@@ -153,10 +153,15 @@
             // Dates
             ///////////////////////////////////////////
             $dates = $ds->{'event-dates'};
-            if( sizeof( $dates) > 1){
+            if( sizeof( $dates) > 3){
                 $page_info['has-multiple-dates'] = "Yes";
             }
             $displayableDate = get_displayable_date($page_info, $dates);
+
+            if( $displayableDate['start-date'] == ""){
+                $page_info['display-on-feed'] = "No";
+                return $page_info;
+            }
 
             $page_info['date'] = $displayableDate;
             $page_info['date-for-sorting'] = $displayableDate['start-date'];
@@ -341,9 +346,6 @@
         $endDate = $date['end-date'];
         $allDay = $date['all-day'];
 
-        // Start with this date.
-        $returnedDate = date("g:i a", $startDate);
-
         // If it spans multiple days, do not display a time.
         // if all day, do not display a time.
         if( date("m/d/Y", $startDate) != date("m/d/Y", $endDate) ){
@@ -352,21 +354,16 @@
 
         // if it is all day
         if( $allDay == "Yes" ){
-            // return nothing?
-            return "";
-        }
-
-        // if it has multiple dates.
-        if( sizeof( $date) > 1){
-            return "Various Dates";
+            return date("F d, Y", $startDate);
         }
 
         // if it is normal.
         // if 12 pm, change to noon
         if( date("g:i", $startDate) == "12:00 pm"){
-            $returnedDate = "noon";
+            return date("F d, Y |", $startDate)." noon";
         }
         else{
+            $returnedDate = date("F d, Y | g:i a", $startDate);
             // Change am/pm to a.m./p.m.
             $returnedDate = str_replace("am", "a.m.", $returnedDate);
             $returnedDate = str_replace("pm", "p.m.", $returnedDate);
@@ -415,7 +412,7 @@
 
     // Get the date that we want to display it as.
     function get_displayable_date( $page_info, $dates ){
-        $currentDate = time();
+        $currentDate = time() - 43200; // (12 hours) This is to keep events on the calendar for an extra 12 hours.
         $displayableDate = array();
         $displayableDate['start-date'] = "";
         $displayableDate['end-date'] = "";
@@ -429,6 +426,14 @@
             {
                 // If there is no date yet or if a different date occurs earlier.
                 if( $displayableDate['start-date'] == "" || $displayableDate['start-date'] > $start_date){
+                    $displayableDate['start-date'] = $start_date;
+                    $displayableDate['end-date'] = $end_date;
+                    $displayableDate['all-day'] = $allDay;
+                }
+            }
+            elseif( $currentDate < $end_date)
+            {
+                if( $displayableDate['end-date'] == "" || $displayableDate['end-date'] > $end_date){
                     $displayableDate['start-date'] = $start_date;
                     $displayableDate['end-date'] = $end_date;
                     $displayableDate['all-day'] = $allDay;
