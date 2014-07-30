@@ -22,7 +22,6 @@
 
         // $proofPoints should be an array of arrays.
         $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numToFind );
-
         return $proofPointsToDisplay;
     }
 
@@ -44,8 +43,6 @@
                 // Set the page data.
                 $proofPoint = inspect_block_proof_points($child, $PageSchool, $PageDepartment);
 
-                //////////////// NEED TO DO /////////////////
-                // Add to 1 of 4 arrays.
                 if( $proofPoint['match-school'] == "Yes" || $proofPoint['match-dept'] == "Yes")
                     array_push($proofPoints, $proofPoint);
             }

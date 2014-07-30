@@ -12,7 +12,7 @@
 
     $DefaultQuote;
 
-    function get_quotes(){
+    function get_quotes($maxNumToFind){
         global $PageSchool;
         global $PageDepartment;
 
@@ -24,7 +24,7 @@
         $quotesArrays = divide_into_arrays_quotes($quotesArray);
 
         // $proofPoints should be an array of arrays.
-        $quotesToDisplay = get_x_quotes( $quotesArrays);
+        $quotesToDisplay = get_x_quotes( $quotesArrays, $maxNumToFind);
         return $quotesToDisplay;
     }
 
@@ -149,19 +149,24 @@
 
     // Not very well constructed.
     // Down the road, this should probably be rewritten.
-    function get_x_quotes($quotesArrays){
+    function get_x_quotes($quotesArrays, $maxNumToFind){
         $finalQuotes = array();
 
         foreach( $quotesArrays as $quoteArray)
         {
             while( sizeof($quoteArray) > 0)
             {
+                if( $maxNumToFind <= 0){
+                    break 2;
+                }
+
                 $randomIndex = rand(0, sizeof($quoteArray));
                 $quote = $quoteArray[$randomIndex];
 
                 if( $quote != null)
                 {
                     array_push( $finalQuotes, $quote );
+                    $maxNumToFind--;
                 }
 
                 unset($quoteArray[$randomIndex]);
