@@ -18,33 +18,33 @@
 
 
         ///////////////// Change to cms.pub instead of staging/public??
-        $quotesArray = get_xml("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+        $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
 
         // Convert the single array into the x(or 4) number of arrays needed.
-        $quotesArrays = divide_into_arrays($quotesArray);
+        $quotesArrays = divide_into_arrays_quotes($quotesArray);
 
         // $proofPoints should be an array of arrays.
         $quotesToDisplay = get_x_quotes( $quotesArrays);
         return $quotesToDisplay;
     }
 
-    function get_xml($fileToLoad, $PageSchool, $PageDepartment ){
+    function get_xml_quotes($fileToLoad, $PageSchool, $PageDepartment ){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
-        $pages = traverse_folder($xml, $pages, $PageSchool, $PageDepartment);
+        $pages = traverse_folder_quotes($xml, $pages, $PageSchool, $PageDepartment);
         return $pages;
     }
 
-    function traverse_folder($xml, $quotes, $PageSchool, $PageDepartment){
+    function traverse_folder_quotes($xml, $quotes, $PageSchool, $PageDepartment){
         foreach ($xml->children() as $child) {
 
             $name = $child->getName();
 
             if ($name == 'system-folder'){
-                $quotes = traverse_folder($child, $quotes, $PageSchool, $PageDepartment);
+                $quotes = traverse_folder_quotes($child, $quotes, $PageSchool, $PageDepartment);
             }elseif ($name == 'system-block'){
                 // Set the page data.
-                $quote = inspect_block($child, $PageSchool, $PageDepartment);
+                $quote = inspect_block_quotes($child, $PageSchool, $PageDepartment);
 
                 //////////////// NEED TO DO /////////////////
                 // Add to 1 of 4 arrays.
@@ -56,7 +56,7 @@
         return $quotes;
     }
 
-    function inspect_block($xml, $PageSchool, $PageDepartment){
+    function inspect_block_quotes($xml, $PageSchool, $PageDepartment){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
             "published" => $xml->{'last-published-on'},
@@ -72,8 +72,8 @@
         $dataDefinition = $ds['definition-path'];
         if( $dataDefinition == "Blocks/Quote")
         {
-            $block_info['match-school'] = match_metadata($xml, $PageSchool);
-            $block_info['match-dept'] = match_metadata($xml, $PageDepartment);
+            $block_info['match-school'] = match_metadata_quote($xml, $PageSchool);
+            $block_info['match-dept'] = match_metadata_quote($xml, $PageDepartment);
 
             // Get html
             $block_info['html'] = get_quote_html($block_info, $xml);
@@ -126,7 +126,7 @@
         return $html;
     }
 
-    function match_metadata($xml, $category){
+    function match_metadata_quote($xml, $category){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
@@ -177,7 +177,7 @@
         return $finalQuotes;
     }
 
-    function divide_into_arrays($quotesArrays){
+    function divide_into_arrays_quotes($quotesArrays){
         $school = array();
         $dept = array();
 

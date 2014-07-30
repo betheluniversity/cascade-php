@@ -15,10 +15,10 @@
         global $PageDepartment;
 
         ///////////////// Change to cms.pub instead of staging/public??
-        $proofPointsArray = get_xml("/var/www/staging/public/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
+        $proofPointsArray = get_xml_proof_points("/var/www/staging/public/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
 
         // Convert the single array into the x(or 4) number of arrays needed.
-        $proofPointsArrays = divide_into_arrays($proofPointsArray);
+        $proofPointsArrays = divide_into_arrays_proof_points($proofPointsArray);
 
         // $proofPoints should be an array of arrays.
         $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numToFind );
@@ -26,23 +26,23 @@
         return $proofPointsToDisplay;
     }
 
-    function get_xml($fileToLoad, $PageSchool, $PageDepartment ){
+    function get_xml_proof_points($fileToLoad, $PageSchool, $PageDepartment ){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
-        $pages = traverse_folder($xml, $pages, $PageSchool, $PageDepartment);
+        $pages = traverse_folder_proof_points($xml, $pages, $PageSchool, $PageDepartment);
         return $pages;
     }
 
-    function traverse_folder($xml, $proofPoints, $PageSchool, $PageDepartment){
+    function traverse_folder_proof_points($xml, $proofPoints, $PageSchool, $PageDepartment){
         foreach ($xml->children() as $child) {
 
             $name = $child->getName();
 
             if ($name == 'system-folder'){
-                $proofPoints = traverse_folder($child, $proofPoints, $PageSchool, $PageDepartment);
+                $proofPoints = traverse_folder_proof_points($child, $proofPoints, $PageSchool, $PageDepartment);
             }elseif ($name == 'system-block'){
                 // Set the page data.
-                $proofPoint = inspect_block($child, $PageSchool, $PageDepartment);
+                $proofPoint = inspect_block_proof_points($child, $PageSchool, $PageDepartment);
 
                 //////////////// NEED TO DO /////////////////
                 // Add to 1 of 4 arrays.
@@ -54,7 +54,7 @@
         return $proofPoints;
     }
 
-    function inspect_block($xml, $PageSchool, $PageDepartment){
+    function inspect_block_proof_points($xml, $PageSchool, $PageDepartment){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
             "published" => $xml->{'last-published-on'},
@@ -83,8 +83,8 @@
                 }
             }
 
-            $block_info['match-school'] = match_metadata($xml, $PageSchool);
-            $block_info['match-dept'] = match_metadata($xml, $PageDepartment);
+            $block_info['match-school'] = match_metadata_proof_points($xml, $PageSchool);
+            $block_info['match-dept'] = match_metadata_proof_points($xml, $PageDepartment);
 
             // Get html
             $block_info['html'] = get_proof_point_html($block_info, $ds);
@@ -126,7 +126,7 @@
         return $html;
     }
 
-    function match_metadata($xml, $category){
+    function match_metadata_proof_points($xml, $category){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
@@ -178,7 +178,7 @@
         return $finalProofPoints;
     }
 
-    function divide_into_arrays($proofPointsArrays){
+    function divide_into_arrays_proof_points($proofPointsArrays){
         $schoolPremium = array();
         $school = array();
         $deptPremium = array();
