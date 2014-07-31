@@ -46,8 +46,6 @@
                 // Set the page data.
                 $quote = inspect_block_quotes($child, $PageSchool, $PageDepartment);
 
-                //////////////// NEED TO DO /////////////////
-                // Add to 1 of 4 arrays.
                 if( $quote['match-school'] == "Yes" || $quote['match-dept'] == "Yes")
                     array_push($quotes, $quote);
             }

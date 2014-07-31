@@ -96,7 +96,7 @@
         return $featuredEvents;
     }
 
-    function match_metadata($xml, $categories){
+    function match_metadata_events($xml, $categories){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
@@ -139,7 +139,7 @@
         );
         $ds = $xml->{'system-data-structure'};
 
-        $page_info['display-on-feed'] = match_metadata($xml, $categories);
+        $page_info['display-on-feed'] = match_metadata_events($xml, $categories);
 
         $dataDefinition = $ds['definition-path'];
 
@@ -153,7 +153,7 @@
             if( sizeof( $dates) > 3){
                 $page_info['has-multiple-dates'] = "Yes";
             }
-            $displayableDate = get_displayable_date($page_info, $dates);
+            $displayableDate = get_displayable_date_event($page_info, $dates);
 
             if( $displayableDate['start-date'] == ""){
                 $page_info['display-on-feed'] = "No";
@@ -187,7 +187,7 @@
             ///////////////////////////////////////////
             // Display
             ///////////////////////////////////////////
-            $page_info['display-on-feed'] = display_on_feed($page_info, $dates);
+            $page_info['display-on-feed'] = display_on_feed_events($page_info, $dates);
             $page_info['html'] = get_event_html($page_info);
 
 
@@ -211,7 +211,7 @@
         return $page_info;
     }
 
-    function display_on_feed($page_info, $dates){
+    function display_on_feed_events($page_info, $dates){
         $currentDate = time();
         // There are 259200 seconds in 3 days.
         // After 3 days of being on the calendar, do not display it anymore.
@@ -220,20 +220,34 @@
             global $StartDate;
             global $EndDate;
 
+            $modifiedStartDate = $StartDate / 1000;
+            $modifiedEndDate = $EndDate / 1000;
+            $latestDate = get_latest_date($page_info, $dates);
+
             //Check if it falls between the given range.
             if( $StartDate != "" && $EndDate != "" ){
-
-                $modifiedStartDate = $StartDate / 1000;
-                $modifiedEndDate = $EndDate / 1000;
-                $latestDate = get_latest_date($page_info, $dates);
-
                 if( $latestDate != ""){
                     if( $modifiedStartDate < $page_info['date']['start-date'] && $latestDate < $modifiedEndDate ){
                         return "Yes";
                     }
                 }
             }
-            else{
+            elseif( $StartDate != ""){
+                if( $latestDate != ""){
+                    if( $modifiedStartDate < $page_info['date']['start-date']){
+                        return "Yes";
+                    }
+                }
+            }
+            elseif( $EndDate != ""){
+                if( $latestDate != ""){
+                    if( $latestDate < $modifiedEndDate ){
+                        return "Yes";
+                    }
+                }
+            }
+            else
+            {
                 return "Yes";
             }
         }
@@ -408,7 +422,7 @@
     }
 
     // Get the date that we want to display it as.
-    function get_displayable_date( $page_info, $dates ){
+    function get_displayable_date_event( $page_info, $dates ){
         $currentDate = time() - 43200; // (12 hours) This is to keep events on the calendar for an extra 12 hours.
         $displayableDate = array();
         $displayableDate['start-date'] = "";
