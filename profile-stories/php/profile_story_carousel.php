@@ -19,8 +19,9 @@
 
     // Gets the profile stories that should display on the page.
     function get_profile_stories(){
+
         ///////////////// Change to cms.pub instead of staging/public??
-        $profileStoriesArray = get_xml_profile_stories("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");
+        $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
 
         return $profileStoriesArray;
     }
