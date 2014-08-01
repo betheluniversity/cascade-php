@@ -16,9 +16,10 @@
             "caps" => array(),
         );
 
-        if( strstr("cms.pub", getcwd()) )
-           $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
-        elseif( strstr("staging/public", getcwd()) )
+
+        if( strstr(getcwd(), "staging/public") )
+            $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+        else //if( strstr(getcwd(), "cms.pub") )
             $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
 
         // Divide the single large array in the 4-5 school arrays, then put them back together.
