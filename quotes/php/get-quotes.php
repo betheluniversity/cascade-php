@@ -18,7 +18,7 @@
 
 
         ///////////////// Change to cms.pub instead of staging/public??
-        $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+        $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
 
         // Convert the single array into the x(or 4) number of arrays needed.
         $quotesArrays = divide_into_arrays_quotes($quotesArray);
@@ -113,7 +113,7 @@
         else
         {
             $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-10-12">';
+                $html .= '<div class="grid-cell  u-medium-12-12">';
                 $html .= '<div class="medium-grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
                 $html .= '<cite class="quote__source">–'.$source.'</cite>';
