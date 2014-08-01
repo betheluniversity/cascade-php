@@ -5,7 +5,7 @@
  * Date: 7/25/14
  * Time: 1:13 PM
  */
-
+             echo "hello";
     // Globals
     $PageSchool;
     $PageDepartment;
