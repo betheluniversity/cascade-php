@@ -12,12 +12,11 @@
 
     $DefaultQuote;
 
+    // The controller for this section of PHP
     function get_quotes($maxNumToFind){
         global $PageSchool;
         global $PageDepartment;
 
-
-        ///////////////// Change to cms.pub instead of staging/public??
         $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
 
         // Convert the single array into the x(or 4) number of arrays needed.
@@ -28,6 +27,7 @@
         return $quotesToDisplay;
     }
 
+    // Takes a xml file and converts to an array of quotes
     function get_xml_quotes($fileToLoad, $PageSchool, $PageDepartment ){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
@@ -35,6 +35,7 @@
         return $pages;
     }
 
+    // Traverses through to return an array of displayable quotes.
     function traverse_folder_quotes($xml, $quotes, $PageSchool, $PageDepartment){
         foreach ($xml->children() as $child) {
 
@@ -54,6 +55,7 @@
         return $quotes;
     }
 
+    // Gets the correct info/html of the quote
     function inspect_block_quotes($xml, $PageSchool, $PageDepartment){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
@@ -85,6 +87,7 @@
         return $block_info;
     }
 
+    // returns the html of the quote.
     function get_quote_html( $block_info, $xml){
         $ds = $xml->{'system-data-structure'};
 
@@ -124,6 +127,7 @@
         return $html;
     }
 
+    // Compares the metadata of the quote to the metadata of the page
     function match_metadata_quote($xml, $category){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
@@ -145,6 +149,7 @@
         return "No";
     }
 
+    // Returns x random quotes from the array of arrays of quotes.
     // Not very well constructed.
     // Down the road, this should probably be rewritten.
     function get_x_quotes($quotesArrays, $maxNumToFind){
@@ -180,6 +185,8 @@
         return $finalQuotes;
     }
 
+    // Divides an array of quotes into an array of arrays of quotes.
+    // This allows for a sections of quotes to have different priorities for being chosen.
     function divide_into_arrays_quotes($quotesArrays){
         $school = array();
         $dept = array();

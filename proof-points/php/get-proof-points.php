@@ -11,6 +11,7 @@
     $PageSchool;
     $PageDepartment;
 
+    // Returns an array of proof points to display.
     function get_proof_points($numToFind){
         global $PageSchool;
         global $PageDepartment;
@@ -25,6 +26,7 @@
         return $proofPointsToDisplay;
     }
 
+    // converts an xml file to an array of proof points
     function get_xml_proof_points($fileToLoad, $PageSchool, $PageDepartment ){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
@@ -32,6 +34,7 @@
         return $pages;
     }
 
+    // Traverse through the proof points
     function traverse_folder_proof_points($xml, $proofPoints, $PageSchool, $PageDepartment){
         foreach ($xml->children() as $child) {
 
@@ -51,6 +54,7 @@
         return $proofPoints;
     }
 
+    // Gathers the info/html of the proof point
     function inspect_block_proof_points($xml, $PageSchool, $PageDepartment){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
@@ -89,6 +93,7 @@
         return $block_info;
     }
 
+    // Returns the html of the proof point
     function get_proof_point_html( $block_info, $ds){
         $type = $ds->{'proof-point'}->{'type'};
         $html = "";
@@ -123,6 +128,7 @@
         return $html;
     }
 
+    // Matches the metadata of the page against the metadata of the proof point
     function match_metadata_proof_points($xml, $category){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
@@ -144,6 +150,7 @@
         return "No";
     }
 
+    // Gets x random proof points from the array of arrays of proof points
     // Not very well constructed.
     // Down the road, this should probably be rewritten.
     function get_x_proof_points($proofPointsArrays, $numToFind){
@@ -175,6 +182,8 @@
         return $finalProofPoints;
     }
 
+    // Divide the array of proof points into arrays of dept/school and premium/not-premium.
+    // This allows for a priority of what proof points to use.
     function divide_into_arrays_proof_points($proofPointsArrays){
         $schoolPremium = array();
         $school = array();

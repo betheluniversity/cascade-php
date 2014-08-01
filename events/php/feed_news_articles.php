@@ -79,11 +79,7 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////
-    // Returns the information of the page.
-    ////////////////////////////////////////////////////////////////////////////////
-    // Make sure to set the 'html' to what you want to display.
-    // Make sure to set the 'date-for-sorting' to sort the dates. This is a timestamp.
-    // Set 'display-on-feed' = 'Yes' if you want to display the article. Else, set to 'No'
+    // Gathers the info/html of the news article
     ////////////////////////////////////////////////////////////////////////////////
     function inspect_news_article_page($xml, $categories){
         $page_info = array(
@@ -104,8 +100,6 @@
 
         // To get the correct definition path.
         $dataDefinition = $ds['definition-path'];
-        /////////////////// Write Code Here //////////////////////
-
 
         if( $dataDefinition == "News Article")
         {
@@ -114,7 +108,7 @@
 
             $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
 
-            // Featured Articless
+            // Featured Articles
             global $featuredArticleOptions;
             global $AddFeaturedArticle;
             // Check if it is a featured Article.
@@ -129,11 +123,11 @@
                 }
             }
         }
-        //////////////////////////////////////////////////////////
 
         return $page_info;
     }
 
+    // Determine if the news article falls within the given range to be displayed
     function display_on_feed_news_articles($page_info, $ds){
         $date = $ds->{'publish-date'};
         global $StartDate;
@@ -166,6 +160,7 @@
         return "No";
     }
 
+    // Returns the html of the news article
     function get_news_article_html( $article, $xml ){
         $ds = $xml->{'system-data-structure'};
         $image = $ds->{'media'}->{'image'}->{'path'};
@@ -194,6 +189,9 @@
         return $article['html'];
     }
 
+    // Checks the metadata of the page against the metadata of the news articles.
+    // if it matches, return "Metadata Matches"
+    // else, return "No"
     function match_metadata_news_articles($xml, $categories){
         global $School;
         global $Department;
@@ -250,7 +248,7 @@
         $image = $ds->{'media'}->{'image'}->{'path'};
         $date = $ds->{'publish-date'};
 
-    // Only display it if it has an image.
+        // Only display it if it has an image.
         if( $image != "" && $image != "/")
         {
             $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
@@ -288,6 +286,7 @@
         return $html;
     }
 
+    // Returns a formatted version of the date.
     function format_featured_date_news_article( $date)
     {
         $date = $date/1000;
@@ -302,7 +301,7 @@
         return $formattedDate;
     }
 
-    // Sort the articless
+    // Sort the array of articles, newest first.
     function sort_news_articles( $articles ){
         function cmpi($a, $b)
         {

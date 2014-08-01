@@ -6,6 +6,7 @@
  * Time: 5:08 PM
  */
 
+    // The controller for this section of PHP
     function create_profile_story_hub(){
         $profileStoriesArray = array(
             "bu" => array(),
@@ -15,10 +16,10 @@
             "caps" => array(),
         );
 
-        ///////////////// Change to cms.pub instead of staging/public??
-        $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+        $profileStories = get_xml_profile_story_hub("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");
 
         // Divide the single large array in the 4-5 school arrays, then put them back together.
+        // I would prefer a dynamic way to do this.
         foreach($profileStories as $profileStory)
         {
             if ( $profileStory['bu'] == "Yes" ){
@@ -41,6 +42,7 @@
         return $profileStoriesArray;
     }
 
+    // Takes a xml file and converts to an array of profile stories
     function get_xml_profile_story_hub($fileToLoad ){
         $xml = simplexml_load_file($fileToLoad);
         $profileStories = array();
@@ -48,6 +50,8 @@
         return $profileStories;
     }
 
+    // Traverses through to return an array of displayable profile stories
+    // It currently returns ALL profile stories.
     function traverse_folder_profile_story_hub($xml, $profileStories){
         foreach ($xml->children() as $child) {
 
@@ -66,6 +70,7 @@
         return $profileStories;
     }
 
+    // Gathers the info/html of the profile story
     function inspect_page_profile_story_hub($xml){
         $page_info = array(
             "title" => $xml->title,
@@ -94,12 +99,16 @@
         return $page_info;
     }
 
+    // Returns the html of the profile story
     function get_profile_story_hub_html( $page_info, $xml){
         $ds = $xml->{'system-data-structure'};
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
         $viewerTeaser = $ds->{'viewer-teaser'};
         $homepageTeaser = $ds->{'homepage-teaser'};
+
+        // Should this quote be used? It seems to take up too much space.
         $quote = $ds->{'quote'};
+
         $html = '<p><a href="http://www.bethel.edu/'.$xml->path.'">'.$page_info['title'].'</a></p>';
         $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/400x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="400">';
         if( $viewerTeaser != "")
@@ -110,6 +119,7 @@
         return $html;
     }
 
+    // Divides the profile stories into 5 categories of schools based on metadata.
     function match_metadata_profile_story_hub($xml, $page_info){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
@@ -120,6 +130,7 @@
                     continue;
                 }
                 if( $name == "school"){
+                    // I would prefer a dynamic way to do this.
                     if ( $value == "Bethel University" ){
                         $page_info['bu'] = "Yes";
                     }

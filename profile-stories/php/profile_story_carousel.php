@@ -17,13 +17,15 @@
     // Should stories be added based on metadata.
     $AddMetadata;
 
+    // Gets the profile stories that should display on the page.
     function get_profile_stories(){
         ///////////////// Change to cms.pub instead of staging/public??
-        $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+        $profileStoriesArray = get_xml_profile_stories("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");
 
         return $profileStoriesArray;
     }
 
+    // Converts and xml file to an array of profile stories
     function get_xml_profile_stories($fileToLoad ){
         $xml = simplexml_load_file($fileToLoad);
         $profileStories = array();
@@ -31,6 +33,7 @@
         return $profileStories;
     }
 
+    // Traverse through the xml structure.
     function traverse_folder_profile_stories($xml, $profileStories){
         foreach ($xml->children() as $child) {
 
@@ -50,6 +53,7 @@
         return $profileStories;
     }
 
+    // Gathers the info/html of the page.
     function inspect_page_profile_stories($xml){
         $page_info = array(
             "display-name" => $xml->{'display-name'},
@@ -79,6 +83,7 @@
         return $page_info;
     }
 
+    // Returns the profile stories html
     function get_profile_stories_html( $block_info, $xml){
         $ds = $xml->{'system-data-structure'};
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
@@ -95,6 +100,7 @@
         return $html;
     }
 
+    // matches the metadata of the page to the metadata of the profile stories
     function match_metadata_profile_stories($xml){
         global $School;
         global $Topic;
