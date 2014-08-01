@@ -14,9 +14,8 @@
     function get_proof_points($numToFind){
         global $PageSchool;
         global $PageDepartment;
-        echo "HELLO";
         ///////////////// Change to cms.pub instead of staging/public??
-        $proofPointsArray = get_xml_proof_points("/var/www/staging/public/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
+        $proofPointsArray = get_xml_proof_points("/var/www/cms.pub/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
         echo sizeof($proofPointsArray);
         // Convert the single array into the x(or 4) number of arrays needed.
         $proofPointsArrays = divide_into_arrays_proof_points($proofPointsArray);
