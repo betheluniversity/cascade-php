@@ -15,13 +15,15 @@
             "sem" => array(),
             "caps" => array(),
         );
+        echo strstr(getcwd(), "staging/public");
+        echo strstr(getcwd(), "cms.pub");
 
-
-        if( strstr(getcwd(), "staging/public") )
+        if( strstr(getcwd(), "staging/public") ){
             $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
-        else //if( strstr(getcwd(), "cms.pub") )
+        }
+        else{ //if( strstr(getcwd(), "cms.pub") )
             $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
-
+        }
         // Divide the single large array in the 4-5 school arrays, then put them back together.
         // I would prefer a dynamic way to do this.
         foreach($profileStories as $profileStory)
