@@ -36,7 +36,13 @@
         global $eventFeedCategories;
         $categories = $eventFeedCategories;
 
-        $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
+        if( strstr(getcwd(), "staging/public") ){
+            $arrayOfEvents = get_xml("/var/www/staging/public/_shared-content/xml/events.xml", $categories);
+        }
+        else{ //if( strstr(getcwd(), "cms.pub") )
+            $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
+        }
+
         $sortedEvents = sort_events($arrayOfEvents);
 
         // Only grab the first X number of events.
