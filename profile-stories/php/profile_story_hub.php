@@ -16,7 +16,10 @@
             "caps" => array(),
         );
 
-        $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+        if( strstr("cms.pub", getcwd()) )
+           $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+        elseif( strstr("staging/public", getcwd()) )
+            $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
 
         // Divide the single large array in the 4-5 school arrays, then put them back together.
         // I would prefer a dynamic way to do this.
@@ -109,7 +112,7 @@
         // Should this quote be used? It seems to take up too much space.
         $quote = $ds->{'quote'};
 
-        $html = '<p><a href="http://www.bethel.edu/'.$xml->path.'">'.$page_info['title'].'</a></p>';
+        $html = '<p><a href="http://www.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
         $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/400x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="400">';
         if( $viewerTeaser != "")
             $html .= '<p>'.$viewerTeaser.'</p>';

@@ -19,7 +19,6 @@
 
     // Gets the profile stories that should display on the page.
     function get_profile_stories(){
-
         ///////////////// Change to cms.pub instead of staging/public??
         $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
 
@@ -30,6 +29,7 @@
     function get_xml_profile_stories($fileToLoad ){
         $xml = simplexml_load_file($fileToLoad);
         $profileStories = array();
+
         $profileStories = traverse_folder_profile_stories($xml, $profileStories);
         return $profileStories;
     }
@@ -90,7 +90,7 @@
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
         $viewerTeaser = $ds->{'viewer-teaser'};
         $quote = $ds->{'quote'};
-        $html = '<a class="carousel-item" href="http://www.bethel.edu/'.$xml->path.'">';
+        $html = '<a class="carousel-item" href="http://www.staging.bethel.edu'.$xml->path.'">';
             $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/3000x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="3000">';
             $html .= '<figure class="feature__figure--sulley">';
             $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
