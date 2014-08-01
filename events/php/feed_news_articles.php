@@ -32,7 +32,13 @@
         global $newsArticleFeedCategories;
         $categories = $newsArticleFeedCategories;
 
-        $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", $categories);
+        if( strstr(getcwd(), "staging/public") ){
+            $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", $categories);
+        }
+        else{ //if( strstr(getcwd(), "cms.pub") )
+            $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
+        }
+
         $sortedArticles = sort_news_articles($arrayOfArticles);
 
         // Only grab the first X number of articles.

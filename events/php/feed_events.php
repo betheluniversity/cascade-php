@@ -36,6 +36,7 @@
         global $eventFeedCategories;
         $categories = $eventFeedCategories;
 
+        // Dynamically get the correct xml.
         if( strstr(getcwd(), "staging/public") ){
             $arrayOfEvents = get_xml("/var/www/staging/public/_shared-content/xml/events.xml", $categories);
         }

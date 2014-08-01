@@ -17,7 +17,13 @@
         global $PageSchool;
         global $PageDepartment;
 
-        $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+        if( strstr(getcwd(), "staging/public") ){
+            $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+        }
+        else{ //if( strstr(getcwd(), "cms.pub") )
+            $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+        }
+
 
         // Convert the single array into the x(or 4) number of arrays needed.
         $quotesArrays = divide_into_arrays_quotes($quotesArray);
