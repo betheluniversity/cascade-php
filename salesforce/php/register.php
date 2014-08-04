@@ -1,4 +1,7 @@
 <?php
+
+echo "<pre>";
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -10,7 +13,7 @@ echo '3';
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 echo '4';
 require_once ('userAuth.php');
-echo '5'
+echo '5';
 try {
     echo 'before';
     $mySforceConnection = new SforceEnterpriseClient();
@@ -55,11 +58,13 @@ try {
         $sObject = new stdclass();
         $sObject->userId = $id;
         $sObject->password = $password;
+
+        //return error or redirect to login?
         try{
-            $setPasswordResponse = $mySforceConnection->setPassword($id, $password);
+            //$setPasswordResponse = $mySforceConnection->setPassword($id, $password);
 
         }catch(Exception $e){
-            header( 'Location: /code/salesforce/php/login.php' ) ;
+            //header( 'Location: /code/salesforce/php/login.php?register_attempt=true' ) ;
         }
         $userAccount = true;
     }
@@ -68,7 +73,7 @@ try {
     }
 
     if (!$userAccount){
-        echo "here?";
+
         $sObject = new stdclass();
         //now create a User. If there is a user they have an account already.
         //  Now create a User object tied to this Contact
@@ -81,7 +86,7 @@ try {
         $sObject->TimeZoneSidKey = "America/Chicago";
         $sObject->LocaleSidKey = "en_US";
         $sObject->EmailEncodingKey = "UTF-8";
-        $sObject->ProfileId = "00eL0000000QUJb"; // profile id?
+        $sObject->ProfileId = $id; // profile id?
         $sObject->ContactId = $id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
@@ -98,4 +103,6 @@ try {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
+echo "</pre>";
+
 ?>

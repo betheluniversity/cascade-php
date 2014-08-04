@@ -14,7 +14,7 @@ $PASSWORD = "int3rn3tSaqtcCUOBAzIbAwXZDNt2OVc0";
 \--------------------------------------------------------*/
 
 //Use
-$NAMESPACE = 'Bethel University Admissions';d for sample convertLead from file convertLead.php
+$NAMESPACE = 'Bethel University Admissions'; //d for sample convertLead from file convertLead.php
 $convertLEADID = '00Q5000000DO0gJEAT';
 
 //Used for sample fieldsToNull from file fieldsToNull.php
