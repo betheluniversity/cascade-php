@@ -5,21 +5,14 @@ echo "<pre>";
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
-echo "1";
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
-echo '2';
 require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
-echo '3';
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
-echo '4';
 require_once ('userAuth.php');
-echo '5';
 try {
-    echo 'before';
     $mySforceConnection = new SforceEnterpriseClient();
     $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
     $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
-    echo 'ksdfksdj';
 
     $email = 'jsmith4@gmail.com';
     $first = "John";

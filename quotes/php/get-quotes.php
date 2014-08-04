@@ -11,7 +11,6 @@
     $PageDepartment;
 
     $DefaultQuote;
-
     // Staging Site
     if( strstr(getcwd(), "staging/public") ){
         include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
@@ -34,7 +33,6 @@
         else{
             $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
         }
-
 
         // Convert the single array into the x(or 4) number of arrays needed.
         $quotesArrays = divide_into_arrays_quotes($quotesArray);
@@ -128,7 +126,8 @@
                 $html .= '<div class="grid-cell  u-medium-10-12">';
                 $html .= '<div class="medium-grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
-                $html .= '<cite class="quote__source">–'.$source.'</cite>';
+                if( $source != "")
+                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
                 $html .= '</div></div>';
             $html .= '</div>';
         }
@@ -138,7 +137,8 @@
                 $html .= '<div class="grid-cell  u-medium-12-12">';
                 $html .= '<div class="medium-grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
-                $html .= '<cite class="quote__source">–'.$source.'</cite>';
+                if( $source != "")
+                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
                 $html .= '</div></div>';
             $html .= '</div>';
         }
