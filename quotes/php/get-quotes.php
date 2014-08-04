@@ -109,7 +109,7 @@
         $ds = $xml->{'system-data-structure'};
 
         $title = $xml->{'title'};
-        $imagePath = $ds->{'image'}->path;
+        $imagePath = $ds->{'image'}->{'path'};
         $text = $ds->{'quote'};
         $source = $ds->{'source'};
 

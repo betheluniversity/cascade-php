@@ -9,14 +9,14 @@
 ////////////////////////
 // The Controller
 ////////////////////////
-global $feedType;
-$feedHTMLArray = create_feed($feedType);
-// Display -- loop over each element
-foreach( $feedHTMLArray as $pageElement){
-    echo $pageElement;
-}
+
+//// Display -- loop over each element
+//foreach( $feedHTMLArray as $pageElement){
+//    echo $pageElement;
+//}
 
 function create_feed($feedType){
+
     $feedHTMLArray = array();
     if( $feedType == "Event Feed" ){
         include_once "feed_events.php";
@@ -32,11 +32,14 @@ function create_feed($feedType){
 
 // Sort the events
 function sort_events( $events ){
-    function cmpi($a, $b)
+    if( sizeof($events) != 0)
     {
-        return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
+        function cmpi($a, $b)
+        {
+            return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
+        }
+        usort($events, 'cmpi');
     }
-    usort($events, 'cmpi');
 
     return $events;
 }
