@@ -19,11 +19,11 @@
     function create_feed($feedType){
         $feedHTMLArray = array();
         if( $feedType == "Event Feed" ){
-            include "feed_events.php";
+            include_once "feed_events.php";
             $feedHTMLArray = create_event_feed();
         }
         elseif( $feedType == "News Article Feed" ){
-            include "feed_news_articles.php";
+            include_once "feed_news_articles.php";
             $feedHTMLArray = create_news_article_feed();
         }
 

@@ -12,15 +12,26 @@
 
     $DefaultQuote;
 
+    // Staging Site
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
+    }
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
+    }
+
     // The controller for this section of PHP
     function get_quotes($maxNumToFind){
         global $PageSchool;
         global $PageDepartment;
 
-        if( strstr(getcwd(), "staging/public") ){
+        global $destinationName;
+        if( $destinationName == "staging/public" ){
             $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
         }
-        else{ //if( strstr(getcwd(), "cms.pub") )
+        else{
             $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
         }
 
@@ -109,7 +120,9 @@
                 $html .= '<div class="grid-cell  u-medium-2-12">';
                 $html .= '<div class="medium-grid-pad-1x">';
                 $html .= '<div class="quote__avatar">';
-                $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/200x0/smart/http://staging.bethel.edu/'.$imagePath.'" class="image-replace" alt="'.$title.'" data-src="//cdn1.bethel.edu/resize/unsafe/200x0/smart/http://staging.bethel.edu/'.$imagePath.'" width="200">';
+
+                global $destinationName;
+                $html .= render_image($imagePath, $title, "delayed-image-load", "200", $destinationName);
                 $html .= '</div></div></div>';
 
                 $html .= '<div class="grid-cell  u-medium-10-12">';

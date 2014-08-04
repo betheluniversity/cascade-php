@@ -17,12 +17,23 @@
     // Should stories be added based on metadata.
     $AddMetadata;
 
+    // Staging Site
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
+    }
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
+    }
+
     // Gets the profile stories that should display on the page.
     function get_profile_stories(){
-        if( strstr(getcwd(), "staging/public") ){
+        global $destinationName;
+        if( $destinationName == "staging" ){
             $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
         }
-        else{ //if( strstr(getcwd(), "cms.pub") )
+        else{
             $profileStoriesArray = get_xml_profile_stories("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");
         }
 
@@ -96,7 +107,8 @@
         $viewerTeaser = $ds->{'viewer-teaser'};
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
-            $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/3000x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="3000">';
+            global $destinationName;
+            $html .= '<img class="feature__img--sulley" src="http://'.$destinationName.'.bethel.edu'.$imagePath.'">';
             $html .= '<figure class="feature__figure--sulley">';
             $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
             $html .= '<figcaption class="feature__figcaption--sulley">'.$viewerTeaser.'</figcaption>';

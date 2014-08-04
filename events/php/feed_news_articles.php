@@ -25,6 +25,15 @@
     $MoreArticlesLink;
     $ButtonText;
 
+    // Staging Site
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
+    }
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
+    }
 
     // returns an array of html elements.
     function create_news_article_feed(){
@@ -32,10 +41,11 @@
         global $newsArticleFeedCategories;
         $categories = $newsArticleFeedCategories;
 
-        if( strstr(getcwd(), "staging/public") ){
+        global $destinationName;
+        if( $destinationName == "staging/public" ){
             $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", $categories);
         }
-        else{ //if( strstr(getcwd(), "cms.pub") )
+        else{
             $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
         }
 
@@ -170,30 +180,31 @@
     // Returns the html of the news article
     function get_news_article_html( $article, $xml ){
         $ds = $xml->{'system-data-structure'};
-        $image = $ds->{'media'}->{'image'}->{'path'};
+        $imagePath = $ds->{'media'}->{'image'}->{'path'};
         $date = $ds->{'publish-date'};
 
-        $article['html'] = '<div class="media-box pb1">';
+        $html = '<div class="media-box pb1">';
 
-        $article['html'] .= '<a href="http://www.bethel.edu'.$article['path'].'">';
-        $article['html'] .= '<img class="media-box-img" src="http://www.bethel.edu'.$image.'" alt="'.$article['description'].'" title="'.$article['title'].'">';
-        $article['html'] .= '</a>';
+        global $destinationName;
+        $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">';
+        $html .= render_image($imagePath, $article['description'], "media-box-img", "", $destinationName);
+        $html .= '</a>';
 
-        $article['html'] .= '<div class="media-box-body">';
-        $article['html'] .= '<h2 class="h5"><a href="http://www.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
+        $html .= '<div class="media-box-body">';
+        $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
 
         if( $date != "" && $date != "null" )
         {
             $formattedDate = format_featured_date_news_article($date);
-            $article['html'] .= "<p>".$formattedDate."</p>";
+            $html .= "<p>".$formattedDate."</p>";
         }
 
-        $article['html'] .= '<p>'.$article['description'].'</p>';
-        $article['html'] .= '</div>';
+        $html .= '<p>'.$article['description'].'</p>';
+        $html .= '</div>';
 
-        $article['html'] .= '</div>';
+        $html .= '</div>';
 
-        return $article['html'];
+        return $html;
     }
 
     // Checks the metadata of the page against the metadata of the news articles.
@@ -252,23 +263,26 @@
     // Returns the featured Article html.
     function get_featured_article_html($page_info, $xml, $options){
         $ds = $xml->{'system-data-structure'};
-        $image = $ds->{'media'}->{'image'}->{'path'};
+        $imagePath = $ds->{'media'}->{'image'}->{'path'};
         $date = $ds->{'publish-date'};
 
         // Only display it if it has an image.
-        if( $image != "" && $image != "/")
+        if( $imagePath != "" && $imagePath != "/")
         {
             $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
             $html .= '<div class="grid left false">';
             $html .= '<div class="grid-cell  u-medium-1-2">';
             $html .= '<div class="medium-grid-pad-1x">';
-            $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/400x0/smart/http://staging.bethel.edu'.$image.'" class="image-replace" alt="'.$page_info['title'].'" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$image.'" width="400">';
+
+            global $destinationName;
+            $html .= render_image($imagePath, $page_info['title'], "", "400", $destinationName);
+
             $html .= '</div>';
             $html .= '</div>';
             $html .= '<div class="grid-cell  u-medium-1-2">';
             $html .= '<div class="medium-grid-pad-1x">';
             if( $page_info['title'] != "")
-                $html .= '<h2 class="h5"><a href="staging.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></h2>';
+                $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></h2>';
 
             if( $date != "" && $date != "null" )
             {

@@ -10,7 +10,6 @@
     if( strstr(getcwd(), "staging/public") ){
         include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
         $destinationName = "staging";
-        test();
     }
     else{ // Live site.
         include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
@@ -31,7 +30,7 @@
         if( $destinationName == "staging" ){
             $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
         }
-        else{ //if( strstr(getcwd(), "cms.pub") )
+        else{
             $profileStories = get_xml_profile_story_hub("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");
         }
         // Divide the single large array in the 4-5 school arrays, then put them back together.
@@ -127,8 +126,7 @@
 
         global $destinationName;
         $html = '<p><a href="http://'.$destinationName.'bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
-//        $html .= render_image($xml->path, $xml->description, "", "400", $destinationName );
-//        $html .= test();
+        $html .= render_image($imagePath, $xml->description, "delayed-image-load", "400", $destinationName );
 
         if( $viewerTeaser != "")
             $html .= '<p>'.$viewerTeaser.'</p>';

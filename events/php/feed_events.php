@@ -5,7 +5,6 @@
  * Date: 7/24/14
  * Time: 2:09 PM
  */
-
     /////////////////////////////////////////////////////////////////////
     // These are the variables passed over from Cascade.
     /////////////////////////////////////////////////////////////////////
@@ -28,6 +27,16 @@
     $moreeventslink;
     $buttontext;
 
+    // Staging Site
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
+    }
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
+    }
+
     /////////////////////////////////////////////////////////////////////
 
     // Create the Event Feed events.
@@ -36,11 +45,12 @@
         global $eventFeedCategories;
         $categories = $eventFeedCategories;
 
+        global $destinationName;
         // Dynamically get the correct xml.
-        if( strstr(getcwd(), "staging/public") ){
+        if( $destinationName == "staging/public" ){
             $arrayOfEvents = get_xml("/var/www/staging/public/_shared-content/xml/events.xml", $categories);
         }
-        else{ //if( strstr(getcwd(), "cms.pub") )
+        else{
             $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         }
 
@@ -270,7 +280,10 @@
             $html .= '<div class="grid left false">';
             $html .= '<div class="grid-cell  u-medium-1-2">';
             $html .= '<div class="medium-grid-pad-1x">';
-            $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/400x0/smart/http://staging.bethel.edu/'.$event['image'].'" class="image-replace" alt="'.$event['title'].'" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu/'.$event['image'].'" width="400">';
+
+            global $destinationName;
+            $html .= render_image($event['image'], $event['title'], "image-replace", "400", $destinationName);
+
             $html .= '</div>';
             $html .= '</div>';
             $html .= '<div class="grid-cell  u-medium-1-2">';
