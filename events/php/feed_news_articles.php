@@ -5,6 +5,7 @@
  * Date: 7/25/14
  * Time: 9:35 AM
  */
+
     // GLOBALS
 
     // Metadata of feed
@@ -38,6 +39,7 @@
     // returns an array of html elements.
     function create_news_article_feed(){
       // Feed
+
         global $newsArticleFeedCategories;
         $categories = $newsArticleFeedCategories;
 
@@ -96,6 +98,11 @@
     }
 
     ////////////////////////////////////////////////////////////////////////////////
+    // Returns the information of the page.
+    ////////////////////////////////////////////////////////////////////////////////
+    // Make sure to set the 'html' to what you want to display.
+    // Make sure to set the 'date-for-sorting' to sort the dates. This is a timestamp.
+    // Set 'display-on-feed' = 'Yes' if you want to display the event. Else, set to 'No'
     // Gathers the info/html of the news article
     ////////////////////////////////////////////////////////////////////////////////
     function inspect_news_article_page($xml, $categories){
@@ -105,6 +112,7 @@
             "published" => $xml->{'last-published-on'},
             "description" => $xml->{'description'},
             "path" => $xml->path,
+            "date-for-sorting" => "",       //timestamp.
             "date" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
             "md" => array(),
             "html" => "",
@@ -112,6 +120,7 @@
         );
 
         $ds = $xml->{'system-data-structure'};
+
         $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
         $page_info['date-for-sorting'] = time();
 
@@ -214,9 +223,12 @@
         global $School;
         global $Department;
         global $UniqueNews;
+
         foreach ($xml->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
+
+            $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal');
 
             foreach($md->value as $value ){
                 if($value == "Select" || $value == "select"){
@@ -244,7 +256,6 @@
         }
         return "No";
     }
-
 
     // Create the Featured Articles.
     function create_featured_articles_array(){
