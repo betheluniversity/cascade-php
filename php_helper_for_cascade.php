@@ -20,7 +20,7 @@
     {
         $rand1_4 = rand(1, 4);
 
-        $path = '//cdn' . $rand1_4 . '.bethel.edu/resize/unsafe/{width}x0/smart/http://' . $siteDestinationName . '.bethel.edu/' . $imgPath;
+        $path = 'https://cdn' . $rand1_4 . '.bethel.edu/resize/unsafe/{width}x0/smart/http://' . $siteDestinationName . '.bethel.edu' . $imgPath;
         return '<div class="'.$imgClass.'" data-src="'.$path.'" data-alt="'.$imgDesc.'" width="'.$width.'"></div>';
     }
 

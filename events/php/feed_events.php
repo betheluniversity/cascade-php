@@ -28,11 +28,13 @@
     $moreeventslink;
     $buttontext;
 
+    $destinationName;
 
     /////////////////////////////////////////////////////////////////////
 
     // Create the Event Feed events.
     function create_event_feed(){
+        global $destinationName;
         // Staging Site
         if( strstr(getcwd(), "staging/public") ){
             include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
@@ -284,7 +286,7 @@
             $html .= '<div class="medium-grid-pad-1x">';
 
             global $destinationName;
-            $html .= render_image($event['image'], $event['title'], "image-replace", "400", $destinationName);
+            $html .= render_image($event['image'], $event['title'], "delayed-image-load", "400", $destinationName);
 
             $html .= '</div>';
             $html .= '</div>';
