@@ -25,33 +25,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="calendar.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/events/js/calendar.js">
+      <file leaf-file-name="register.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/salesforce/php/register.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="134" column="57" selection-start="6178" selection-end="6178" vertical-scroll-proportion="-14.423077" vertical-offset="2305" max-vertical-offset="10400">
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="calendar.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/events/php/calendar.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="175" column="153" selection-start="12345" selection-end="12353" vertical-scroll-proportion="-6.6363635" vertical-offset="3135" max-vertical-offset="4280">
+            <state line="79" column="34" selection-start="2816" selection-end="2816" vertical-scroll-proportion="-21.068966" vertical-offset="969" max-vertical-offset="2260">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calendar_rest.php" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/events/php/calendar_rest.php">
+      <file leaf-file-name="calendar.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="50" selection-start="742" selection-end="742" vertical-scroll-proportion="0.34801763" vertical-offset="45" max-vertical-offset="5760">
-              <folding>
-                <marker date="1403296090000" expanded="false" signature="4761:4773" placeholder="..." />
-              </folding>
+            <state line="303" column="31" selection-start="11618" selection-end="11618" vertical-scroll-proportion="0.70621467" vertical-offset="5520" max-vertical-offset="13720">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="userAuth.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/salesforce/php/userAuth.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="47" selection-start="613" selection-end="613" vertical-scroll-proportion="0.0" vertical-offset="320" max-vertical-offset="1140">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="login.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/salesforce/php/login.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="19" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="500">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -69,22 +74,45 @@
         <option value="$PROJECT_DIR$/cal.php" />
         <option value="$PROJECT_DIR$/events/calendar.js" />
         <option value="$PROJECT_DIR$/events/tt.php" />
-        <option value="$PROJECT_DIR$/events/calendar.php" />
         <option value="$PROJECT_DIR$/events/test.php" />
-        <option value="$PROJECT_DIR$/events/calendar_rest.php" />
         <option value="$PROJECT_DIR$/events/cal.php" />
         <option value="$PROJECT_DIR$/events/code/calendar_rest.php" />
         <option value="$PROJECT_DIR$/events/code/calendar.js" />
+        <option value="$PROJECT_DIR$/code/events/php/calendar.php" />
+        <option value="$PROJECT_DIR$/events/php/calendar.php" />
         <option value="$PROJECT_DIR$/events/js/calendar.js" />
+        <option value="$PROJECT_DIR$/code/events/php/config.php" />
+        <option value="$PROJECT_DIR$/events/calendar.php" />
+        <option value="$PROJECT_DIR$/events/calendar_rest.php" />
+        <option value="$PROJECT_DIR$/events/php/calendar_rest.php" />
+        <option value="$PROJECT_DIR$/events/php/calendar.js" />
+        <option value="$PROJECT_DIR$/code/events/php/calendar.js" />
+        <option value="$PROJECT_DIR$/testing/basic-plus.php" />
+        <option value="$PROJECT_DIR$/undergrad/academics/chemistry/index.php" />
+        <option value="$PROJECT_DIR$/code/events/php/calendar_rest.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/index.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/index.html" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/oath_callback.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/oauth.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/toolkit/soapclient/enterprise.wsdl.xml" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/config.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/toolkit/soapclient/partner.wsdl.xml" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/login.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/userAuth.php" />
+        <option value="$PROJECT_DIR$/code/salesforce/php/register.php" />
+        <option value="$PROJECT_DIR$/code/events/js/calendar.js" />
       </list>
     </option>
   </component>
-  <component name="PhpDebugGeneral" xdebug_show_addresses="true" />
+  <component name="PhpDebugGeneral" hide_empty_superglobals="false" />
   <component name="PhpServers">
     <option name="servers">
       <server deployment_server="a3cd1781-8db7-42f3-85ba-5235c45c6943" host="http://staging.bethel.edu" name="staging.bethel.edu" port="9000" use_path_mappings="true" validation_dir="$PROJECT_DIR$/events">
         <path_mappings>
-          <path_mapping local_path="$PROJECT_DIR$/events" remote_path="/var/www/staging/public/events" />
+          <path_mapping local_path="$PROJECT_DIR$/events" remote_path="/var/www/staing/public/events" />
+          <path_mapping local_path="$PROJECT_DIR$/code" remote_path="/var/www/staging/public/code" />
+          <path_mapping local_path="$PROJECT_DIR$" remote_path="/var/www/staging/public" />
+          <path_mapping local_path="$PROJECT_DIR$/code/events/php/calendar_rest.php" remote_path="/var/www/staging/public/code/events/php/calendar_rest.php" />
         </path_mappings>
       </server>
       <server deployment_server="639f9b3e-a325-43bb-9144-78865e866016" host="remote.mac" name="local" use_path_mappings="true" validation_dir="$PROJECT_DIR$">
@@ -101,9 +129,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds">
-    <option name="y" value="22" />
-    <option name="width" value="1978" />
-    <option name="height" value="1418" />
+    <option name="x" value="1280" />
+    <option name="y" value="23" />
+    <option name="width" value="1280" />
+    <option name="height" value="1417" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -175,6 +204,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -189,7 +219,35 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="cascade-php" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
               <option name="myItemId" value="remote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cascade-php" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="code" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="remote" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cascade-php" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="code" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -207,7 +265,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="remote" />
+              <option name="myItemId" value="cascade-php" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="code" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -221,12 +283,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="options.lastSelected" value="Configurable.PHP.Debug" />
+    <property name="options.lastSelected" value="fileTemplates" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -242,11 +303,23 @@
     <property name="restartRequiresConfirmation" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/code/events/php" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/code/salesforce/php/toolkit" />
+      <recent name="$PROJECT_DIR$/code" />
+      <recent name="$PROJECT_DIR$/code/events/php" />
+      <recent name="$PROJECT_DIR$/events/php" />
       <recent name="$PROJECT_DIR$/events" />
     </key>
   </component>
-  <component name="RunManager" selected="PHP Remote Debug.staging">
+  <component name="RunManager" selected="JavaScript Debug.calendar.js">
+    <configuration default="false" name="calendar.js" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true" temporary="true" uri="http://staging.bethel.edu/code/events/php/calendar.js">
+      <RunnerSettings RunnerId="JavascriptDebugRunner" />
+      <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
+      <method />
+    </configuration>
     <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner />
       <method />
@@ -281,11 +354,17 @@
       <ConfigurationWrapper RunnerId="PhpRemoteDebugRunner" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="PHP Built-in Web Server.local" />
       <item index="1" class="java.lang.String" itemvalue="PHP Remote Debug.staging" />
       <item index="2" class="java.lang.String" itemvalue="PHP Remote Debug.debug local" />
+      <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.calendar.js" />
     </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="JavaScript Debug.calendar.js" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="true" SSL_PROTOCOLS="sslv3">
@@ -315,31 +394,51 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1978" height="1418" extended-state="6" />
+    <frame x="1280" y="23" width="1280" height="1417" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.10105581" sideWeight="0.6286157" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295626" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43471697" sideWeight="0.6534733" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32830188" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298193" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2494043" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23303168" sideWeight="0.76171243" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.10105581" sideWeight="0.3713843" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08754717" sideWeight="0.67124397" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43471697" sideWeight="0.34652665" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1446281" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981133" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1987076" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1453958" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298193" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295626" sideWeight="0.49967214" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32830188" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295626" sideWeight="0.49967214" order="8" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -358,9 +457,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2536349" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -375,38 +474,292 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="false" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="43" />
+      <option name="time" value="78" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="134" column="57" selection-start="6178" selection-end="6178" vertical-scroll-proportion="-14.423077" vertical-offset="2305" max-vertical-offset="10400">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="0.0" vertical-offset="7860" max-vertical-offset="11520" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="175" column="153" selection-start="12345" selection-end="12353" vertical-scroll-proportion="-6.6363635" vertical-offset="3135" max-vertical-offset="4280">
+        <state line="149" column="0" selection-start="5319" selection-end="5319" vertical-scroll-proportion="0.0" vertical-offset="2980" max-vertical-offset="7000" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="629" column="40" selection-start="26097" selection-end="26097" vertical-scroll-proportion="0.0" vertical-offset="12580" max-vertical-offset="13780" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="26820" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="0.0" vertical-offset="7664" max-vertical-offset="11520" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="4" selection-start="4362" selection-end="4362" vertical-scroll-proportion="0.0" vertical-offset="2680" max-vertical-offset="6500" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="568" column="0" selection-start="23012" selection-end="23012" vertical-scroll-proportion="0.0" vertical-offset="11360" max-vertical-offset="13800" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="2820" max-vertical-offset="26820" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="230" column="21" selection-start="7768" selection-end="7768" vertical-scroll-proportion="0.0" vertical-offset="4215" max-vertical-offset="6020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="2820" max-vertical-offset="26820" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="117" column="48" selection-start="3541" selection-end="3541" vertical-scroll-proportion="0.0" vertical-offset="2340" max-vertical-offset="6040" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="159" column="4" selection-start="5555" selection-end="5555" vertical-scroll-proportion="0.0" vertical-offset="2700" max-vertical-offset="26820" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="336" column="35" selection-start="13434" selection-end="13434" vertical-scroll-proportion="0.0" vertical-offset="6252" max-vertical-offset="13020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="336" column="35" selection-start="13434" selection-end="13434" vertical-scroll-proportion="0.0" vertical-offset="6212" max-vertical-offset="13020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6040" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="189" column="20" selection-start="7443" selection-end="7443" vertical-scroll-proportion="0.0" vertical-offset="40" max-vertical-offset="13000" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="64" selection-start="820" selection-end="820" vertical-scroll-proportion="0.0" vertical-offset="280" max-vertical-offset="6040" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="92" column="50" selection-start="5832" selection-end="5834" vertical-scroll-proportion="0.0" vertical-offset="1840" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="27" selection-start="1167" selection-end="1167" vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="6020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="32" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="80" max-vertical-offset="6120" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="242" column="0" selection-start="8286" selection-end="8286" vertical-scroll-proportion="0.0" vertical-offset="4560" max-vertical-offset="5960" />
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/standard_8.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.0" vertical-offset="21078" max-vertical-offset="22040" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="141" column="54" selection-start="5072" selection-end="5072" vertical-scroll-proportion="0.0" vertical-offset="2020" max-vertical-offset="5960" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0" vertical-offset="100" max-vertical-offset="5960" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/standard_8.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.858156" vertical-offset="20771" max-vertical-offset="22040" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testing/basic-plus.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="340" column="0" selection-start="7939" selection-end="9705" vertical-scroll-proportion="0.6289425" vertical-offset="6122" max-vertical-offset="11580" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="18580" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/faculty.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="18020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="159" column="4" selection-start="5555" selection-end="5555" vertical-scroll-proportion="0.2513089" vertical-offset="2940" max-vertical-offset="26820" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="-0.35714287" vertical-offset="8300" max-vertical-offset="11520" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="308" column="56" selection-start="11125" selection-end="11125" vertical-scroll-proportion="0.0" vertical-offset="6160" max-vertical-offset="7900" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="2" selection-start="234" selection-end="234" vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="760" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="33" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0" vertical-offset="80" max-vertical-offset="240" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/oauth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="0" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0" vertical-offset="140" max-vertical-offset="260" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/oauth_callback.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="33" selection-start="609" selection-end="609" vertical-scroll-proportion="-15.862069" vertical-offset="0" max-vertical-offset="1180" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/toolkit/soapclient/enterprise.wsdl.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16140" column="45" selection-start="978094" selection-end="978094" vertical-scroll-proportion="0.0" vertical-offset="322285" max-vertical-offset="323220" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/login.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="500">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/userAuth.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="50" selection-start="742" selection-end="742" vertical-scroll-proportion="0.34801763" vertical-offset="45" max-vertical-offset="5760">
-          <folding>
-            <marker date="1403296090000" expanded="false" signature="4761:4773" placeholder="..." />
-          </folding>
+        <state line="16" column="47" selection-start="613" selection-end="613" vertical-scroll-proportion="0.0" vertical-offset="320" max-vertical-offset="1140">
+          <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/code/salesforce/php/register.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="34" selection-start="2816" selection-end="2816" vertical-scroll-proportion="-21.068966" vertical-offset="969" max-vertical-offset="2260">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="303" column="31" selection-start="11618" selection-end="11618" vertical-scroll-proportion="0.70621467" vertical-offset="5520" max-vertical-offset="13720">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
 

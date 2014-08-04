@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/cascade-php.iml" filepath="$PROJECT_DIR$/.idea/cascade-php.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/remote.iml" filepath="$PROJECT_DIR$/.idea/remote.iml" />
     </modules>
   </component>
