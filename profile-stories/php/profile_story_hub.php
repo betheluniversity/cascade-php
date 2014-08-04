@@ -6,6 +6,17 @@
  * Time: 5:08 PM
  */
 
+    // Staging Site
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
+        test();
+    }
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
+    }
+
     // The controller for this section of PHP
     function create_profile_story_hub(){
         $profileStoriesArray = array(
@@ -16,7 +27,8 @@
             "caps" => array(),
         );
 
-        if( strstr(getcwd(), "staging/public") ){
+        global $destinationName;
+        if( $destinationName == "staging" ){
             $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
         }
         else{ //if( strstr(getcwd(), "cms.pub") )
@@ -113,8 +125,11 @@
         // Should this quote be used? It seems to take up too much space.
         $quote = $ds->{'quote'};
 
-        $html = '<p><a href="http://www.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
-        $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/400x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="400">';
+        global $destinationName;
+        $html = '<p><a href="http://'.$destinationName.'bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
+//        $html .= render_image($xml->path, $xml->description, "", "400", $destinationName );
+//        $html .= test();
+
         if( $viewerTeaser != "")
             $html .= '<p>'.$viewerTeaser.'</p>';
         elseif( $homepageTeaser != "")

@@ -95,7 +95,7 @@
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
         $viewerTeaser = $ds->{'viewer-teaser'};
         $quote = $ds->{'quote'};
-        $html = '<a class="carousel-item" href="http://www.staging.bethel.edu'.$xml->path.'">';
+        $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
             $html .= '<img src="//cdn1.bethel.edu/resize/unsafe/3000x0/smart/http://staging.bethel.edu'.$imagePath.'" class="image-replace" alt="" data-src="//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://staging.bethel.edu'.$imagePath.'" width="3000">';
             $html .= '<figure class="feature__figure--sulley">';
             $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
