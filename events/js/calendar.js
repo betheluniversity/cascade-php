@@ -259,7 +259,7 @@
             //using query params instead of hash
             h = window.location.search.replace(/^\#/, '?') || '?';
         }
-        loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' + h;
+        loc = '//www.bethel.edu/events/calendar/code/calendar_rest' + h;
         changeCalendarLocation(loc);
     }
 
@@ -299,7 +299,7 @@
         if (mode == "LIST"){
             h += "&mode=list"
         }
-        loc = '//staging.bethel.edu/events/calendar/code/calendar_rest' + h;
+        loc = '//www.bethel.edu/events/calendar/code/calendar_rest' + h;
 
         changeCalendarLocation(loc);
 
