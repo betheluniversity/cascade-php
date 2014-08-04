@@ -6,6 +6,7 @@
  * Time: 9:35 AM
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
     $newsArticleFeedCategories;
 
     $NumArticles;
@@ -15,6 +16,8 @@
     $EndDate;
 
 =======
+=======
+>>>>>>> FETCH_HEAD
     // GLOBALS
 
     // Metadata of feed
@@ -31,6 +34,9 @@
 
     $featuredArticleOptions;
 
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
     $AddButton;
     $MoreArticlesLink;
@@ -40,6 +46,7 @@
     // returns an array of html elements.
     function create_news_article_feed(){
       // Feed
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         global $newsArticleFeedCategories;
@@ -56,6 +63,8 @@
         foreach( $sortedEvents as $event){
             array_push($articleArray, $event['html']);
 =======
+=======
+>>>>>>> FETCH_HEAD
         global $newsArticleFeedCategories;
         $categories = $newsArticleFeedCategories;
 
@@ -75,6 +84,9 @@
         $articleArray = array();
         foreach( $sortedArticles as $article){
             array_push($articleArray, $article['html']);
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         }
 
@@ -83,6 +95,12 @@
         $heading = array("<h2>".$Heading."</h2>");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      // FEATURED ARTICLES
+        $featuredArticles = create_featured_articles_array();
+
+>>>>>>> FETCH_HEAD
 =======
       // FEATURED ARTICLES
         $featuredArticles = create_featured_articles_array();
@@ -94,6 +112,10 @@
         global $ButtonText;
         $buttonHTML = array("");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> FETCH_HEAD
 =======
 
 >>>>>>> FETCH_HEAD
@@ -115,7 +137,11 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $combinedArray = array_merge($heading, $articleArray, $buttonHTML);
+=======
+        $combinedArray = array_merge($featuredArticles, $heading, $articleArray, $buttonHTML);
+>>>>>>> FETCH_HEAD
 =======
         $combinedArray = array_merge($featuredArticles, $heading, $articleArray, $buttonHTML);
 >>>>>>> FETCH_HEAD
@@ -125,11 +151,15 @@
 
     ////////////////////////////////////////////////////////////////////////////////
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Returns the information of the page.
     ////////////////////////////////////////////////////////////////////////////////
     // Make sure to set the 'html' to what you want to display.
     // Make sure to set the 'date-for-sorting' to sort the dates. This is a timestamp.
     // Set 'display-on-feed' = 'Yes' if you want to display the event. Else, set to 'No'
+=======
+    // Gathers the info/html of the news article
+>>>>>>> FETCH_HEAD
 =======
     // Gathers the info/html of the news article
 >>>>>>> FETCH_HEAD
@@ -142,7 +172,11 @@
             "description" => $xml->{'description'},
             "path" => $xml->path,
 <<<<<<< HEAD
+<<<<<<< HEAD
             "date-for-sorting" => "",       //timestamp.
+=======
+            "date" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
+>>>>>>> FETCH_HEAD
 =======
             "date" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
 >>>>>>> FETCH_HEAD
@@ -153,7 +187,11 @@
 
         $ds = $xml->{'system-data-structure'};
 <<<<<<< HEAD
+<<<<<<< HEAD
         $page_info['display-on-feed'] = match_metadata($xml, $categories);
+=======
+        $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
+>>>>>>> FETCH_HEAD
 =======
         $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
 >>>>>>> FETCH_HEAD
@@ -161,6 +199,7 @@
 
         // To get the correct definition path.
         $dataDefinition = $ds['definition-path'];
+<<<<<<< HEAD
 <<<<<<< HEAD
         /////////////////// Write Code Here //////////////////////
 
@@ -172,6 +211,8 @@
         }
         //////////////////////////////////////////////////////////
 =======
+=======
+>>>>>>> FETCH_HEAD
 
         if( $dataDefinition == "News Article")
         {
@@ -195,11 +236,15 @@
                 }
             }
         }
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
 
         return $page_info;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     function get_news_article_html( $article, $xml ){
         $article['html'] = '<div class="media-box pb1">';
@@ -207,6 +252,8 @@
         $article['html'] .= '<a href="http://www.bethel.edu/news/articles/2014/july/spitfire-musical">';
         $article['html'] .= '<img class="media-box-img" src="'.$xml->{'system-data-structure'}->{'image'}->path.'" alt="'.$article['description'].'" title="'.$article['title'].'">';
 =======
+=======
+>>>>>>> FETCH_HEAD
     // Determine if the news article falls within the given range to be displayed
     function display_on_feed_news_articles($page_info, $ds){
         $date = $ds->{'publish-date'};
@@ -250,13 +297,19 @@
 
         $article['html'] .= '<a href="http://www.bethel.edu'.$article['path'].'">';
         $article['html'] .= '<img class="media-box-img" src="http://www.bethel.edu'.$image.'" alt="'.$article['description'].'" title="'.$article['title'].'">';
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         $article['html'] .= '</a>';
 
         $article['html'] .= '<div class="media-box-body">';
         $article['html'] .= '<h2 class="h5"><a href="http://www.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> FETCH_HEAD
 
         if( $date != "" && $date != "null" )
         {
@@ -264,6 +317,9 @@
             $article['html'] .= "<p>".$formattedDate."</p>";
         }
 
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         $article['html'] .= '<p>'.$article['description'].'</p>';
         $article['html'] .= '</div>';
@@ -274,8 +330,11 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function match_metadata($xml, $categories){
 =======
+=======
+>>>>>>> FETCH_HEAD
     // Checks the metadata of the page against the metadata of the news articles.
     // if it matches, return "Metadata Matches"
     // else, return "No"
@@ -283,11 +342,15 @@
         global $School;
         global $Department;
         global $UniqueNews;
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         foreach ($xml->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
             $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal');
 
@@ -303,6 +366,8 @@
                 }
 
 =======
+=======
+>>>>>>> FETCH_HEAD
             foreach($md->value as $value ){
                 if($value == "Select" || $value == "select"){
                     continue;
@@ -325,6 +390,9 @@
                         return "Metadata Matches";
                     }
                 }
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
             }
         }
@@ -332,7 +400,10 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> FETCH_HEAD
 
     // Create the Featured Articles.
     function create_featured_articles_array(){
@@ -417,5 +488,8 @@
 
         return $articles;
     }
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
 ?>

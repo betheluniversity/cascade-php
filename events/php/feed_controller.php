@@ -7,7 +7,10 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
 =======
 >>>>>>> FETCH_HEAD
     ////////////////////////
@@ -24,17 +27,23 @@
         $feedHTMLArray = array();
         if( $feedType == "Event Feed" ){
 <<<<<<< HEAD
+<<<<<<< HEAD
             include "/var/www/staging/public/code/events/php/feed_events.php";
             $feedHTMLArray = create_event_feed();
         }
         elseif( $feedType == "News Article Feed" ){
             include "/var/www/staging/public/code/events/php/feed_news_articles.php";
 =======
+=======
+>>>>>>> FETCH_HEAD
             include "feed_events.php";
             $feedHTMLArray = create_event_feed();
         }
         elseif( $feedType == "News Article Feed" ){
             include "feed_news_articles.php";
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
             $feedHTMLArray = create_news_article_feed();
         }
@@ -54,7 +63,11 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function get_event_xml($fileToLoad, $categories){
+=======
+    function get_xml($fileToLoad, $categories){
+>>>>>>> FETCH_HEAD
 =======
     function get_xml($fileToLoad, $categories){
 >>>>>>> FETCH_HEAD

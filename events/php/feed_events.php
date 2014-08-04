@@ -37,8 +37,11 @@
         $categories = $eventFeedCategories;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $arrayOfEvents = get_event_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
 =======
+=======
+>>>>>>> FETCH_HEAD
         // Dynamically get the correct xml.
         if( strstr(getcwd(), "staging/public") ){
             $arrayOfEvents = get_xml("/var/www/staging/public/_shared-content/xml/events.xml", $categories);
@@ -47,6 +50,9 @@
             $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         }
 
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         $sortedEvents = sort_events($arrayOfEvents);
 
@@ -108,7 +114,11 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     function match_metadata($xml, $categories){
+=======
+    function match_metadata_events($xml, $categories){
+>>>>>>> FETCH_HEAD
 =======
     function match_metadata_events($xml, $categories){
 >>>>>>> FETCH_HEAD
@@ -153,10 +163,16 @@
             "has-multiple-dates" => "No",
         );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         $ds = $xml->{'system-data-structure'};
 
         $page_info['display-on-feed'] = match_metadata($xml, $categories);
+=======
+        $ds = $xml->{'system-data-structure'};
+
+        $page_info['display-on-feed'] = match_metadata_events($xml, $categories);
+>>>>>>> FETCH_HEAD
 =======
         $ds = $xml->{'system-data-structure'};
 
@@ -168,6 +184,7 @@
         if( $dataDefinition == "Event")
         {
             $page_info["external-link"] = $ds->{'link'};
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -207,6 +224,8 @@
                 }
             }
 =======
+=======
+>>>>>>> FETCH_HEAD
             ///////////////////////////////////////////
             // Dates
             ///////////////////////////////////////////
@@ -222,6 +241,9 @@
             }
 
             $page_info['date'] = $displayableDate;
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
             $page_info['date-for-sorting'] = $displayableDate['start-date'];
             ///////////////////////////////////////////
@@ -244,6 +266,7 @@
             $page_info['location'] = $location;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
             $page_info['html'] = get_event_html($page_info);
@@ -252,6 +275,8 @@
             $page_info['image'] = $ds->{'image'}->path;
 
 =======
+=======
+>>>>>>> FETCH_HEAD
             // Get the image.
             $page_info['image'] = $ds->{'image'}->path;
 
@@ -264,6 +289,9 @@
 
 
             // Featured Events
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
             global $featuredEventOptions;
             global $AddFeaturedEvents;
@@ -284,7 +312,10 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> FETCH_HEAD
     function display_on_feed_events($page_info, $dates){
         $currentDate = time();
         // There are 259200 seconds in 3 days.
@@ -328,6 +359,9 @@
         return "No";
     }
 
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
     // Returns the featured Event html.
     function get_featured_event_html($event, $featuredEventOptions){
@@ -346,7 +380,11 @@
 
             if( $event['title'] != "")
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $html .= '<h3><a href="http://bethel.edu'.$event['path'].'">'.$event['title'].'</a></h3>';
+=======
+                $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
+>>>>>>> FETCH_HEAD
 =======
                 $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
 >>>>>>> FETCH_HEAD
@@ -437,9 +475,12 @@
         $allDay = $date['all-day'];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // Start with this date.
         $returnedDate = date("g:i a", $startDate);
 
+=======
+>>>>>>> FETCH_HEAD
 =======
 >>>>>>> FETCH_HEAD
         // If it spans multiple days, do not display a time.
@@ -451,6 +492,7 @@
         // if it is all day
         if( $allDay == "Yes" ){
 <<<<<<< HEAD
+<<<<<<< HEAD
             // return nothing?
             return "";
         }
@@ -461,20 +503,29 @@
 =======
             return date("F d, Y", $startDate);
 >>>>>>> FETCH_HEAD
+=======
+            return date("F d, Y", $startDate);
+>>>>>>> FETCH_HEAD
         }
 
         // if it is normal.
         // if 12 pm, change to noon
         if( date("g:i", $startDate) == "12:00 pm"){
 <<<<<<< HEAD
+<<<<<<< HEAD
             $returnedDate = "noon";
         }
         else{
 =======
+=======
+>>>>>>> FETCH_HEAD
             return date("F d, Y |", $startDate)." noon";
         }
         else{
             $returnedDate = date("F d, Y | g:i a", $startDate);
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
             // Change am/pm to a.m./p.m.
             $returnedDate = str_replace("am", "a.m.", $returnedDate);
@@ -524,8 +575,13 @@
 
     // Get the date that we want to display it as.
 <<<<<<< HEAD
+<<<<<<< HEAD
     function get_displayable_date( $page_info, $dates ){
         $currentDate = time();
+=======
+    function get_displayable_date_event( $page_info, $dates ){
+        $currentDate = time() - 43200; // (12 hours) This is to keep events on the calendar for an extra 12 hours.
+>>>>>>> FETCH_HEAD
 =======
     function get_displayable_date_event( $page_info, $dates ){
         $currentDate = time() - 43200; // (12 hours) This is to keep events on the calendar for an extra 12 hours.
@@ -549,7 +605,10 @@
                 }
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> FETCH_HEAD
             elseif( $currentDate < $end_date)
             {
                 if( $displayableDate['end-date'] == "" || $displayableDate['end-date'] > $end_date){
@@ -558,6 +617,9 @@
                     $displayableDate['all-day'] = $allDay;
                 }
             }
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
         }
         return $displayableDate;
