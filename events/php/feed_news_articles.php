@@ -25,27 +25,26 @@ $AddButton;
 $MoreArticlesLink;
 $ButtonText;
 
-// Staging Site
-if( strstr(getcwd(), "staging/public") ){
-    include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
-    $destinationName = "staging";
-}
-else{ // Live site.
-    include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
-    $destinationName = "www";
-}
+
+
 
 // returns an array of html elements.
 function create_news_article_feed(){
+
     // Feed
     global $newsArticleFeedCategories;
     $categories = $newsArticleFeedCategories;
 
+    // Staging Site
     global $destinationName;
-    if( $destinationName == "staging/public" ){
+    if( strstr(getcwd(), "staging/public") ){
+        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+        $destinationName = "staging";
         $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", $categories);
     }
-    else{
+    else{ // Live site.
+        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
+        $destinationName = "www";
         $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
     }
 
@@ -183,25 +182,31 @@ function get_news_article_html( $article, $xml ){
     $imagePath = $ds->{'media'}->{'image'}->{'path'};
     $date = $ds->{'publish-date'};
 
-    $html = '<div class="media-box pb1">';
+    $html = '<div class="grid">';
+        $html .= '<div class="grid-cell  u-medium-1-3">';
+            $html .= '<div class="medium-grid-pad-1x">';
 
-    global $destinationName;
-    $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">';
-    $html .= render_image($imagePath, $article['description'], "media-box-img", "", $destinationName);
-    $html .= '</a>';
+            global $destinationName;
+            $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">';
+            $html .= render_image($imagePath, $article['description'], "media-box-img  delayed-image-load", "", $destinationName);
+            $html .= '</a>';
+            $html .= '</div>';
+        $html .= '</div>';
 
-    $html .= '<div class="media-box-body">';
-    $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
+        $html .= '<div class="grid-cell  u-medium-2-3">';
+        $html .= '<div class="medium-grid-pad-1x">';
+        $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
 
-    if( $date != "" && $date != "null" )
-    {
-        $formattedDate = format_featured_date_news_article($date);
-        $html .= "<p>".$formattedDate."</p>";
-    }
+        if( $date != "" && $date != "null" )
+        {
+            $formattedDate = format_featured_date_news_article($date);
+            $html .= "<p>".$formattedDate."</p>";
+        }
 
-    $html .= '<p>'.$article['description'].'</p>';
-    $html .= '</div>';
+        $html .= '<p>'.$article['description'].'</p>';
+        $html .= '</div>';
 
+        $html .= '</div>';
     $html .= '</div>';
 
     return $html;
@@ -275,7 +280,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '<div class="medium-grid-pad-1x">';
 
         global $destinationName;
-        $html .= render_image($imagePath, $page_info['title'], "", "400", $destinationName);
+        $html .= render_image($imagePath, $page_info['title'], "delayed-image-load", "400", $destinationName);
 
         $html .= '</div>';
         $html .= '</div>';
