@@ -16,4 +16,5 @@ $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/ente
 $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
 
-echo "login here";
+echo "Successful login. This will be the landing page.";
+//echo "login here -- allow user to login to CAS?";

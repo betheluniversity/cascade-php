@@ -3,7 +3,7 @@
 <html>
 
 <head>
-
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <title>REST/OAuth Example</title>
@@ -11,6 +11,14 @@
 </head>
 
 <body>
+
+<label>Username: <input id="username" type="text" /></label>
+<br />
+<label>Password: <input id="password" type="text" /></label>
+<button id="submit">Submit</button>
+<br />
+
+<div id="results">test</div>
 
 <script type="text/javascript" language="javascript">
 
@@ -22,9 +30,58 @@
 
     } else {
 
-        document.write('<a href=\"oauth.php\">Click here to retrieve accounts from Salesforce via REST/OAuth.</a>');
+        document.write('<br /><a href=\"oauth.php\">Click here to retrieve accounts from Salesforce via REST/OAuth.</a>');
 
     }
+
+    $( document ).ready(function(){
+       $("#submit").click(function(){
+           var username = $("#username").val();
+           var password = $("#password").val();
+
+           var credentials = JSON.stringify(
+                {
+                    auth:{
+                        username: "websrv-email-acct-create",
+                        passwd: ""
+                    },
+                    user:{
+                        email: username,
+                        passwd: password,
+                        reset: "true"
+                    }
+                }
+            );
+
+           // A test to see if JSON.stringify is working
+           $.ajax({
+               dataType: 'json',
+               url: 'check-credentials.php',
+               data: {
+                   credentials: credentials
+               },
+               success: function(output) {
+
+                   alert(output);
+                   $("#results").html(output);
+               }
+           });
+
+           // Try to access auth
+           $.ajax({
+               type: 'POST',
+               dataType: 'json',
+               url: 'https://auth.xp.bethel.edu/auth/email-account-management.cgi',
+               data: {
+                   credentials: credentials
+               },
+               success: function(output) {
+                    $("#results").html(output);
+                }
+           });
+
+       })
+    });
 
 </script>
 

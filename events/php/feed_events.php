@@ -14,7 +14,7 @@
     // index 0: url
     // index 1: description (if("") use metadata description else use description)
     // index 2: hide date (yes or no)
-    // index 3: final html of the event. Start out = "".
+    // index 3: final html of the event. Starts out equal to the null string.
 
     $NumEvents;
     $Heading;
@@ -239,7 +239,6 @@
         {
             global $StartDate;
             global $EndDate;
-
             $modifiedStartDate = $StartDate / 1000;
             $modifiedEndDate = $EndDate / 1000;
             $latestDate = get_latest_date($page_info, $dates);
@@ -248,6 +247,7 @@
             if( $StartDate != "" && $EndDate != "" ){
                 if( $latestDate != ""){
                     if( $modifiedStartDate < $page_info['date']['start-date'] && $latestDate < $modifiedEndDate ){
+
                         return "Yes";
                     }
                 }

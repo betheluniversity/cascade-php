@@ -4,11 +4,8 @@
 |  This file is included in each of the SAMPLES
 \--------------------------------------------------------*/
 
-$BETHELAUTHUSERNAME = "websrv-email-acct-create";
-$BETHELAUTHPASSWD = "8wic7Q*WUzAehgModg[xjadiWMBhv";
-
-$USERNAME = "webmaster@bethel.edu";
-$PASSWORD = "int3rn3tSaqtcCUOBAzIbAwXZDNt2OVc0";
+$USERNAME = "";
+$PASSWORD = "";
 
 /*--------------------------------------------------------\
 |  Create a Lead using the salesforce account
@@ -18,31 +15,31 @@ $PASSWORD = "int3rn3tSaqtcCUOBAzIbAwXZDNt2OVc0";
 
 //Use
 $NAMESPACE = 'Bethel University Admissions'; //d for sample convertLead from file convertLead.php
-$convertLEADID = '00Q5000000DO0gJEAT';
+$convertLEADID = '';
 
 //Used for sample fieldsToNull from file fieldsToNull.php
-$LEADID = '00Q5000000DO0gs';
+$LEADID = '';
 
 //Used for sample loginScopeHeader from file loginScopeHeader.php
-$LOGINSCOPEHEADER = '00E200000004wk3EAA';
+$LOGINSCOPEHEADER = '';
 
 //Used in sample processSubmitRequest from file processSubmitRequest.php
-$OBJECTID1 = '00Q5000000G7YV8';
-$OBJECTID2 = '00Q5000000J4pQp';
-$NEXTOBJECTID = '00530000000tH4t';
+$OBJECTID1 = '';
+$OBJECTID2 = '';
+$NEXTOBJECTID = '';
 
 //Used for sending email from file sendEmail.php
 $EMAILID = 'email1@test.com';
 
 //Used for updating object from file update.php
-$UPDATEOBJECTID1 = '00Q5000000K0KjM';
-$UPDATEOBJECTID2 = '00Q5000000K1sL1';
+$UPDATEOBJECTID1 = '';
+$UPDATEOBJECTID2 = '';
 //
 ////Used in callOptions
-$YOURCLIENTID = 'YourClientId';
+$YOURCLIENTID = '';
 //
 ////Used for emailHeader from file emailHeader.php
-$EMAILIDFORHEADER = 'webmaster@bethel.edu';
+$EMAILIDFORHEADER = '';
 //
 ///*--------------------------------------------------------\
 //|
@@ -51,5 +48,5 @@ $EMAILIDFORHEADER = 'webmaster@bethel.edu';
 //\--------------------------------------------------------*/
 ////Need to login on account then create the lead
 ////Assign that id here and check the sample
-$eLEADID = "00Q5000000DO0gJEAT";
+$eLEADID = "";
 ?>
