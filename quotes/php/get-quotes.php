@@ -94,7 +94,7 @@
             $block_info['html'] = get_quote_html($block_info, $xml);
 
             // Determine which quote should be the 'Default' Quote.
-            if( $xml->name == "cas__mehlhorn-jd"){
+            if( $xml->name == "bu__edgren"){
                 global $DefaultQuote;
                 $DefaultQuote = $block_info;
             }
