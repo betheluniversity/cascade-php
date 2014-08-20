@@ -29,7 +29,7 @@ function create_archive(){
 
     foreach($articleArray as $article){
         $currentMonth = $article['publish-date'];
-        array_push($finalArray, "<p>" + $currentMonth + "</p>");
+        array_push($finalArray, "<p>" . $currentMonth ."</p>");
     }
 
     return $finalArray;
