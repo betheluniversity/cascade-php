@@ -28,7 +28,7 @@
       <file leaf-file-name="feed_news_articles.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="110" column="6" selection-start="0" selection-end="9994" vertical-scroll-proportion="-11.25" vertical-offset="1305" max-vertical-offset="5100">
+            <state line="99" column="21" selection-start="2553" selection-end="2553" vertical-scroll-proportion="-3.75" vertical-offset="1320" max-vertical-offset="5100">
               <folding />
             </state>
           </provider>
@@ -37,7 +37,7 @@
       <file leaf-file-name="feed_controller.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="85" column="61" selection-start="2189" selection-end="2189" vertical-scroll-proportion="0.745283" vertical-offset="805" max-vertical-offset="1350">
+            <state line="87" column="5" selection-start="2243" selection-end="2243" vertical-scroll-proportion="0.745283" vertical-offset="835" max-vertical-offset="1365">
               <folding />
             </state>
           </provider>
@@ -829,13 +829,6 @@
         <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.858156" vertical-offset="20771" max-vertical-offset="22040" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="6" selection-start="0" selection-end="9994" vertical-scroll-proportion="-11.25" vertical-offset="1305" max-vertical-offset="5100">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="31" column="23" selection-start="378" selection-end="378" vertical-scroll-proportion="-3.75" vertical-offset="375" max-vertical-offset="6090">
@@ -846,9 +839,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="99" column="21" selection-start="2553" selection-end="2553" vertical-scroll-proportion="-3.75" vertical-offset="1320" max-vertical-offset="5100">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="85" column="61" selection-start="2189" selection-end="2189" vertical-scroll-proportion="0.745283" vertical-offset="805" max-vertical-offset="1350">
+        <state line="87" column="5" selection-start="2243" selection-end="2243" vertical-scroll-proportion="0.745283" vertical-offset="835" max-vertical-offset="1365">
           <folding />
         </state>
       </provider>
