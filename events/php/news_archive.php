@@ -33,6 +33,14 @@ function create_archive(){
         array_push($finalArray, "<p>TESTING</p>");
     }
 
+    array_push($finalArray, "<p>TESTING1</p>");
+    array_push($finalArray, "<p>TESTING2</p>");
+    array_push($finalArray, "<p>TESTING3</p>");
+    array_push($finalArray, "<p>TESTING4</p>");
+    array_push($finalArray, "<p>TESTING5</p>");
+    array_push($finalArray, "<p>TESTING6</p>");
+    array_push($finalArray, "<p>TESTING7</p>");
+
     return $finalArray;
 }
 
