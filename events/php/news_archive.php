@@ -29,7 +29,7 @@ $ButtonText;
 
 
 // returns an array of html elements.
-function create_news_article_feed(){
+function create_archive(){
 
     // Feed
     global $newsArticleFeedCategories;

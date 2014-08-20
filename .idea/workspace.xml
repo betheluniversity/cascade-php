@@ -34,22 +34,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="feed_controller.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="feed_controller.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="41" selection-start="744" selection-end="744" vertical-scroll-proportion="-13.75" vertical-offset="30" max-vertical-offset="1320">
+            <state line="21" column="45" selection-start="458" selection-end="464" vertical-scroll-proportion="0.36585367" vertical-offset="30" max-vertical-offset="1320">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="news_archive.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="news_archive.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="8" selection-start="130" selection-end="130" vertical-scroll-proportion="0.26132405" vertical-offset="0" max-vertical-offset="6090">
+            <state line="31" column="23" selection-start="378" selection-end="378" vertical-scroll-proportion="-3.75" vertical-offset="375" max-vertical-offset="6090">
               <folding>
                 <element signature="e#6#89#0" expanded="true" />
-                <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+                <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -460,7 +460,7 @@
         <state line="35" column="36" selection-start="1171" selection-end="1171" vertical-scroll-proportion="0.0" vertical-offset="75" max-vertical-offset="960">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -484,7 +484,7 @@
         <state line="27" column="26" selection-start="919" selection-end="919" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="795">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -508,7 +508,7 @@
         <state line="31" column="63" selection-start="1074" selection-end="1074" vertical-scroll-proportion="0.0" vertical-offset="15" max-vertical-offset="795">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -532,7 +532,7 @@
         <state line="31" column="64" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="795">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -556,7 +556,7 @@
         <state line="31" column="64" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="795">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -580,7 +580,7 @@
         <state line="44" column="0" selection-start="1312" selection-end="1312" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="795">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -604,7 +604,7 @@
         <state line="32" column="33" selection-start="1049" selection-end="1049" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="810">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -628,7 +628,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -652,7 +652,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -676,7 +676,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -700,7 +700,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -724,7 +724,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -748,7 +748,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -772,7 +772,7 @@
         <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -829,13 +829,6 @@
         <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.858156" vertical-offset="20771" max-vertical-offset="22040" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="41" selection-start="744" selection-end="744" vertical-scroll-proportion="-13.75" vertical-offset="30" max-vertical-offset="1320">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="110" column="6" selection-start="0" selection-end="9994" vertical-scroll-proportion="-11.25" vertical-offset="1305" max-vertical-offset="5100">
@@ -845,11 +838,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="8" selection-start="130" selection-end="130" vertical-scroll-proportion="0.26132405" vertical-offset="0" max-vertical-offset="6090">
+        <state line="31" column="23" selection-start="378" selection-end="378" vertical-scroll-proportion="-3.75" vertical-offset="375" max-vertical-offset="6090">
           <folding>
             <element signature="e#6#89#0" expanded="true" />
-            <marker date="1408568043000" expanded="true" signature="7997:8016" placeholder="..." />
+            <marker date="1408568152000" expanded="true" signature="7987:8006" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="45" selection-start="458" selection-end="464" vertical-scroll-proportion="0.36585367" vertical-offset="30" max-vertical-offset="1320">
+          <folding />
         </state>
       </provider>
     </entry>
