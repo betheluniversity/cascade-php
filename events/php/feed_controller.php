@@ -25,6 +25,10 @@ function create_feed($feedType){
         include_once "feed_news_articles.php";
         $feedHTMLArray = create_news_article_feed();
     }
+    elseif( $feedType == "News Archive" ){
+        include_once "news_archive.php";
+        $feedHTMLArray = create_archive();
+    }
 
     return $feedHTMLArray;
 }

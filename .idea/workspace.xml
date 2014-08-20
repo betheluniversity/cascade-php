@@ -25,37 +25,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="register.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/salesforce/php/register.php">
+      <file leaf-file-name="feed_news_articles.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="79" column="34" selection-start="2816" selection-end="2816" vertical-scroll-proportion="-21.068966" vertical-offset="969" max-vertical-offset="2260">
+            <state line="87" column="24" selection-start="2134" selection-end="2134" vertical-scroll-proportion="-11.5" vertical-offset="954" max-vertical-offset="1875">
+              <folding>
+                <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+                <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+                <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+                <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+                <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+                <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+                <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+                <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+                <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="feed_controller.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="0" selection-start="782" selection-end="782" vertical-scroll-proportion="-18.125" vertical-offset="0" max-vertical-offset="1320">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calendar.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+      <file leaf-file-name="news_archive.php" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="303" column="31" selection-start="11618" selection-end="11618" vertical-scroll-proportion="0.70621467" vertical-offset="5520" max-vertical-offset="13720">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userAuth.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/salesforce/php/userAuth.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="47" selection-start="613" selection-end="613" vertical-scroll-proportion="0.0" vertical-offset="320" max-vertical-offset="1140">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="login.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/salesforce/php/login.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="500">
+            <state line="44" column="0" selection-start="1312" selection-end="1312" vertical-scroll-proportion="0.869338" vertical-offset="161" max-vertical-offset="795">
               <folding />
             </state>
           </provider>
@@ -101,6 +102,8 @@
         <option value="$PROJECT_DIR$/code/salesforce/php/userAuth.php" />
         <option value="$PROJECT_DIR$/code/salesforce/php/register.php" />
         <option value="$PROJECT_DIR$/code/events/js/calendar.js" />
+        <option value="$PROJECT_DIR$/events/php/feed_controller.php" />
+        <option value="$PROJECT_DIR$/events/php/news_archive.php" />
       </list>
     </option>
   </component>
@@ -129,10 +132,9 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="1280" />
-    <option name="y" value="23" />
-    <option name="width" value="1280" />
-    <option name="height" value="1417" />
+    <option name="y" value="22" />
+    <option name="width" value="1920" />
+    <option name="height" value="967" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -219,7 +221,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cascade-php" />
+              <option name="myItemId" value="Cascade" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -229,25 +231,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cascade-php" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="code" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remote" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cascade-php" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="code" />
+              <option name="myItemId" value="Cascade" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -265,11 +249,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cascade-php" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="code" />
+              <option name="myItemId" value="Cascade" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -415,29 +395,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1280" y="23" width="1280" height="1417" extended-state="0" />
+    <frame x="0" y="22" width="1920" height="967" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43471697" sideWeight="0.6534733" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32830188" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298193" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2494043" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08754717" sideWeight="0.67124397" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43471697" sideWeight="0.34652665" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981133" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1987076" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1453958" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2494043" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1453125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08754717" sideWeight="0.67124397" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30289534" sideWeight="0.34652665" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298193" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.43471697" sideWeight="0.6534733" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32830188" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32830188" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295626" sideWeight="0.49967214" order="8" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -463,7 +443,7 @@
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
-    <option name="RECENTLY_FILTERED_USERS">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
       <collection />
     </option>
   </component>
@@ -482,144 +462,344 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="0.0" vertical-offset="7860" max-vertical-offset="11520" />
+        <state line="85" column="9" selection-start="2095" selection-end="2095" vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="1875">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="0" selection-start="5319" selection-end="5319" vertical-scroll-proportion="0.0" vertical-offset="2980" max-vertical-offset="7000" />
+        <state line="34" column="0" selection-start="782" selection-end="782" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1395">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="629" column="40" selection-start="26097" selection-end="26097" vertical-scroll-proportion="0.0" vertical-offset="12580" max-vertical-offset="13780" />
+        <state line="32" column="33" selection-start="1049" selection-end="1049" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="810">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="26820" />
+        <state line="65" column="24" selection-start="1510" selection-end="1510" vertical-scroll-proportion="0.0" vertical-offset="975" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="0.0" vertical-offset="7664" max-vertical-offset="11520" />
+        <state line="34" column="17" selection-start="766" selection-end="766" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="134" column="4" selection-start="4362" selection-end="4362" vertical-scroll-proportion="0.0" vertical-offset="2680" max-vertical-offset="6500" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="568" column="0" selection-start="23012" selection-end="23012" vertical-scroll-proportion="0.0" vertical-offset="11360" max-vertical-offset="13800" />
+        <state line="31" column="33" selection-start="364" selection-end="388" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="2820" max-vertical-offset="26820" />
+        <state line="34" column="17" selection-start="766" selection-end="766" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="230" column="21" selection-start="7768" selection-end="7768" vertical-scroll-proportion="0.0" vertical-offset="4215" max-vertical-offset="6020" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+        <state line="31" column="33" selection-start="364" selection-end="388" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0" vertical-offset="2820" max-vertical-offset="26820" />
+        <state line="34" column="17" selection-start="766" selection-end="766" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="48" selection-start="3541" selection-end="3541" vertical-scroll-proportion="0.0" vertical-offset="2340" max-vertical-offset="6040" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+        <state line="31" column="33" selection-start="364" selection-end="388" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="4" selection-start="5555" selection-end="5555" vertical-scroll-proportion="0.0" vertical-offset="2700" max-vertical-offset="26820" />
+        <state line="34" column="17" selection-start="766" selection-end="766" vertical-scroll-proportion="0.0" vertical-offset="510" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="336" column="35" selection-start="13434" selection-end="13434" vertical-scroll-proportion="0.0" vertical-offset="6252" max-vertical-offset="13020" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+        <state line="120" column="5" selection-start="3313" selection-end="3313" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5175">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="336" column="35" selection-start="13434" selection-end="13434" vertical-scroll-proportion="0.0" vertical-offset="6212" max-vertical-offset="13020" />
+        <state line="32" column="36" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="1350">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6040" />
+        <state line="96" column="38" selection-start="2363" selection-end="2363" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="189" column="20" selection-start="7443" selection-end="7443" vertical-scroll-proportion="0.0" vertical-offset="40" max-vertical-offset="13000" />
+        <state line="32" column="36" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="64" selection-start="820" selection-end="820" vertical-scroll-proportion="0.0" vertical-offset="280" max-vertical-offset="6040" />
+        <state line="96" column="38" selection-start="2363" selection-end="2363" vertical-scroll-proportion="0.0" vertical-offset="1440" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="50" selection-start="5832" selection-end="5834" vertical-scroll-proportion="0.0" vertical-offset="1840" max-vertical-offset="4280" />
+        <state line="32" column="36" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="1425">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="27" selection-start="1167" selection-end="1167" vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="6020" />
+        <state line="2" column="18" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="165">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+        <state line="96" column="38" selection-start="2363" selection-end="2363" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5175">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="32" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="80" max-vertical-offset="6120" />
+        <state line="32" column="36" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0" vertical-offset="480" max-vertical-offset="1350">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
+        <state line="310" column="0" selection-start="9292" selection-end="9292" vertical-scroll-proportion="0.0" vertical-offset="4650" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="242" column="0" selection-start="8286" selection-end="8286" vertical-scroll-proportion="0.0" vertical-offset="4560" max-vertical-offset="5960" />
+        <state line="310" column="0" selection-start="9292" selection-end="9292" vertical-scroll-proportion="0.0" vertical-offset="4650" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="338" column="1" selection-start="9991" selection-end="9991" vertical-scroll-proportion="0.0" vertical-offset="5070" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="338" column="1" selection-start="9991" selection-end="9991" vertical-scroll-proportion="0.0" vertical-offset="5070" max-vertical-offset="5100">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/standard_8.php">
@@ -627,120 +807,38 @@
         <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.0" vertical-offset="21078" max-vertical-offset="22040" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="141" column="54" selection-start="5072" selection-end="5072" vertical-scroll-proportion="0.0" vertical-offset="2020" max-vertical-offset="5960" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="7" selection-end="7" vertical-scroll-proportion="0.0" vertical-offset="100" max-vertical-offset="5960" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4280" />
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/com/jetbrains/php/lang/psi/stubs/data/standard_8.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1093" column="9" selection-start="34963" selection-end="34963" vertical-scroll-proportion="0.858156" vertical-offset="20771" max-vertical-offset="22040" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testing/basic-plus.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="340" column="0" selection-start="7939" selection-end="9705" vertical-scroll-proportion="0.6289425" vertical-offset="6122" max-vertical-offset="11580" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="18580" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/faculty.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="18020" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="39" selection-start="8161" selection-end="8161" vertical-scroll-proportion="0.0" vertical-offset="2420" max-vertical-offset="4280" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/undergrad/academics/chemistry/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="159" column="4" selection-start="5555" selection-end="5555" vertical-scroll-proportion="0.2513089" vertical-offset="2940" max-vertical-offset="26820" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/events/calendar/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="393" column="0" selection-start="24528" selection-end="24528" vertical-scroll-proportion="-0.35714287" vertical-offset="8300" max-vertical-offset="11520" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/php/calendar_rest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="308" column="56" selection-start="11125" selection-end="11125" vertical-scroll-proportion="0.0" vertical-offset="6160" max-vertical-offset="7900" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="2" selection-start="234" selection-end="234" vertical-scroll-proportion="0.0" vertical-offset="200" max-vertical-offset="760" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="33" selection-start="290" selection-end="290" vertical-scroll-proportion="0.0" vertical-offset="80" max-vertical-offset="240" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/oauth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="0" selection-start="213" selection-end="213" vertical-scroll-proportion="0.0" vertical-offset="140" max-vertical-offset="260" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/oauth_callback.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="33" selection-start="609" selection-end="609" vertical-scroll-proportion="-15.862069" vertical-offset="0" max-vertical-offset="1180" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/toolkit/soapclient/enterprise.wsdl.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16140" column="45" selection-start="978094" selection-end="978094" vertical-scroll-proportion="0.0" vertical-offset="322285" max-vertical-offset="323220" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/login.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="0" selection-start="538" selection-end="538" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="500">
+        <state line="34" column="0" selection-start="782" selection-end="782" vertical-scroll-proportion="-18.125" vertical-offset="0" max-vertical-offset="1320">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/userAuth.php">
+    <entry file="file://$PROJECT_DIR$/events/php/feed_news_articles.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="47" selection-start="613" selection-end="613" vertical-scroll-proportion="0.0" vertical-offset="320" max-vertical-offset="1140">
-          <folding />
+        <state line="87" column="24" selection-start="2134" selection-end="2134" vertical-scroll-proportion="-11.5" vertical-offset="954" max-vertical-offset="1875">
+          <folding>
+            <element signature="n#inspect_news_article_page#0;n#!!top" expanded="false" />
+            <element signature="n#display_on_feed_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#get_news_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#match_metadata_news_articles#0;n#!!top" expanded="false" />
+            <element signature="n#create_featured_articles_array#0;n#!!top" expanded="false" />
+            <element signature="n#get_featured_article_html#0;n#!!top" expanded="false" />
+            <element signature="n#format_featured_date_news_article#0;n#!!top" expanded="false" />
+            <element signature="n#sort_news_articles#0;n#!!top" expanded="false" />
+            <marker date="1408458420000" expanded="false" signature="8097:8116" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/salesforce/php/register.php">
+    <entry file="file://$PROJECT_DIR$/events/php/news_archive.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="34" selection-start="2816" selection-end="2816" vertical-scroll-proportion="-21.068966" vertical-offset="969" max-vertical-offset="2260">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/events/js/calendar.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="303" column="31" selection-start="11618" selection-end="11618" vertical-scroll-proportion="0.70621467" vertical-offset="5520" max-vertical-offset="13720">
+        <state line="44" column="0" selection-start="1312" selection-end="1312" vertical-scroll-proportion="0.869338" vertical-offset="161" max-vertical-offset="795">
           <folding />
         </state>
       </provider>
