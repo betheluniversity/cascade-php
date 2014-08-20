@@ -16,7 +16,6 @@
 //}
 
 function create_feed($feedType){
-    echo $feedType;
     $feedHTMLArray = array();
     if( $feedType == "Event Feed" ){
         include_once "feed_events.php";

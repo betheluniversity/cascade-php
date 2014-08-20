@@ -44,9 +44,8 @@ function create_archive(){
     array_push($finalArray, "<p>TESTING7</p>");
 
     return $finalArray;*/
-    $articleArray = array("<p>Testing.</p>");
 
-    return $articleArray;
+    return "<p>Testing.</p>";
 }
 
 /*// Sort the array of articles, newest first.
