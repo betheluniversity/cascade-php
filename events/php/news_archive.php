@@ -44,18 +44,9 @@ function create_archive(){
     array_push($finalArray, "<p>TESTING7</p>");
 
     return $finalArray;*/
-    $finalArray = array();
-    echo "<h1>TEST CONNECTION</h1>";
+    $articleArray = array("<p>Testing.</p>");
 
-    array_push($finalArray, "<p>TESTING1</p>");
-    array_push($finalArray, "<p>TESTING2</p>");
-    array_push($finalArray, "<p>TESTING3</p>");
-    array_push($finalArray, "<p>TESTING4</p>");
-    array_push($finalArray, "<p>TESTING5</p>");
-    array_push($finalArray, "<p>TESTING6</p>");
-    array_push($finalArray, "<p>TESTING7</p>");
-
-    return $finalArray;
+    return $articleArray;
 }
 
 /*// Sort the array of articles, newest first.
