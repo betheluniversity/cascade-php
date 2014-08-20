@@ -37,7 +37,7 @@
       <file leaf-file-name="feed_controller.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="45" selection-start="458" selection-end="464" vertical-scroll-proportion="0.36585367" vertical-offset="30" max-vertical-offset="1320">
+            <state line="85" column="61" selection-start="2189" selection-end="2189" vertical-scroll-proportion="0.745283" vertical-offset="805" max-vertical-offset="1350">
               <folding />
             </state>
           </provider>
@@ -95,8 +95,8 @@
         <option value="$PROJECT_DIR$/code/salesforce/php/userAuth.php" />
         <option value="$PROJECT_DIR$/code/salesforce/php/register.php" />
         <option value="$PROJECT_DIR$/code/events/js/calendar.js" />
-        <option value="$PROJECT_DIR$/events/php/feed_controller.php" />
         <option value="$PROJECT_DIR$/events/php/news_archive.php" />
+        <option value="$PROJECT_DIR$/events/php/feed_controller.php" />
       </list>
     </option>
   </component>
@@ -848,7 +848,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/events/php/feed_controller.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="45" selection-start="458" selection-end="464" vertical-scroll-proportion="0.36585367" vertical-offset="30" max-vertical-offset="1320">
+        <state line="85" column="61" selection-start="2189" selection-end="2189" vertical-scroll-proportion="0.745283" vertical-offset="805" max-vertical-offset="1350">
           <folding />
         </state>
       </provider>

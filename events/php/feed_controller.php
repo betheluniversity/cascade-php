@@ -82,6 +82,8 @@ function inspect_page($xml, $categories){
         return inspect_event_page( $xml, $categories);
     elseif( $feedType == "News Article Feed" )
         return inspect_news_article_page( $xml, $categories);
+    elseif( $feedType == "News Archive" )
+        return inspect_news_article_page( $xml, $categories);
 
 }
 
