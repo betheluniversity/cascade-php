@@ -108,10 +108,11 @@
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
             global $destinationName;
-            $html .= '<img class="feature__img--sulley" src="http://'.$destinationName.'.bethel.edu'.$imagePath.'">';
+            $html .= '<img width="100%" class="feature__img--sulley" src="http://'.$destinationName.'.bethel.edu'.$imagePath.'">';
+
             $html .= '<figure class="feature__figure--sulley">';
-            $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
-            $html .= '<figcaption class="feature__figcaption--sulley">'.$viewerTeaser.'</figcaption>';
+                $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
+                $html .= '<figcaption class="feature__figcaption--sulley">'.$viewerTeaser.'</figcaption>';
             $html .= '</figure>';
         $html .= '</a>';
 

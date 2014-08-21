@@ -9,6 +9,9 @@
     // Globals
     $PageSchool;
     $PageDepartment;
+    $PageCAPS;
+    $PageGS;
+    $PageSem;
 
     $DefaultQuote;
     // Staging Site
@@ -23,15 +26,13 @@
 
     // The controller for this section of PHP
     function get_quotes($maxNumToFind){
-        global $PageSchool;
-        global $PageDepartment;
 
         global $destinationName;
         if( $destinationName == "staging/public" ){
-            $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+            $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml" );
         }
         else{
-            $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml", $PageSchool, $PageDepartment);
+            $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml");
         }
 
         // Convert the single array into the x(or 4) number of arrays needed.
@@ -43,35 +44,34 @@
     }
 
     // Takes a xml file and converts to an array of quotes
-    function get_xml_quotes($fileToLoad, $PageSchool, $PageDepartment ){
+    function get_xml_quotes($fileToLoad ){
         $xml = simplexml_load_file($fileToLoad);
         $pages = array();
-        $pages = traverse_folder_quotes($xml, $pages, $PageSchool, $PageDepartment);
+        $pages = traverse_folder_quotes($xml, $pages);
         return $pages;
     }
 
     // Traverses through to return an array of displayable quotes.
-    function traverse_folder_quotes($xml, $quotes, $PageSchool, $PageDepartment){
+    function traverse_folder_quotes($xml, $quotes){
         foreach ($xml->children() as $child) {
 
             $name = $child->getName();
 
             if ($name == 'system-folder'){
-                $quotes = traverse_folder_quotes($child, $quotes, $PageSchool, $PageDepartment);
+                $quotes = traverse_folder_quotes($child, $quotes);
             }elseif ($name == 'system-block'){
                 // Set the page data.
-                $quote = inspect_block_quotes($child, $PageSchool, $PageDepartment);
+                $quote = inspect_block_quotes($child);
 
-                if( $quote['match-school'] == "Yes" || $quote['match-dept'] == "Yes")
+                if( $quote['display'] != "No" )
                     array_push($quotes, $quote);
             }
         }
 
         return $quotes;
     }
-
     // Gets the correct info/html of the quote
-    function inspect_block_quotes($xml, $PageSchool, $PageDepartment){
+    function inspect_block_quotes($xml){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
             "published" => $xml->{'last-published-on'},
@@ -80,15 +80,25 @@
             "md" => array(),
             "html" => "",
             "display" => "No",
-            "match-school" => "No",
-            "match-dept" => "No",
         );
         $ds = $xml->{'system-data-structure'};
         $dataDefinition = $ds['definition-path'];
         if( $dataDefinition == "Blocks/Quote")
         {
-            $block_info['match-school'] = match_metadata_quote($xml, $PageSchool);
-            $block_info['match-dept'] = match_metadata_quote($xml, $PageDepartment);
+            global $PageSchool;
+            global $PageDepartment;
+            global $PageCAPS;
+            global $PageGS;
+            global $PageSem;
+
+            if( in_array("College of Arts & Sciences", $PageSchool))
+                $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageDepartment, "department");
+            elseif( in_array("College of Adult & Professional Studies", $PageSchool) )
+                $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageCAPS, "adult-undergrad-program");
+            elseif( in_array( "Graduate School", $PageSchool) )
+                $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageGS, "graduate-program");
+            elseif( in_array( "Bethel Seminary", $PageSchool) )
+                $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageSem, "seminary-program");
 
             // Get html
             $block_info['html'] = get_quote_html($block_info, $xml);
@@ -147,25 +157,48 @@
     }
 
     // Compares the metadata of the quote to the metadata of the page
-    function match_metadata_quote($xml, $category){
+    function match_metadata_quote($xml, $blockSchoolArray, $blockDeptArray, $deptType){
+        $quoteSchoolArray = array();
+        $quoteDeptArray = array();
+        $quoteHasDepts = true;
         foreach ($xml->{'dynamic-metadata'} as $md){
-
-            $name = $md->name;
-
-            $options = array('school', 'department');
-
-            foreach($md->value as $value ){
-                if($value == "Select" || $value == "none"){
+            // Remove the "select" value.
+            $newmd = array();
+            foreach($md->value as $value )
+            {
+                if( "select" == $value || "Select" == $value )
                     continue;
-                }
-                if (in_array($name,$options)){
-                    if (in_array($value, $category)){
-                        return "Yes";
-                    }
-                }
+                array_push($newmd, $value);
+            }
+
+            // Get the corresponding arrays
+            $name = $md->name;
+            if ( $name == "school" ){
+                $quoteSchoolArray = $newmd;
+            }
+            elseif( $name == $deptType){
+                if( sizeof($newmd) == 0)
+                    $quoteHasDepts = false;
+                else
+                    $quoteDeptArray = $newmd;
+
             }
         }
-        return "No";
+
+        $sameSchools = array_intersect($quoteSchoolArray, $blockSchoolArray);
+        $sameDepts = array_intersect($quoteDeptArray, $blockDeptArray);
+
+        if( sizeof($sameSchools) > 0 && sizeof($sameDepts) > 0 && $quoteHasDepts){
+            return "school and dept";
+        }
+        elseif( sizeof($sameSchools) > 0 && sizeof( $quoteDeptArray) == 0){
+            return "school default";
+        }
+        elseif( in_array("Bethel University", $quoteSchoolArray ) ){
+            return "bethel default";
+        }
+        else
+            return "No";
     }
 
     // Returns x random quotes from the array of arrays of quotes.
@@ -176,6 +209,8 @@
 
         foreach( $quotesArrays as $quoteArray)
         {
+            if( sizeof( $quoteArray) == 0 )
+                continue;
             while( sizeof($quoteArray) > 0)
             {
                 if( $maxNumToFind <= 0){
@@ -194,11 +229,7 @@
                 unset($quoteArray[$randomIndex]);
                 $quoteArray = array_values($quoteArray);
             }
-        }
-        if( sizeof($finalQuotes) == 0)
-        {
-            global $DefaultQuote;
-            array_push($finalQuotes, $DefaultQuote);
+            break;
         }
 
         return $finalQuotes;
@@ -207,21 +238,25 @@
     // Divides an array of quotes into an array of arrays of quotes.
     // This allows for a sections of quotes to have different priorities for being chosen.
     function divide_into_arrays_quotes($quotesArrays){
-        $school = array();
-        $dept = array();
-
+        $first = array();
+        $second = array();
+        $third = array();
         foreach( $quotesArrays as $quote){
-            if( $quote['match-dept'] == "Yes")
+            if( $quote['display'] == "school and dept")
             {
-                array_push($dept, $quote);
+                array_push($first, $quote);
             }
-            elseif( $quote['match-school'] == "Yes")
+            elseif( $quote['display'] == "school default")
             {
-                array_push($school, $quote);
+                array_push($second, $quote);
+            }
+            elseif( $quote['display'] == "bethel default" )
+            {
+                array_push($third, $quote );
             }
         }
 
-        return array($dept, $school);
+        return array($first, $second, $third);
     }
 
 

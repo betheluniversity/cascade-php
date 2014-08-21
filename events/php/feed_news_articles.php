@@ -25,9 +25,6 @@ $AddButton;
 $MoreArticlesLink;
 $ButtonText;
 
-
-
-
 // returns an array of html elements.
 function create_news_article_feed(){
 
@@ -119,7 +116,7 @@ function inspect_news_article_page($xml, $categories){
 
     if( $dataDefinition == "News Article")
     {
-
+        $page_info['teaser'] = $xml->teaser;
         $page_info['html'] = get_news_article_html($page_info, $xml);
 
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
@@ -203,7 +200,7 @@ function get_news_article_html( $article, $xml ){
             $html .= "<p>".$formattedDate."</p>";
         }
 
-        $html .= '<p>'.$article['description'].'</p>';
+        $html .= '<p>'.$article['teaser'].'</p>';
         $html .= '</div>';
 
         $html .= '</div>';

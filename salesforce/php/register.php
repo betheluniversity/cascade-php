@@ -101,7 +101,7 @@ $credentials = json_encode(array(
                     "user" => array(
                         "email" => $email,
                         "passwd" => $password,
-                        "reset" => "true"
+                        "reset" => "false"
                     )
                 ));
 $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
@@ -142,33 +142,59 @@ foreach( $array as $option){
         ["code"] => 68
     )
 */
-echo "--------------------------------<br />";
-print_r($fullArray);
-echo "--------------------------------<br />";
+//echo "--------------------------------<br />";
+//print_r($fullArray);
+//echo "--------------------------------<br />";
 
 if( $fullArray["status"] == "success")
 {
-    // Redirect to the login page.
-    header( 'Location: http://staging.bethel.edu/testing/salesforce-go-to-button-test?register_attempt=true' ) ;
-    echo "success";
+//     Redirect to the login page.
+    $credentials = json_encode(array(
+        "username" => $email,
+        "passwd" => $password
+    ));
+    $url = 'https://auth.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi';
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/json",
+            'method'  => 'POST',
+            'content' => $credentials,
+        ),
+    );
+    $context  = stream_context_create($options);
+
+    // Here is the returned value
+    $result = file_get_contents($url, false, $context);
+    echo $result;
+//    header( 'Location: http://staging.bethel.edu/_testing/salesforce-go-to-button-test?register_attempt=true' ) ;
+//    echo "success";
 }
 else
 {
     // Stay on the same page, since errors came up.
-    $error_msg = "We are sorry, but your login attempt has failed.<br />";
+    $error_msg = "We are sorry, but your register attempt has failed.<br />";
     if( !array_key_exists( "code", $fullArray) )
     {
-        $error_msg .= "Try again later";
+        $error_msg .= "Please try again later";
     }
     else
     {
         if( $fullArray["code"] == 68 )
         {
-            // Redirect to the login page.
-            header( 'Location: http://staging.bethel.edu/testing/salesforce-go-to-button-test?register_attempt=duplicate' ) ;
-            exit;
+            $error_msg .= "There is already an account with that email. Try logging in <a href='https://auth.xp.bethel.edu/auth/sf-portal-login.cgi'>here</a>.<br /> Otherwise, try again or use a different email.";
+            //header( 'Location: http://staging.bethel.edu/_testing/salesforce-go-to-button-test?register_attempt=duplicate' ) ;
+
+            // https://auth.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi
+            // do a post request with ^^ url
         }
-        $error_msg .= "Error Code - " . $fullArray["code"] . "<br />" . $fullArray["message"];
+        elseif( $fullArray["code"] == 80)
+        {
+            $error_msg .= "A password must be greater than 8 characters, include 1+ number, and include 1+ symbol.";
+        }
+        else
+        {
+            $error_msg .= "Please try again.<br />A password must be greater than 8 characters, include 1+ number, and include 1+ symbol.";
+        }
     }
 
     // try to log in again.
@@ -180,7 +206,7 @@ else
     $_SESSION['error_msg'] = $error_msg;
     session_write_close();
 
-    header( 'Location: http://staging.bethel.edu/testing/salesforce-login-test' ) ;
+    header( 'Location: http://staging.bethel.edu/_testing/salesforce-register-test' ) ;
 }
 
 

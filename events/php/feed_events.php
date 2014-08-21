@@ -17,16 +17,9 @@
     // index 3: final html of the event. Starts out equal to the null string.
 
     $NumEvents;
-    $Heading;
-    $HideWhenNone;
     $AddFeaturedEvents;
     $StartDate;
     $EndDate;
-
-    //button
-    $addbutton;
-    $moreeventslink;
-    $buttontext;
 
     $destinationName;
 
@@ -56,48 +49,32 @@
         else{
             $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         }
-
         $sortedEvents = sort_events($arrayOfEvents);
+
         // Only grab the first X number of events.
         global $NumEvents;
+
         $numEventsToFind = $NumEvents;
+
+
         $sortedEvents = array_slice($sortedEvents, 0, $numEventsToFind, true);
+
 
         $eventsArray = array();
         foreach( $sortedEvents as $event){
             array_push($eventsArray, $event['html']);
         }
 
-        // HEADING
-        global $Heading;
-        $heading = array("<h2>".$Heading."</h2>");
-
         // FEATURED EVENTS
         $featuredEvents = create_featured_event_array();
 
-        // BUTTON
-        global $addbutton;
-        global $moreeventslink;
-        global $buttontext;
-        $buttonHTML = array("");
-        if( $addbutton == "Yes")
-        {
-            array_push( $buttonHTML, '<a id="event-feed-button" class="btn center" href="http://www.bethel.edu/' . $moreeventslink . '">' . $buttontext . '</a>');
-        }
+        $numEvents = sizeof( $eventsArray);
 
-        // Hide if None
-        global $HideWhenNone;
+        // Print No upcoming events if there are no events.
         if( sizeOf( $eventsArray) == 0){
-            if( $HideWhenNone == "Yes"){
-                $heading = array();
-                $eventsArray = array();
-            }
-            else{
-                $eventsArray = array("<p>No upcoming events.</p>");
-            }
+            $eventsArray = array("<p>No upcoming events.</p>");
         }
-
-        $combinedArray = array_merge($featuredEvents, $heading, $eventsArray, $buttonHTML);
+        $combinedArray = array($featuredEvents, $eventsArray, $numEvents );
         return $combinedArray;
     }
 
@@ -126,6 +103,9 @@
                 if($value == "None" || $value == "none"){
                     continue;
                 }
+
+
+
                 if (in_array($name,$options)){
                     //Is this a calendar category?
                     if (in_array($value, $categories)){
@@ -161,6 +141,8 @@
         $page_info['display-on-feed'] = match_metadata_events($xml, $categories);
 
         $dataDefinition = $ds['definition-path'];
+
+
 
         if( $dataDefinition == "Event")
         {
@@ -219,7 +201,6 @@
             if ( $AddFeaturedEvents == "Yes"){
                 foreach( $featuredEventOptions as $key=>$featuredEvent)
                 {
-
                     // Check if the url of the event = the url of the desired feature event.
                     if( $page_info['path'] == $featuredEvent[0]){
                         $featuredEventOptions[$key][3] = get_featured_event_html( $page_info, $featuredEvent);
@@ -242,6 +223,8 @@
             $modifiedStartDate = $StartDate / 1000;
             $modifiedEndDate = $EndDate / 1000;
             $latestDate = get_latest_date($page_info, $dates);
+
+
 
             //Check if it falls between the given range.
             if( $StartDate != "" && $EndDate != "" ){
