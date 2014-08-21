@@ -20,6 +20,10 @@ function create_feed($feedType){
         include_once "feed_news_articles.php";
         $feedHTMLArray = create_news_article_feed();
     }
+    elseif( $feedType == "News Archive" ){
+        include_once "news_archive.php";
+        $feedHTMLArray = create_archive();
+    }
 
     return $feedHTMLArray;
 }
@@ -75,7 +79,10 @@ function inspect_page($xml, $categories){
         return inspect_event_page( $xml, $categories);
     elseif( $feedType == "News Article Feed" )
         return inspect_news_article_page( $xml, $categories);
-
+    elseif( $feedType == "News Archive" ){
+        include_once "feed_news_articles.php";
+        return inspect_news_article_page( $xml, $categories);
+    }
 }
 
 ?>
