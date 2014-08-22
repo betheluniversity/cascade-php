@@ -13,17 +13,11 @@ $Department;
 $UniqueNews;
 
 $NumArticles;
-$Heading;
-//$HideWhenNone;
 $AddFeaturedArticle;
 $StartDate;
 $EndDate;
 
 $featuredArticleOptions;
-
-$AddButton;
-$MoreArticlesLink;
-$ButtonText;
 
 // returns an array of html elements.
 function create_news_article_feed(){
@@ -45,7 +39,7 @@ function create_news_article_feed(){
         $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
     }
 
-    $sortedArticles = sort_news_articles($arrayOfArticles);
+    $sortedArticles = sort_array($arrayOfArticles);
 
     // Only grab the first X number of articles.
     global $NumArticles;
@@ -56,37 +50,16 @@ function create_news_article_feed(){
         array_push($articleArray, $article['html']);
     }
 
-    // HEADING
-    global $Heading;
-    $heading = array("<h2>".$Heading."</h2>");
 
     // FEATURED ARTICLES
     $featuredArticles = create_featured_articles_array();
 
-    // BUTTON
-    global $AddButton;
-    global $MoreArticlesLink;
-    global $ButtonText;
-    $buttonHTML = array("");
-
-    if( $AddButton == "Yes")
-    {
-        array_push( $buttonHTML, '<a id="news-article-button" class="btn center" href="http://www.bethel.edu/' . $MoreArticlesLink . '">' . $ButtonText . '</a>');
+    $numArticles = sizeof($articleArray );
+    if( $numArticles == 0){
+        $articleArray = array("<p>No news articles available at this time.</p>");
     }
 
-    // Hide if None
-    global $HideWhenNone;
-    if( sizeOf( $articleArray) == 0){
-        if( $HideWhenNone == "Yes"){
-            $heading = array();
-            $articleArray = array();
-        }
-        else{
-            $articleArray = array("<p>No news articles at this time.</p>");
-        }
-    }
-
-    $combinedArray = array_merge($featuredArticles, $heading, $articleArray, $buttonHTML);
+    $combinedArray = array($featuredArticles, $articleArray, $numArticles );
 
     return $combinedArray;
 }
@@ -101,7 +74,7 @@ function inspect_news_article_page($xml, $categories){
         "published" => $xml->{'last-published-on'},
         "description" => $xml->{'description'},
         "path" => $xml->path,
-        "date" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
+        "date-for-sorting" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
         "md" => array(),
         "html" => "",
         "display-on-feed" => "No",
@@ -109,7 +82,7 @@ function inspect_news_article_page($xml, $categories){
 
     $ds = $xml->{'system-data-structure'};
     $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
-    $page_info['date-for-sorting'] = time();
+//    $page_info['date-for-sorting'] = time();
 
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
@@ -322,16 +295,5 @@ function format_featured_date_news_article( $date)
     // format 7:00 to 7
     $formattedDate = str_replace(":00", "", $formattedDate);
     return $formattedDate;
-}
-
-// Sort the array of articles, newest first.
-function sort_news_articles( $articles ){
-    function cmpi($a, $b)
-    {
-        return strcmp($b["date"], $a["date"]);
-    }
-    usort($articles, 'cmpi');
-
-    return $articles;
 }
 ?>

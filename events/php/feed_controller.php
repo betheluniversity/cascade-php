@@ -9,7 +9,6 @@
 ////////////////////////
 // The Controller
 ////////////////////////
-
 function create_feed($feedType){
     $feedHTMLArray = array();
     if( $feedType == "Event Feed" ){
@@ -28,18 +27,18 @@ function create_feed($feedType){
     return $feedHTMLArray;
 }
 
-// Sort the events
-function sort_events( $events ){
+// Sort an array
+function sort_array( $array ){
 
-    if( sizeof($events) != 0)
+    if( sizeof($array) != 0)
     {
-        usort($events, 'sortByDate');
+        usort($array, 'sort_by_date');
     }
 
-    return $events;
+    return $array;
 }
 
-function sortByDate($a, $b)
+function sort_by_date($a, $b)
 {
     return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
 }
