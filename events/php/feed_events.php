@@ -56,7 +56,6 @@
 
         $numEventsToFind = $NumEvents;
 
-
         $sortedEvents = array_slice($sortedEvents, 0, $numEventsToFind, true);
 
 
