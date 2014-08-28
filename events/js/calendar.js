@@ -236,7 +236,6 @@
         }
     }
 
-
     function changeCalendarLocation(loc){
         var controller = new CalendarController('#main');
         $.getJSON(loc, function(data){
@@ -259,7 +258,7 @@
             //using query params instead of hash
             h = window.location.search.replace(/^\#/, '?') || '?';
         }
-        loc = '//www.bethel.edu/events/calendar/code/calendar_rest' + h;
+        loc = '/events/calendar/code/calendar_rest' + h;
         changeCalendarLocation(loc);
     }
 
@@ -299,7 +298,7 @@
         if (mode == "LIST"){
             h += "&mode=list"
         }
-        loc = '//www.bethel.edu/events/calendar/code/calendar_rest' + h;
+        loc = '/events/calendar/code/calendar_rest' + h;
 
         changeCalendarLocation(loc);
 

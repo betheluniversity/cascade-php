@@ -1,5 +1,6 @@
 <?php
 
+    require_once 'events_helper.php';
 
 $month = $_GET['month'];
 $year = $_GET['year'];
@@ -36,7 +37,6 @@ $data['remote_user'] = $_SERVER['REMOTE_USER'];
 $data['server'] = $_SERVER;
 
 echo json_encode($data);
-
 
 function get_prev_month($month, $year, $day=1){
     $date = new DateTime();
@@ -123,41 +123,43 @@ function draw_calendar($month,$year, $day=1){
         if (isset($xml[$key])){
 
             $calendar .= '<dl>';
-            foreach($xml[$key] as $event_data){
-                $event = $event_data[0];
-                $event_index = $event_data[1];
-//                if( $event_index == "")
-//                    $event_index = 0;
 
-                $all_day = $event['dates'][$event_index]->{'all-day'}->{'value'};
+            foreach($xml[$key] as $event){
+
+                $start = $event['specific_start'];
+                $end = $event['specific_end'];
+                $all_day = $event['specific_all_day'];
                 //echo "Your current time now is : " . gmdate("Y-m-d\TH:i:s\Z");
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
                     $calendar .= '<dt class="summary">';
 
                     if( $event['external-link'] != ""){
-                        $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . $event_index . '</a>';
+                        $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
                     }
                     else{
-                        $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . $event_index . '</a>';
+                        $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
                     }
 
                     $calendar .= '</dt>';
                     $calendar .= '<dd>';
-                    // Star time calculation
-                    if($all_day){
+                    //Check really specifically because $all_day is an XML object still.
+                    //So if($all_day) is always true
+                    if($all_day == true){
                         $start = '';
                         $end = '';
 
                     }else{
                         $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                        $start_date->setTimestamp($event['dates'][$event_index]->{'start-date'}[0] / 1000);
+
+                        $start_date->setTimestamp($start / 1000);
                         $start = $start_date->format("g:i a");
                         if (substr($start, -6, 3) == ':00'){
                             $start = $start_date->format("g a");
                         }
                         $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                        $end_date->setTimestamp($event['dates'][$event_index]->{'end-date'}[0] / 1000);
+
+                        $end_date->setTimestamp($end / 1000);
                         $end = $end_date->format("g:i a");
                         if (substr($end, -6, 3) == ':00'){
                             $end = $end_date->format("g a");

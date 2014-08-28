@@ -7,7 +7,7 @@
  */
 
 stagingWarning();
-checkSecureContent($Secure);
+checkSecureContent($secure);
 
 
 function stagingWarning(){
