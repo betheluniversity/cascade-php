@@ -1,41 +1,41 @@
 <?php
 
 
-    $month = $_GET['month'];
-    $year = $_GET['year'];
-    $day = $_GET['day'];
+$month = $_GET['month'];
+$year = $_GET['year'];
+$day = $_GET['day'];
 
 
-    if (is_null($month) || is_null($year) || is_null($day) ){
-        $month = date('n');
-        $year = date('Y');
-        $day = date('j');
-    }
+if (is_null($month) || is_null($year) || is_null($day) ){
+    $month = date('n');
+    $year = date('Y');
+    $day = date('j');
+}
 
 
-    // Set the month and year if it isn't passed in GET
+// Set the month and year if it isn't passed in GET
 
-    $next = get_next_month($month, $year);
-    $prev = get_prev_month($month, $year);
+$next = get_next_month($month, $year);
+$prev = get_prev_month($month, $year);
 
-    $next_month = $next->format('n');
-    $next_year = $next->format('Y');
+$next_month = $next->format('n');
+$next_year = $next->format('Y');
 
-    $prev_month = $prev->format('n');
-    $prev_year = $prev->format('Y');
+$prev_month = $prev->format('n');
+$prev_year = $prev->format('Y');
 
-    $data = Array();
-    $data['previous_title'] = "Previous Month";
-    $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
-    $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
-    $data['current_month_qs'] = "month=$month&day=1&year=$year";
-    $data['grid'] = draw_calendar($month, $year);
-    $data['month_title'] = get_month_name($month) . ' ' .  $year;
-    $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
-    $data['server'] = $_SERVER;
+$data = Array();
+$data['previous_title'] = "Previous Month";
+$data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
+$data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
+$data['current_month_qs'] = "month=$month&day=1&year=$year";
+$data['grid'] = draw_calendar($month, $year);
+$data['month_title'] = get_month_name($month) . ' ' .  $year;
+$data['next_title'] = "Next Month";
+$data['remote_user'] = $_SERVER['REMOTE_USER'];
+$data['server'] = $_SERVER;
 
-    echo json_encode($data);
+echo json_encode($data);
 
 
 function get_prev_month($month, $year, $day=1){
@@ -123,61 +123,66 @@ function draw_calendar($month,$year, $day=1){
         if (isset($xml[$key])){
 
             $calendar .= '<dl>';
-            foreach($xml[$key] as $event){
-                $all_day = $event['dates'][0]->{'all-day'}->{'value'};
+            foreach($xml[$key] as $event_data){
+                $event = $event_data[0];
+                $event_index = $event_data[1];
+//                if( $event_index == "")
+//                    $event_index = 0;
+
+                $all_day = $event['dates'][$event_index]->{'all-day'}->{'value'};
                 //echo "Your current time now is : " . gmdate("Y-m-d\TH:i:s\Z");
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
-                        $calendar .= '<dt class="summary">';
+                    $calendar .= '<dt class="summary">';
 
-                        if( $event['external-link'] != ""){
-                            $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
+                    if( $event['external-link'] != ""){
+                        $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . $event_index . '</a>';
+                    }
+                    else{
+                        $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . $event_index . '</a>';
+                    }
+
+                    $calendar .= '</dt>';
+                    $calendar .= '<dd>';
+                    // Star time calculation
+                    if($all_day){
+                        $start = '';
+                        $end = '';
+
+                    }else{
+                        $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                        $start_date->setTimestamp($event['dates'][$event_index]->{'start-date'}[0] / 1000);
+                        $start = $start_date->format("g:i a");
+                        if (substr($start, -6, 3) == ':00'){
+                            $start = $start_date->format("g a");
                         }
-                        else{
-                            $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
+                        $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                        $end_date->setTimestamp($event['dates'][$event_index]->{'end-date'}[0] / 1000);
+                        $end = $end_date->format("g:i a");
+                        if (substr($end, -6, 3) == ':00'){
+                            $end = $end_date->format("g a");
                         }
 
-                        $calendar .= '</dt>';
-                        $calendar .= '<dd>';
-                            // Star time calculation
-                            if($all_day){
-                                $start = '';
-                                $end = '';
-
-                            }else{
-                                $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                                $start_date->setTimestamp($event['dates'][0]->{'start-date'}[0] / 1000);
-                                $start = $start_date->format("g:i a");
-                                if (substr($start, -6, 3) == ':00'){
-                                    $start = $start_date->format("g a");
-                                }
-                                $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                                $end_date->setTimestamp($event['dates'][0]->{'end-date'}[0] / 1000);
-                                $end = $end_date->format("g:i a");
-                                if (substr($end, -6, 3) == ':00'){
-                                    $end = $end_date->format("g a");
-                                }
-
-                                //test
-                            }
-                            $calendar .= '<span class="event-description">';
-                            if ($event['description']){
-                                $calendar .= $event['description']. '</br> ';
-                            }
-                            if ($start && $end){
-                                if ($start == $end)
-                                    $calendar .= $start . '<br>';
-                                else
-                                    $calendar .= $start . '-' . $end . '<br>';
-                            }
-                                $calendar .= '<span class="location">' . $event['location'] . '</span>';
-                            $calendar .= '</span>';
-                            $calendar .= '<ul class="categories" style="display:none">';
-                                foreach($event['md'] as $md){
-                                    $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
-                                }
-                            $calendar .= '</ul>';
-                        $calendar .= '</dd>';
+                        //test
+                    }
+                    $calendar .= '<span class="event-description">';
+                    if ($event['description']){
+                        $calendar .= $event['description']. '</br> ';
+                    }
+                    if ($start && $end){
+                        if ($start == $end)
+                            $calendar .= $start . '<br>';
+                        else
+                            $calendar .= $start . '-' . $end . '<br>';
+                    }
+                    $calendar .= '<span class="location">' . $event['location'] . '</span>';
+                    $calendar .= '</span>';
+                    $calendar .= '<ul class="categories" style="display:none">';
+                    foreach($event['md'] as $md){
+                        $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
+                    }
+                    $calendar .= '</ul>';
+                    $calendar .= '</dd>';
                     $calendar .= '</div>';
                 }
             }
@@ -201,7 +206,7 @@ function draw_calendar($month,$year, $day=1){
         $days_in_this_week++; $running_day++; $day_counter++;
     }
 
-     // keep track of this separate so it doesn't break the for loop
+    // keep track of this separate so it doesn't break the for loop
     $day_of_week = $days_in_this_week;
     if($days_in_this_week < 8 && $days_in_this_week != 1){
         for($x = 1; $x <= (8 - $days_in_this_week); $x++){
@@ -269,23 +274,25 @@ function traverse_folder($xml, $dates, $categories){
 }
 
 function add_event_to_array($dates, $page_data){
-
+    $event_index = 0;
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
 
         $start_date = $date->{'start-date'} / 1000;
+        $actual_start = date("Y-m-d", $start_date);
         $end_date = $date->{'end-date'} / 1000;
+        $actual_end = date("Y-m-d", $end_date);
 
-        if($start_date == $end_date){
+        if($actual_start == $actual_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
             // Check if this date has events already
             if (isset($dates[$key])) {
-                array_push($dates[$key], $page_data);
+                array_push($dates[$key], array($page_data, $event_index) );
                 //Otherwise add a new array with this event for this date.
             } else {
                 $new_value = array($page_data);
-                $dates[$key] = $new_value;
+                $dates[$key] = array($new_value, $event_index);
             }
         }else{
 
@@ -308,14 +315,16 @@ function add_event_to_array($dates, $page_data){
 
                 // Check if this date has events already
                 if (isset($dates[$key])) {
-                    array_push($dates[$key], $page_data);
+                    array_push($dates[$key], array($page_data, $event_index) );
                     //Otherwise add a new array with this event for this date.
                 } else {
                     $new_value = array($page_data);
-                    $dates[$key] = $new_value;
+                    $dates[$key] = array($new_value, $event_index);
                 }
+
             }
         }
+        $event_index++;
 
     }
     return $dates;
