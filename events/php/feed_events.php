@@ -103,8 +103,6 @@
                     continue;
                 }
 
-
-
                 if (in_array($name,$options)){
                     //Is this a calendar category?
                     if (in_array($value, $categories)){

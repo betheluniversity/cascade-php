@@ -22,21 +22,17 @@ $featuredArticleOptions;
 // returns an array of html elements.
 function create_news_article_feed(){
 
-    // Feed
-    global $newsArticleFeedCategories;
-    $categories = $newsArticleFeedCategories;
-
     // Staging Site
     global $destinationName;
     if( strstr(getcwd(), "staging/public") ){
         include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
         $destinationName = "staging";
-        $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", $categories);
+        $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", "");
     }
     else{ // Live site.
         include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
         $destinationName = "www";
-        $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
+        $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", "");
     }
 
     $sortedArticles = sort_array($arrayOfArticles);
@@ -67,7 +63,7 @@ function create_news_article_feed(){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_article_page($xml, $categories){
+function inspect_news_article_page($xml){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -81,7 +77,7 @@ function inspect_news_article_page($xml, $categories){
     );
 
     $ds = $xml->{'system-data-structure'};
-    $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
+    $page_info['display-on-feed'] = match_metadata_news_articles($xml);
 //    $page_info['date-for-sorting'] = time();
 
     // To get the correct definition path.
@@ -185,7 +181,7 @@ function get_news_article_html( $article, $xml ){
 // Checks the metadata of the page against the metadata of the news articles.
 // if it matches, return "Metadata Matches"
 // else, return "No"
-function match_metadata_news_articles($xml, $categories){
+function match_metadata_news_articles($xml){
     global $School;
     global $Department;
     global $UniqueNews;
@@ -197,6 +193,7 @@ function match_metadata_news_articles($xml, $categories){
             if($value == "Select" || $value == "select"){
                 continue;
             }
+
             if( $name == "school")
             {
                 if (in_array($value, $School)){

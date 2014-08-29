@@ -1,10 +1,9 @@
 <?php
-
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
-require_regonce (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
+require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
 try {

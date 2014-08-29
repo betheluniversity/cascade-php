@@ -2,39 +2,39 @@
 
     require_once 'events_helper.php';
 
-    $month = $_GET['month'];
-    $year = $_GET['year'];
-    $day = $_GET['day'];
+$month = $_GET['month'];
+$year = $_GET['year'];
+$day = $_GET['day'];
 
 
-    if (is_null($month) || is_null($year) || is_null($day) ){
-        $month = date('n');
-        $year = date('Y');
-        $day = date('j');
-    }
+if (is_null($month) || is_null($year) || is_null($day) ){
+    $month = date('n');
+    $year = date('Y');
+    $day = date('j');
+}
 
 
-    // Set the month and year if it isn't passed in GET
+// Set the month and year if it isn't passed in GET
 
-    $next = get_next_month($month, $year);
-    $prev = get_prev_month($month, $year);
+$next = get_next_month($month, $year);
+$prev = get_prev_month($month, $year);
 
-    $next_month = $next->format('n');
-    $next_year = $next->format('Y');
+$next_month = $next->format('n');
+$next_year = $next->format('Y');
 
-    $prev_month = $prev->format('n');
-    $prev_year = $prev->format('Y');
+$prev_month = $prev->format('n');
+$prev_year = $prev->format('Y');
 
-    $data = Array();
-    $data['previous_title'] = "Previous Month";
-    $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
-    $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
-    $data['current_month_qs'] = "month=$month&day=1&year=$year";
-    $data['grid'] = draw_calendar($month, $year);
-    $data['month_title'] = get_month_name($month) . ' ' .  $year;
-    $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
-    $data['server'] = $_SERVER;
+$data = Array();
+$data['previous_title'] = "Previous Month";
+$data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
+$data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
+$data['current_month_qs'] = "month=$month&day=1&year=$year";
+$data['grid'] = draw_calendar($month, $year);
+$data['month_title'] = get_month_name($month) . ' ' .  $year;
+$data['next_title'] = "Next Month";
+$data['remote_user'] = $_SERVER['REMOTE_USER'];
+$data['server'] = $_SERVER;
 
 echo json_encode($data);
 
@@ -123,6 +123,7 @@ function draw_calendar($month,$year, $day=1){
         if (isset($xml[$key])){
 
             $calendar .= '<dl>';
+
             foreach($xml[$key] as $event){
 
                 $start = $event['specific_start'];
@@ -150,12 +151,14 @@ function draw_calendar($month,$year, $day=1){
 
                     }else{
                         $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+
                         $start_date->setTimestamp($start / 1000);
                         $start = $start_date->format("g:i a");
                         if (substr($start, -6, 3) == ':00'){
                             $start = $start_date->format("g a");
                         }
                         $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+
                         $end_date->setTimestamp($end / 1000);
                         $end = $end_date->format("g:i a");
                         if (substr($end, -6, 3) == ':00'){
