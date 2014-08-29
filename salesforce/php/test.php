@@ -13,20 +13,27 @@ require_once ('userAuth.php');
     $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
     $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
-    $email = 'zz@gmail.com';
+    $email = 'zztop@gmail.com';
     $search_email = '{' . $email . '}';
     echo "<pre>";
+        $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
+        $records = $response->{'searchRecords'};
+        print_r($records);
+        echo "------";
+        $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
+        $records = $response->{'searchRecords'};
+        print_r($records);
 
-//Id of the User.
-$id = "005L0000001GZMsIAO";
-//Get the corresponding UserLogin ID
-$response = $mySforceConnection->query("SELECT Id, IsFrozen FROM UserLogin WHERE UserId = '$id'");
-$frozenId = $response->{records}[0]->Id;
-//Update to set frozen to false (0)
-$sObject1 = new stdclass();
-$sObject1->Id = $frozenId;
-$sObject1->IsFrozen = 0;
-//commit the udpate
-$response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
-
+////Id of the User.
+//$id = "005L0000001GZMsIAO";
+////Get the corresponding UserLogin ID
+//$response = $mySforceConnection->query("SELECT Id, IsFrozen FROM UserLogin WHERE UserId = '$id'");
+//$frozenId = $response->{records}[0]->Id;
+////Update to set frozen to false (0)
+//$sObject1 = new stdclass();
+//$sObject1->Id = $frozenId;
+//$sObject1->IsFrozen = 0;
+////commit the udpate
+//$response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
+echo "</pre>";
 ?>

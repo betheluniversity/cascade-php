@@ -1,12 +1,10 @@
 <?php
 
-echo "<pre>";
-
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
-require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
+require_regonce (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
 try {
@@ -28,9 +26,7 @@ try {
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $id = $records[0]->id;
-
-    }else{ // change back to else after testing
-
+    }else{
         //Create one and save the id
         $sObject = new stdclass();
         $sObject->FirstName = $first;
@@ -41,13 +37,14 @@ try {
         $id = $createResponse[0]->id;
     }
 
-    // test for existing user here
+    // test for existing user
     $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
     $records = $response->{'searchRecords'};
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
         $id = $records[0]->{'Id'};
+        //What is going on here?
         $sObject = new stdclass();
         $sObject->userId = $id;
         $sObject->password = $password;
@@ -165,8 +162,7 @@ if( $fullArray["status"] == "success")
 
     // Here is the returned value
     $result = file_get_contents($url, false, $context);
-    echo $result;
-//    header( 'Location: http://staging.bethel.edu/_testing/salesforce-go-to-button-test?register_attempt=true' ) ;
+    header( 'Location: http://staging.bethel.edu/admissions/apply?register_attempt=true' ) ;
 //    echo "success";
 }
 else
@@ -181,7 +177,7 @@ else
     {
         if( $fullArray["code"] == 68 )
         {
-            $error_msg .= "There is already an account with that email. Try logging in <a href='https://auth.xp.bethel.edu/auth/sf-portal-login.cgi'>here</a>.<br /> Otherwise, try again or use a different email.";
+            $error_msg .= "There is already an account with that email. Try logging in.<br /> Otherwise, try again or use a different email.";
             //header( 'Location: http://staging.bethel.edu/_testing/salesforce-go-to-button-test?register_attempt=duplicate' ) ;
 
             // https://auth.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi
@@ -205,8 +201,7 @@ else
     $_SESSION['last'] = $last;
     $_SESSION['error_msg'] = $error_msg;
     session_write_close();
-
-    header( 'Location: http://staging.bethel.edu/_testing/salesforce-register-test' ) ;
+    header( 'Location: http://staging.bethel.edu/admissions/apply' ) ;
 }
 
 
@@ -220,62 +215,62 @@ else
 ####################################################################
 
 // Returns a random character string to store in the DB.
-function get_random_string($length){
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $string = "";
-    for( $i = 0; $i < $length; $i++)
-        $string .= $characters[rand(1, $length)];
-
-    return $string;
-}
-
-// Also store in the DB here.
-function password_reset_option($email){
-    $randomString = get_random_string(32);
-
-    // Create connection
-    $con = mysqli_connect("localhost", "root", "", "salesforce");
-
-    if( !$con)
-    {
-        die('error');
-    }
-
-    $date = date("Y-m-d H:i:s", time());
-//    echo $date;
-    $query = 'INSERT INTO forgot_password (UserID, `Key`, expDate) VALUES ("'.$email.'", "'.$randomString.'", "'.$date.'" )';
-    if(!mysqli_query($con,$query))
-        die('Error: ' . mysqli_error($con));
-
-    mysqli_close($con);
-
-
-    echo "<br />sent email";
-    send_email($randomString, $email);
-}
-
-function send_email($randomString, $email){
-    $to = $email;
-    $from = $email;
-    $body = '<html>
-         <head>
-         </head>
-         <body>
-            <p>Go to <a href="https://staging.bethel.edu/code/salesforce/php/password-reset-template.php?id=' . $randomString . '">this</a> link to reset your password.</a></p>
-         </body>
-        </html>';
-
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-// Modify this name to whatever you want to display.
-    $headers .= 'From: webmaster@example.com';
-
-// to, subject, message, headers
-    mail( $to, $from, $body, $headers);
-}
-
-//$email = "ces55739@bethel.edu";
+//function get_random_string($length){
+//    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+//    $string = "";
+//    for( $i = 0; $i < $length; $i++)
+//        $string .= $characters[rand(1, $length)];
+//
+//    return $string;
+//}
+//
+//// Also store in the DB here.
+//function password_reset_option($email){
+//    $randomString = get_random_string(32);
+//
+//    // Create connection
+//    $con = mysqli_connect("localhost", "root", "", "salesforce");
+//
+//    if( !$con)
+//    {
+//        die('error');
+//    }
+//
+//    $date = date("Y-m-d H:i:s", time());
+////    echo $date;
+//    $query = 'INSERT INTO forgot_password (UserID, `Key`, expDate) VALUES ("'.$email.'", "'.$randomString.'", "'.$date.'" )';
+//    if(!mysqli_query($con,$query))
+//        die('Error: ' . mysqli_error($con));
+//
+//    mysqli_close($con);
+//
+//
+//    echo "<br />sent email";
+//    send_email($randomString, $email);
+//}
+//
+//function send_email($randomString, $email){
+//    $to = $email;
+//    $from = $email;
+//    $body = '<html>
+//         <head>
+//         </head>
+//         <body>
+//            <p>Go to <a href="https://staging.bethel.edu/code/salesforce/php/password-reset-template.php?id=' . $randomString . '">this</a> link to reset your password.</a></p>
+//         </body>
+//        </html>';
+//
+//    $headers  = 'MIME-Version: 1.0' . "\r\n";
+//    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+//
+//// Modify this name to whatever you want to display.
+//    $headers .= 'From: webmaster@example.com';
+//
+//// to, subject, message, headers
+//    mail( $to, $from, $body, $headers);
+//}
+//
+////$email = "ces55739@bethel.edu";
 //password_reset_option($email);
 
 echo "</pre>";
