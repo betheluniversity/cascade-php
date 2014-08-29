@@ -97,7 +97,6 @@ $credentials = json_encode(array(
                     "user" => array(
                         "email" => $email,
                         "passwd" => $password,
-                        "reset" => "false"
                     )
                 ));
 $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
@@ -145,24 +144,18 @@ foreach( $array as $option){
 if( $fullArray["status"] == "success")
 {
 //     Redirect to the login page.
-    $credentials = json_encode(array(
-        "username" => $email,
-        "passwd" => $password
-    ));
-    $url = 'https://auth.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi';
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/json",
-            'method'  => 'POST',
-            'content' => $credentials,
-        ),
-    );
-    $context  = stream_context_create($options);
 
-    // Here is the returned value
-    $result = file_get_contents($url, false, $context);
-    header( 'Location: http://staging.bethel.edu/admissions/apply?register_attempt=true' ) ;
-//    echo "success";
+    session_start();
+    $_SESSION['username'] = $email;
+    $_SESSION['password'] = $password;
+    session_write_close();
+    header( 'Location: /code/salesforce/php/register-login.php' );
+//    session_start();
+//    // This triggers when there is a CAS error.
+//    $error_msg = "why is CAS trying to log me in, my account exists?";
+//    $_SESSION['error_msg'] = $fullArray["message"];
+//    session_write_close();
+//    header( 'Location: http://staging.bethel.edu/admissions/apply' ) ;
 }
 else
 {
@@ -200,7 +193,7 @@ else
     $_SESSION['last'] = $last;
     $_SESSION['error_msg'] = $error_msg;
     session_write_close();
-    header( 'Location: http://staging.bethel.edu/admissions/apply' ) ;
+    header( 'Location: http://staging.bethel.edu/admissions/apply' );
 }
 
 
