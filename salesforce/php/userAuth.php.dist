@@ -4,49 +4,11 @@
 |  This file is included in each of the SAMPLES
 \--------------------------------------------------------*/
 
-$USERNAME = "";
-$PASSWORD = "";
+$BETHELAUTHUSERNAME = "";
+ $BETHELAUTHPASSWD = "";
 
-/*--------------------------------------------------------\
-|  Create a Lead using the salesforce account
-|  Get the LEADID and modify it in following file
-|  userAuth.php in samples directory
-\--------------------------------------------------------*/
+ $USERNAME = "";
+ $PASSWORD = "";
 
-//Use
-$NAMESPACE = 'Bethel University Admissions'; //d for sample convertLead from file convertLead.php
-$convertLEADID = '';
-
-//Used for sample fieldsToNull from file fieldsToNull.php
-$LEADID = '';
-
-//Used for sample loginScopeHeader from file loginScopeHeader.php
-$LOGINSCOPEHEADER = '';
-
-//Used in sample processSubmitRequest from file processSubmitRequest.php
-$OBJECTID1 = '';
-$OBJECTID2 = '';
-$NEXTOBJECTID = '';
-
-//Used for sending email from file sendEmail.php
-$EMAILID = 'email1@test.com';
-
-//Used for updating object from file update.php
-$UPDATEOBJECTID1 = '';
-$UPDATEOBJECTID2 = '';
-//
-////Used in callOptions
-$YOURCLIENTID = '';
-//
-////Used for emailHeader from file emailHeader.php
-$EMAILIDFORHEADER = '';
-//
-///*--------------------------------------------------------\
-//|
-//|  For Enterprise Samples
-//|
-//\--------------------------------------------------------*/
-////Need to login on account then create the lead
-////Assign that id here and check the sample
-$eLEADID = "";
+ $PORTALUSERID = "";
 ?>
