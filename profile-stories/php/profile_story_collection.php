@@ -93,6 +93,16 @@
         // The image that shows up in the 'column' view.
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
         $viewerTeaser = $ds->{'viewer-teaser'};
+        $homepageTeaser = $ds->{'homepage-teaser'};
+        if($viewerTeaser == "")
+        {
+            $teaser = $homepageTeaser;
+        }
+        else
+        {
+            $teaser = $viewerTeaser;
+        }
+
         $quote = $ds->{'quote'};
 
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
@@ -100,7 +110,7 @@
 
             $html .= '<figure class="feature__figure--sulley">';
             $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
-            $html .= '<figcaption class="feature__figcaption--sulley">'.$viewerTeaser.'</figcaption>';
+            $html .= '<figcaption class="feature__figcaption--sulley">'.$teaser.'</figcaption>';
             $html .= '</figure>';
         $html .= '</a>';
 
