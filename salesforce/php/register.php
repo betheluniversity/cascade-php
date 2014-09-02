@@ -1,4 +1,6 @@
 <?php
+$staging = strstr(getcwd(), "staging/public");
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -48,7 +50,7 @@ try {
         $user_id = false;
     }
     // Create user account based on contact info.
-    if (!$user_id){
+    if (!$has_user){
         $sObject = new stdclass();
         //now create a User. If there is a user they have an account already.
         //  Now create a User object tied to this Contact
@@ -60,8 +62,8 @@ try {
         $sObject->TimeZoneSidKey = "America/Chicago";
         $sObject->LocaleSidKey = "en_US";
         $sObject->EmailEncodingKey = "UTF-8";
-        $sObject->ProfileId = "00eL0000000QUJb"; // profile id?
-        $sObject->ContactId = $id;
+        $sObject->ProfileId = $PORTALUSERID; // profile id?
+        $sObject->ContactId = $contact_id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
         $user_id = $createResponse[0]->id;
@@ -111,7 +113,11 @@ if ($is_frozen){
 }
 $credentials = json_encode($credentials);
 
-$url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+if ($staging){
+    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+}else{
+    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+}
 $options = array(
     'http' => array(
         'header'  => "Content-type: application/json",
@@ -192,6 +198,10 @@ else
     $_SESSION['last'] = $last;
     $_SESSION['error_msg'] = $error_msg;
     session_write_close();
-    header( 'Location: http://staging.bethel.edu/admissions/apply' );
+    if( $staging ){
+        header( 'Location: http://staging.bethel.edu/admissions/apply' );
+    }else{
+        header( 'Location: https://apply.bethel.edu/' );
+    }
 }
 ?>
