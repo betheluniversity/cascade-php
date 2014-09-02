@@ -1,42 +1,42 @@
 <?php
 
-    require_once 'events_helper.php';
 
-$month = $_GET['month'];
-$year = $_GET['year'];
-$day = $_GET['day'];
-
-
-if (is_null($month) || is_null($year) || is_null($day) ){
-    $month = date('n');
-    $year = date('Y');
-    $day = date('j');
-}
+    $month = $_GET['month'];
+    $year = $_GET['year'];
+    $day = $_GET['day'];
 
 
-// Set the month and year if it isn't passed in GET
+    if (is_null($month) || is_null($year) || is_null($day) ){
+        $month = date('n');
+        $year = date('Y');
+        $day = date('j');
+    }
 
-$next = get_next_month($month, $year);
-$prev = get_prev_month($month, $year);
 
-$next_month = $next->format('n');
-$next_year = $next->format('Y');
+    // Set the month and year if it isn't passed in GET
 
-$prev_month = $prev->format('n');
-$prev_year = $prev->format('Y');
+    $next = get_next_month($month, $year);
+    $prev = get_prev_month($month, $year);
 
-$data = Array();
-$data['previous_title'] = "Previous Month";
-$data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
-$data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
-$data['current_month_qs'] = "month=$month&day=1&year=$year";
-$data['grid'] = draw_calendar($month, $year);
-$data['month_title'] = get_month_name($month) . ' ' .  $year;
-$data['next_title'] = "Next Month";
-$data['remote_user'] = $_SERVER['REMOTE_USER'];
-$data['server'] = $_SERVER;
+    $next_month = $next->format('n');
+    $next_year = $next->format('Y');
 
-echo json_encode($data);
+    $prev_month = $prev->format('n');
+    $prev_year = $prev->format('Y');
+
+    $data = Array();
+    $data['previous_title'] = "Previous Month";
+    $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
+    $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
+    $data['current_month_qs'] = "month=$month&day=1&year=$year";
+    $data['grid'] = draw_calendar($month, $year);
+    $data['month_title'] = get_month_name($month) . ' ' .  $year;
+    $data['next_title'] = "Next Month";
+    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+    $data['server'] = $_SERVER;
+
+    echo json_encode($data);
+
 
 function get_prev_month($month, $year, $day=1){
     $date = new DateTime();
@@ -123,68 +123,61 @@ function draw_calendar($month,$year, $day=1){
         if (isset($xml[$key])){
 
             $calendar .= '<dl>';
-
             foreach($xml[$key] as $event){
-
-                $start = $event['specific_start'];
-                $end = $event['specific_end'];
-                $all_day = $event['specific_all_day'];
+                $all_day = $event['dates'][0]->{'all-day'}->{'value'};
                 //echo "Your current time now is : " . gmdate("Y-m-d\TH:i:s\Z");
                 if($event['published']){
                     $calendar .= '<div class="vevent">';
-                    $calendar .= '<dt class="summary">';
+                        $calendar .= '<dt class="summary">';
 
-                    if( $event['external-link'] != ""){
-                        $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
-                    }
-                    else{
-                        $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
-                    }
-
-                    $calendar .= '</dt>';
-                    $calendar .= '<dd>';
-                    //Check really specifically because $all_day is an XML object still.
-                    //So if($all_day) is always true
-                    if($all_day == true){
-                        $start = '';
-                        $end = '';
-
-                    }else{
-                        $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-
-                        $start_date->setTimestamp($start / 1000);
-                        $start = $start_date->format("g:i a");
-                        if (substr($start, -6, 3) == ':00'){
-                            $start = $start_date->format("g a");
+                        if( $event['external-link'] != ""){
+                            $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
                         }
-                        $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-
-                        $end_date->setTimestamp($end / 1000);
-                        $end = $end_date->format("g:i a");
-                        if (substr($end, -6, 3) == ':00'){
-                            $end = $end_date->format("g a");
+                        else{
+                            $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
                         }
 
-                        //test
-                    }
-                    $calendar .= '<span class="event-description">';
-                    if ($event['description']){
-                        $calendar .= $event['description']. '</br> ';
-                    }
-                    if ($start && $end){
-                        if ($start == $end)
-                            $calendar .= $start . '<br>';
-                        else
-                            $calendar .= $start . '-' . $end . '<br>';
-                    }
-                    $calendar .= '<span class="location">' . $event['location'] . '</span>';
-                    $calendar .= '</span>';
-                    $calendar .= '<ul class="categories" style="display:none">';
-                    foreach($event['md'] as $md){
-                        $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
-                    }
-                    $calendar .= '</ul>';
-                    $calendar .= '</dd>';
+                        $calendar .= '</dt>';
+                        $calendar .= '<dd>';
+                            // Star time calculation
+                            if($all_day){
+                                $start = '';
+                                $end = '';
+
+                            }else{
+                                $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                                $start_date->setTimestamp($event['dates'][0]->{'start-date'}[0] / 1000);
+                                $start = $start_date->format("g:i a");
+                                if (substr($start, -6, 3) == ':00'){
+                                    $start = $start_date->format("g a");
+                                }
+                                $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
+                                $end_date->setTimestamp($event['dates'][0]->{'end-date'}[0] / 1000);
+                                $end = $end_date->format("g:i a");
+                                if (substr($end, -6, 3) == ':00'){
+                                    $end = $end_date->format("g a");
+                                }
+
+                                //test
+                            }
+                            $calendar .= '<span class="event-description">';
+                            if ($event['description']){
+                                $calendar .= $event['description']. '</br> ';
+                            }
+                            if ($start && $end){
+                                if ($start == $end)
+                                    $calendar .= $start . '<br>';
+                                else
+                                    $calendar .= $start . '-' . $end . '<br>';
+                            }
+                                $calendar .= '<span class="location">' . $event['location'] . '</span>';
+                            $calendar .= '</span>';
+                            $calendar .= '<ul class="categories" style="display:none">';
+                                foreach($event['md'] as $md){
+                                    $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
+                                }
+                            $calendar .= '</ul>';
+                        $calendar .= '</dd>';
                     $calendar .= '</div>';
                 }
             }
@@ -208,7 +201,7 @@ function draw_calendar($month,$year, $day=1){
         $days_in_this_week++; $running_day++; $day_counter++;
     }
 
-    // keep track of this separate so it doesn't break the for loop
+     // keep track of this separate so it doesn't break the for loop
     $day_of_week = $days_in_this_week;
     if($days_in_this_week < 8 && $days_in_this_week != 1){
         for($x = 1; $x <= (8 - $days_in_this_week); $x++){
@@ -222,4 +215,176 @@ function draw_calendar($month,$year, $day=1){
 
     /* all done, return result */
     return $calendar;
+}
+
+function get_event_xml(){
+
+    ##Create a list of categories the calendar uses
+    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+    $categories = array();
+    $xml = $xml->{'system-page'};
+    foreach ($xml->children() as $child) {
+        if($child->getName() == "dynamic-metadata"){
+            foreach($child->children() as $metadata){
+                if($metadata->getName() == "value"){
+                    array_push($categories, (string)$metadata);
+                }
+                //$metadata;
+            }
+        }
+    }
+
+    //print_r($categories);
+
+    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+    $dates = array();
+    $dates = traverse_folder($xml, $dates, $categories);
+    return $dates;
+
+}
+
+function traverse_folder($xml, $dates, $categories){
+    foreach ($xml->children() as $child) {
+
+        $name = $child->getName();
+
+        if ($name == 'system-folder'){
+            $dates = traverse_folder($child, $dates, $categories);
+        }elseif ($name == 'system-page'){
+
+            $page_data = inspect_page($child, $categories);
+
+            // Child is the xml in this case.
+            // Only add the to the calendar if it is an event.
+            $dataDefinition = $child->{'system-data-structure'}['definition-path'];
+            if( $dataDefinition == "Event")
+            {
+                $new_dates = add_event_to_array($dates, $page_data);
+                $dates = array_merge($dates, $new_dates);
+            }
+        }
+    }
+
+    return $dates;
+}
+
+function add_event_to_array($dates, $page_data){
+
+    //Iterate over each Date in this event
+    foreach ($page_data['dates'] as $date) {
+
+        $start_date = $date->{'start-date'} / 1000;
+        $end_date = $date->{'end-date'} / 1000;
+
+        if($start_date == $end_date){
+            //Don't need a date range.
+            $key = date("Y-m-d", $start_date);
+            // Check if this date has events already
+            if (isset($dates[$key])) {
+                array_push($dates[$key], $page_data);
+                //Otherwise add a new array with this event for this date.
+            } else {
+                $new_value = array($page_data);
+                $dates[$key] = $new_value;
+            }
+        }else{
+
+            $start = date("Y-n-j", $start_date);
+            // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
+            $end = date("Y-n-j", strtotime('+1 day', $end_date));
+            // Create a date period for each of the dates this event-date spans.
+            // This will put it on the calendar each day.
+
+            $period = new DatePeriod(
+                new DateTime($start),
+                new DateInterval('P1D'),
+                new DateTime($end)
+            );
+
+
+            // Add a listng to the array for each event / event date
+            foreach ($period as $date) {
+                $key = $date->format('Y-m-d');
+
+                // Check if this date has events already
+                if (isset($dates[$key])) {
+                    array_push($dates[$key], $page_data);
+                    //Otherwise add a new array with this event for this date.
+                } else {
+                    $new_value = array($page_data);
+                    $dates[$key] = $new_value;
+                }
+            }
+        }
+
+    }
+    return $dates;
+}
+
+function inspect_page($xml, $categories){
+    //echo "inspecting page";
+    $page_info = array(
+        "title" => $xml->title,
+        "display-name" => $xml->{'display-name'},
+        "published" => $xml->{'last-published-on'},
+        "description" => $xml->{'description'},
+        "path" => $xml->path,
+        "dates" => array(),
+        "md" => array(),
+    );
+
+    $ds = $xml->{'system-data-structure'};
+
+
+    $page_info["external-link"] = $ds->{'link'};
+
+
+
+    // Add the dates
+    $dates = $ds->{'event-dates'};
+    foreach ($dates as $date){
+        array_push($page_info['dates'], $date);
+    }
+
+    // Get the location
+    $loc = $ds->location;
+    if($loc == 'On campus' || $loc == "On Campus"){
+
+        $location = $loc = $ds->{'on-campus-location'};
+    }else{
+        $location = $loc = $ds->{'off-campus-location'};
+    }
+    $other = $ds->{'other-on-campus'};
+    if ($other[0]){
+        $location = $other;
+    }
+    if ($location == "none"){
+        $location = "";
+    }
+    $page_info['location'] = $location;
+
+
+    foreach ($xml->{'dynamic-metadata'} as $md){
+
+        $name = $md->name;
+
+        $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal');
+
+        foreach($md->value as $value ){
+            if($value == "None"){
+                continue;
+            }
+            if (in_array($name,$options)){
+                //Is this a calendar category?
+                if (in_array($value, $categories)){
+                    array_push($page_info['md'], $value . '-' . $name);
+                }else{
+                    array_push($page_info['md'], 'other');
+                }
+            }
+
+        }
+    }
+
+    return $page_info;
 }
