@@ -340,7 +340,7 @@ function sort_news_articles( $articles ){
 
 
 //The above is simply the news feed code to see if things are working
-/*function create_archive(){
+/**function create_archive(){
 
     // Feed
     global $newsArticleFeedCategories;
