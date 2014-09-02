@@ -15,14 +15,32 @@ require_once ('userAuth.php');
 
     $email = 'zztop@gmail.com';
     $search_email = '{' . $email . '}';
+
+    $id = "005L0000001GtiU";
+    try{
+        $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$id'");
+        $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
+    }catch (SoapFault $e){
+        //It fails if there is no record (never frozen)
+        $is_frozen = false;
+    }
+
     echo "<pre>";
-        $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
-        $records = $response->{'searchRecords'};
-        print_r($records);
-        echo "------";
-        $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
-        $records = $response->{'searchRecords'};
-        print_r($records);
+    print_r($response);
+    if($is_frozen){
+        echo 'frozen';
+    }else{
+        echo 'not frozen';
+    }
+
+
+//        $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
+//        $records = $response->{'searchRecords'};
+//        print_r($records);
+//        echo "------";
+//        $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
+//        $records = $response->{'searchRecords'};
+//        print_r($records);
 
 ////Id of the User.
 //$id = "005L0000001GZMsIAO";

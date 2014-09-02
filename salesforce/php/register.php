@@ -24,7 +24,7 @@ try {
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
-        $id = $records[0]->id;
+        $contact_id = $records[0]->id;
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -33,7 +33,7 @@ try {
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
 
-        $id = $createResponse[0]->id;
+        $contact_id = $createResponse[0]->id;
     }
 
     // test for existing user
@@ -42,21 +42,13 @@ try {
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
-        $id = $records[0]->{'Id'};
-        //What is going on here?
-        $sObject = new stdclass();
-        $sObject->userId = $id;
-        $sObject->password = $password;
-
-        $userAccount = true;
+        $user_id = $records[0]->{'Id'};
     }
     else{
-        $userAccount = false;
+        $user_id = false;
     }
-
     // Create user account based on contact info.
-    if (!$userAccount){
-
+    if (!$user_id){
         $sObject = new stdclass();
         //now create a User. If there is a user they have an account already.
         //  Now create a User object tied to this Contact
@@ -72,24 +64,37 @@ try {
         $sObject->ContactId = $id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
-
-        //now set their password
-//        $sObject = new stdclass();
-//        $sObject->userId = $uid;
-//        $sObject->password = $password;
-//        $setPasswordResponse = $mySforceConnection->setPassword($uid, $password);
+        $user_id = $createResponse[0]->id;
     }
-
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
 
+// Check for frozen account.
+try{
+    $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
+    $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
+    $frozen_id = $response->{'records'}[0]->{'Id'};
+}catch (SoapFault $e){
+    //It fails if there is no record (never frozen)
+    $is_frozen = false;
+    $frozen_id = null;
+}
+
+//unfreeze if needed
+if ($is_frozen){
+    $sObject1 = new stdclass();
+    $sObject1->Id = $frozen_id;
+    $sObject1->IsFrozen = 0;
+    //commit the update
+    $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
+}
+
 ####################################################################
 ## CAS account creation.
 ####################################################################
-
-$credentials = json_encode(array(
+$credentials = array(
                     "auth" => array(
                         "username" => $BETHELAUTHUSERNAME,
                         "passwd" => $BETHELAUTHPASSWD,
@@ -98,7 +103,14 @@ $credentials = json_encode(array(
                         "email" => $email,
                         "passwd" => $password,
                     )
-                ));
+                );
+
+if ($is_frozen){
+    //reset the password if it was frozen so the auth account is reset
+    $credentials['user']['reset'] = 'true';
+}
+$credentials = json_encode($credentials);
+
 $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
 $options = array(
     'http' => array(
@@ -120,7 +132,6 @@ $fullArray = array();
 
 foreach( $array as $option){
     $options = explode(":", $option);
-
     // remove the "'s
     $options[0] = substr($options[0], 1, -1);
     if( $options[1][0] == "\"")
@@ -137,25 +148,14 @@ foreach( $array as $option){
         ["code"] => 68
     )
 */
-//echo "--------------------------------<br />";
-//print_r($fullArray);
-//echo "--------------------------------<br />";
-
-if( $fullArray["status"] == "success")
+if( $fullArray["status"] == "success" || $is_frozen)
 {
 //     Redirect to the login page.
-
     session_start();
     $_SESSION['username'] = $email;
     $_SESSION['password'] = $password;
     session_write_close();
     header( 'Location: /code/salesforce/php/register-login.php' );
-//    session_start();
-//    // This triggers when there is a CAS error.
-//    $error_msg = "why is CAS trying to log me in, my account exists?";
-//    $_SESSION['error_msg'] = $fullArray["message"];
-//    session_write_close();
-//    header( 'Location: http://staging.bethel.edu/admissions/apply' ) ;
 }
 else
 {
@@ -186,7 +186,6 @@ else
     }
 
     // try to log in again.
-
     session_start();
     $_SESSION['email'] = $email;
     $_SESSION['first'] = $first;
@@ -195,76 +194,4 @@ else
     session_write_close();
     header( 'Location: http://staging.bethel.edu/admissions/apply' );
 }
-
-
-
-
-
-####################################################################
-// Caleb's Send reset password email.
-// hook this up to a button or something.
-// Also, I don't know if the other end (after the email) works.
-####################################################################
-
-// Returns a random character string to store in the DB.
-//function get_random_string($length){
-//    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-//    $string = "";
-//    for( $i = 0; $i < $length; $i++)
-//        $string .= $characters[rand(1, $length)];
-//
-//    return $string;
-//}
-//
-//// Also store in the DB here.
-//function password_reset_option($email){
-//    $randomString = get_random_string(32);
-//
-//    // Create connection
-//    $con = mysqli_connect("localhost", "root", "", "salesforce");
-//
-//    if( !$con)
-//    {
-//        die('error');
-//    }
-//
-//    $date = date("Y-m-d H:i:s", time());
-////    echo $date;
-//    $query = 'INSERT INTO forgot_password (UserID, `Key`, expDate) VALUES ("'.$email.'", "'.$randomString.'", "'.$date.'" )';
-//    if(!mysqli_query($con,$query))
-//        die('Error: ' . mysqli_error($con));
-//
-//    mysqli_close($con);
-//
-//
-//    echo "<br />sent email";
-//    send_email($randomString, $email);
-//}
-//
-//function send_email($randomString, $email){
-//    $to = $email;
-//    $from = $email;
-//    $body = '<html>
-//         <head>
-//         </head>
-//         <body>
-//            <p>Go to <a href="https://staging.bethel.edu/code/salesforce/php/password-reset-template.php?id=' . $randomString . '">this</a> link to reset your password.</a></p>
-//         </body>
-//        </html>';
-//
-//    $headers  = 'MIME-Version: 1.0' . "\r\n";
-//    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-//
-//// Modify this name to whatever you want to display.
-//    $headers .= 'From: webmaster@example.com';
-//
-//// to, subject, message, headers
-//    mail( $to, $from, $body, $headers);
-//}
-//
-////$email = "ces55739@bethel.edu";
-//password_reset_option($email);
-
-echo "</pre>";
-
 ?>
