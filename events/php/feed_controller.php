@@ -9,12 +9,6 @@
 ////////////////////////
 // The Controller
 ////////////////////////
-
-//// Display -- loop over each element
-//foreach( $feedHTMLArray as $pageElement){
-//    echo $pageElement;
-//}
-
 function create_feed($feedType){
     $feedHTMLArray = array();
     if( $feedType == "Event Feed" ){
@@ -33,18 +27,20 @@ function create_feed($feedType){
     return $feedHTMLArray;
 }
 
-// Sort the events
-function sort_events( $events ){
-    if( sizeof($events) != 0)
+// Sort an array
+function sort_array( $array ){
+
+    if( sizeof($array) != 0)
     {
-        function cmpi($a, $b)
-        {
-            return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
-        }
-        usort($events, 'cmpi');
+        usort($array, 'sort_by_date');
     }
 
-    return $events;
+    return $array;
+}
+
+function sort_by_date($a, $b)
+{
+    return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
 }
 
 function get_xml($fileToLoad, $categories){
