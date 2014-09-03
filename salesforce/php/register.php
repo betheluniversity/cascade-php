@@ -32,7 +32,7 @@ try {
     $last = $_POST["last"];
 
     $search_email = escapeEmail($email);
-    $search_email = '{' . $email . '}';
+    $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
     $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
     $records = $response->{'searchRecords'};
