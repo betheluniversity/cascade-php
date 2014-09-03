@@ -27,6 +27,9 @@ try {
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $records[0]->id;
+        echo "<pre>";
+        print_r($records);
+        echo "</pre>";
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -36,6 +39,9 @@ try {
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
 
         $contact_id = $createResponse[0]->id;
+        echo "<pre>";
+        print_r($createResponse);
+        echo "</pre>";
     }
 
 //    // test for existing user
