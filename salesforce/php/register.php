@@ -27,9 +27,6 @@ try {
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $records[0]->id;
-        echo "<pre>";
-        print_r($records);
-        echo "</pre>";
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -37,43 +34,42 @@ try {
         $sObject->LastName = $last;
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-
         $contact_id = $createResponse[0]->id;
+    }
+
+    // test for existing user
+    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
+    $records = $response->{'searchRecords'};
+    $has_user = sizeof($records);
+    if ($has_user > 0){
+        //Contact already has a user, go to account recovery page. (Or login?)
+        $user_id = $records[0]->{'Id'};
+    }
+    else{
+        $user_id = false;
+    }
+    // Create user account based on contact info.
+    if (!$has_user){
+        $sObject = new stdclass();
+        //now create a User. If there is a user they have an account already.
+        //  Now create a User object tied to this Contact
+        $sObject->Username = $email;
+        $sObject->Email = $email;
+        $sObject->LastName = $last;
+        $sObject->FirstName = $first;
+        $sObject->Alias = strtolower(substr($first, 0, 1) . substr($last, 0, 4)); //first letter of first name + 4 letters of last name?
+        $sObject->TimeZoneSidKey = "America/Chicago";
+        $sObject->LocaleSidKey = "en_US";
+        $sObject->EmailEncodingKey = "UTF-8";
+        $sObject->ProfileId = $PORTALUSERID; // profile id?
+        $sObject->ContactId = $contact_id;
+        $sObject->LanguageLocaleKey = "en_US";
+        $createResponse = $mySforceConnection->create(array($sObject), 'User');
+        $user_id = $createResponse[0]->id;
         echo "<pre>";
         print_r($createResponse);
         echo "</pre>";
     }
-
-//    // test for existing user
-//    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
-//    $records = $response->{'searchRecords'};
-//    $has_user = sizeof($records);
-//    if ($has_user > 0){
-//        //Contact already has a user, go to account recovery page. (Or login?)
-//        $user_id = $records[0]->{'Id'};
-//    }
-//    else{
-//        $user_id = false;
-//    }
-//    // Create user account based on contact info.
-//    if (!$has_user){
-//        $sObject = new stdclass();
-//        //now create a User. If there is a user they have an account already.
-//        //  Now create a User object tied to this Contact
-//        $sObject->Username = $email;
-//        $sObject->Email = $email;
-//        $sObject->LastName = $last;
-//        $sObject->FirstName = $first;
-//        $sObject->Alias = strtolower(substr($first, 0, 1) . substr($last, 0, 4)); //first letter of first name + 4 letters of last name?
-//        $sObject->TimeZoneSidKey = "America/Chicago";
-//        $sObject->LocaleSidKey = "en_US";
-//        $sObject->EmailEncodingKey = "UTF-8";
-//        $sObject->ProfileId = $PORTALUSERID; // profile id?
-//        $sObject->ContactId = $contact_id;
-//        $sObject->LanguageLocaleKey = "en_US";
-//        $createResponse = $mySforceConnection->create(array($sObject), 'User');
-//        $user_id = $createResponse[0]->id;
-//    }
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
