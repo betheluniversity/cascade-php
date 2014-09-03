@@ -85,17 +85,11 @@ try{
 
 //unfreeze if needed
 if ($is_frozen){
-    echo "<pre>";
-    echo $is_frozen == true;
     $sObject1 = new stdclass();
     $sObject1->Id = $frozen_id;
     $sObject1->IsFrozen = 0;
     //commit the update
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
-
-
-    print_r($response);
-    echo "</pre>";
 }
 //
 //####################################################################
