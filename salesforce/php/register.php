@@ -66,34 +66,35 @@ try {
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
         $user_id = $createResponse[0]->id;
-        echo "<pre>";
-        print_r($createResponse);
-        echo "</pre>";
     }
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
 
-//// Check for frozen account.
-//try{
-//    $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
-//    $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
-//    $frozen_id = $response->{'records'}[0]->{'Id'};
-//}catch (SoapFault $e){
-//    //It fails if there is no record (never frozen)
-//    $is_frozen = false;
-//    $frozen_id = null;
-//}
-//
-////unfreeze if needed
-//if ($is_frozen){
-//    $sObject1 = new stdclass();
-//    $sObject1->Id = $frozen_id;
-//    $sObject1->IsFrozen = 0;
-//    //commit the update
-//    $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
-//}
+// Check for frozen account.
+try{
+    $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
+    $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
+    $frozen_id = $response->{'records'}[0]->{'Id'};
+}catch (SoapFault $e){
+    //It fails if there is no record (never frozen)
+    $is_frozen = false;
+    $frozen_id = null;
+}
+
+//unfreeze if needed
+if ($is_frozen){
+    $sObject1 = new stdclass();
+    $sObject1->Id = $frozen_id;
+    $sObject1->IsFrozen = 0;
+    //commit the update
+    $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
+
+    echo "<pre>";
+    print_r($response);
+    echo "</pre>";
+}
 //
 //####################################################################
 //## CAS account creation.
