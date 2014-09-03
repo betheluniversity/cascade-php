@@ -77,7 +77,7 @@ try{
     $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
     $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
     $frozen_id = $response->{'records'}[0]->{'Id'};
-}catch ($e){
+}catch (Exception $e){
     //It fails if there is no record (never frozen)
     $is_frozen = false;
     $frozen_id = null;
