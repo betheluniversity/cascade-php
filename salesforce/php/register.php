@@ -1,19 +1,4 @@
 <?php
-
-function escapeEmail($email) {
-    $characters = array('?', '&', '!', '^', '+', '-');
-    $resp = "";
-    $email = str_split($email);
-    foreach ($email as $char){
-        if(in_array($char, $characters)){
-            $resp .= "\\" . $char;
-        }else{
-            $resp .= $char;
-        }
-    }
-    return $resp;
-}
-
 $staging = strstr(getcwd(), "staging/public");
 
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
@@ -32,8 +17,8 @@ try {
     $first = $_POST["first"];
     $last = $_POST["last"];
     $password = $_POST["password"];
-    $search_email = escapeEmail($email);
-    $search_email = '{' . $search_email . '}';
+
+    $search_email = '{' . $email . '}';
     // search for a Contact with this email?
     $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
     $records = $response->{'searchRecords'};
