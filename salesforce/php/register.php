@@ -16,7 +16,6 @@ try {
     $email = $_POST["email"];
     $first = $_POST["first"];
     $last = $_POST["last"];
-    $password = $_POST["password"];
 
     $search_email = '{' . $email . '}';
     // search for a Contact with this email?
@@ -92,49 +91,59 @@ if ($is_frozen){
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
 //
-//####################################################################
-//## CAS account creation.
-//####################################################################
-//$credentials = array(
-//                    "auth" => array(
-//                        "username" => $BETHELAUTHUSERNAME,
-//                        "passwd" => $BETHELAUTHPASSWD,
-//                    ),
-//                    "user" => array(
-//                        "email" => $email,
-//                    )
-//                );
-////need this?
+####################################################################
+## CAS account creation.
+####################################################################
+$credentials = array(
+                    "auth" => array(
+                        "username" => $BETHELAUTHUSERNAME,
+                        "passwd" => $BETHELAUTHPASSWD,
+                    ),
+                    "user" => array(
+                        "email" => $email,
+                        "first_name" => $first,
+                        "last_name" => $last,
+                        "activate_email" => "true"
+                    )
+                );
+//need this?
 //if ($is_frozen){
 //    //reset the password if it was frozen so the auth account is reset
 //    $credentials['user']['reset'] = 'true';
 //}
-//$credentials = json_encode($credentials);
-//
-//if ($staging){
-//    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
-//}else{
-//    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
-//}
-//$options = array(
-//    'http' => array(
-//        'header'  => "Content-type: application/json",
-//        'method'  => 'POST',
-//        'content' => $credentials,
-//    ),
-//);
-//$context  = stream_context_create($options);
-//
-//// Here is the returned value
-//$result = file_get_contents($url, false, $context);
-//
-//if($result){
-//    if ($staging){
-//        $url = 'http://staging.bethel.edu/admissions/apply/?email=true';
-//    }else{
-//        $url = 'http://apply.bethel.edu/?email=true';
-//    }
-//}
-////else??
+$credentials = json_encode($credentials);
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json",
+        'method'  => 'POST',
+        'content' => $credentials,
+    ),
+);
+$context  = stream_context_create($options);
+
+if ($staging){
+    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+}else{
+    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+}
+
+// Here is the returned value
+$result = file_get_contents($url, false, $context);
+$json = json_decode($result, true);
+
+if ($staging){
+    $url = 'http://staging.bethel.edu/admissions/apply/';
+}else{
+    $url = 'http://apply.bethel.edu/';
+}
+
+if($json['status'] == "success"){
+    $url .= "?email=true";
+}else{
+    $url .= "?email=false";
+}
+
+header("Location: $url");
+
 
 ?>
