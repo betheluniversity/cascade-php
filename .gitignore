@@ -3,3 +3,9 @@
 salesforce/php/userAuth.php
 events/php/calendar.php
 salesforce/php/toolkit/
+
+.idea/deployment.xml
+
+.idea/modules.xml
+
+.idea/workspace.xml
