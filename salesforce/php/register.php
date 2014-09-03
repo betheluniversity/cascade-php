@@ -1,6 +1,20 @@
 <?php
 $staging = strstr(getcwd(), "staging/public");
 
+function escapeEmail($email) {
+    $characters = array('?', '&', '!', '^', '+', '-');
+    $resp = "";
+    $email = str_split($email);
+    foreach ($email as $char){
+        if(in_array($char, $characters)){
+            $resp .= "\\" . $char;
+        }else{
+            $resp .= $char;
+        }
+    }
+    return $resp;
+}
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -17,6 +31,7 @@ try {
     $first = $_POST["first"];
     $last = $_POST["last"];
 
+    $search_email = escapeEmail($email);
     $search_email = '{' . $email . '}';
     // search for a Contact with this email?
     $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
