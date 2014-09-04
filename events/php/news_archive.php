@@ -9,6 +9,7 @@
 
 // returns an array of html elements.
 function create_archive(){
+
     // Feed
     global $newsArticleFeedCategories;
     $categories = $newsArticleFeedCategories;

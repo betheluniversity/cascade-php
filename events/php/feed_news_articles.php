@@ -35,7 +35,6 @@ function create_news_article_feed(){
     }
 
     $sortedArticles = sort_array($arrayOfArticles);
-    $sortedArticles = array_reverse($sortedArticles);
 
     // Only grab the first X number of articles.
     global $NumArticles;

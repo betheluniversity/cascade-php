@@ -1,6 +1,20 @@
 <?php
 $staging = strstr(getcwd(), "staging/public");
 
+function escapeEmail($email) {
+    $characters = array('?', '&', '!', '^', '+', '-');
+    $resp = "";
+    $email = str_split($email);
+    foreach ($email as $char){
+        if(in_array($char, $characters)){
+            $resp .= "\\" . $char;
+        }else{
+            $resp .= $char;
+        }
+    }
+    return $resp;
+}
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -16,9 +30,9 @@ try {
     $email = $_POST["email"];
     $first = $_POST["first"];
     $last = $_POST["last"];
-    $password = $_POST["password"];
 
-    $search_email = '{' . $email . '}';
+    $search_email = escapeEmail($email);
+    $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
     $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
     $records = $response->{'searchRecords'};
@@ -34,7 +48,6 @@ try {
         $sObject->LastName = $last;
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-
         $contact_id = $createResponse[0]->id;
     }
 
@@ -78,7 +91,7 @@ try{
     $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
     $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
     $frozen_id = $response->{'records'}[0]->{'Id'};
-}catch (SoapFault $e){
+}catch (Exception $e){
     //It fails if there is no record (never frozen)
     $is_frozen = false;
     $frozen_id = null;
@@ -92,7 +105,7 @@ if ($is_frozen){
     //commit the update
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
-
+//
 ####################################################################
 ## CAS account creation.
 ####################################################################
@@ -103,21 +116,17 @@ $credentials = array(
                     ),
                     "user" => array(
                         "email" => $email,
-                        "passwd" => $password,
+                        "first_name" => $first,
+                        "last_name" => $last,
+                        "activate_email" => "true"
                     )
                 );
-
-if ($is_frozen){
-    //reset the password if it was frozen so the auth account is reset
-    $credentials['user']['reset'] = 'true';
-}
+//need this?
+//if ($is_frozen){
+//    //reset the password if it was frozen so the auth account is reset
+//    $credentials['user']['reset'] = 'true';
+//}
 $credentials = json_encode($credentials);
-
-if ($staging){
-    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
-}else{
-    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
-}
 $options = array(
     'http' => array(
         'header'  => "Content-type: application/json",
@@ -127,81 +136,29 @@ $options = array(
 );
 $context  = stream_context_create($options);
 
+if ($staging){
+    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+}else{
+    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+}
+
 // Here is the returned value
 $result = file_get_contents($url, false, $context);
+$json = json_decode($result, true);
 
-// remove the '{' and '}' from beginning/end of string.
-$result = substr($result, 1, -1);
-$array = explode(",", $result );
-
-$fullArray = array();
-
-foreach( $array as $option){
-    $options = explode(":", $option);
-    // remove the "'s
-    $options[0] = substr($options[0], 1, -1);
-    if( $options[1][0] == "\"")
-        $options[1] = substr($options[1], 1, -1);
-
-    $fullArray[$options[0]] = $options[1];
+if ($staging){
+    $url = 'http://staging.bethel.edu/admissions/apply/';
+}else{
+    $url = 'http://apply.bethel.edu/';
 }
 
-/* $fullArray is in the form:
-    Array
-    (
-        ["status"] => error
-        ["message"] => Duplicate account - alternate address
-        ["code"] => 68
-    )
-*/
-if( $fullArray["status"] == "success" || $is_frozen)
-{
-//     Redirect to the login page.
-    session_start();
-    $_SESSION['username'] = $email;
-    $_SESSION['password'] = $password;
-    session_write_close();
-    header( 'Location: /code/salesforce/php/register-login.php' );
+if($json['status'] == "success"){
+    $url .= "?email=true";
+}else{
+    $url .= "?email=false";
 }
-else
-{
-    // Stay on the same page, since errors came up.
-    $error_msg = "We are sorry, but your register attempt has failed.<br />";
-    if( !array_key_exists( "code", $fullArray) )
-    {
-        $error_msg .= "Please try again later";
-    }
-    else
-    {
-        if( $fullArray["code"] == 68 )
-        {
-            $error_msg .= "There is already an account with that email. Try logging in.<br /> Otherwise, try again or use a different email.";
-            //header( 'Location: http://staging.bethel.edu/_testing/salesforce-go-to-button-test?register_attempt=duplicate' ) ;
 
-            // https://auth.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi
-            // do a post request with ^^ url
-        }
-        elseif( $fullArray["code"] == 80)
-        {
-            $error_msg .= "A password must be greater than 8 characters, include 1+ number, and include 1+ symbol.";
-        }
-        else
-        {
-            $error_msg .= "Please try again.<br />A password must be greater than 8 characters, include 1+ number, and include 1+ symbol.";
-        }
-    }
+header("Location: $url");
 
-    // try to log in again.
-    session_start();
-    $_SESSION['email'] = $email;
-    $_SESSION['first'] = $first;
-    $_SESSION['last'] = $last;
-    $_SESSION['error_msg'] = $error_msg;
-    session_write_close();
-    if( $staging ){
-        header( 'Location: http://staging.bethel.edu/admissions/apply' );
-    }else{
-        header( 'Location: https://apply.bethel.edu/' );
-    }
-}
+
 ?>
