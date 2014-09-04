@@ -6,7 +6,7 @@
  * Time: 9:35 AM
  */
 // GLOBALS
-$currentYear;
+$yearChosen;
 // returns an array of html elements.
 function create_archive(){
 
@@ -86,9 +86,10 @@ function inspect_news_archive_page($xml){
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2013') || strstr($xml->path, '2014') ) )
+    global $yearChosen;
+
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, $yearChosen) ) )
     {
-        global $currentYear;
         $date = $page_info['date'];
         $page_info['day'] = date("d", $date);
         $page_info['year'] = date("Y", $date);
@@ -96,12 +97,6 @@ function inspect_news_archive_page($xml){
         $page_info['month-name'] = date("F", $date);
 
         $page_info['html'] = get_news_article_html($page_info, $xml);
-
-        /*if($page_info['title'] == "Video Tour of Brushaber Commons Available")
-        {
-            echo date("F", $date)." ".date("d", $date).", ".date("Y", $date)."<br>".$page_info['date'];
-        }*/
-
     }
 
     return $page_info;
