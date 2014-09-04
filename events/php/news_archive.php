@@ -35,7 +35,7 @@ function create_archive(){
 
     foreach( $arrayOfArticles as $yearArray )
     {
-        echo "<div class='year " . $yearArray['01'][0]['year'] . "' >";
+        echo "<div class='archive-year year-" . $yearArray['01'][0]['year'] . "' >";
         for( $i = 1; $i <= 12 ;$i++)
         {
             if( $i <= 10 )
