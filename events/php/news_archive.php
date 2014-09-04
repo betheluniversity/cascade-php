@@ -35,7 +35,8 @@ function create_archive(){
 
     foreach( $arrayOfArticles as $yearArray )
     {
-        echo "<div class='year " . $yearArray['01'][0]['year'] . "' >";
+        echo "<div class='archive-year year-" . $yearArray['01'][0]['year'] . "' >";
+        //$yearArray['01'][0]['year']
         for( $i = 1; $i <= 12 ;$i++)
         {
             if( $i <= 10 )
@@ -93,6 +94,12 @@ function inspect_news_archive_page($xml){
         $page_info['month-name'] = date("F", $date);
 
         $page_info['html'] = get_news_article_html($page_info, $xml);
+
+        /*if($page_info['title'] == "Video Tour of Brushaber Commons Available")
+        {
+            echo date("F", $date)." ".date("d", $date).", ".date("Y", $date)."<br>".$page_info['date'];
+        }*/
+
     }
 
     return $page_info;
@@ -133,14 +140,14 @@ function sort_news_articles( $articles ){
         $finalArray[ $articleYear ][ $articleMonth ] = $tempMonthArray;
     }
 
-    // Need to sort the arrays properly.
     foreach($finalArray as $yearArray)
     {
+        $currentYear = array_search($yearArray, $finalArray);
         foreach($yearArray as $monthArray)
         {
-            /// **** here is where you sort each month
-            // sort_news_archive returns the new array.
-            $newMonthArray = sort_news_archive($monthArray);
+            $currentMonth = array_search($monthArray, $yearArray);
+            //echo $currentYear."--".$currentMonth."<br/>";
+            $finalArray[$currentYear][$currentMonth] = sort_news_archive($monthArray);
         }
     }
 
