@@ -14,8 +14,7 @@ $UniqueNews;
 
 $NumArticles;
 $AddFeaturedArticle;
-$StartDate;
-$EndDate;
+$ExpireAfterXDays;
 
 $featuredArticleOptions;
 
@@ -112,25 +111,17 @@ function inspect_news_article_page($xml){
 
 // Determine if the news article falls within the given range to be displayed
 function display_on_feed_news_articles($page_info, $ds){
-    $date = $ds->{'publish-date'};
-    global $StartDate;
-    global $EndDate;
+    $publishDate = $ds->{'publish-date'} / 1000;
+    $currentDate = time();
+    global $ExpireAfterXDays;
+    $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
 
     if( $page_info['display-on-feed'] == "Metadata Matches")
     {
         // Check if it falls between the given range.
-        if( $StartDate != "" && $EndDate != "" ){
-            if( $StartDate < $date && $date < $EndDate){
-                return "Yes";
-            }
-        }
-        elseif( $StartDate != ""){
-            if( $StartDate < $date){
-                return "Yes";
-            }
-        }
-        elseif( $EndDate != ""){
-            if( $date < $EndDate){
+        if( $ExpireAfterXDays != "" ){
+            // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
+            if( $publishDate > $currentDate - $ExpiresInSeconds){
                 return "Yes";
             }
         }

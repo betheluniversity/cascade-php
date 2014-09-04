@@ -7,30 +7,8 @@
  */
 // GLOBALS
 
-// Metadata of feed
-$School;
-$Department;
-$UniqueNews;
-
-$NumArticles;
-$Heading;
-//$HideWhenNone;
-$AddFeaturedArticle;
-$StartDate;
-$EndDate;
-
-$featuredArticleOptions;
-
-$AddButton;
-$MoreArticlesLink;
-$ButtonText;
-
-
-
-
 // returns an array of html elements.
 function create_archive(){
-    echo "<h1>Made it</h1>";
     // Feed
     global $newsArticleFeedCategories;
     $categories = $newsArticleFeedCategories;
@@ -48,293 +26,135 @@ function create_archive(){
         $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", $categories);
     }
 
-    $sortedArticles = sort_news_articles($arrayOfArticles);
+//    foreach($arrayOfArticles as $value )
+//        echo $value['html'];
 
-    // Only grab the first X number of articles.
-    global $NumArticles;
-    $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
+    $arrayOfArticles = sort_news_articles( $arrayOfArticles );
+    $arrayOfArticles = array_reverse($arrayOfArticles);
 
-    $articleArray = array();
-    foreach( $sortedArticles as $article){
-        array_push($articleArray, $article['html']);
-    }
-
-    // HEADING
-    global $Heading;
-    $heading = array("<h2>".$Heading."</h2>");
-
-    // FEATURED ARTICLES
-    $featuredArticles = create_featured_articles_array();
-
-    // BUTTON
-    global $AddButton;
-    global $MoreArticlesLink;
-    global $ButtonText;
-    $buttonHTML = array("");
-
-    if( $AddButton == "Yes")
+    foreach( $arrayOfArticles as $yearArray )
     {
-        array_push( $buttonHTML, '<a id="news-article-button" class="btn center" href="http://www.bethel.edu/' . $MoreArticlesLink . '">' . $ButtonText . '</a>');
+        echo "<div class='year " . $yearArray['01'][0]['year'] . "' >";
+        for( $i = 1; $i <= 12 ;$i++)
+        {
+            if( $i <= 10 )
+                $newi = '0'.$i;
+            else
+                $newi = $i;
+            if( sizeof($yearArray[$newi]) > 0)
+            {
+                echo "<a name='" . strtolower($yearArray[$newi][0]['month-name']) . "'></a>";
+                echo "<h4>" . $yearArray[$newi][0]['month-name'] . "</h4>";
+
+                echo '<ul style="list-style:none outside none;padding-left:15px;">';
+                foreach( $yearArray[$newi] as $article)
+                {
+                    echo $article['html'];
+                }
+                echo "</ul>";
+            }
+        }
+        echo "</div>";
     }
 
-    // Hide if None
-    global $HideWhenNone;
-    if( sizeOf( $articleArray) == 0){
-        if( $HideWhenNone == "Yes"){
-            $heading = array();
-            $articleArray = array();
-        }
-        else{
-            $articleArray = array("<p>No news articles at this time.</p>");
-        }
-    }
-
-    $combinedArray = array_merge($featuredArticles, $heading, $articleArray, $buttonHTML);
-
-    return $combinedArray;
+    // This should return an array of 5 items. Each of those includes a full years worth of articles, pre-sorted, and including the headers.
+//    return $articleArray;
+    return;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_article_page($xml, $categories){
+function inspect_news_archive_page($xml){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
         "published" => $xml->{'last-published-on'},
         "description" => $xml->{'description'},
         "path" => $xml->path,
-        "date" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
+        "date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
-        "display-on-feed" => "No",
+        "display-on-feed" => "Yes",
     );
 
     $ds = $xml->{'system-data-structure'};
-    $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
-    $page_info['date-for-sorting'] = time();
 
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
     if( $dataDefinition == "News Article")
     {
+        $date = $page_info['date'];
+        $page_info['day'] = date("d", $date);
+        $page_info['year'] = date("Y", $date);
+        $page_info['month'] = date("m", $date);
+        $page_info['month-name'] = date("F", $date);
 
         $page_info['html'] = get_news_article_html($page_info, $xml);
-
-        $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
-
-        // Featured Articles
-        global $featuredArticleOptions;
-        global $AddFeaturedArticle;
-        // Check if it is a featured Article.
-        // If so, get the featured article html.
-        if ( $AddFeaturedArticle == "Yes"){
-            foreach( $featuredArticleOptions as $key=>$options)
-            {
-                // Check if the url of the article = the url of the desired feature article.
-                if( $page_info['path'] == $options[0]){
-                    $featuredArticleOptions[$key][3] = get_featured_article_html( $page_info, $xml, $options);
-                }
-            }
-        }
     }
 
     return $page_info;
 }
 
-// Determine if the news article falls within the given range to be displayed
-function display_on_feed_news_articles($page_info, $ds){
-    $date = $ds->{'publish-date'};
-    global $StartDate;
-    global $EndDate;
-
-    if( $page_info['display-on-feed'] == "Metadata Matches")
-    {
-        // Check if it falls between the given range.
-        if( $StartDate != "" && $EndDate != "" ){
-            if( $StartDate < $date && $date < $EndDate){
-                return "Yes";
-            }
-        }
-        elseif( $StartDate != ""){
-            if( $StartDate < $date){
-                return "Yes";
-            }
-        }
-        elseif( $EndDate != ""){
-            if( $date < $EndDate){
-                return "Yes";
-            }
-        }
-        else
-        {
-            return "Yes";
-        }
-    }
-
-    return "No";
-}
 
 // Returns the html of the news article
 function get_news_article_html( $article, $xml ){
-    $ds = $xml->{'system-data-structure'};
-    $imagePath = $ds->{'media'}->{'image'}->{'path'};
-    $date = $ds->{'publish-date'};
 
-    $html = '<div class="grid">';
-    $html .= '<div class="grid-cell  u-medium-1-3">';
-    $html .= '<div class="medium-grid-pad-1x">';
+    $path = $article['path'];
+    $title = $article['title'];
 
-    global $destinationName;
-    $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">';
-    $html .= render_image($imagePath, $article['description'], "media-box-img  delayed-image-load", "", $destinationName);
-    $html .= '</a>';
-    $html .= '</div>';
-    $html .= '</div>';
+    $day = $article['day'];
 
-    $html .= '<div class="grid-cell  u-medium-2-3">';
-    $html .= '<div class="medium-grid-pad-1x">';
-    $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$article['path'].'">'.$article['title'].'</a></h2>';
-
-    if( $date != "" && $date != "null" )
-    {
-        $formattedDate = format_featured_date_news_article($date);
-        $html .= "<p>".$formattedDate."</p>";
-    }
-
-    $html .= '<p>'.$article['description'].'</p>';
-    $html .= '</div>';
-
-    $html .= '</div>';
-    $html .= '</div>';
+    $html = "<li>";
+    $html .= $day . " - <a href='https://www.bethel.edu/" .$path . "'>" . $title . "</a>";
+    $html .= "</li>";
 
     return $html;
-}
-
-// Checks the metadata of the page against the metadata of the news articles.
-// if it matches, return "Metadata Matches"
-// else, return "No"
-function match_metadata_news_articles($xml, $categories){
-    global $School;
-    global $Department;
-    global $UniqueNews;
-    foreach ($xml->{'dynamic-metadata'} as $md){
-
-        $name = $md->name;
-
-        foreach($md->value as $value ){
-            if($value == "Select" || $value == "select"){
-                continue;
-            }
-            if( $name == "school")
-            {
-                if (in_array($value, $School)){
-                    return "Metadata Matches";
-                }
-            }
-            elseif( $name == "department")
-            {
-                if (in_array($value, $Department)){
-                    return "Metadata Matches";
-                }
-            }
-            elseif( $name == "unique-news")
-            {
-                if (in_array($value, $UniqueNews)){
-                    return "Metadata Matches";
-                }
-            }
-        }
-    }
-    return "No";
-}
-
-
-// Create the Featured Articles.
-function create_featured_articles_array(){
-    $featuredArticles = array();
-
-    global $featuredArticleOptions;
-
-    foreach( $featuredArticleOptions as $key=>$options ){
-        if( $options[3] != "null" && $options[3] != ""){
-            array_push($featuredArticles, $options[3]);
-        }
-    }
-    return $featuredArticles;
-}
-
-// Returns the featured Article html.
-function get_featured_article_html($page_info, $xml, $options){
-    $ds = $xml->{'system-data-structure'};
-    $imagePath = $ds->{'media'}->{'image'}->{'path'};
-    $date = $ds->{'publish-date'};
-
-    // Only display it if it has an image.
-    if( $imagePath != "" && $imagePath != "/")
-    {
-        $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
-        $html .= '<div class="grid left false">';
-        $html .= '<div class="grid-cell  u-medium-1-2">';
-        $html .= '<div class="medium-grid-pad-1x">';
-
-        global $destinationName;
-        $html .= render_image($imagePath, $page_info['title'], "delayed-image-load", "400", $destinationName);
-
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '<div class="grid-cell  u-medium-1-2">';
-        $html .= '<div class="medium-grid-pad-1x">';
-        if( $page_info['title'] != "")
-            $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></h2>';
-
-        if( $date != "" && $date != "null" )
-        {
-            $formattedDate = format_featured_date_news_article($date);
-            $html .= "<p>".$formattedDate."</p>";
-        }
-
-        if( $options[1] != "" )
-            $html .= '<p>'.$options[1].'</p>';
-        elseif( $page_info['description'] != "")
-            $html .= '<p>'.$page_info['description'].'</p>';
-
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-        $html .= '</div>';
-
-    }
-    else
-        return "null";
-
-    return $html;
-}
-
-// Returns a formatted version of the date.
-function format_featured_date_news_article( $date)
-{
-    $date = $date/1000;
-    $formattedDate = date("F d, Y | g:i a", $date);
-
-    // Change am/pm to a.m./p.m.
-    $formattedDate = str_replace("am", "a.m.", $formattedDate);
-    $formattedDate = str_replace("pm", "p.m.", $formattedDate);
-
-    // format 7:00 to 7
-    $formattedDate = str_replace(":00", "", $formattedDate);
-    return $formattedDate;
 }
 
 // Sort the array of articles, newest first.
 function sort_news_articles( $articles ){
-    function cmpi($a, $b)
-    {
-        return strcmp($b["date"], $a["date"]);
-    }
-    usort($articles, 'cmpi');
+    $finalArray = array();
 
-    return $articles;
+    // Puts the articles into the correct arrays
+    foreach( $articles as $article)
+    {
+        $articleYear = $article['year'];
+        $articleMonth = $article['month'];
+
+        if( sizeof( $finalArray[ $articleYear ][ $articleMonth ]) > 0)
+            $tempMonthArray = $finalArray[ $articleYear ][ $articleMonth ];
+        else
+            $tempMonthArray = array();
+
+        array_push( $tempMonthArray, $article );
+        $finalArray[ $articleYear ][ $articleMonth ] = $tempMonthArray;
+    }
+
+    // Need to sort the arrays properly.
+    foreach($finalArray as $yearArray)
+    {
+        foreach($yearArray as $monthArray)
+        {
+            /// **** here is where you sort each month
+            // sort_news_archive returns the new array.
+            $newMonthArray = sort_news_archive($monthArray);
+        }
+    }
+
+    return $finalArray;
 }
+
+function sort_news_archive( $array ){
+    usort($array, 'sort_by_day');
+
+    return $array;
+}
+
+function sort_by_day($a, $b)
+{
+    return strcmp($a["day"], $b["day"]);
+}
+
 ?>
