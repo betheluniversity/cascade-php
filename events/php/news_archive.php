@@ -75,6 +75,7 @@ function inspect_news_archive_page($xml){
         "published" => $xml->{'last-published-on'},
         "description" => $xml->{'description'},
         "path" => $xml->path,
+        "external-path" => $xml->{'system-data-structure'}->{'external-link'},
         "date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
@@ -88,7 +89,7 @@ function inspect_news_archive_page($xml){
 
     global $yearChosen;
 
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, $yearChosen) ) )
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )//&& ( strstr($xml->path, $yearChosen) ) )
     {
         $date = $page_info['date'];
         $page_info['day'] = date("d", $date);
@@ -107,12 +108,16 @@ function inspect_news_archive_page($xml){
 function get_news_article_html( $article, $xml ){
 
     $path = $article['path'];
+    $externalPath = $article['external-path'];
     $title = $article['title'];
 
     $day = $article['day'];
 
     $html = "<li>";
-    $html .= $day . " - <a href='https://www.bethel.edu/" .$path . "'>" . $title . "</a>";
+    if( $externalPath == "")
+        $html .= $day . " - <a href='https://www.bethel.edu/" .$path . "'>" . $title . "</a>";
+    else
+        $html .= $day . " - <a href='" . $externalPath . "'>" . $title . "</a>";
     $html .= "</li>";
 
     return $html;
