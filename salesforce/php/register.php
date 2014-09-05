@@ -92,7 +92,8 @@ try {
         $sObject->ContactId = $contact_id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
-        error_log($createResponse);
+        $output = print_r($createResponse,1);
+        error_log($output);
         $user_id = $createResponse[0]->{'Id'};
     }
 
