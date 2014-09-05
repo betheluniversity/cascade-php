@@ -19,7 +19,7 @@ function escapeEmail($email) {
 if ($staging){
     $url = 'http://staging.bethel.edu/admissions/apply/';
 }else{
-    $url = 'http://apply.bethel.edu/';
+    $url = 'https://apply.bethel.edu/';
 }
 
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
@@ -41,13 +41,13 @@ try {
     $search_email = escapeEmail($email);
     $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
-    $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
+    $response = $mySforceConnection->search("find $search_email in email fields returning contact(email id)");
     $records = $response->{'searchRecords'};
 
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
-        $contact_id = $records[0]->Id;
+        $contact_id = $records[0]->{'Id'};
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -55,7 +55,7 @@ try {
         $sObject->LastName = $last;
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-        $contact_id = $createResponse[0]->id;
+        $contact_id = $createResponse[0]->{'Id'};
     }
     if (!$contact_id){
         $url .= "?cid=false";
@@ -63,7 +63,7 @@ try {
     }
 
     // test for existing user
-    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
+    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, id)");
     $records = $response->{'searchRecords'};
     $has_user = sizeof($records);
     if ($has_user > 0){
