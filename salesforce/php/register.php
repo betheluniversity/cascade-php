@@ -186,7 +186,7 @@ $result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['status'] == "success"){
-    $url .= "?email=true&uid=$user_id&cid=$contact_id";
+    $url .= "?email=true";
 }else{
     $url .= "?email=false";
 }
