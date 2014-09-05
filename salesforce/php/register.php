@@ -154,13 +154,13 @@ $options = array(
 $context  = stream_context_create($options);
 
 if ($staging){
-    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+    $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
 }else{
-    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+    $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
 }
 
 // Here is the returned value
-$result = file_get_contents($url, false, $context);
+$result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['status'] == "success"){
