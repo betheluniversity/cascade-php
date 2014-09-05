@@ -50,6 +50,7 @@ try {
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $records[0]->Id;
     }else{
+        error_log('no contact found');
         //Create one and save the id
         $sObject = new stdclass();
         $sObject->FirstName = $first;
@@ -57,6 +58,8 @@ try {
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
         $contact_id = $createResponse[0]->Id;
+        $output = print_r($createResponse,1);
+        error_log('contact create : ' . $output);
     }
 
     if ($contact_id == ""){
@@ -71,7 +74,7 @@ try {
 
     // test for existing user
     $response = $mySforceConnection->search("find $search_email in email fields returning user(email, id)");
-    error_log('testing : ' . "find $search_email in email fields returning user(email, id)");
+    error_log('testing : ' . "");
     $output = print_r($response,1);
     error_log('user search : ' . $output);
     $has_contact = sizeof($records);
