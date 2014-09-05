@@ -47,7 +47,7 @@ try {
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
-        $contact_id = $records[0]->{'Id'};
+        $contact_id = $records[0]->Id;
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -55,7 +55,7 @@ try {
         $sObject->LastName = $last;
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-        $contact_id = $createResponse[0]->{'Id'};
+        $contact_id = $createResponse[0]->Id;
     }
 
     if (!$contact_id){
@@ -69,7 +69,7 @@ try {
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
-        $user_id = $records[0]->{'Id'};
+        $user_id = $records[0]->Id;
     }
     else{
         $user_id = false;
@@ -109,7 +109,7 @@ try {
 try{
     $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
     $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
-    $frozen_id = $response->{'records'}[0]->{'Id'};
+    $frozen_id = $response->{'records'}[0]->Id;
 }catch (Exception $e){
     //It fails if there is no record (never frozen)
     $is_frozen = false;
