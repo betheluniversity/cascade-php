@@ -15,6 +15,13 @@ function escapeEmail($email) {
     return $resp;
 }
 
+//prepare a URL for returing
+if ($staging){
+    $url = 'http://staging.bethel.edu/admissions/apply/';
+}else{
+    $url = 'http://apply.bethel.edu/';
+}
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -40,7 +47,7 @@ try {
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
-        $contact_id = $records[0]->id;
+        $contact_id = $records[0]->Id;
     }else{
         //Create one and save the id
         $sObject = new stdclass();
@@ -49,6 +56,10 @@ try {
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
         $contact_id = $createResponse[0]->id;
+    }
+    if (!$contact_id){
+        $url .= "?cid=false"
+        header("Location: $url");
     }
 
     // test for existing user
@@ -79,8 +90,14 @@ try {
         $sObject->ContactId = $contact_id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
-        $user_id = $createResponse[0]->id;
+        $user_id = $createResponse[0]->Id;
     }
+
+    if (!$user_id){
+        $url .= "?uid=false"
+        header("Location: $url");
+    }
+
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
@@ -145,12 +162,6 @@ if ($staging){
 // Here is the returned value
 $result = file_get_contents($url, false, $context);
 $json = json_decode($result, true);
-
-if ($staging){
-    $url = 'http://staging.bethel.edu/admissions/apply/';
-}else{
-    $url = 'http://apply.bethel.edu/';
-}
 
 if($json['status'] == "success"){
     $url .= "?email=true";
