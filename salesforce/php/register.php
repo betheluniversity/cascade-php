@@ -61,7 +61,11 @@ try {
     if (!$contact_id){
         $url .= "?cid=false";
         header("Location: $url");
+    }else{
+        error_log("contact id is : " . $contact_id);
     }
+
+
 
     // test for existing user
     $response = $mySforceConnection->search("find $search_email in email fields returning user(email, id)");
@@ -100,6 +104,8 @@ try {
     if (!$user_id){
         $url .= "?uid=false";
         header("Location: $url");
+    }else{
+        error_log("user id is : " . $user_id);
     }
 
 } catch (Exception $e) {
