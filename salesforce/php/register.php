@@ -185,11 +185,11 @@ $result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['status'] == "success"){
-    $url .= "?email=true";
+    $url = "https://apply.bethel.edu/confirm";
+    header("Location: $url");
 }else{
     $url .= "?email=false";
+    header("Location: $url");
 }
-
-header("Location: $url");
 
 ?>
