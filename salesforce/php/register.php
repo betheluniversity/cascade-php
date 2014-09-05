@@ -57,7 +57,7 @@ try {
         $sObject->LastName = $last;
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-        $contact_id = $createResponse[0]->Id;
+        $contact_id = $createResponse[0]->id;
         $output = print_r($createResponse,1);
         error_log('contact create : ' . $output);
     }
