@@ -71,6 +71,9 @@ try {
 
     // test for existing user
     $response = $mySforceConnection->search("find $search_email in email fields returning user(email, id)");
+    $output = print_r($response,1);
+    error_log('user search : ' . $output);
+    $has_contact = sizeof($records);
     $records = $response->{'searchRecords'};
     $has_user = sizeof($records);
     if ($has_user > 0){
