@@ -41,7 +41,7 @@ try {
     $search_email = escapeEmail($email);
     $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
-    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
+    $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
     $output = print_r($response,1);
     error_log('contact search : ' . $output);
