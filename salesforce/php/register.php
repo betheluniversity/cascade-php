@@ -57,6 +57,7 @@ try {
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
         $contact_id = $createResponse[0]->{'Id'};
     }
+
     if (!$contact_id){
         $url .= "?cid=false";
         header("Location: $url");
@@ -73,6 +74,7 @@ try {
     else{
         $user_id = false;
     }
+
     // Create user account based on contact info.
     if (!$has_user){
         $sObject = new stdclass();
@@ -164,7 +166,7 @@ $result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['status'] == "success"){
-    $url .= "?email=true";
+    $url .= "?email=true&uid=$user_id&cid=$contact_id";
 }else{
     $url .= "?email=false";
 }
