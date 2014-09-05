@@ -112,7 +112,7 @@ try {
         $user_id = $createResponse[0]->{'Id'};
     }
 
-    if (!$user_id){
+    if ($user_id == ""){
         $url .= "?uid=false";
         header("Location: $url");
         exit;
