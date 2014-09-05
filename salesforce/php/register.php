@@ -62,6 +62,7 @@ try {
     if ($contact_id == ""){
         $url .= "?cid=false";
         header("Location: $url");
+        exit;
     }else{
         error_log("contact id is : " . $contact_id);
     }
@@ -105,6 +106,7 @@ try {
     if (!$user_id){
         $url .= "?uid=false";
         header("Location: $url");
+        exit;
     }else{
         error_log("user id is : " . $user_id);
     }
