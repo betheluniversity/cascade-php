@@ -43,7 +43,8 @@ try {
     // search for a Contact with this email?
     $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, id)");
     $records = $response->{'searchRecords'};
-
+    $output = print_r($response,1);
+    error_log('contact search : ' . $output);
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
@@ -97,7 +98,7 @@ try {
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
         $output = print_r($createResponse,1);
-        error_log($output);
+        error_log('create user : ' . $output);
         $user_id = $createResponse[0]->{'Id'};
     }
 
