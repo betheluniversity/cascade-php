@@ -58,7 +58,7 @@ try {
         $contact_id = $createResponse[0]->id;
     }
     if (!$contact_id){
-        $url .= "?cid=false"
+        $url .= "?cid=false";
         header("Location: $url");
     }
 
@@ -94,7 +94,7 @@ try {
     }
 
     if (!$user_id){
-        $url .= "?uid=false"
+        $url .= "?uid=false";
         header("Location: $url");
     }
 
