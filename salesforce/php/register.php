@@ -59,7 +59,7 @@ try {
         $contact_id = $createResponse[0]->Id;
     }
 
-    if (!$contact_id){
+    if ($contact_id == ""){
         $url .= "?cid=false";
         header("Location: $url");
     }else{
