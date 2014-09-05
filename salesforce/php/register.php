@@ -41,8 +41,8 @@ try {
     $search_email = escapeEmail($email);
     $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
-    $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, id)");
-    $records = $response->{'searchRecords'};
+    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
+    $records = $response->{'records'};
     $output = print_r($response,1);
     error_log('contact search : ' . $output);
     $has_contact = sizeof($records);
@@ -71,14 +71,13 @@ try {
     }
 
 
-
     // test for existing user
-    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, id)");
+    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
     error_log('testing : ' . "");
     $output = print_r($response,1);
     error_log('user search : ' . $output);
     $has_contact = sizeof($records);
-    $records = $response->{'searchRecords'};
+    $records = $response->{'records'};
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
@@ -192,6 +191,5 @@ if($json['status'] == "success"){
 }
 
 header("Location: $url");
-
 
 ?>
