@@ -82,7 +82,7 @@ try {
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
-        $user_id = $records[0]->Id;
+        $user_id = $records[0]->id;
         error_log('found user_id');
     }
     else{
