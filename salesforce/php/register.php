@@ -76,8 +76,10 @@ try {
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
         $user_id = $records[0]->Id;
+        error_log('found user_id');
     }
     else{
+        error_log('user lookup failed');
         $user_id = false;
     }
 
