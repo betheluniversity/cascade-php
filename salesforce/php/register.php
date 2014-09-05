@@ -82,7 +82,7 @@ try {
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
-        $user_id = $records[0]->id;
+        $user_id = $records[0]->Id;
         error_log('found user_id');
     }
     else{
@@ -109,7 +109,7 @@ try {
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
         $output = print_r($createResponse,1);
         error_log('create user : ' . $output);
-        $user_id = $createResponse[0]->{'Id'};
+        $user_id = $createResponse[0]->id;
     }
 
     if ($user_id == ""){
