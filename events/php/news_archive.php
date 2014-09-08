@@ -118,7 +118,7 @@ function get_news_article_html( $article, $xml ){
 
     $html = "<li>";
     if( $externalPath == "")
-        $html .= $day . " - <a href='https://www.bethel.edu/" .$path . "'>" . $title . "</a>";
+        $html .= $day . " - <a href='http://www.bethel.edu" .$path . "'>" . $title . "</a>";
     else
         $html .= $day . " - <a href='" . $externalPath . "'>" . $title . "</a>";
     $html .= "</li>";
