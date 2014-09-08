@@ -34,7 +34,6 @@ function traverse_folder($xml, $pages){
             {
                 $page_info = get_news_item_details($child);
                 array_push($pages, $page_info);
-                $x = 1;
             }
         }
     }
