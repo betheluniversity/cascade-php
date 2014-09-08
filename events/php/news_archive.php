@@ -92,7 +92,7 @@ function inspect_news_archive_page($xml){
 
     global $yearChosen;
 
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )//&& ( strstr($xml->path, $yearChosen) ) )
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )//&& ( strstr($xml->path, $yearChosen) ) )
     {
         $date = $page_info['date'];
         $page_info['day'] = date("d", $date);
