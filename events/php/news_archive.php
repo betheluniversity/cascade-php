@@ -1,4 +1,6 @@
 <?php
+
+//TODO move this to the news/php folder.
 /**
  * Created by PhpStorm.
  * User: ces55739
@@ -16,6 +18,7 @@ function create_archive(){
 
     // Staging Site
     global $destinationName;
+    //todo update this using $_SERVER
     if( strstr(getcwd(), "staging/public") ){
         include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
         $destinationName = "staging";
@@ -36,11 +39,11 @@ function create_archive(){
     foreach( $arrayOfArticles as $yearArray )
     {
         echo "<div class='archive-year year-" . $yearArray['01'][0]['year'] . "' >";
-
         //$yearArray['01'][0]['year']
-        for( $i = 1; $i <= 12 ;$i++)
+        for( $i = 12; $i >= 0  ;$i--)
         {
             if( $i <= 10 )
+                //todo what is a newi?
                 $newi = '0'.$i;
             else
                 $newi = $i;
@@ -158,8 +161,7 @@ function sort_news_articles( $articles ){
 
 function sort_news_archive( $array ){
     usort($array, 'sort_by_day');
-
-    return $array;
+    return array_reverse($array);
 }
 
 function sort_by_day($a, $b)

@@ -35,7 +35,7 @@ function sort_array( $array ){
         usort($array, 'sort_by_date');
     }
 
-    return $array;
+    return array_reverse($array);
 }
 
 function sort_by_date($a, $b)

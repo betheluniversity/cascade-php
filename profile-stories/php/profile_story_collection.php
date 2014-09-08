@@ -11,6 +11,10 @@
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         global $destinationName;
 
+
+        //todo Clean up using $_SERVER
+        //todo Do we need Destination name?
+
         if( strstr(getcwd(), "staging/public") ){
             include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
             $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml", $categories);
@@ -103,9 +107,10 @@
         }
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
-            $html .= '<img width="100%" class="feature__img" src="http://'.$destinationName.'.bethel.edu'.$imagePath.'">';
+            $img_path = "//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://www.bethel.edu$imagePath";
+            $html .= "<div class='delayed-image-load' data-src='$img_path' data-alt='$imgDesc'></div>";
             $html .= '<figure class="feature__figure">';
-        
+            $html .= "<blockquote class='feature__blockquote'>$quote</blockquote>";
             $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
             $html .= '</figure>';
         $html .= '</a>';

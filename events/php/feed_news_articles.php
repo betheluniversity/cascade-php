@@ -1,4 +1,5 @@
 <?php
+//TODO move this to news/php
 /**
  * Created by PhpStorm.
  * User: ces55739
@@ -20,7 +21,7 @@ $featuredArticleOptions;
 
 // returns an array of html elements.
 function create_news_article_feed(){
-
+    //todo use $_SERVER
     // Staging Site
     global $destinationName;
     if( strstr(getcwd(), "staging/public") ){
