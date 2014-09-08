@@ -108,7 +108,7 @@
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
             $img_path = "//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://www.bethel.edu$imagePath";
-            $html .= "<div class='delayed-image-load' data-class="$imgClass" data-src='$img_path' data-alt='$imgDesc'></div>";
+            $html .= "<div class='delayed-image-load' data-class='$imgClass' data-src='$img_path' data-alt='$imgDesc'></div>";
             $html .= '<figure class="feature__figure">';
             $html .= "<blockquote class='feature__blockquote'>$quote</blockquote>";
             $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
