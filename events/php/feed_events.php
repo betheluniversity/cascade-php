@@ -30,13 +30,14 @@
         global $destinationName;
         // Staging Site
         if( strstr(getcwd(), "staging/public") ){
-            include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
             $destinationName = "staging";
         }
         else{ // Live site.
-            include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
             $destinationName = "www";
         }
+
+        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
+
         // EVENT FEED
         global $eventFeedCategories;
         $categories = $eventFeedCategories;

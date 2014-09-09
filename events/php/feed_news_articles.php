@@ -24,15 +24,14 @@ function create_news_article_feed(){
     // Staging Site
     global $destinationName;
     if( strstr(getcwd(), "staging/public") ){
-        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
         $destinationName = "staging";
-        $arrayOfArticles = get_xml("/var/www/staging/public/_shared-content/xml/articles.xml", "");
     }
     else{ // Live site.
-        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
         $destinationName = "www";
-        $arrayOfArticles = get_xml("/var/www/cms.pub/_shared-content/xml/articles.xml", "");
     }
+
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", "");
 
     $sortedArticles = sort_array($arrayOfArticles);
 

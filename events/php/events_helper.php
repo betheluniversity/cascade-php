@@ -10,7 +10,7 @@
 function get_event_xml(){
 
     ##Create a list of categories the calendar uses
-    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+    $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/calendar-categories.xml");
     $categories = array();
     $xml = $xml->{'system-page'};
     foreach ($xml->children() as $child) {
@@ -26,7 +26,7 @@ function get_event_xml(){
 
     //print_r($categories);
 
-    $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+    $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml");
     $dates = array();
     $dates = traverse_folder($xml, $dates, $categories);
     return $dates;

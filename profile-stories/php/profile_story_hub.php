@@ -8,13 +8,13 @@
 
     // Staging Site
     if( strstr(getcwd(), "staging/public") ){
-        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
         $destinationName = "staging";
     }
     else{ // Live site.
-        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
         $destinationName = "www";
     }
+
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
     // The controller for this section of PHP
     function create_profile_story_hub(){
@@ -28,7 +28,7 @@
 
         global $destinationName;
         if( $destinationName == "staging" ){
-            $profileStories = get_xml_profile_story_hub("/var/www/staging/public/_shared-content/xml/profile-stories.xml");
+            $profileStories = get_xml_profile_story_hub($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml");
         }
         else{
             $profileStories = get_xml_profile_story_hub("/var/www/cms.pub/_shared-content/xml/profile-stories.xml");

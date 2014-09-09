@@ -16,12 +16,8 @@
         global $PageSchool;
         global $PageDepartment;
 
-        if( strstr(getcwd(), "staging/public") ){
-            $proofPointsArray = get_xml_proof_points("/var/www/staging/public/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
-        }
-        else{ //if( strstr(getcwd(), "cms.pub") )
-            $proofPointsArray = get_xml_proof_points("/var/www/cms.pub/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
-        }
+        $proofPointsArray = get_xml_proof_points($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $PageSchool, $PageDepartment);
+
 
 
         // Convert the single array into the x(or 4) number of arrays needed.

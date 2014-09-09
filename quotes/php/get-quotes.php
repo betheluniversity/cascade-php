@@ -16,24 +16,19 @@
     $DefaultQuote;
     // Staging Site
     if( strstr(getcwd(), "staging/public") ){
-        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
+
         $destinationName = "staging";
     }
     else{ // Live site.
-        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
         $destinationName = "www";
     }
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
     // The controller for this section of PHP
     function get_quotes($maxNumToFind){
 
         global $destinationName;
-        if( $destinationName == "staging/public" ){
-            $quotesArray = get_xml_quotes("/var/www/staging/public/_shared-content/xml/quotes.xml" );
-        }
-        else{
-            $quotesArray = get_xml_quotes("/var/www/cms.pub/_shared-content/xml/quotes.xml");
-        }
+        $quotesArray = get_xml_quotes($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/quotes.xml" );
 
         // Convert the single array into the x(or 4) number of arrays needed.
         $quotesArrays = divide_into_arrays_quotes($quotesArray);
