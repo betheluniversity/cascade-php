@@ -49,7 +49,7 @@
         else{
             $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         }
-        $sortedEvents = sort_array($arrayOfEvents);
+        $sortedEvents = array_reverse(sort_array($arrayOfEvents));
 
         // Only grab the first X number of events.
         global $NumEvents;
