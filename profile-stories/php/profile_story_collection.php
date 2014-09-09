@@ -12,6 +12,10 @@
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         global $destinationName;
 
+
+        //todo Clean up using $_SERVER
+        //todo Do we need Destination name?
+
         if( strstr(getcwd(), "staging/public") ){
             $destinationName = "staging";
         }
@@ -86,7 +90,6 @@
     // Returns the profile stories html
     function get_profile_stories_html( $block_info, $xml){
         global $destinationName;
-
         $ds = $xml->{'system-data-structure'};
         // The image that shows up in the 'column' view.
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
@@ -100,16 +103,14 @@
         {
             $teaser = $viewerTeaser;
         }
-
         $quote = $ds->{'quote'};
-
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
             $html .= render_image("http://$destinationName.bethel.edu$imagePath", $teaser, "feature__img--sulley", "100%", $destinationName);
-//            $html .= '<img width="100%" class="feature__img--sulley" src="http://'.$destinationName.'.bethel.edu'.$imagePath.'">';
 
             $html .= '<figure class="feature__figure--sulley">';
             $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
             $html .= '<figcaption class="feature__figcaption--sulley">'.$teaser.'</figcaption>';
+
             $html .= '</figure>';
         $html .= '</a>';
 

@@ -15,6 +15,13 @@ function escapeEmail($email) {
     return $resp;
 }
 
+//prepare a URL for returing
+if ($staging){
+    $url = 'http://staging.bethel.edu/admissions/apply/';
+}else{
+    $url = 'https://apply.bethel.edu/';
+}
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -34,14 +41,16 @@ try {
     $search_email = escapeEmail($email);
     $search_email = '{' . $search_email . '}';
     // search for a Contact with this email?
-    $response = $mySforceConnection->search("find $search_email in email fields returning contact(email, firstname, lastname, id)");
-    $records = $response->{'searchRecords'};
-
+    $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
+    $records = $response->{'records'};
+    $output = print_r($response,1);
+    error_log('contact search : ' . $output);
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
-        $contact_id = $records[0]->id;
+        $contact_id = $records[0]->Id;
     }else{
+        error_log('no contact found');
         //Create one and save the id
         $sObject = new stdclass();
         $sObject->FirstName = $first;
@@ -49,19 +58,37 @@ try {
         $sObject->Email = $email;
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
         $contact_id = $createResponse[0]->id;
+        $output = print_r($createResponse,1);
+        error_log('contact create : ' . $output);
     }
 
+    if ($contact_id == ""){
+        $url .= "?cid=false";
+        header("Location: $url");
+        exit;
+    }else{
+        error_log("contact id is : " . $contact_id);
+    }
+
+
     // test for existing user
-    $response = $mySforceConnection->search("find $search_email in email fields returning user(email, firstname, lastname, id)");
-    $records = $response->{'searchRecords'};
+    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
+    error_log('testing : ' . "");
+    $output = print_r($response,1);
+    error_log('user search : ' . $output);
+    $has_contact = sizeof($records);
+    $records = $response->{'records'};
     $has_user = sizeof($records);
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
-        $user_id = $records[0]->{'Id'};
+        $user_id = $records[0]->Id;
+        error_log('found user_id');
     }
     else{
+        error_log('user lookup failed');
         $user_id = false;
     }
+
     // Create user account based on contact info.
     if (!$has_user){
         $sObject = new stdclass();
@@ -79,8 +106,19 @@ try {
         $sObject->ContactId = $contact_id;
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
+        $output = print_r($createResponse,1);
+        error_log('create user : ' . $output);
         $user_id = $createResponse[0]->id;
     }
+
+    if ($user_id == ""){
+        $url .= "?uid=false";
+        header("Location: $url");
+        exit;
+    }else{
+        error_log("user id is : " . $user_id);
+    }
+
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
@@ -90,7 +128,7 @@ try {
 try{
     $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
     $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
-    $frozen_id = $response->{'records'}[0]->{'Id'};
+    $frozen_id = $response->{'records'}[0]->Id;
 }catch (Exception $e){
     //It fails if there is no record (never frozen)
     $is_frozen = false;
@@ -137,28 +175,21 @@ $options = array(
 $context  = stream_context_create($options);
 
 if ($staging){
-    $url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+    $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
 }else{
-    $url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+    $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
 }
 
 // Here is the returned value
-$result = file_get_contents($url, false, $context);
+$result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
-if ($staging){
-    $url = 'http://staging.bethel.edu/admissions/apply/';
-}else{
-    $url = 'http://apply.bethel.edu/';
-}
-
 if($json['status'] == "success"){
-    $url .= "?email=true";
+    $url = "https://apply.bethel.edu/confirm";
+    header("Location: $url");
 }else{
     $url .= "?email=false";
+    header("Location: $url");
 }
-
-header("Location: $url");
-
 
 ?>
