@@ -9,6 +9,7 @@
  */
 // GLOBALS
 $yearChosen;
+$uniqueNews;
 // returns an array of html elements.
 function create_archive(){
 
@@ -91,9 +92,25 @@ function inspect_news_archive_page($xml){
     $dataDefinition = $ds['definition-path'];
 
     global $yearChosen;
+    global $uniqueNews;
 
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )//&& ( strstr($xml->path, $yearChosen) ) )
+    $isInternal = in_array("Internal", $uniqueNews);
+
+    echo $uniqueNews;
+
+    foreach($uniqueNews as $new)
     {
+        echo "<h1>START</h1>".$new."<h1>END</h1>";
+    }
+
+    if($isInternal == TRUE)
+    {
+        echo "<h1>Got it</h1><br/>".get_news_article_html($page_info, $xml)."<br/>";
+    }
+
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
+    {
+        //check if is internal
         $date = $page_info['date'];
         $page_info['day'] = date("d", $date);
         $page_info['year'] = date("Y", $date);
