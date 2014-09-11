@@ -1,5 +1,9 @@
 <?php
 $staging = strstr(getcwd(), "staging/public");
+$mail_to = "e-jameson@bethel.edu";
+$mail_from = "salesforce-register@bethel.edu";
+$subject = "salesforce register submission";
+$message = "";
 
 function escapeEmail($email) {
     $characters = array('?', '&', '!', '^', '+', '-');
@@ -64,6 +68,9 @@ try {
 
     if ($contact_id == ""){
         $url .= "?cid=false";
+        $subject = "failed to find contact id for email $email";
+        error_log($subject);
+        mail($mail_to,$subject,$subject,"From: $from\n");
         header("Location: $url");
         exit;
     }else{
@@ -113,6 +120,9 @@ try {
 
     if ($user_id == ""){
         $url .= "?uid=false";
+        $subject = "failed to find or create user id for email $email with cid=$contact_id";
+        mail($mail_to,$subject,$subject,"From: $from\n");
+        error_log($subject);
         header("Location: $url");
         exit;
     }else{
@@ -186,8 +196,16 @@ $json = json_decode($result, true);
 
 if($json['status'] == "success"){
     $url = "https://apply.bethel.edu/confirm";
+
+    $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
+    mail($mail_to,$subject,$subject,"From: $from\n");
+    error_log($subject);
+
     header("Location: $url");
 }else{
+    $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
+    mail($mail_to,$subject,$subject,"From: $from\n");
+    error_log($subject);
     $url .= "?email=false";
     header("Location: $url");
 }
