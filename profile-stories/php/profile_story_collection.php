@@ -105,10 +105,11 @@
         }
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
-            $html .= render_image("http://$destinationName.bethel.edu$imagePath", $teaser, "feature__img", "100%", $destinationName);
+            //$html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName); Old version, feature__img didn't work
+            $html .= render_image($imagePath, $teaser, "delayed-image-load", "100%", $destinationName);
 
             $html .= '<figure class="feature__figure">';
-            $html .= '<blockquote class="feature__blockquote">“'.$quote.'”</blockquote>';
+            $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
             $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
 
             $html .= '</figure>';
