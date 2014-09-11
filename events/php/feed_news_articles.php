@@ -16,6 +16,7 @@ $UniqueNews;
 $NumArticles;
 $AddFeaturedArticle;
 $ExpireAfterXDays;
+$DisplayTeaser;
 
 $featuredArticleOptions;
 
@@ -165,8 +166,11 @@ function get_news_article_html( $article, $xml ){
             $formattedDate = format_featured_date_news_article($date);
             $html .= "<p>".$formattedDate."</p>";
         }
-
-        $html .= '<p>'.$article['teaser'].'</p>';
+        global $DisplayTeaser;
+        if( $DisplayTeaser == "Yes" )
+        {
+            $html .= '<p>'.$article['teaser'].'</p>';
+        }
         $html .= '</div>';
 
         $html .= '</div>';
