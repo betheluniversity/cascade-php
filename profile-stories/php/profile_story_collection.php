@@ -5,6 +5,7 @@
  * Date: 9/2/14
  * Time: 11:28 AM
  */
+
     global $destinationName;
 
     function show_profile_story_collection($School, $Topic, $CAS, $CAPS, $GS, $SEM){
@@ -16,17 +17,14 @@
         //todo Do we need Destination name?
 
         if( strstr(getcwd(), "staging/public") ){
-            include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
-            $profileStoriesArray = get_xml_profile_stories("/var/www/staging/public/_shared-content/xml/profile-stories.xml", $categories);
-
             $destinationName = "staging";
         }
         else{ // Live site.
-            include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
-            $profileStoriesArray = get_xml_profile_stories("/var/www/cms.pub/_shared-content/xml/profile-stories.xml", $categories);
-
             $destinationName = "www";
         }
+
+        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
+        $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
 
         foreach( $profileStoriesArray as $profileStory )
         {
@@ -107,11 +105,12 @@
         }
         $quote = $ds->{'quote'};
         $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
-            $img_path = "//cdn1.bethel.edu/resize/unsafe/{width}x0/smart/http://www.bethel.edu$imagePath";
-            $html .= "<div class='delayed-image-load' data-class='feature__img' data-src='$img_path' data-alt='$imgDesc'></div>";
-            $html .= '<figure class="feature__figure">';
-            $html .= "<blockquote class='feature__blockquote'>$quote</blockquote>";
-            $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
+            $html .= render_image("http://$destinationName.bethel.edu$imagePath", $teaser, "feature__img--sulley", "100%", $destinationName);
+
+            $html .= '<figure class="feature__figure--sulley">';
+            $html .= '<blockquote class="feature__blockquote--sulley">“'.$quote.'”</blockquote>';
+            $html .= '<figcaption class="feature__figcaption--sulley">'.$teaser.'</figcaption>';
+
             $html .= '</figure>';
         $html .= '</a>';
 
