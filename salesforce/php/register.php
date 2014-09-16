@@ -39,6 +39,7 @@ try {
     $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
     $email = $_POST["email"];
+    $email = strtolower($email);
     $first = $_POST["first"];
     $last = $_POST["last"];
 
