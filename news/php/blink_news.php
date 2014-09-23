@@ -58,11 +58,3 @@
 </div>
 </body>
 </html>
-
-//function get_news_xml(){
-//    $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . '_shared-content/xml/articles.xml');
-//    // for each page, add an item to an array with relevant info. For now, title, image url, publish date, and teaser.
-//
-//    $x = 1;
-//
-//}
