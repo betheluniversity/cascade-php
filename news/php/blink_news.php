@@ -65,7 +65,7 @@
             <p><a href="https://blink-cms.bethel.edu/channels/news/bethel-news/viewer/rss.xml">
                     <img class="float-right" title="Syndication Feed" src="https://blink-cms.bethel.edu/channels/news-events/bethel-news/feed-icon-14x14.png" alt="alt" width="14" height="14"/>
                 </a>
-                <a href="mailto:gotnews@bethel.edu">Submit News</a> | <a href="https://bethelnet.bethel.edu/e-announcements/add-ann/">Submit E-Announcement</a> | <a href="https://editor.its.bethel.edu/silva/luminis-content/channels/news/bethel-news/viewer">Archive</a>
+                <a href="mailto:gotnews@bethel.edu">Submit News</a> | <a href="https://bethelnet.bethel.edu/e-announcements/add-ann/">Submit E-Announcement</a> | <a href="https://www.bethel.edu/luminis-content/channels/news/bethel-news/viewer">Archive</a>
             </p>
         </div>
 
