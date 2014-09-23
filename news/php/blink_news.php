@@ -13,12 +13,16 @@
 
 ?>
 
+<!DOCTYPE html>
 <html>
+<head>
+    <title> Bethel News </title>
+</head>
 <body>
 <div class="silva-channel">
     <div class="channel-section">
 
-        <div class="uportal-cms-block" id="">
+        <div class="uportal-cms-block" id="uportal-cms-block">
 
 <?php
     $count = 0;
@@ -28,21 +32,21 @@
             break;
         }
 
-        $image = "http://www.bethel.edu" . $page['image'][0];
+        $image = "https://www.bethel.edu" . $page['image'][0];
         $title = $page['title'][0];
         $teaser = $page['teaser'][0];
-        $link = "http://www.bethel.edu" . $page['path'][0];
+        $link = "https://www.bethel.edu" . $page['path'][0];
 
         $resp .= '<div class="media-box pb1">';
-        $resp .= "<a href='$link'>";
-        $resp .= "<img class='media-box-img'
-                src='$image' alt='$title' title=$title/>";
-        $resp .= '</a>';
-        $resp .= '<div class="media-box-body">';
-        $resp .= '<h2 class="h5">';
-        $resp .= "<a href='$link'>$title</a></h2>";
-        $resp .= "<p>$teaser</p>";
-        $resp .= '</div>';
+            $resp .= "<a href='$link'>";
+                $resp .= "<img class='media-box-img'
+                    src='$image' alt='$title' title=$title/>";
+            $resp .= '</a>';
+            $resp .= '<div class="media-box-body">';
+                $resp .= '<h2 class="h5">';
+                $resp .= "<a href='$link'>$title</a></h2>";
+                $resp .= "<p>$teaser</p>";
+            $resp .= '</div>';
         $resp .= '</div>';
         $count++;
     }
