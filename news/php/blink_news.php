@@ -37,8 +37,8 @@
                     $image = "https://www.bethel.edu" . $page['image'][0];
                     $title = $page['title'][0];
                     $teaser = $page['teaser'][0];
-                    str_replace("&", "&amp;", $title);
-                    str_replace("&", "&amp;", $teaser);
+                    $title = str_replace("&", "&amp;", $title);
+                    $teaser = str_replace("&", "&amp;", $teaser);
                     $link = "https://www.bethel.edu" . $page['path'][0];
 
                     $resp .= '<div class="media-box pb1">';
