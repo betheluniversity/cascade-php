@@ -24,34 +24,40 @@
 
         <div class="uportal-cms-block" id="uportal-cms-block">
 
-<?php
-    $count = 0;
-    $resp = "";
-    foreach($xml as $page){
-        if( $count == 4){
-            break;
-        }
+            <?php
+                $count = 0;
+                $resp = "";
+                foreach($xml as $page){
+                    if( $count == 4){
+                        break;
+                    }
 
-        $image = "https://www.bethel.edu" . $page['image'][0];
-        $title = $page['title'][0];
-        $teaser = $page['teaser'][0];
-        $link = "https://www.bethel.edu" . $page['path'][0];
+                    $image = "https://www.bethel.edu" . $page['image'][0];
+                    $title = $page['title'][0];
+                    $teaser = $page['teaser'][0];
+                    $link = "https://www.bethel.edu" . $page['path'][0];
 
-        $resp .= '<div class="media-box pb1">';
-            $resp .= "<a href='$link'>";
-                $resp .= "<img class='media-box-img'
-                    src='$image' alt='$title' title=$title/>";
-            $resp .= '</a>';
-            $resp .= '<div class="media-box-body">';
-                $resp .= '<h2 class="h5">';
-                $resp .= "<a href='$link'>$title</a></h2>";
-                $resp .= "<p>$teaser</p>";
-            $resp .= '</div>';
-        $resp .= '</div>';
-        $count++;
-    }
+                    $resp .= '<div class="media-box pb1">';
+                        $resp .= "<a href='$link'>";
+                            $resp .= "<img class='media-box-img'
+                                src='$image' alt='$title' title='$title'/>";
+                        $resp .= '</a>';
+                        $resp .= '<div class="media-box-body">';
+                            $resp .= '<h2 class="h5">';
+                            $resp .= "<a href='$link'>$title</a></h2>";
+                            $resp .= "<p>$teaser</p>";
+                        $resp .= '</div>';
+                    $resp .= '</div>';
+                    $count++;
+                }
 
-    echo $resp;
+                echo $resp;
+        ?>
+        </div>
+    </div>
+</div>
+</body>
+</html>
 
 //function get_news_xml(){
 //    $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . '_shared-content/xml/articles.xml');
