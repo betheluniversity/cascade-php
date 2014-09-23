@@ -27,9 +27,6 @@
         if( $count == 4){
             break;
         }
-        if (!in_array('Internal', $page['categories'])){
-            continue;
-        }
 
         $image = "http://www.bethel.edu" . $page['image'][0];
         $title = $page['title'][0];
