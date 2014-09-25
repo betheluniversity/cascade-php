@@ -9,13 +9,12 @@
 /*
  * This file will be used to 'import' Cascade functions into PHP.
  *
- * It currently is an exact copy of various Cascade functions.
+ * It also will include functions that are used in multiple files.
  *
- * To do: Down the road, Cascade could import this php helper file. Then
- * pass over the information for PHP to render.
  *
  */
 
+    // Renders images on the php side. This mimics the Cascade version.
     function render_image( $imgPath, $imgDesc, $imgClass, $width, $siteDestinationName)
     {
         $rand1_4 = rand(1, 4);
@@ -23,6 +22,82 @@
         return '<div class="'.$imgClass.'" data-src="'.$path.'" data-alt="'.$imgDesc.'" width="'.$width.'"></div>';
     }
 
+    // $xml is the items that are being checked.
+    // $categories is the page.
+    function match_robust_metadata( $xml, $categories)
+    {
+        // The first part is to build the metadata into an array for the xml.
+        // This array mimics the $categories array.
+        $xmlCategories = array(array(), array(), array(), array(), array(), array());
 
+        foreach( $xml->{'dynamic-metadata'} as $md ){
+            $name = $md->name;
+            foreach($md->value as $value ){
+                if($value == "Select" || $value == "none"){
+                    continue;
+                }
 
+                if( $name == "school")
+                {
+                    array_push($xmlCategories[0], $value);
+                }
+                elseif( $name == "topic")
+                {
+                    array_push($xmlCategories[1], $value);
+                }
+                elseif( $name == "department")
+                {
+                    array_push($xmlCategories[2], $value);
+                }
+                elseif( $name == "adult-undergrad-program")
+                {
+                    array_push($xmlCategories[3], $value);
+                }
+                elseif( $name == "graduate-program")
+                {
+                    array_push($xmlCategories[4], $value);
+                }
+                elseif( $name == "seminary-program")
+                {
+                    array_push($xmlCategories[5], $value);
+                }
+            }
+        }
+
+        // compare the 2 sets of metadata
+        for( $i=0; $i < 6; $i++){
+            foreach($categories[$i] as $value){
+                if($value == "Select" || $value == "none"){
+                    continue;
+                }
+                if( !in_array($value, $xmlCategories[$i]))
+                    return "No";
+            }
+        }
+        return "Yes";
+    }
+
+    function display_x_elements_from_array( $array, $numToFind)
+    {
+        $sizeOfArray = sizeof($array);
+        while( $sizeOfArray > 0)
+        {
+            if( $numToFind <= 0){
+                break;
+            }
+
+            $randomIndex = rand(0,$sizeOfArray);
+            $collectionElement = $array[$randomIndex];
+            if( $collectionElement != null)
+            {
+                echo $collectionElement;
+
+                $numToFind--;
+            }
+            unset($array[$randomIndex]);
+            array_values($array);
+
+            $sizeOfArray = sizeof($array);
+        }
+    }
 ?>

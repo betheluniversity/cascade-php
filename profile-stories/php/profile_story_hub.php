@@ -125,7 +125,7 @@
         $quote = $ds->{'quote'};
 
         global $destinationName;
-        $html = '<p><a href="http://'.$destinationName.'bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
+        $html = '<p><a href="http://'.$destinationName.'.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
         $html .= render_image($imagePath, $xml->description, "delayed-image-load", "400", $destinationName );
 
         if( $viewerTeaser != "")

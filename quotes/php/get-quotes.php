@@ -14,6 +14,7 @@
     $PageSem;
 
     $DefaultQuote;
+
     // Staging Site
     if( strstr(getcwd(), "staging/public") ){
 
@@ -94,9 +95,11 @@
                 $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageGS, "graduate-program");
             elseif( in_array( "Bethel Seminary", $PageSchool) )
                 $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageSem, "seminary-program");
+            elseif( in_array("Bethel University", $PageSchool) )
+                $block_info['display'] = match_metadata_quote($xml, $PageSchool, $PageSem, "school");
 
             // Get html
-            $block_info['html'] = get_quote_html($block_info, $xml);
+            $block_info['html'] = get_quote_html($xml);
 
             // Determine which quote should be the 'Default' Quote.
             if( $xml->name == "bu__edgren"){
@@ -108,7 +111,7 @@
     }
 
     // returns the html of the quote.
-    function get_quote_html( $block_info, $xml){
+    function get_quote_html($xml){
         $ds = $xml->{'system-data-structure'};
 
         $title = $xml->{'title'};

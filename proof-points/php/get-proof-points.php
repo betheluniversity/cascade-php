@@ -90,13 +90,14 @@
             $block_info['match-dept'] = match_metadata_proof_points($xml, $PageDepartment);
 
             // Get html
-            $block_info['html'] = get_proof_point_html($block_info, $ds);
+            $block_info['html'] = get_proof_point_html($xml);
         }
         return $block_info;
     }
 
     // Returns the html of the proof point
-    function get_proof_point_html( $block_info, $ds){
+    function get_proof_point_html( $xml){
+        $ds = $xml->{'system-data-structure'};
         $type = $ds->{'proof-point'}->{'type'};
         $html = "";
 

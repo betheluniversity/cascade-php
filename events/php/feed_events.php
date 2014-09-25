@@ -50,31 +50,88 @@
         else{
             $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
         }
-        $sortedEvents = array_reverse(sort_array($arrayOfEvents));
 
+
+
+        //////////////////////////////////////////
+        // Turn all dates into individual events
+        /////////////////////////////////////////
+        $eventArrayWithMultipleEvents = array();
+
+        foreach( $arrayOfEvents as $event)
+        {
+            $dates = $event['dates'];
+            foreach($dates as $date)
+            {
+                $newDate['start-date'] = $date->{'start-date'} / 1000;
+                $newDate['end-date'] = $date->{'end-date'} / 1000;
+                $newDate['all-day'] = $date->{'all-day'}->{'value'};
+
+                if( time() > $date->{'end-date'} / 1000)
+                    continue;
+
+                $newEvent = $event;
+                $newEvent['date'] = $newDate;
+                $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
+
+                $newEvent['html'] = get_event_html($newEvent);
+
+                if (display_on_feed_events($newEvent))
+                {
+                    array_push($eventArrayWithMultipleEvents, $newEvent);
+                }
+
+                ///////////////////////////////////
+                // Featured Events
+                ///////////////////////////////////
+                global $featuredEventOptions;
+                global $AddFeaturedEvents;
+                // Check if it is a featured Event.
+                // If so, get the featured event html.
+                if ( $AddFeaturedEvents == "Yes"){
+                    foreach( $featuredEventOptions as $key=>$featuredEvent)
+                    {
+                        // Check if the url of the event = the url of the desired feature event.
+                        if( $newEvent['path'] == $featuredEvent[0]){
+                            $featuredEventOptions[$key][3] = get_featured_event_html( $newEvent, $featuredEvent);
+                        }
+                        echo $featuredEventOptions[$key][3];
+                    }
+                }
+                ///////////////////////////////////
+
+                // art exhibits and theatre productions only add 1 date.
+                if(check_if_art_or_theatre($newEvent) )
+                    break;
+            }
+        }
+
+        /////////////////////////////////////////
+
+        $sortedEvents = array_reverse(sort_array($eventArrayWithMultipleEvents));
         // Only grab the first X number of events.
         global $NumEvents;
 
         $numEventsToFind = $NumEvents;
 
-        $sortedEvents = array_slice($sortedEvents, 0, $numEventsToFind, true);
-
-
-        $eventsArray = array();
-        foreach( $sortedEvents as $event){
-            array_push($eventsArray, $event['html']);
+        $eventArray = array();
+        foreach( $sortedEvents as $event)
+        {
+            array_push( $eventArray, $event['html']);
         }
+
+        $eventArray = array_slice($eventArray, 0, $numEventsToFind, true);
 
         // FEATURED EVENTS
         $featuredEvents = create_featured_event_array();
 
-        $numEvents = sizeof( $eventsArray);
+        $numEvents = sizeof( $eventArray);
 
         // Print No upcoming events if there are no events.
-        if( sizeOf( $eventsArray) == 0){
+        if( sizeOf( $eventArray) == 0){
             $eventsArray = array("<p>No upcoming events.</p>");
         }
-        $combinedArray = array($featuredEvents, $eventsArray, $numEvents );
+        $combinedArray = array($featuredEvents, $eventArray, $numEvents );
         return $combinedArray;
     }
 
@@ -92,6 +149,35 @@
         return $featuredEvents;
     }
 
+    function check_if_art_or_theatre($xml){
+        foreach ($xml->{'dynamic-metadata'} as $md){
+
+            $name = $md->name;
+
+            $options = array('general');
+
+            foreach($md->value as $value ){
+                if($value == "None" || $value == "none"){
+                    continue;
+                }
+
+                if (in_array($name,$options)){
+                    //Is this a calendar category?
+                    if (   in_array($value, 'Art Galleries')
+                        || in_array($value, 'Johnson Gallery')
+                        || in_array($value, 'Olson Gallery')
+                        || in_array($value, 'Theatre')
+                        )
+                    {
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
     function match_metadata_events($xml, $categories){
         foreach ($xml->{'dynamic-metadata'} as $md){
 
@@ -107,7 +193,7 @@
                 if (in_array($name,$options)){
                     //Is this a calendar category?
                     if (in_array($value, $categories)){
-                        return "Metadata Matches";
+                        return "Yes";
                     }
                 }
 
@@ -125,14 +211,14 @@
             "published" => $xml->{'last-published-on'},
             "description" => $xml->{'description'},
             "path" => $xml->path,
+            "date" => "",
             "date-for-sorting" => "",
-            "date" => array(),
+            "dates" => array(),
             "md" => array(),
             "html" => "",
             "display-on-feed" => "No",
             "external-link" => "",
             "image" => "",
-            "has-multiple-dates" => "No",
         );
         $ds = $xml->{'system-data-structure'};
 
@@ -149,24 +235,15 @@
             // Dates
             ///////////////////////////////////////////
             $dates = $ds->{'event-dates'};
-            if( sizeof( $dates) > 3){
-                $page_info['has-multiple-dates'] = "Yes";
-            }
-            $displayableDate = get_displayable_date_event($page_info, $dates);
+            $page_info['dates'] = $dates;
 
-            if( $displayableDate['start-date'] == ""){
-                $page_info['display-on-feed'] = "No";
-                return $page_info;
-            }
 
-            $page_info['date'] = $displayableDate;
-            $page_info['date-for-sorting'] = $displayableDate['start-date'];
+            ///////////////////////////////////////////
+            // Get the location
             ///////////////////////////////////////////
 
-            // Get the location
             $loc = $ds->location;
             if($loc == 'On campus' || $loc == "On Campus"){
-
                 $location = $loc = $ds->{'on-campus-location'};
             }else{
                 $location = $loc = $ds->{'off-campus-location'};
@@ -182,77 +259,40 @@
 
             // Get the image.
             $page_info['image'] = $ds->{'image'}->path;
-
-            ///////////////////////////////////////////
-            // Display
-            ///////////////////////////////////////////
-            $page_info['display-on-feed'] = display_on_feed_events($page_info, $dates);
-            $page_info['html'] = get_event_html($page_info);
-
-
-
-            // Featured Events
-            global $featuredEventOptions;
-            global $AddFeaturedEvents;
-            // Check if it is a featured Event.
-            // If so, get the featured event html.
-            if ( $AddFeaturedEvents == "Yes"){
-                foreach( $featuredEventOptions as $key=>$featuredEvent)
-                {
-                    // Check if the url of the event = the url of the desired feature event.
-                    if( $page_info['path'] == $featuredEvent[0]){
-                        $featuredEventOptions[$key][3] = get_featured_event_html( $page_info, $featuredEvent);
-                    }
-                }
-            }
         }
 
         return $page_info;
     }
 
-    function display_on_feed_events($page_info, $dates){
-        $currentDate = time();
-        // There are 259200 seconds in 3 days.
-        // After 3 days of being on the calendar, do not display it anymore.
-        if( $page_info['date']['start-date'] != "" && $page_info['date']['start-date']+259200 > $currentDate && $page_info["display-on-feed"] == "Metadata Matches")
-        {
-            global $StartDate;
-            global $EndDate;
-            $modifiedStartDate = $StartDate / 1000;
-            $modifiedEndDate = $EndDate / 1000;
-            $latestDate = get_latest_date($page_info, $dates);
+    function display_on_feed_events($page_info){
+        global $StartDate;
+        global $EndDate;
+        $modifiedStartDate = $StartDate / 1000;
+        $modifiedEndDate = $EndDate / 1000;
 
+        //Check if it falls between the given range.
+        if( $StartDate != "" && $EndDate != "" ){
+            if( $modifiedStartDate < $page_info['date']['start-date'] && $page_info['date']['end-date'] < $modifiedEndDate ){
 
-
-            //Check if it falls between the given range.
-            if( $StartDate != "" && $EndDate != "" ){
-                if( $latestDate != ""){
-                    if( $modifiedStartDate < $page_info['date']['start-date'] && $latestDate < $modifiedEndDate ){
-
-                        return "Yes";
-                    }
-                }
-            }
-            elseif( $StartDate != ""){
-                if( $latestDate != ""){
-                    if( $modifiedStartDate < $page_info['date']['start-date']){
-                        return "Yes";
-                    }
-                }
-            }
-            elseif( $EndDate != ""){
-                if( $latestDate != ""){
-                    if( $latestDate < $modifiedEndDate ){
-                        return "Yes";
-                    }
-                }
-            }
-            else
-            {
-                return "Yes";
+                return true;
             }
         }
-        return "No";
+        elseif( $StartDate != ""){
+            if( $modifiedStartDate < $page_info['date']['start-date']){
+                return true;
+            }
+        }
+        elseif( $EndDate != ""){
+            if( $page_info['date']['end-date'] < $modifiedEndDate ){
+                return true;
+            }
+        }
+        else
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // Returns the featured Event html.
@@ -278,7 +318,7 @@
                 $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
 
             if( $featuredEventOptions[2] == "No"){
-                if( $event['has-multiple-dates'] == "Yes")
+                if( $event['dates'] > 1)
                 {
                     $html .= "<p>Various Dates</p>";
                 }
@@ -424,57 +464,6 @@
         }
         // Dummy return.
         return $date;
-    }
-
-    // Get the date that we want to display it as.
-    function get_displayable_date_event( $page_info, $dates ){
-        $currentDate = time() - 43200; // (12 hours) This is to keep events on the calendar for an extra 12 hours.
-        $displayableDate = array();
-        $displayableDate['start-date'] = "";
-        $displayableDate['end-date'] = "";
-        $displayableDate['all-day'] = "";
-        foreach ($dates as $date){
-            $start_date = $date->{'start-date'} / 1000;
-            $end_date = $date->{'end-date'} / 1000;
-            $allDay = $date->{'all-day'}->{'value'};
-
-            if( $currentDate < $start_date)
-            {
-                // If there is no date yet or if a different date occurs earlier.
-                if( $displayableDate['start-date'] == "" || $displayableDate['start-date'] > $start_date){
-                    $displayableDate['start-date'] = $start_date;
-                    $displayableDate['end-date'] = $end_date;
-                    $displayableDate['all-day'] = $allDay;
-                }
-            }
-            elseif( $currentDate < $end_date)
-            {
-                if( $displayableDate['end-date'] == "" || $displayableDate['end-date'] > $end_date){
-                    $displayableDate['start-date'] = $start_date;
-                    $displayableDate['end-date'] = $end_date;
-                    $displayableDate['all-day'] = $allDay;
-                }
-            }
-        }
-        return $displayableDate;
-    }
-
-    // This is only used for finding the latest date after today of the event.
-    function get_latest_date( $page_info, $dates ){
-        $currentDate = time();
-        $lastDate = ""; // a default if there is no date.
-        foreach ($dates as $date){
-            $end_date = $date->{'end-date'} / 1000;
-
-            if( $currentDate < $end_date)
-            {
-                // If there is no date yet or if a different date occurs earlier.
-                if( $lastDate < $end_date){
-                    $lastDate = $end_date;
-                }
-            }
-        }
-        return $lastDate;
     }
 
     // Returns the correct link to be used.

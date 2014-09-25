@@ -587,6 +587,9 @@
                             hd.append('<a href="'+a.attr('href')+'">Visit Website</a><br />');
                         }
                         hd.append(next.children().clone());
+
+
+
                         // if hover overflows right side of window, display on left
                         // side instead
                         if (hover_left + hd.outerWidth() > $(calendar_main).width() ) {
