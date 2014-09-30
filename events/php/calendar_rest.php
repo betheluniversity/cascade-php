@@ -170,13 +170,19 @@ function draw_calendar($month,$year, $day=1){
                                 else
                                     $calendar .= $start . '-' . $end . '<br>';
                             }
-                                $calendar .= '<span class="location">' . $event['location'] . '</span>';
-                            $calendar .= '</span>';
+
+                            $calendar .= '<span class="location">' . $event['location'] . '</span>';
+
+//                            if( $event['academic-dates'] != "")
+                                $calendar .= "<span class='academic-dates-category'>" . $event['academic-dates'] . "</span>";
+
                             $calendar .= '<ul class="categories" style="display:none">';
-                                foreach($event['md'] as $md){
-                                    $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
-                                }
+                            foreach($event['md'] as $md){
+                                $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
+                            }
                             $calendar .= '</ul>';
+
+                            $calendar .= '</span>';
                         $calendar .= '</dd>';
                     $calendar .= '</div>';
                 }
@@ -331,6 +337,7 @@ function inspect_page($xml, $categories){
         "path" => $xml->path,
         "dates" => array(),
         "md" => array(),
+        "academic-dates" => "",
     );
 
     $ds = $xml->{'system-data-structure'};
@@ -375,10 +382,13 @@ function inspect_page($xml, $categories){
                 continue;
             }
             if (in_array($name,$options)){
+                if($name == 'academic-dates')
+                    $page_info['academic-dates'] = $page_info['academic-dates'] . "<br />" . $value;
                 //Is this a calendar category?
                 if (in_array($value, $categories)){
                     array_push($page_info['md'], $value . '-' . $name);
-                }else{
+                }
+                else{
                     array_push($page_info['md'], 'other');
                 }
             }
