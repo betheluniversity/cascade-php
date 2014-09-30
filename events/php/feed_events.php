@@ -36,6 +36,7 @@
             $destinationName = "www";
         }
 
+        // include helper
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
         // EVENT FEED
@@ -58,16 +59,18 @@
         /////////////////////////////////////////
         $eventArrayWithMultipleEvents = array();
 
+        // foreach event.
         foreach( $arrayOfEvents as $event)
         {
             $dates = $event['dates'];
+            // foreach date
             foreach($dates as $date)
             {
                 $newDate['start-date'] = $date->{'start-date'} / 1000;
                 $newDate['end-date'] = $date->{'end-date'} / 1000;
                 $newDate['all-day'] = $date->{'all-day'}->{'value'};
 
-                if( time() > $date->{'end-date'} / 1000)
+                if( time() > $date->{'end-date'} / 1000 )
                     continue;
 
                 $newEvent = $event;
@@ -95,7 +98,7 @@
                         if( $newEvent['path'] == $featuredEvent[0]){
                             $featuredEventOptions[$key][3] = get_featured_event_html( $newEvent, $featuredEvent);
                         }
-                        echo $featuredEventOptions[$key][3];
+
                     }
                 }
                 ///////////////////////////////////
@@ -136,24 +139,28 @@
     }
 
     // Create the Featured Events.
+    // The 3rd index in each '$featuredEvent' is the html of the event.
+    //  ( 0-2 include the info of the event. )
     function create_featured_event_array(){
         $featuredEvents = array();
 
         global $featuredEventOptions;
 
         foreach( $featuredEventOptions as $key=>$featuredEvent ){
-            if( $featuredEvent[3] != "null" && $featuredEvent[3] != ""){
+            if( $featuredEvent[3] != null && $featuredEvent[3] != ""){
                 array_push($featuredEvents, $featuredEvent[3]);
             }
         }
         return $featuredEvents;
     }
 
-    function check_if_art_or_theatre($xml){
-        foreach ($xml->{'dynamic-metadata'} as $md){
+    // A function to check if the event is art or theatre.
+    //  if so, only put it on the event feed once!
+    //  This should hopefully not crowd the event feed.
+    function check_if_art_or_theatre($event){
+        foreach ($event['xml']->{'dynamic-metadata'} as $md){
 
             $name = $md->name;
-
             $options = array('general');
 
             foreach($md->value as $value ){
@@ -162,11 +169,11 @@
                 }
 
                 if (in_array($name,$options)){
-                    //Is this a calendar category?
-                    if (   in_array($value, 'Art Galleries')
-                        || in_array($value, 'Johnson Gallery')
-                        || in_array($value, 'Olson Gallery')
-                        || in_array($value, 'Theatre')
+
+                    if (   'Art Galleries' == $value
+                        || 'Johnson Gallery' == $value
+                        || 'Olson Gallery' == $value
+                        || 'Theatre' == $value
                         )
                     {
                         return true;
@@ -219,6 +226,7 @@
             "display-on-feed" => "No",
             "external-link" => "",
             "image" => "",
+            "xml" => $xml,
         );
         $ds = $xml->{'system-data-structure'};
 
@@ -264,26 +272,29 @@
         return $page_info;
     }
 
+    // Checks to see if the event falls between the range of
+    // Returns true to display event.
+    //   else returns false to get rid of the event.
     function display_on_feed_events($page_info){
         global $StartDate;
         global $EndDate;
         $modifiedStartDate = $StartDate / 1000;
         $modifiedEndDate = $EndDate / 1000;
 
-        //Check if it falls between the given range.
+        //Check if the event falls between the given range.
         if( $StartDate != "" && $EndDate != "" ){
-            if( $modifiedStartDate < $page_info['date']['start-date'] && $page_info['date']['end-date'] < $modifiedEndDate ){
+            if( $modifiedStartDate < $page_info['date']['end-date'] && $page_info['date']['start-date'] < $modifiedEndDate ){
 
                 return true;
             }
         }
         elseif( $StartDate != ""){
-            if( $modifiedStartDate < $page_info['date']['start-date']){
+            if( $modifiedStartDate < $page_info['date']['end-date']){
                 return true;
             }
         }
         elseif( $EndDate != ""){
-            if( $page_info['date']['end-date'] < $modifiedEndDate ){
+            if( $page_info['date']['start-date'] < $modifiedEndDate ){
                 return true;
             }
         }
@@ -340,26 +351,50 @@
 
         }
         else
-            return "null";
+            return null;
 
         return $html;
     }
 
     // returns the html of the event.
     function get_event_html( $event){
+        $start = $event['date']['start-date'];
+        $end = $event['date']['end-date'];
+
+
         $html = '<div class="media-box  mv1">';
         $html .= '<p class="events-date-tag">';
 
-        if( $event['date']['start-date'] != "")
+        if( $start != "")
         {
-            // Month
-            $html .= get_month_shorthand_name(date("F", $event['date']['start-date']));
+            // start and end date are on the same day
+            // OR if the event hasn't started yet.
+            // THEN display the start date as the date.
+            if( (date("F d, Y", $start) == date("F d, Y", $end)) || time() < $start )
+            {
+                // Month
+                $html .= get_month_shorthand_name(date("F", $start));
 
-            // Day
-            $html .= "<span>".date("d", $event['date']['start-date'])."</span>";
+                // Day
+                $html .= "<span>".date("d", $start)."</span>";
 
-            // Year
-            $html .= date("Y", $event['date']['start-date'])."</p>";
+                // Year
+                $html .= date("Y", $start)."</p>";
+
+            }
+            else{
+                // start and end date are on different days
+                // So display the current date.
+
+                // Month
+                $html .= get_month_shorthand_name(date("F", time()));
+
+                // Day
+                $html .= "<span>".date("d", time())."</span>";
+
+                // Year
+                $html .= date("Y", time())."</p>";
+            }
             $html .= '<div class="media-box-body">';
         }
         // Title + Link

@@ -79,25 +79,13 @@
 
     function display_x_elements_from_array( $array, $numToFind)
     {
-        $sizeOfArray = sizeof($array);
-        while( $sizeOfArray > 0)
-        {
-            if( $numToFind <= 0){
+        shuffle($array);
+
+        while($element = array_pop($array)){
+            echo $element;
+            $numToFind--;
+            if( $numToFind == 0)
                 break;
-            }
-
-            $randomIndex = rand(0,$sizeOfArray);
-            $collectionElement = $array[$randomIndex];
-            if( $collectionElement != null)
-            {
-                echo $collectionElement;
-
-                $numToFind--;
-            }
-            unset($array[$randomIndex]);
-            array_values($array);
-
-            $sizeOfArray = sizeof($array);
-        }
+        } 
     }
 ?>
