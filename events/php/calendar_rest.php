@@ -33,7 +33,7 @@
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
-    $data['server'] = $_SERVER;
+    ///$data['server'] = $_SERVER;
 
     echo json_encode($data);
 
