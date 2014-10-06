@@ -42,7 +42,7 @@ function create_archive(){
         //$yearArray['01'][0]['year']
         for( $i = 12; $i >= 0  ;$i--)
         {
-            if( $i <= 10 )
+            if( $i < 10 )
                 //todo what is a newi?
                 $newi = '0'.$i;
             else
