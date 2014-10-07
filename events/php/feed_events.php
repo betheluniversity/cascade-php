@@ -316,13 +316,18 @@
         //  Get it in the form of a date object with start/end/all-day
         $dates = $event['dates'];
         $dateToUse = array();
+        $firstDate = null;
+        $lastDate = null;
         foreach( $dates as $date )
         {
-            if( time() > $date->{'end-date'} / 1000 )
-                continue;
-
-            $dateToUse = $date;
+            if( (($firstDate->{'end-date'} / 1000) > ($date->{'end-date'} / 1000)) || $firstDate == null)
+                $firstDate = $date;
+            if( (($lastDate->{'end-date'} / 1000) < ($date->{'end-date'} / 1000)) || $lastDate == null)
+                $lastDate = $date;
         }
+
+        if( ($lastDate->{'end-date'} / 1000) < time() )
+            return '';
 
 
         // Only display it if it has an image.
@@ -345,12 +350,13 @@
                 $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
 
             if( $featuredEventOptions[2] == "No"){
-                if( $event['dates'] > 1)
+                if( sizeof($dates) > 1)
                 {
-                    $html .= "<p>Various Dates</p>";
+                    $formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );
+                    $html .= "<p>".$formattedDate."</p>";
                 }
                 else{
-                    $formattedDate = format_featured_event_date($dateToUse);
+                    $formattedDate = format_featured_event_date($firstDate);
                     $html .= "<p>".$formattedDate."</p>";
                 }
             }
@@ -445,6 +451,8 @@
 
         return $html;
     }
+
+
 
     // Returns a Date that is formatted correctly for a Featured Event
     // Both $startdate and $endDate are timestamps
