@@ -86,6 +86,6 @@
             $numToFind--;
             if( $numToFind == 0)
                 break;
-        } 
+        }
     }
 ?>
