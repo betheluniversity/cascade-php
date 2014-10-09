@@ -25,6 +25,11 @@
 
     /////////////////////////////////////////////////////////////////////
 
+
+
+
+
+
     // Create the Event Feed events.
     function create_event_feed(){
         global $destinationName;
@@ -84,24 +89,7 @@
                     array_push($eventArrayWithMultipleEvents, $newEvent);
                 }
 
-                ///////////////////////////////////
-                // Featured Events
-                ///////////////////////////////////
-                global $featuredEventOptions;
-                global $AddFeaturedEvents;
-                // Check if it is a featured Event.
-                // If so, get the featured event html.
-                if ( $AddFeaturedEvents == "Yes"){
-                    foreach( $featuredEventOptions as $key=>$featuredEvent)
-                    {
-                        // Check if the url of the event = the url of the desired feature event.
-                        if( $newEvent['path'] == $featuredEvent[0]){
-                            $featuredEventOptions[$key][3] = get_featured_event_html( $newEvent, $featuredEvent);
-                        }
 
-                    }
-                }
-                ///////////////////////////////////
 
                 // art exhibits and theatre productions only add 1 date.
                 if(check_if_art_or_theatre($newEvent) )
@@ -267,6 +255,26 @@
 
             // Get the image.
             $page_info['image'] = $ds->{'image'}->path;
+
+
+            ///////////////////////////////////
+            // Featured Events
+            ///////////////////////////////////
+            global $featuredEventOptions;
+            global $AddFeaturedEvents;
+            // Check if it is a featured Event.
+            // If so, get the featured event html.
+            if ( $AddFeaturedEvents == "Yes"){
+                foreach( $featuredEventOptions as $key=>$featuredEvent)
+                {
+                    // Check if the url of the event = the url of the desired feature event.
+                    if( $page_info['path'] == $featuredEvent[0]){
+                        $featuredEventOptions[$key][3] = get_featured_event_html( $page_info, $featuredEvent);
+                    }
+
+                }
+            }
+            ///////////////////////////////////
         }
 
         return $page_info;
@@ -309,6 +317,24 @@
     // Returns the featured Event html.
     function get_featured_event_html($event, $featuredEventOptions){
 
+        // Get the most recent start/enddate pair.
+        //  Get it in the form of a date object with start/end/all-day
+        $dates = $event['dates'];
+        $dateToUse = array();
+        $firstDate = null;
+        $lastDate = null;
+        foreach( $dates as $date )
+        {
+            if( (($firstDate->{'end-date'} / 1000) > ($date->{'end-date'} / 1000)) || $firstDate == null)
+                $firstDate = $date;
+            if( (($lastDate->{'end-date'} / 1000) < ($date->{'end-date'} / 1000)) || $lastDate == null)
+                $lastDate = $date;
+        }
+
+        if( ($lastDate->{'end-date'} / 1000) < time() )
+            return '';
+
+
         // Only display it if it has an image.
         if( $event['image'] != "" && $event['image'] != "/"){
 
@@ -329,12 +355,13 @@
                 $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
 
             if( $featuredEventOptions[2] == "No"){
-                if( $event['dates'] > 1)
+                if( sizeof($dates) > 1)
                 {
-                    $html .= "<p>Various Dates</p>";
+                    $formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );
+                    $html .= "<p>".$formattedDate."</p>";
                 }
                 else{
-                    $formattedDate = format_featured_event_date($event['date']);
+                    $formattedDate = format_featured_event_date($firstDate);
                     $html .= "<p>".$formattedDate."</p>";
                 }
             }
@@ -430,12 +457,14 @@
         return $html;
     }
 
+
+
     // Returns a Date that is formatted correctly for a Featured Event
     // Both $startdate and $endDate are timestamps
     function format_featured_event_date( $date ){
-        $startDate = $date['start-date'];
-        $endDate = $date['end-date'];
-        $allDay = $date['all-day'];
+        $startDate = $date->{'start-date'} / 1000;
+        $endDate = $date->{'end-date'} / 1000;
+        $allDay = $date->{'all-day'};
 
         // If it spans multiple days, do not display a time.
         // if all day, do not display a time.

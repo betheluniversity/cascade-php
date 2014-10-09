@@ -10,10 +10,14 @@
 require_once 'cas_config.php';
 require_once $phpcas_path . '/CAS.php';
 
-
-
-phpCAS::setDebug();
+//phpCAS::setDebug();
 // Initialize phpCAS
-phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
-
+phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
+phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
+//phpCAS::setNoCasServerValidation();
+phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 phpCAS::forceAuthentication();
+##set cache header
+header("Cache-Control: no-store, no-cache, must-revalidate");
+##set remove user variable
+$remote_user = phpCAS::getUser();

@@ -1,6 +1,5 @@
 <?php
 
-
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -29,13 +28,43 @@
     $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
     $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
-    $data['grid'] = draw_calendar($month, $year);
+
+// Currently using SESSION to store this.
+//    $data['grid'] = draw_calendar($month, $year);
+
+
+    session_start();
+    $session_time_name = $year.'_'.$month.'_CALENDAR_CACHE_TIME';
+    $session_value_name = $year.'_'.$month.'_CALENDAR_CACHE';
+    if ( !isset($_SESSION[$session_time_name]) || (time() - $_SESSION[$session_time_name] > 3600)) {
+        $_SESSION[$session_time_name] = time();
+        $_SESSION[$session_value_name] = draw_calendar($month, $year);
+        $data['grid'] = $_SESSION[$session_value_name];
+    }
+    else{ // update last activity time stamp
+        $data['grid'] = $_SESSION[$session_value_name];
+    }
+
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
-    ///$data['server'] = $_SERVER;
+//    $data['server'] = $_SERVER;
 
-    echo json_encode($data);
+
+
+    $session_time_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE_TIME';
+    $session_value_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE';
+    if ( !isset($_SESSION[$session_time_name]) || (time() - $_SESSION[$session_time_name] > 3600)) {
+        $_SESSION[$session_time_name] = time();
+        $_SESSION[$session_value_name] = json_encode($data);
+        echo $_SESSION[$session_value_name];
+    }
+    else{ // update last activity time stamp
+        echo $_SESSION[$session_value_name];
+    }
+
+// Currently using SESSION to store this.
+//    echo json_encode($data);
 
 
 function get_prev_month($month, $year, $day=1){
@@ -72,6 +101,7 @@ function draw_calendar($month,$year, $day=1){
     $calendar = '';
 
     $xml = get_event_xml();
+
 
     $date = new DateTime($year . '-' . $month . "-" . $day);
 
