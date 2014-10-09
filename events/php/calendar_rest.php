@@ -1,6 +1,5 @@
 <?php
 
-
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -29,13 +28,33 @@
     $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
     $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
-    $data['grid'] = draw_calendar($month, $year);
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
-    ///$data['server'] = $_SERVER;
+//    $data['server'] = $_SERVER;
+
+// Currently using SESSION to store this.
+//    $data['grid'] = draw_calendar($month, $year);
+
+
+
+
+    //Calendar Draw. This session block is to speed up switching months on the calendar.
+    session_start();
+    $session_time_name = $year.'_'.$month.'_CALENDAR_CACHE_TIME'; //time for a specific month/year
+    $session_value_name = $year.'_'.$month.'_CALENDAR_CACHE';      //time for a specific month/year
+    // If the value of the session is null or if the page needs to be reloaded
+    if ( !isset($_SESSION[$session_value_name]) || (time() - $_SESSION[$session_time_name] > 3600)) { //currently set to 1 hour.
+        $_SESSION[$session_time_name] = time();
+        $_SESSION[$session_value_name] = draw_calendar($month, $year);
+        $data['grid'] = $_SESSION[$session_value_name];
+    }
+    else{
+        $data['grid'] = $_SESSION[$session_value_name];
+    }
 
     echo json_encode($data);
+
 
 
 function get_prev_month($month, $year, $day=1){
@@ -72,6 +91,7 @@ function draw_calendar($month,$year, $day=1){
     $calendar = '';
 
     $xml = get_event_xml();
+
 
     $date = new DateTime($year . '-' . $month . "-" . $day);
 
