@@ -44,7 +44,7 @@
                     $resp .= '<div class="media-box pb1">';
                         $resp .= "<a href='$link'>";
                             $resp .= "<img class='media-box-img'
-                                src='$image' alt='$title' title='$title'/>";
+                                src='$image' alt=\"$title\" title=\"$title\"/>";
                         $resp .= '</a>';
                         $resp .= '<div class="media-box-body">';
                             $resp .= '<h2 class="h5">';
@@ -61,7 +61,7 @@
     </div>
     <div class="channel-section">
 
-        <div class="uportal-cms-block section-center" id="uportal-cms-block section-center">
+        <div class="uportal-cms-block section-center" id="uportal-cms-block">
             <p><a href="https://blink-cms.bethel.edu/channels/news/bethel-news/viewer/rss.xml">
                     <img class="float-right" title="Syndication Feed" src="https://blink-cms.bethel.edu/channels/news-events/bethel-news/feed-icon-14x14.png" alt="alt" width="14" height="14"/>
                 </a>
