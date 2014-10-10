@@ -6,7 +6,7 @@
  * Time: 12:58 PM
  */
 
-    $gifts = json_decode(file_get_contents("http://wsapi.bethel.edu/roar/total-gifts"));
+    $gifts = json_decode(file_get_contents("http://wsapi.bethel.edu/roar/total_gifts_given"));
     //print_r($gifts);
     $total = $gifts->{'result'}[0][0];
-    echo "$$total";
+    echo "$total";
