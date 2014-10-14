@@ -42,9 +42,9 @@
                     echo $title;
                 echo '</p>';
                 echo '<p class="date">';
-                    $datetime = new DateTime($date);
-                    $datetime->modify('-1 hour');
-                    echo $datetime->format('F j, Y | g:i a');
+                    date_default_timezone_set('America/Chicago');
+                    $date = date('F j, Y | g:i a', strtotime($date));
+                    echo $date;
                 echo '</p>';
                 echo "<a href='$link'>";
                 echo $author;
