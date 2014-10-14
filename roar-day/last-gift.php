@@ -7,6 +7,6 @@
  */
 
 
- $gifts = json_decode(file_get_contents("http://wsapi.bethel.edu/roar/last-gift"));
+ $gifts = json_decode(file_get_contents("http://wsapi.bethel.edu/roar/total_gifts_given"));
  $last = $gifts->{'result'}[0][0];
  echo $last;
