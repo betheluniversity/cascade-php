@@ -1,5 +1,4 @@
 <?php
-
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -47,9 +46,6 @@
 
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
-//    $data['server'] = $_SERVER;
-
 
 
     $session_time_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE_TIME';

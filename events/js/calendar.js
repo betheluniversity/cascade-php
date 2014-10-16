@@ -186,18 +186,39 @@
         this.title = $('div#calendar-title h3', this.element);
     }
 
-    CalendarController.prototype.update = function(data) {
-        var loc = window.location.toString().replace(/#.*/, '');
-        this.title.text(data['month_title']);
+    function getRemoteUser(){
+        if($.cookie('cal-user') && $.cookie('cal-user') != null && $.cookie('cal-user') != "null"){
+            return $.cookie('cal-user');
+        }else{
+            var url = '/code/general-cascade/get_remote_user';
+            $.getJSON(url, function(data){
+                var remote_user = data['remote_user'];
+                if( remote_user){
+                    $.cookie('cal-user', remote_user);
+                }
+            });
+        }
 
-        if (data['remote_user']){
-            $("#bu-topbar-welcome").html("Welcome " + data['remote_user']);
+    }
+
+    function updateWelcomeBar(){
+        debugger;
+        var remote_user = $.cookie('cal-user');
+        if (remote_user != null && remote_user != "null"){
+            $("#bu-topbar-welcome").html("Welcome " + remote_user);
         }else{
             var append = document.URL.replace("#", "?");
             var url = "https://auth.bethel.edu/cas/login?service=" + append;
             //url = url.replace("https", "http");
             $("#bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
+    }
+
+    CalendarController.prototype.update = function(data) {
+        var loc = window.location.toString().replace(/#.*/, '');
+        this.title.text(data['month_title']);
+        getRemoteUser();
+        updateWelcomeBar();
 
         if (data['next_month_qs'] !== null) {
             this.next_month_link.attr('href', loc + "#" + data['next_month_qs']);
@@ -240,13 +261,13 @@
         var controller = new CalendarController('#main');
         $.getJSON(loc, function(data){
             controller.update(data);
-            if (!(data['remote_user'])){
+            getRemoteUser();
+            var remote_user = $.cookie('cal-user');
+            if (!remote_user){
                 //remove the internal categories so they can't be selected via select-all
                 $("#filter-list-internal").remove();
                 $.cookie('cal-user', null);
 
-            }else{
-                $.cookie('cal-user', data['remote_user']);
             }
             checkEventCategories();
         });
@@ -318,6 +339,8 @@
         var hashParams = extractHashParameters(window.location.toString());
         var controller = new CalendarController('#main');
         controller.init();
+        getRemoteUser();
+        updateWelcomeBar();
         if (hashParams.count() >= 0 || queryParams >= 0) {
             updateCalendar();
         }

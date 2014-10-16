@@ -19,6 +19,6 @@ if ($cms_url) {
     echo '</div>';
 }
 
-if ($require_auth == "Yes"){
+if ($require_auth == "Yes" || $check_auth == "Yes"){
     include_once 'cas.php';
 }
