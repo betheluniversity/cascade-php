@@ -14,6 +14,7 @@ require_once $phpcas_path . '/CAS.php';
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
+phpCAS::setFixedCallbackURL("https://www.bethel.edu");
 //phpCAS::setNoCasServerValidation();
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 
