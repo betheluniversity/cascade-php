@@ -15,12 +15,12 @@ require_once $phpcas_path . '/CAS.php';
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
 
-$final_url = 'https://auth.bethel.edu/cas/login?service=';
+//$final_url = 'https://auth.bethel.edu/cas/login?service=';
 
 if($staging){
-    $final_url .= 'https://staging.bethel.edu';
+    $final_url = 'https://staging.bethel.edu';
 }else{
-    $final_url .= 'https://www.bethel.edu';
+    $final_url = 'https://www.bethel.edu';
 }
 
 $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
@@ -35,10 +35,8 @@ if (isset($request_uri[1]) && $request_uri[1]) {
     }
 }
 
-phpCAS::setServerLoginURL($final_url);
-echo 'using ' . $final_url;
+//phpCAS::setServerLoginURL($final_url);
 phpCAS::setFixedServiceURL($final_url);
-//phpCAS::setNoCasServerValidation();
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 
 
