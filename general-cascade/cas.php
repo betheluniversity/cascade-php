@@ -35,7 +35,7 @@ if (isset($request_uri[1]) && $request_uri[1]) {
     }
 }
 
-phpCAS::setServerLoginURL('https://auth.bethel.edu/cas/login?service=' . $prefix . $_SERVER['REQUEST_URI']);
+phpCAS::setServerLoginURL($final_url);
 echo 'using ' . $final_url;
 phpCAS::setFixedServiceURL($final_url);
 //phpCAS::setNoCasServerValidation();
