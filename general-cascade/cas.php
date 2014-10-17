@@ -10,13 +10,14 @@
 require_once 'cas_config.php';
 require_once $phpcas_path . '/CAS.php';
 
-//phpCAS::setDebug('/var/www/staging/public/_testing/jmo/phpCAS.txt');
+//phpCAS::setDebug();
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
 
-//$final_url = 'https://auth.bethel.edu/cas/login?service=';
-
+// We need to set the service URL ourselves because of Varnish. The request is technically port 80 here,
+// so phpCAS sents it to auth.bethel.edu/cas with a service url of https://www.bethel.edu:80, which is not
+//authorized to use CAS. Build the URL ourselves without a port and call setFixedServiceURL
 if($staging){
     $final_url = 'https://staging.bethel.edu';
 }else{
@@ -26,6 +27,7 @@ if($staging){
 $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
 $final_url		.= $request_uri[0];
 
+//Clear out ?ticket="" from the URL, if it exists
 if (isset($request_uri[1]) && $request_uri[1]) {
     $query_string= _removeParameterFromQueryString('ticket', $request_uri[1]);
     // If the query string still has anything left,
@@ -34,8 +36,7 @@ if (isset($request_uri[1]) && $request_uri[1]) {
         $final_url	.= "?$query_string";
     }
 }
-
-//phpCAS::setServerLoginURL($final_url);
+//Set the service URL and CA cert
 phpCAS::setFixedServiceURL($final_url);
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 
@@ -53,7 +54,6 @@ if($require_auth == "Yes"){
         $remote_user = null;
     }
 }
-
 
 function _removeParameterFromQueryString($parameterName, $queryString)
 {
