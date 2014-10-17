@@ -21,7 +21,8 @@ if($staging){
     $prefix = 'https://www.bethel.edu';
 }
 phpCAS::setServerLoginURL('https://auth.bethel.edu/cas/login?service=' . $prefix . $_SERVER['REQUEST_URI']);
-
+echo 'using ' . $prefix . $_SERVER['REQUEST_URI'];
+phpCAS::setFixedServiceURL($prefix . $_SERVER['REQUEST_URI']);
 //phpCAS::setNoCasServerValidation();
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 
