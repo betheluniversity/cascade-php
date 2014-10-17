@@ -10,13 +10,21 @@
 require_once 'cas_config.php';
 require_once $phpcas_path . '/CAS.php';
 
-//phpCAS::setDebug();
+//phpCAS::setDebug('/var/www/staging/public/_testing/jmo/phpCAS.txt');
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
-phpCAS::setFixedCallbackURL("https://www.bethel.edu");
+
+if($staging){
+    $prefix = 'https://staging.bethel.edu';
+}else{
+    $prefix = 'https://www.bethel.edu';
+}
+phpCAS::setServerLoginURL('https://auth.bethel.edu/cas/login?service=' . $prefix . $_SERVER['REQUEST_UIR']);
+
 //phpCAS::setNoCasServerValidation();
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
+
 
 if($require_auth == "Yes"){
     phpCAS::forceAuthentication();
