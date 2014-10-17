@@ -3462,7 +3462,6 @@ class CAS_Client
                     $final_uri	.= "?$query_string";
                 }
             }
-            echo $final_uri;
             phpCAS::trace("Final URI: $final_uri");
             $this->setURL($final_uri);
         }
