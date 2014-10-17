@@ -15,10 +15,12 @@ require_once $phpcas_path . '/CAS.php';
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
 phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
 
+$final_url = 'https://auth.bethel.edu/cas/login?service=';
+
 if($staging){
-    $final_url = 'https://staging.bethel.edu';
+    $final_url .= 'https://staging.bethel.edu';
 }else{
-    $final_url = 'https://www.bethel.edu';
+    $final_url .= 'https://www.bethel.edu';
 }
 
 $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
