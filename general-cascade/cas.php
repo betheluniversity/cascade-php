@@ -40,7 +40,6 @@ if (isset($request_uri[1]) && $request_uri[1]) {
 phpCAS::setFixedServiceURL($final_url);
 phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
 
-
 if($require_auth == "Yes"){
     phpCAS::forceAuthentication();
     ##set cache header
