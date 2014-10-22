@@ -22,5 +22,5 @@ if ($cms_url) {
 if ($require_auth == "Yes" || $check_auth == "Yes"){
     include_once 'cas.php';
 }else{
-    header("Cache-Control: public, must-revalidate, max-age=2592000");
+    header("Cache-Control: public, must-revalidate, max-age=86400");
 }
