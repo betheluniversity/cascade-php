@@ -13,7 +13,7 @@
     $day = date('j');
 
     $xml = get_event_xml();
-
+    $xml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $xml);
     $date = new DateTime($year . '-' . $month . "-" . $day);
     $key = $key = $date->format('Y-m-d');
     $todays_events = $xml[$key];
