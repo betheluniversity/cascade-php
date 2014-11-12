@@ -86,9 +86,7 @@ function inspect_news_article_page($xml){
     {
         $page_info['teaser'] = $xml->teaser;
         $page_info['html'] = get_news_article_html($page_info, $xml);
-
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
-
         // Featured Articles
         global $featuredArticleOptions;
         global $AddFeaturedArticle;
@@ -114,7 +112,6 @@ function display_on_feed_news_articles($page_info, $ds){
     $currentDate = time();
     global $ExpireAfterXDays;
     $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
-
     if( $page_info['display-on-feed'] == "Metadata Matches")
     {
         // Check if it falls between the given range.
@@ -129,7 +126,6 @@ function display_on_feed_news_articles($page_info, $ds){
             return "Yes";
         }
     }
-
     return "No";
 }
 
@@ -296,6 +292,8 @@ function format_featured_date_news_article( $date)
 
     // format 7:00 to 7
     $formattedDate = str_replace(":00", "", $formattedDate);
+    $formattedDate = str_replace("12 p.m.", "noon", $formattedDate);
+    $formattedDate = str_replace("12 a.m", "midnight", $formattedDate);
     return $formattedDate;
 }
 ?>
