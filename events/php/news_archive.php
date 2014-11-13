@@ -71,7 +71,7 @@ function create_archive(){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_archive_page($xml){
+function inspect_news_archive_page($xml, $categories){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -84,9 +84,27 @@ function inspect_news_archive_page($xml){
         "html" => "",
         "display-on-feed" => "Yes",
     );
-
     $ds = $xml->{'system-data-structure'};
-
+    global $feed_metadata;
+    $match = false;
+    if (strpos($xml->path, '2-14-trustee-summary') !== false){
+        echo 'test';
+    }
+    foreach ($xml->children() as $child) {
+        if($child->getName() == "dynamic-metadata"){
+            foreach($child->children() as $metadata){
+                if($metadata->getName() == "value"){
+                    if(in_array($metadata, $feed_metadata)){
+                        $match = true;
+                    }
+                }
+                //$metadata;
+            }
+        }
+    }
+    if(!$match) {
+        return;
+    }
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 

@@ -147,7 +147,7 @@ function get_news_article_html( $article, $xml ){
 
             global $destinationName;
             $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';
-            $html .= render_image($imagePath, $article['description'], "media-box-img  delayed-image-load", "", $destinationName);
+            $html .= render_image($imagePath, $article['description'], "delayed-image-load", "", $destinationName);
             $html .= '</a>';
             $html .= '</div>';
         $html .= '</div>';
@@ -178,35 +178,15 @@ function get_news_article_html( $article, $xml ){
 // if it matches, return "Metadata Matches"
 // else, return "No"
 function match_metadata_news_articles($xml){
-    global $School;
-    global $Department;
-    global $UniqueNews;
+    global $feed_metadata;
     foreach ($xml->{'dynamic-metadata'} as $md){
 
         $name = $md->name;
 
         foreach($md->value as $value ){
-            if($value == "Select" || $value == "select"){
-                continue;
-            }
 
-            if( $name == "school")
-            {
-                if (in_array($value, $School)){
-                    return "Metadata Matches";
-                }
-            }
-            elseif( $name == "department")
-            {
-                if (in_array($value, $Department)){
-                    return "Metadata Matches";
-                }
-            }
-            elseif( $name == "unique-news")
-            {
-                if (in_array($value, $UniqueNews)){
-                    return "Metadata Matches";
-                }
+            if (in_array($value, $feed_metadata)){
+                return "Metadata Matches";
             }
         }
     }

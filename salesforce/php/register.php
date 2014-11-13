@@ -81,10 +81,6 @@ try {
 
     // test for existing user
     $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
-    error_log('testing : ' . "");
-    $output = print_r($response,1);
-    error_log('user search : ' . $output);
-    $has_contact = sizeof($records);
     $records = $response->{'records'};
     $has_user = sizeof($records);
     if ($has_user > 0){
@@ -122,6 +118,9 @@ try {
     if ($user_id == ""){
         $url .= "?uid=false";
         $subject = "failed to find or create user id for email $email with cid=$contact_id";
+        if($createResponse){
+            $subject .= $createResponse;
+        }
         mail($mail_to,$subject,$subject,"From: $from\n");
         error_log($subject);
         header("Location: $url");

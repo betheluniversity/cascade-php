@@ -7,11 +7,26 @@
  */
 
     global $destinationName;
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
+
+    function show_individual_profile_stories($stories){
+        shuffle($stories);
+        $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
+        $xml = simplexml_load_file($file);
+        foreach($stories as $story){
+            $search = "//system-page[path='/$story']";
+            $results = $xml->xpath($search);
+            echo get_profile_stories_html('', $results[0]);
+        }
+        ?>
+        <?php
+
+    }
+
 
     function show_profile_story_collection($School, $Topic, $CAS, $CAPS, $GS, $SEM){
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         global $destinationName;
-
 
         //todo Clean up using $_SERVER
         //todo Do we need Destination name?
@@ -23,14 +38,12 @@
             $destinationName = "www";
         }
 
-        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
         $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
-
         foreach( $profileStoriesArray as $profileStory )
         {
             echo $profileStory;
         }
-        return;
+return;
     }
 
     // Converts and xml file to an array of profile stories
@@ -104,9 +117,10 @@
             $teaser = $viewerTeaser;
         }
         $quote = $ds->{'quote'};
-        $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
+        $html = '<div>';
+        $html .= '<a class="carousel-item" href="https://www.bethel.edu'.$xml->path.'">';
             //$html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName); Old version, feature__img didn't work
-            $html .= render_image($imagePath, $teaser, "delayed-image-load", "100%", $destinationName);
+            $html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName);
 
             $html .= '<figure class="feature__figure">';
             $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
@@ -114,6 +128,7 @@
 
             $html .= '</figure>';
         $html .= '</a>';
+        $html .= '</div>';
 
         return $html;
     }
