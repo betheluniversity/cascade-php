@@ -118,9 +118,6 @@ try {
     if ($user_id == ""){
         $url .= "?uid=false";
         $subject = "failed to find or create user id for email $email with cid=$contact_id";
-        if($createResponse){
-            $subject .= $createResponse;
-        }
         mail($mail_to,$subject,$subject,"From: $from\n");
         error_log($subject);
         header("Location: $url");
