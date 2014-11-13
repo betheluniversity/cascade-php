@@ -122,6 +122,7 @@
         $html .= '<a href="http://bethel.edu'.$xml->path.'">';
             //$html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName); Old version, feature__img didn't work
             //$html .= render_image($imagePath, $teaser, "delayed-image-load", "100%", $destinationName);
+            $html .= '<img data-lazy="$imagePath"/>';
             $html .= '<figure class="feature__figure">';
             $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
             $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
