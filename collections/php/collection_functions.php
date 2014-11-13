@@ -155,16 +155,18 @@
             $teaser = $viewerTeaser;
         }
         $quote = $ds->{'quote'};
-        $html = '<a class="carousel-item" href="http://bethel.edu'.$xml->path.'">';
-            //$html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName); Old version, feature__img didn't work
-            $html .= render_image($imagePath, $teaser, "delayed-image-load", "100%", $destinationName);
+        $html = "<div class='slick-item' style='width:100%'>";
+            $html .= '<a href="http://bethel.edu'.$xml->path.'">';
 
-            $html .= '<figure class="feature__figure">';
-            $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
-            $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
+                $html .= "<img src='$imagePath' style='width:100%' />";
+                $html .= '<figure class="feature__figure">';
+                $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
+                $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
 
-            $html .= '</figure>';
-        $html .= '</a>';
+                $html .= '</figure>';
+            $html .= '</a>';
+        $html .= "</div>";
+
 
         return $html;
     }

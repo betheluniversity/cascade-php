@@ -134,7 +134,7 @@
 
         global $featuredEventOptions;
 
-        foreach( $featuredEventOptions as $key=>$featuredEvent ){
+        foreach( $featuredEventOptions as $featuredEvent ){
             if( $featuredEvent[3] != null && $featuredEvent[3] != ""){
                 array_push($featuredEvents, $featuredEvent[3]);
             }

@@ -6,6 +6,7 @@
  * Time: 11:28 AM
  */
 
+
     global $destinationName;
 
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
@@ -25,7 +26,6 @@
     function show_profile_story_collection($School, $Topic, $CAS, $CAPS, $GS, $SEM){
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         global $destinationName;
-
 
         //todo Clean up using $_SERVER
         //todo Do we need Destination name?
