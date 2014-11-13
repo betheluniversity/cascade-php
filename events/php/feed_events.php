@@ -389,7 +389,7 @@
         $end = $event['date']['end-date'];
 
 
-        $html = '<div class="media-box  mv1">';
+        $html = '<div class="media-box  mv1"><span itemscope="itemscope" itemtype="http://schema.org/Event">';
         $html .= '<p class="events-date-tag">';
 
         if( $start != "")
@@ -425,7 +425,7 @@
             $html .= '<div class="media-box-body">';
         }
         // Title + Link
-        $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
+        $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'"><span itemprop="name">'.$event['title'].'</span></a></h2>';
 
         // Time + Location
         if( $event['date'] )
@@ -435,7 +435,7 @@
         if($date != ""){
             if( $event['location'] != "")
             {
-                $html .= '<p class="mb0">'.$date.' | '.$event['location'].'</p>';
+                $html .= '<p class="mb0">'.$date.' | <span itemprop="location">'.$event['location'].'</span></p>';
             }
             else{
                 $html .= '<p class="mb0">'.$date.'</p>';
@@ -449,8 +449,8 @@
         }
 
         // Description
-        $html .= '<p>'.$event['description'].'</p>';
-        $html .= '</div></div>';
+        $html .= '<p><span itemprop="description"'.$event['description'].'</span></p>';
+        $html .= '</div></span></div>';
 
 
 
