@@ -130,7 +130,6 @@
             $html .= '</figure>';
         $html .= '</a>';
         $html .= '</div>';
-
         return $html;
     }
 

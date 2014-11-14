@@ -113,7 +113,7 @@
             if( $page_info['display'] == "Yes" )
             {
                 // Code to make it a carousel
-                $html = '<div class="carousel-item">';
+                $html = '<div class="slick-item">';
                 $html .= '<div class="pa1  quote  grayLighter">';
                 $html .= get_quote_html($xml);
                 $html .= '</div></div>';
