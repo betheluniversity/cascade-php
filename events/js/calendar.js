@@ -179,11 +179,11 @@
 
     function CalendarController(element) {
         this.element = $(element);
-        this.next_month_link = $('a.next-month', this.element);
-        this.previous_month_link = $('a.previous-month', this.element);
-        this.buttons = $('a.button', this.element);
-        this.month_grid = $('div#calendar-main', this.element);
-        this.title = $('div#calendar-title h3', this.element);
+        this.next_month_link = $('a.next-month');
+        this.previous_month_link = $('a.previous-month');
+        this.buttons = $('a.button');
+        this.month_grid = $('div#calendar-main');
+        this.title = $('div#calendar-title h3');
     }
 
     function getRemoteUser(){

@@ -31,6 +31,7 @@
         return '<div class="' . $imgClass . '" data-class="' . $imgClass . '" data-src="'.$path.'" data-alt="'.$imgDesc.'" width="'.$width.'"></div>';
     }
 
+
     // $xml is the items that are being checked.
     // $categories is the page.
     function match_robust_metadata( $xml, $categories)
