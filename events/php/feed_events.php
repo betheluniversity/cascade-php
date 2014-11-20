@@ -78,7 +78,7 @@
 
 
                 // This will hide all events prior to today.
-                if( time() > $date->{'end-date'} / 1000 && $PriorToToday == 'Hide')
+                if( time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
                     continue;
 
                 $newEvent = $event;
