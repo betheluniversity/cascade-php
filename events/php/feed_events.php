@@ -17,6 +17,7 @@
     // index 3: final html of the event. Starts out equal to the null string.
 
     $NumEvents;
+    $PriorToToday;
     $AddFeaturedEvents;
     $StartDate;
     $EndDate;
@@ -63,7 +64,7 @@
         // Turn all dates into individual events
         /////////////////////////////////////////
         $eventArrayWithMultipleEvents = array();
-
+        global $PriorToToday;
         // foreach event.
         foreach( $arrayOfEvents as $event)
         {
@@ -75,7 +76,9 @@
                 $newDate['end-date'] = $date->{'end-date'} / 1000;
                 $newDate['all-day'] = $date->{'all-day'}->{'value'};
 
-                if( time() > $date->{'end-date'} / 1000 )
+
+                // This will hide all events prior to today.
+                if( time() > $date->{'end-date'} / 1000 && $PriorToToday == 'Hide')
                     continue;
 
                 $newEvent = $event;
@@ -291,8 +294,8 @@
 
         //Check if the event falls between the given range.
         if( $StartDate != "" && $EndDate != "" ){
+            // If the end date of the page comes after the start
             if( $modifiedStartDate < $page_info['date']['end-date'] && $page_info['date']['start-date'] < $modifiedEndDate ){
-
                 return true;
             }
         }
