@@ -28,7 +28,8 @@
     $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
 
-// Currently using SESSION to store this.
+///////////////////////////////////////////////
+// Currently using SESSION to store this. BELOW
 //    $data['grid'] = draw_calendar($month, $year);
 
 
@@ -59,8 +60,9 @@
         echo $_SESSION[$session_value_name];
     }
 
-// Currently using SESSION to store this.
+// Currently using SESSION to store this. ABOVE
 //    echo json_encode($data);
+///////////////////////////////////////////////
 
 
 function get_prev_month($month, $year, $day=1){
@@ -97,7 +99,6 @@ function draw_calendar($month,$year, $day=1){
     $calendar = '';
 
     $xml = get_event_xml();
-
 
     $date = new DateTime($year . '-' . $month . "-" . $day);
 
@@ -172,13 +173,13 @@ function draw_calendar($month,$year, $day=1){
 
                             }else{
                                 $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                                $start_date->setTimestamp($event['dates'][0]->{'start-date'}[0] / 1000);
+                                $start_date->setTimestamp($event['specific_start'] / 1000);
                                 $start = $start_date->format("g:i a");
                                 if (substr($start, -6, 3) == ':00'){
                                     $start = $start_date->format("g a");
                                 }
                                 $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                                $end_date->setTimestamp($event['dates'][0]->{'end-date'}[0] / 1000);
+                                $end_date->setTimestamp($event['specific_end'] / 1000);
                                 $end = $end_date->format("g:i a");
                                 if (substr($end, -6, 3) == ':00'){
                                     $end = $end_date->format("g a");

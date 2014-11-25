@@ -202,7 +202,6 @@
     }
 
     function updateWelcomeBar(){
-        debugger;
         var remote_user = $.cookie('cal-user');
         if (remote_user != null && remote_user != "null"){
             $("#bu-topbar-welcome").html("Welcome " + remote_user);

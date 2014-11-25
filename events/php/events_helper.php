@@ -96,7 +96,7 @@ function add_event_to_array($dates, $page_data){
             );
 
 
-            // Add a listng to the array for each event / event date
+            // Add a listing to the array for each event / event date
             foreach ($period as $date) {
                 $key = $date->format('Y-m-d');
 
