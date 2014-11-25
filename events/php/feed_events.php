@@ -452,7 +452,7 @@
         }
 
         // Description
-        $html .= '<p><span itemprop="description"'.$event['description'].'</span></p>';
+        $html .= '<p><span itemprop="description">'.$event['description'].'</span></p>';
         $html .= '</div></span></div>';
 
 
