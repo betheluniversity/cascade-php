@@ -86,25 +86,7 @@ function inspect_news_archive_page($xml, $categories){
     );
     $ds = $xml->{'system-data-structure'};
     global $feed_metadata;
-    $match = false;
-    if (strpos($xml->path, '2-14-trustee-summary') !== false){
-        echo 'test';
-    }
-    foreach ($xml->children() as $child) {
-        if($child->getName() == "dynamic-metadata"){
-            foreach($child->children() as $metadata){
-                if($metadata->getName() == "value"){
-                    if(in_array($metadata, $feed_metadata)){
-                        $match = true;
-                    }
-                }
-                //$metadata;
-            }
-        }
-    }
-    if(!$match) {
-        return;
-    }
+
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
@@ -112,18 +94,6 @@ function inspect_news_archive_page($xml, $categories){
     global $uniqueNews;
 
     $isInternal = in_array("Internal", $uniqueNews);
-
-    echo $uniqueNews;
-
-    foreach($uniqueNews as $new)
-    {
-        echo "<h1>START</h1>".$new."<h1>END</h1>";
-    }
-
-    if($isInternal == TRUE)
-    {
-        echo "<h1>Got it</h1><br/>".get_news_article_html($page_info, $xml)."<br/>";
-    }
 
     if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
     {
@@ -136,7 +106,6 @@ function inspect_news_archive_page($xml, $categories){
 
         $page_info['html'] = get_news_article_html($page_info, $xml);
     }
-
     return $page_info;
 }
 
