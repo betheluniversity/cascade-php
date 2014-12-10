@@ -89,9 +89,6 @@ function inspect_news_archive_page($xml, $categories){
 
 
     $match = false;
-    if (strpos($xml->path, '2-14-trustee-summary') !== false){
-        echo 'test';
-    }
     foreach ($xml->children() as $child) {
         if($child->getName() == "dynamic-metadata"){
             foreach($child->children() as $metadata){
