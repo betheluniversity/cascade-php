@@ -87,6 +87,27 @@ function inspect_news_archive_page($xml, $categories){
     $ds = $xml->{'system-data-structure'};
     global $feed_metadata;
 
+
+    $match = false;
+    if (strpos($xml->path, '2-14-trustee-summary') !== false){
+        echo 'test';
+    }
+    foreach ($xml->children() as $child) {
+        if($child->getName() == "dynamic-metadata"){
+            foreach($child->children() as $metadata){
+                if($metadata->getName() == "value"){
+                    if(in_array($metadata, $feed_metadata)){
+                        $match = true;
+                    }
+                }
+                //$metadata;
+            }
+        }
+    }
+    if(!$match) {
+        return;
+    }
+
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
