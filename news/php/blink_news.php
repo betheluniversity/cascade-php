@@ -30,7 +30,7 @@
                 $count = 0;
                 $resp = "";
                 foreach($xml as $page){
-                    //limit 3
+                    //limit 4
                     if( $count == 4){
                         break;
                     }
