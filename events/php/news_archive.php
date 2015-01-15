@@ -88,6 +88,8 @@ function inspect_news_archive_page($xml, $categories){
     global $feed_metadata;
 
 
+
+
     $match = false;
     foreach ($xml->children() as $child) {
         if($child->getName() == "dynamic-metadata"){
@@ -112,8 +114,7 @@ function inspect_news_archive_page($xml, $categories){
     global $uniqueNews;
 
     $isInternal = in_array("Internal", $uniqueNews);
-
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
     {
         //check if is internal
         $date = $page_info['date'];
