@@ -219,6 +219,9 @@
             "image" => "",
             "xml" => $xml,
         );
+        if( strpos($page_info['path'],"_testing") !== false)
+            return "";
+
         $ds = $xml->{'system-data-structure'};
 
         $page_info['display-on-feed'] = match_metadata_events($xml, $categories);

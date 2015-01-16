@@ -38,6 +38,8 @@
     }
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
+    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+
     $session_time_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE_TIME';
     $session_value_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE';
     if ( !isset($_SESSION[$session_time_name]) || (time() - $_SESSION[$session_time_name] > 3600)) {
@@ -81,7 +83,9 @@
         /* draw table */
         $calendar = '';
         $xml = get_event_xml();
+
         $date = new DateTime($year . '-' . $month . "-" . $day);
+
         /* table headings */
         //$headings = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
         //$calendar.= '<ul id="days-of-the-week"><li>'.implode('</li><li>',$headings).'</li></ul>';
@@ -252,9 +256,11 @@
             $end_date = $date->{'end-date'} / 1000;
             $specific_start = date("Y-m-d", $start_date  );
             $specific_end = date("Y-m-d", $end_date );
+
             $page_data['specific_start'] = $date->{'start-date'};
             $page_data['specific_end'] = $date->{'end-date'};
             $page_data['specific_all_day'] = $date->{'all-day'};
+
             if($specific_start == $specific_end){
                 //Don't need a date range.
                 $key = date("Y-m-d", $start_date);

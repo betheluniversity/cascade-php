@@ -39,7 +39,7 @@ function traverse_folder($xml, $dates, $categories){
         $name = $child->getName();
 
         if ($name == 'system-folder'){
-            $dates = traverse_folder($child, $dates, $categories);
+                $dates = traverse_folder($child, $dates, $categories);
         }elseif ($name == 'system-page'){
 
             $page_data = inspect_page($child, $categories);
@@ -54,7 +54,6 @@ function traverse_folder($xml, $dates, $categories){
             }
         }
     }
-
     return $dates;
 }
 
