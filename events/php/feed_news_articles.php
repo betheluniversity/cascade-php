@@ -75,6 +75,9 @@ function inspect_news_article_page($xml){
         "display-on-feed" => "No",
     );
 
+    if( strpos($page_info['path'],"_testing") !== false)
+        return "";
+
     $ds = $xml->{'system-data-structure'};
     $page_info['display-on-feed'] = match_metadata_news_articles($xml);
 //    $page_info['date-for-sorting'] = time();

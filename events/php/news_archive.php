@@ -84,6 +84,9 @@ function inspect_news_archive_page($xml, $categories){
         "html" => "",
         "display-on-feed" => "Yes",
     );
+    if( strpos($page_info['path'],"_testing") !== false)
+        return "";
+
     $ds = $xml->{'system-data-structure'};
     global $feed_metadata;
 
