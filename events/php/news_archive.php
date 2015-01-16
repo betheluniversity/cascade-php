@@ -90,6 +90,26 @@ function inspect_news_archive_page($xml, $categories){
     $ds = $xml->{'system-data-structure'};
     global $feed_metadata;
 
+
+
+
+    $match = false;
+    foreach ($xml->children() as $child) {
+        if($child->getName() == "dynamic-metadata"){
+            foreach($child->children() as $metadata){
+                if($metadata->getName() == "value"){
+                    if(in_array($metadata, $feed_metadata)){
+                        $match = true;
+                    }
+                }
+                //$metadata;
+            }
+        }
+    }
+    if(!$match) {
+        return;
+    }
+
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
@@ -97,8 +117,7 @@ function inspect_news_archive_page($xml, $categories){
     global $uniqueNews;
 
     $isInternal = in_array("Internal", $uniqueNews);
-
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
     {
         //check if is internal
         $date = $page_info['date'];

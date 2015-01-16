@@ -30,8 +30,13 @@
                 $count = 0;
                 $resp = "";
                 foreach($xml as $page){
+                    //limit 4
                     if( $count == 4){
                         break;
+                    }
+                    // check metadata
+                    if($page['categories'][0][0] == "President Announcements"){
+                        continue;
                     }
 
                     $image = "https://www.bethel.edu" . $page['image'][0];

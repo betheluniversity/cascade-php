@@ -12,14 +12,16 @@
     $year = date('Y');
     $day = date('j');
 
+    // get events
     $xml = get_event_xml();
-    $xml = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $xml);
+
+    //event array has each date as a key in m-d-y format
     $date = new DateTime($year . '-' . $month . "-" . $day);
     $key = $key = $date->format('Y-m-d');
+
     $todays_events = $xml[$key];
     $display_date = $date->format('F j, Y');
 ?>
-
 <div class="channel-section">
 <div class="uportal-cms-block">
 <div class="uportal-channel-text" style="text-align: right">
@@ -31,7 +33,7 @@
 <div id="todayseventscont">
 <ul id="todayseventslist" class="alternating uportal-channel-text">
 <?php
-    foreach($todays_events as $event){
+foreach($todays_events as $event){
 
         echo "<li>";
         echo '<h4>';
@@ -50,7 +52,13 @@
         $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
         $start_date->setTimestamp($start / 1000);
         $start = $start_date->format("g:i a");
-        if (substr($start, -6, 3) == ':00'){
+
+        $title = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $title);
+        $location = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $location);
+        $description = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $description);
+
+
+    if (substr($start, -6, 3) == ':00'){
             $start = $start_date->format("g a");
         }
         $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
