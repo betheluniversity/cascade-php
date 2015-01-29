@@ -32,8 +32,8 @@
     }
 
 
-    // $xml is the items that are being checked.
-    // $categories is the page.
+    // $xml is the possible items that are being checked.
+    // $categories is the page's metadata.
     function match_robust_metadata( $xml, $categories)
     {
         // The first part is to build the metadata into an array for the xml.
@@ -76,12 +76,15 @@
 
         // compare the 2 sets of metadata
         for( $i=0; $i < 6; $i++){
+            return sizeof($categories[0]). " " . $categories[0];
             foreach($categories[$i] as $value){
                 if($value == "Select" || $value == "none"){
                     continue;
                 }
-                if( !in_array($value, $xmlCategories[$i]))
+
+                if( !in_array($value, $xmlCategories[$i])){
                     return "No";
+                }
             }
         }
         return "Yes";

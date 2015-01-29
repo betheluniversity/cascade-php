@@ -14,8 +14,8 @@ $uniqueNews;
 function create_archive(){
 
     // Feed
-    global $newsArticleFeedCategories;
-    $categories = $newsArticleFeedCategories;
+    global $feed_metadata;
+    $categories = $feed_metadata;
 
     // Staging Site
     global $destinationName;
@@ -43,8 +43,11 @@ function create_archive(){
         for( $i = 12; $i >= 0  ;$i--)
         {
             if( $i < 10 )
+            {
                 //todo what is a newi?
+                //newi is the new i value. If i is less than 10, it needs to have a '0' appended to it.
                 $newi = '0'.$i;
+            }
             else
                 $newi = $i;
             if( sizeof($yearArray[$newi]) > 0)
@@ -88,17 +91,15 @@ function inspect_news_archive_page($xml, $categories){
         return "";
 
     $ds = $xml->{'system-data-structure'};
-    global $feed_metadata;
-
-
-
 
     $match = false;
     foreach ($xml->children() as $child) {
         if($child->getName() == "dynamic-metadata"){
             foreach($child->children() as $metadata){
                 if($metadata->getName() == "value"){
-                    if(in_array($metadata, $feed_metadata)){
+                    if( $metadata == "Select" || $metadata == "None" || $metadata == "none" )
+                        continue;
+                    if(in_array($metadata, $categories)){
                         $match = true;
                     }
                 }
@@ -106,6 +107,7 @@ function inspect_news_archive_page($xml, $categories){
             }
         }
     }
+
     if(!$match) {
         return;
     }
