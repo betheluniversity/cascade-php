@@ -1,6 +1,7 @@
 <?php
 
 $staging = strstr(getcwd(), "staging/public");
+$soda = strstr(getcwd(), "soda");
 
 if( $staging ){
 

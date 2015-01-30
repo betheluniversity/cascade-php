@@ -20,6 +20,8 @@ phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate
 //authorized to use CAS. Build the URL ourselves without a port and call setFixedServiceURL
 if($staging){
     $final_url = 'https://staging.bethel.edu';
+}elseif($soda){
+    $final_url = 'https://soda.bethel.edu';
 }else{
     $final_url = 'https://www.bethel.edu';
 }
