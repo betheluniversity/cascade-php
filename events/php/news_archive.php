@@ -23,9 +23,6 @@ function create_archive(){
     if( strstr(getcwd(), "staging/public") ){
         $destinationName = "staging";
     }
-    else{ // Live site.
-        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
-    }
 
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);

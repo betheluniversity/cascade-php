@@ -6,16 +6,6 @@
  * Time: 3:30 PM
  */
 
-    // Staging Site
-//    if( strstr(getcwd(), "staging/public") ){
-//        include_once "/var/www/staging/public/code/php_helper_for_cascade.php";
-//        $destinationName = "staging";
-//    }
-//    else{ // Live site.
-//        include_once "/var/www/cms.pub/code/php_helper_for_cascade.php";
-//        $destinationName = "www";
-//    }
-
     function get_carousel_viewer(){
         echo "hello";
     }
