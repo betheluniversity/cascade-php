@@ -76,7 +76,6 @@
 
         // compare the 2 sets of metadata
         for( $i=0; $i < 6; $i++){
-            return sizeof($categories[0]). " " . $categories[0];
             foreach($categories[$i] as $value){
                 if($value == "Select" || $value == "none"){
                     continue;
