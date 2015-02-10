@@ -43,7 +43,9 @@
                     $title = $page['title'][0];
                     $teaser = $page['teaser'][0];
                     $title = str_replace("&", "&amp;", $title);
+                    $title = str_replace('"', "&quot;", $title);
                     $teaser = str_replace("&", "&amp;", $teaser);
+                    $teaser = str_replace('"', "&quot;", $teaser);
                     $link = "https://www.bethel.edu" . $page['path'][0];
 
                     $resp .= '<div class="media-box pb1">';
