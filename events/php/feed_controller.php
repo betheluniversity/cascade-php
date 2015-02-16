@@ -51,6 +51,9 @@ function get_xml($fileToLoad, $categories){
 }
 
 function traverse_folder($xml, $pages, $categories){
+    if(!$xml){
+        return;
+    }
     foreach ($xml->children() as $child) {
 
         $name = $child->getName();

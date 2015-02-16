@@ -52,10 +52,10 @@
         global $destinationName;
         // Dynamically get the correct xml.
         if( $destinationName == "staging/public" ){
-            $arrayOfEvents = get_xml("/var/www/staging/public/_shared-content/xml/events.xml", $categories);
+            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
         }
         else{
-            $arrayOfEvents = get_xml("/var/www/cms.pub/_shared-content/xml/events.xml", $categories);
+            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
         }
 
 
