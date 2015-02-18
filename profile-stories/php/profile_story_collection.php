@@ -124,7 +124,7 @@
             //$html .= render_image($imagePath, $teaser, "feature__img", "100%", $destinationName); Old version, feature__img didn't work
             //$html .= render_image($imagePath, $teaser, "delayed-image-load", "100%", $destinationName);
             $imagePath = "https://cdn2.bethel.edu/resize/unsafe/1500x0/smart/http://www.bethel.edu$imagePath";
-            $html .= "<img class="feature__img" data-lazy='$imagePath'/>";
+            $html .= '<img class="feature__img" data-lazy="$imagePath"/>';
             $html .= '<figure class="feature__figure">';
             $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
             $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
