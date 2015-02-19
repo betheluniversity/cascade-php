@@ -21,39 +21,22 @@
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
 
 
+    $cache_name = $year.'_'.$month.'_CALENDAR_CACHE';
+    $memcache_obj = memcache_connect("localhost", 11211);
+    $memcache_data = $memcache_obj->get($cache_name);
 
-    ///////////////////////////////////////////////
-    // Currently using SESSION to store this. BELOW
-    //    $data['grid'] = draw_calendar($month, $year);
-    session_start();
-    $session_time_name = $year.'_'.$month.'_CALENDAR_CACHE_TIME';
-    $session_value_name = $year.'_'.$month.'_CALENDAR_CACHE';
-    if ( !isset($_SESSION[$session_time_name]) || (time() - $_SESSION[$session_time_name] > 3600)) {
-        $_SESSION[$session_time_name] = time();
-        $_SESSION[$session_value_name] = draw_calendar($month, $year);
-        $data['grid'] = $_SESSION[$session_value_name];
+    if (!$memcache_data){
+        $data['grid'] = draw_calendar($month, $year);
+        $memcache_obj->add($cache_name, $data['grid'], false, time()+ 1800);
+    }else{
+        $data['grid'] = $memcache_data;
     }
-    else{ // update last activity time stamp
-        $data['grid'] = $_SESSION[$session_value_name];
-    }
+
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
 
-    $session_time_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE_TIME';
-    $session_value_name = $year.'_'.$month.'_JSON_CALENDAR_CACHE';
-    if ( !isset($_SESSION[$session_time_name]) || (time() - $_SESSION[$session_time_name] > 3600)) {
-        $_SESSION[$session_time_name] = time();
-        $_SESSION[$session_value_name] = json_encode($data);
-        echo $_SESSION[$session_value_name];
-    }
-    else{ // update last activity time stamp
-        echo $_SESSION[$session_value_name];
-    }
-    // Currently using SESSION to store this. ABOVE
-    //    echo json_encode($data);
-    ///////////////////////////////////////////////
-
+    echo json_encode($data);
 
 
     function get_prev_month($month, $year, $day=1){
@@ -82,13 +65,24 @@
     function draw_calendar($month,$year, $day=1){
         /* draw table */
         $calendar = '';
+
+//        $cache_name = 'CALENDAR_XML';
+//        $memcache_obj = memcache_connect("localhost", 11211);
+//        $memcache_data = $memcache_obj->get($cache_name);
+//
+//        if (!$memcache_data){
         $xml = get_event_xml();
+//            file_put_contents('calendar_content.xml', $xml);
+//            $memcache_obj->add($cache_name, $cache_name, false, time()+ 1800);
+//        }else{
+//            $xml = file_get_contents('calendar_content.xml');
+//            echo $xml;
+//        }
+//
+//        return $xml;
 
         $date = new DateTime($year . '-' . $month . "-" . $day);
 
-        /* table headings */
-        //$headings = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
-        //$calendar.= '<ul id="days-of-the-week"><li>'.implode('</li><li>',$headings).'</li></ul>';
         $classes = array(
             1 => 'sun',
             2 => 'mon',
