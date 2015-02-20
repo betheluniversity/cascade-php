@@ -72,7 +72,7 @@
         if(!$xml){
             error_log("Memcache miss\n", 3, '/tmp/calendar.log');
             $xml = get_event_xml();
-            $status = $cache->set($cache_name, json_encode($xml), false, 1800);
+            $status = $cache->set($cache_name, json_encode($xml), MEMCACHE_COMPRESSED, 1800);
             error_log("Cache Status: $status", 3, '/tmp/calendar.log');
         }else{
             $xml = json_decode($xml, true);
