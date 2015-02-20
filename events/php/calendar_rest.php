@@ -1,5 +1,5 @@
 <?php
-
+    error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
     $total_time_start = microtime(true);
     $month = $_GET['month'];
     $year = $_GET['year'];
@@ -30,7 +30,7 @@
 
     $total_time_end = microtime(true);
     $time = $total_time_end - $total_time_start;
-    error_log("Full Run in $time seconds\n", 3, '/tmp/calendar.log');
+    error_log("Full Run in $time seconds\n------------------------------\n\n", 3, '/tmp/calendar.log');
 //    echo "done";
     echo json_encode($data);
 
@@ -65,20 +65,22 @@
         $calendar = '';
 
         $cache_time_start = microtime(true);
-        $cache_name = 'CALENDAR_XML';
-        $cache = new Memcache;
-        $cache->addServer('localhost', 11211);
-        $xml = $cache->get($cache_name);
-        if(!$xml){
-            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
-            $xml = get_event_xml();
-            $status = $cache->set($cache_name, json_encode($xml), MEMCACHE_COMPRESSED, 1800);
-            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-        }else{
-            $xml = json_decode($xml, true);
-            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
-        }
-        $cache->close();
+//        $cache_name = 'CALENDAR_XML';
+//        $cache = new Memcache;
+//        $cache->addServer('localhost', 11211);
+//        $xml = $cache->get($cache_name);
+//        if(!$xml){
+//            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
+//            $xml = get_event_xml();
+//            $status = $cache->set($cache_name, json_encode($xml), MEMCACHE_COMPRESSED, 1800);
+//            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
+//        }else{
+//            $xml = json_decode($xml, true);
+//            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
+//        }
+//        $cache->close();
+
+        $xml = get_event_xml();
 
         $cache_time_end = microtime(true);
         $cache_total_time = $cache_time_end - $cache_time_start;
@@ -252,20 +254,37 @@
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
         $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
         $dates = array();
+        $loop_start_time = microtime(true);
         $inner_xml_time_start = microtime(true);
         foreach($event_pages as $child ){
+
+            $page_data_start_time = microtime(true);
             $page_data = inspect_page($child, $categories);
-            $dates = add_event_to_array($dates, $page_data);
+            $page_data_end_time = microtime(true);
+
+            $add_event_start_time = microtime(true);
+
+            add_event_to_array($dates, $page_data);
+            $add_event_end_time = microtime(true);
+
+
+            $page_data_time = $page_data_end_time - $page_data_start_time;
+            $add_event_time = $add_event_end_time - $add_event_start_time;
+//            error_log("page_data time: $page_data_time\n", 3, '/tmp/calendar.log');
+//            error_log("add_event time: $add_event_time\n", 3, '/tmp/calendar.log');
+
+
             //$dates = array_merge($dates, $new_dates);
         }
+        $loop_end_time = microtime(true);
         $inner_xml_time_end = microtime(true);
-        $time = $inner_xml_time_end - $inner_xml_time_start;
-        //echo "foreach in get_xml in $time seconds\n";
+        $loop_time = $loop_end_time - $loop_start_time;
+        error_log("loop total time: $loop_time\n", 3, '/tmp/calendar.log');
         return $dates;
     }
 
 
-    function add_event_to_array($dates, $page_data){
+    function add_event_to_array(&$dates, $page_data){
         //Iterate over each Date in this event
         foreach ($page_data['dates'] as $date) {
             $start_date = $date['start-date'] / 1000;
@@ -277,6 +296,7 @@
             $page_data['specific_end'] = $date['end-date'];
             $page_data['specific_all_day'] = $date['all-day'];
             if($specific_start == $specific_end){
+                // 645 Matches, 0.18 seconds
                 //Don't need a date range.
                 $key = date("Y-m-d", $start_date);
                 // Check if this date has events already
@@ -286,7 +306,10 @@
                 } else {
                     $dates[$key] = array($page_data);
                 }
-            }else{
+            }
+            else{
+//                $case_two_start_time = microtime();
+                // 113 matches -- 7.67 seconds. 1025 cases of inner foreach
                 $page_data['specific_all_day'] = true;
                 $start = date("Y-n-j", $start_date);
                 // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
@@ -299,17 +322,21 @@
                     new DateTime($end)
                 );
                 // Add a listng to the array for each event / event date
-                foreach ($period as $date) {
-                    $key = $date->format('Y-m-d');
+                $foreach_start_time = microtime(true);
+                foreach ($period as $inner_date) {
+                    $key = $inner_date->format('Y-m-d');
                     // Check if this date has events already
                     if (isset($dates[$key])) {
+                        //673 matches
                         array_push($dates[$key], $page_data);
-                        //Otherwise add a new array with this event for this date.
                     } else {
+                        // 353 matches - 7 seconds
                         $dates[$key] = array($page_data);
                     }
-
                 }
+//                $foreach_total_time = microtime(true) - $foreach_start_time;
+//                $case_two_total_time = microtime(true) - $foreach_start_time;
+//                error_log("Case 2 total time: $case_two_total_time\n", 3, '/tmp/calendar.log');
             }
         }
         return $dates;
