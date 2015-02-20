@@ -1,38 +1,53 @@
 <?php
+
     error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
     $total_time_start = microtime(true);
     $month = $_GET['month'];
     $year = $_GET['year'];
-    $day = $_GET['day'];
-    if (is_null($month) || is_null($year) || is_null($day) ){
+    if (is_null($month) || is_null($year)){
         $month = date('n');
         $year = date('Y');
-        $day = date('j');
     }
-//    // Set the month and year if it isn't passed in GET
-    $next = get_next_month($month, $year);
-    $prev = get_prev_month($month, $year);
-    $next_month = $next->format('n');
-    $next_year = $next->format('Y');
-    $prev_month = $prev->format('n');
-    $prev_year = $prev->format('Y');
-    $data = Array();
-    $data['previous_title'] = "Previous Month";
-    $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
-    $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
-    $data['current_month_qs'] = "month=$month&day=1&year=$year";
+    $cache_name = "$month-$year";
+    $cache = new Memcache;
+    $cache->addServer('localhost', 11211);
+    $data = $cache->get($cache_name);
+    if(!$data){
+        error_log("Full Data Array Memcache miss\n", 3, '/tmp/calendar.log');
+        $data = build_calendar_data($month, $year);
+        $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, 300);
+        error_log("Cache Status: $status", 3, '/tmp/calendar.log');
+    }else{
+        error_log("Full Data Array Memcache hit\n", 3, '/tmp/calendar.log');
+    }
+    $cache->close();
+    $total_run_time = microtime(true) - $total_time_start;
+    error_log("Full Run in $total_run_time\n", 3, '/tmp/calendar.log');
+    echo $data;
 
-    $data['grid'] = draw_calendar($month, $year);
-    $data['month_title'] = get_month_name($month) . ' ' .  $year;
-    $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+    function build_calendar_data($month, $year){
+        // Set the month and year if it isn't passed in GET
+        $next = get_next_month($month, $year);
+        $prev = get_prev_month($month, $year);
+        $next_month = $next->format('n');
+        $next_year = $next->format('Y');
+        $prev_month = $prev->format('n');
+        $prev_year = $prev->format('Y');
+        $data = Array();
+        $data['previous_title'] = "Previous Month";
+        $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
+        $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
+        $data['current_month_qs'] = "month=$month&day=1&year=$year";
 
+        $data['grid'] = draw_calendar($month, $year);
+        $data['month_title'] = get_month_name($month) . ' ' . $year;
+        $data['next_title'] = "Next Month";
+        $data['remote_user'] = $_SERVER['REMOTE_USER'];
 
-    $total_time_end = microtime(true);
-    $time = $total_time_end - $total_time_start;
-    error_log("Full Run in $time seconds\n------------------------------\n\n", 3, '/tmp/calendar.log');
-    echo json_encode($data);
-
+        $total_time_end = microtime(true);
+        $time = $total_time_end - $total_time_start;
+        return json_encode($data);
+    }
 
     function get_prev_month($month, $year, $day=1){
         $date = new DateTime();
@@ -201,7 +216,6 @@
         /* all done, return result */
         $draw_calendar_time_end = microtime(true);
 
-
         $draw_calendar_time = $draw_calendar_time_end - $draw_calendar_time_start;
         $after_xml_time = $draw_calendar_time_end - $after_xml_time_start;
         error_log("After XML draw_calendar in $after_xml_time seconds\n", 3, '/tmp/calendar.log');
@@ -209,29 +223,21 @@
         return $calendar;
     }
 
-    function xml2array($xml)
-    {
+    function xml2array($xml){
         $arr = array();
-
-        foreach ($xml as $element)
-        {
+        foreach ($xml as $element){
             $tag = $element->getName();
             $e = get_object_vars($element);
-            if (!empty($e))
-            {
+            if (!empty($e)){
                 $arr[$tag] = $element instanceof SimpleXMLElement ? xml2array($element) : $e;
-            }
-            else
-            {
+            }else{
                 $arr[$tag] = trim($element);
             }
         }
-
         return $arr;
     }
 
     function get_event_xml(){
-
 
         ##Create a list of categories the calendar uses
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
@@ -268,7 +274,6 @@
             $page_data['specific_end'] = $date['end-date'];
             $page_data['specific_all_day'] = $date['all-day'];
             if($specific_start == $specific_end){
-                // 645 Matches, 0.18 seconds
                 //Don't need a date range.
                 $key = date("Y-m-d", $start_date);
                 // Check if this date has events already
@@ -279,9 +284,8 @@
                     $dates[$key] = array($page_data);
                 }
             }
+            // range of dates
             else{
-//                $case_two_start_time = microtime();
-                // 113 matches -- 7.67 seconds. 1025 cases of inner foreach
                 $page_data['specific_all_day'] = true;
                 $start = date("Y-n-j", $start_date);
                 // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
@@ -299,16 +303,11 @@
                     $key = $inner_date->format('Y-m-d');
                     // Check if this date has events already
                     if (isset($dates[$key])) {
-                        //673 matches
                         array_push($dates[$key], $page_data);
                     } else {
-                        // 353 matches - 7 seconds
                         $dates[$key] = array($page_data);
                     }
                 }
-//                $foreach_total_time = microtime(true) - $foreach_start_time;
-//                $case_two_total_time = microtime(true) - $foreach_start_time;
-//                error_log("Case 2 total time: $case_two_total_time\n", 3, '/tmp/calendar.log');
             }
         }
         return $dates;
