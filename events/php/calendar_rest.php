@@ -72,16 +72,14 @@
         if(!$xml){
             error_log("Memcache miss\n", 3, '/tmp/calendar.log');
             $xml = get_event_xml();
-            $cache->set($cache_name, json_encode($xml), false, 1800);
+            $status = $cache->set($cache_name, json_encode($xml), false, 1800);
+            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
         }else{
             $xml = json_decode($xml, true);
             error_log("Memcache hit\n", 3, '/tmp/calendar.log');
         }
-//        echo "<pre>";
-//        print_r($xml);
-//        echo "</pre>";
+        $cache->close();
 
-//        $xml = get_event_xml();
         $cache_time_end = microtime(true);
         $cache_total_time = $cache_time_end - $cache_time_start;
         error_log("Retrieve XML in $cache_total_time seconds\n", 3, '/tmp/calendar.log');
