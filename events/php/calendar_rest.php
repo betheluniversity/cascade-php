@@ -20,17 +20,7 @@
     $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
 
-
-    $cache_name = $year.'_'.$month.'_CALENDAR_CACHE';
-    $memcache_obj = memcache_connect("localhost", 11211);
-    $memcache_data = $memcache_obj->get($cache_name);
-
-    if (!$memcache_data){
-        $data['grid'] = draw_calendar($month, $year);
-        $memcache_obj->add($cache_name, $data['grid'], false, time()+ 1800);
-    }else{
-        $data['grid'] = $memcache_data;
-    }
+    $data['grid'] = draw_calendar($month, $year);
 
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
@@ -66,20 +56,15 @@
         /* draw table */
         $calendar = '';
 
-//        $cache_name = 'CALENDAR_XML';
-//        $memcache_obj = memcache_connect("localhost", 11211);
-//        $memcache_data = $memcache_obj->get($cache_name);
-//
-//        if (!$memcache_data){
-        $xml = get_event_xml();
-//            file_put_contents('calendar_content.xml', $xml);
-//            $memcache_obj->add($cache_name, $cache_name, false, time()+ 1800);
-//        }else{
-//            $xml = file_get_contents('calendar_content.xml');
-//            echo $xml;
-//        }
-//
-//        return $xml;
+        $cache_name = 'CALENDAR_XML';
+
+        $data = apc_fetch($cache_name);
+        if (!$data){
+            $xml = get_event_xml();
+            apc_store($cache_name, $xml, 1800);
+        }else{
+            $xml = $data;
+        }
 
         $date = new DateTime($year . '-' . $month . "-" . $day);
 
@@ -201,8 +186,31 @@
         /* final row */
         $calendar.= '</ul>';
         /* all done, return result */
+
         return $calendar;
     }
+
+    function xml2array($xml)
+    {
+        $arr = array();
+
+        foreach ($xml as $element)
+        {
+            $tag = $element->getName();
+            $e = get_object_vars($element);
+            if (!empty($e))
+            {
+                $arr[$tag] = $element instanceof SimpleXMLElement ? xml2array($element) : $e;
+            }
+            else
+            {
+                $arr[$tag] = trim($element);
+            }
+        }
+
+        return $arr;
+    }
+
     function get_event_xml(){
         ##Create a list of categories the calendar uses
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
@@ -214,47 +222,44 @@
                     if($metadata->getName() == "value"){
                         array_push($categories, (string)$metadata);
                     }
-                    //$metadata;
                 }
             }
         }
-        //print_r($categories);
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
         $dates = array();
         $dates = traverse_folder($xml, $dates, $categories);
         return $dates;
     }
+
     function traverse_folder($xml, $dates, $categories){
         foreach ($xml->children() as $child) {
             $name = $child->getName();
             if ($name == 'system-folder'){
                 $dates = traverse_folder($child, $dates, $categories);
             }elseif ($name == 'system-page'){
-                $page_data = inspect_page($child, $categories);
-                // Child is the xml in this case.
-                // Only add the to the calendar if it is an event.
                 $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-                if( $dataDefinition == "Event")
-                {
-                    $new_dates = add_event_to_array($dates, $page_data);
-                    $dates = array_merge($dates, $new_dates);
+                if( $dataDefinition != "Event"){
+                    continue;
+                }
+                $page_data = inspect_page($child, $categories);
+                $new_dates = add_event_to_array($dates, $page_data);
+                $dates = array_merge($dates, $new_dates);
                 }
             }
+            return $dates;
         }
-        return $dates;
-    }
+
     function add_event_to_array($dates, $page_data){
         //Iterate over each Date in this event
         foreach ($page_data['dates'] as $date) {
-            $start_date = $date->{'start-date'} / 1000;
-            $end_date = $date->{'end-date'} / 1000;
+            $start_date = $date['start-date'] / 1000;
+            $end_date = $date['end-date'] / 1000;
             $specific_start = date("Y-m-d", $start_date  );
             $specific_end = date("Y-m-d", $end_date );
 
-            $page_data['specific_start'] = $date->{'start-date'};
-            $page_data['specific_end'] = $date->{'end-date'};
-            $page_data['specific_all_day'] = $date->{'all-day'};
-
+            $page_data['specific_start'] = $date['start-date'];
+            $page_data['specific_end'] = $date['end-date'];
+            $page_data['specific_all_day'] = $date['all-day'];
             if($specific_start == $specific_end){
                 //Don't need a date range.
                 $key = date("Y-m-d", $start_date);
@@ -343,5 +348,20 @@
                 }
             }
         }
-        return $page_info;
+        // convert any XML to array
+        $final_page_info = array();
+        foreach($page_info as $k => $v){
+            if($k != "dates" && $k != "md"){
+                $final_page_info[$k] = (string)$v;
+            }else if($k == "dates"){
+                $dates = array();
+                foreach($v as $date_k => $date_v){
+                    $dates[$date_k] = xml2array($date_v);
+                }
+                $final_page_info[$k] = $dates;
+            }else{
+                $final_page_info[$k] = $v;
+            }
+        }
+        return $final_page_info;
     }
