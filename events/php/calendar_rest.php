@@ -31,7 +31,6 @@
     $total_time_end = microtime(true);
     $time = $total_time_end - $total_time_start;
     error_log("Full Run in $time seconds\n------------------------------\n\n", 3, '/tmp/calendar.log');
-//    echo "done";
     echo json_encode($data);
 
 
@@ -61,30 +60,26 @@
     function draw_calendar($month,$year, $day=1){
         /* draw table */
         $draw_calendar_time_start = microtime(true);
+        $get_xml_start_time = microtime(true);
 
         $calendar = '';
 
         $cache_time_start = microtime(true);
-//        $cache_name = 'CALENDAR_XML';
-//        $cache = new Memcache;
-//        $cache->addServer('localhost', 11211);
-//        $xml = $cache->get($cache_name);
-//        if(!$xml){
-//            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
-//            $xml = get_event_xml();
-//            $status = $cache->set($cache_name, json_encode($xml), MEMCACHE_COMPRESSED, 1800);
-//            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-//        }else{
-//            $xml = json_decode($xml, true);
-//            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
-//        }
-//        $cache->close();
-
-        $xml = get_event_xml();
-
-        $cache_time_end = microtime(true);
-        $cache_total_time = $cache_time_end - $cache_time_start;
-        error_log("Retrieve XML in $cache_total_time seconds\n", 3, '/tmp/calendar.log');
+        $cache_name = 'CALENDAR_XML';
+        $cache = new Memcache;
+        $cache->addServer('localhost', 11211);
+        $xml = $cache->get($cache_name);
+        if(!$xml){
+            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
+            $xml = get_event_xml();
+            $cache->set($cache_name, $xml, MEMCACHE_COMPRESSED, 300);
+            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
+        }else{
+            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
+        }
+        $cache->close();
+        $get_xml_total_time = microtime(time) - $get_xml_start_time;
+        error_log("Retrieve XML in $get_xml_total_time seconds\n", 3, '/tmp/calendar.log');
 
         $after_xml_time_start = microtime(true);
         $classes = array(
@@ -254,35 +249,12 @@
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
         $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
         $dates = array();
-        $loop_start_time = microtime(true);
-        $inner_xml_time_start = microtime(true);
         foreach($event_pages as $child ){
-
-            $page_data_start_time = microtime(true);
             $page_data = inspect_page($child, $categories);
-            $page_data_end_time = microtime(true);
-
-            $add_event_start_time = microtime(true);
-
             add_event_to_array($dates, $page_data);
-            $add_event_end_time = microtime(true);
-
-
-            $page_data_time = $page_data_end_time - $page_data_start_time;
-            $add_event_time = $add_event_end_time - $add_event_start_time;
-//            error_log("page_data time: $page_data_time\n", 3, '/tmp/calendar.log');
-//            error_log("add_event time: $add_event_time\n", 3, '/tmp/calendar.log');
-
-
-            //$dates = array_merge($dates, $new_dates);
         }
-        $loop_end_time = microtime(true);
-        $inner_xml_time_end = microtime(true);
-        $loop_time = $loop_end_time - $loop_start_time;
-        error_log("loop total time: $loop_time\n", 3, '/tmp/calendar.log');
         return $dates;
     }
-
 
     function add_event_to_array(&$dates, $page_data){
         //Iterate over each Date in this event
