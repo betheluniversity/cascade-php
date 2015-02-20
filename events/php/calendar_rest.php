@@ -1,4 +1,6 @@
 <?php
+
+    $total_time_start = microtime(true);
     $month = $_GET['month'];
     $year = $_GET['year'];
     $day = $_GET['day'];
@@ -7,7 +9,7 @@
         $year = date('Y');
         $day = date('j');
     }
-    // Set the month and year if it isn't passed in GET
+//    // Set the month and year if it isn't passed in GET
     $next = get_next_month($month, $year);
     $prev = get_prev_month($month, $year);
     $next_month = $next->format('n');
@@ -21,11 +23,15 @@
     $data['current_month_qs'] = "month=$month&day=1&year=$year";
 
     $data['grid'] = draw_calendar($month, $year);
-
     $data['month_title'] = get_month_name($month) . ' ' .  $year;
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
 
+
+    $total_time_end = microtime(true);
+    $time = $total_time_end - $total_time_start;
+    error_log("Full Run in $time seconds\n", 3, '/tmp/calendar.log');
+//    echo "done";
     echo json_encode($data);
 
 
@@ -54,20 +60,33 @@
     /* draws a calendar */
     function draw_calendar($month,$year, $day=1){
         /* draw table */
+        $draw_calendar_time_start = microtime(true);
+
         $calendar = '';
 
+        $cache_time_start = microtime(true);
         $cache_name = 'CALENDAR_XML';
-
-        $data = apc_fetch($cache_name);
-        if (!$data){
+        $cache = new Memcache;
+        $cache->addServer('localhost', 11211);
+        $xml = $cache->get($cache_name);
+        if(!$xml){
+            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
             $xml = get_event_xml();
-            apc_store($cache_name, $xml, 1800);
+            $cache->set($cache_name, json_encode($xml), false, 1800);
         }else{
-            $xml = $data;
+            $xml = json_decode($xml, true);
+            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
         }
+//        echo "<pre>";
+//        print_r($xml);
+//        echo "</pre>";
 
-        $date = new DateTime($year . '-' . $month . "-" . $day);
+//        $xml = get_event_xml();
+        $cache_time_end = microtime(true);
+        $cache_total_time = $cache_time_end - $cache_time_start;
+        error_log("Retrieve XML in $cache_total_time seconds\n", 3, '/tmp/calendar.log');
 
+        $after_xml_time_start = microtime(true);
         $classes = array(
             1 => 'sun',
             2 => 'mon',
@@ -107,7 +126,6 @@
                     $start = $event['specific_start'];
                     $end = $event['specific_end'];
                     $all_day = $event['specific_all_day'];
-                    //echo "Your current time now is : " . gmdate("Y-m-d\TH:i:s\Z");
                     if($event['published']){
                         $calendar .= '<div class="vevent">';
                         $calendar .= '<dt class="summary">';
@@ -186,7 +204,13 @@
         /* final row */
         $calendar.= '</ul>';
         /* all done, return result */
+        $draw_calendar_time_end = microtime(true);
 
+
+        $draw_calendar_time = $draw_calendar_time_end - $draw_calendar_time_start;
+        $after_xml_time = $draw_calendar_time_end - $after_xml_time_start;
+        error_log("After XML draw_calendar in $after_xml_time seconds\n", 3, '/tmp/calendar.log');
+        error_log("Full draw_calendar in $draw_calendar_time seconds\n", 3, '/tmp/calendar.log');
         return $calendar;
     }
 
@@ -212,6 +236,8 @@
     }
 
     function get_event_xml(){
+
+
         ##Create a list of categories the calendar uses
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
         $categories = array();
@@ -226,28 +252,20 @@
             }
         }
         $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+        $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
         $dates = array();
-        $dates = traverse_folder($xml, $dates, $categories);
+        $inner_xml_time_start = microtime(true);
+        foreach($event_pages as $child ){
+            $page_data = inspect_page($child, $categories);
+            $dates = add_event_to_array($dates, $page_data);
+            //$dates = array_merge($dates, $new_dates);
+        }
+        $inner_xml_time_end = microtime(true);
+        $time = $inner_xml_time_end - $inner_xml_time_start;
+        //echo "foreach in get_xml in $time seconds\n";
         return $dates;
     }
 
-    function traverse_folder($xml, $dates, $categories){
-        foreach ($xml->children() as $child) {
-            $name = $child->getName();
-            if ($name == 'system-folder'){
-                $dates = traverse_folder($child, $dates, $categories);
-            }elseif ($name == 'system-page'){
-                $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-                if( $dataDefinition != "Event"){
-                    continue;
-                }
-                $page_data = inspect_page($child, $categories);
-                $new_dates = add_event_to_array($dates, $page_data);
-                $dates = array_merge($dates, $new_dates);
-                }
-            }
-            return $dates;
-        }
 
     function add_event_to_array($dates, $page_data){
         //Iterate over each Date in this event
