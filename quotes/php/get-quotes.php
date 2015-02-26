@@ -123,7 +123,7 @@
         {
             //render image here.
             $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-2-12">';
+                $html .= '<div class="grid-cell  u-medium-3-12">';
                 $html .= '<div class="grid-pad-1x">';
                 $html .= '<div class="quote__avatar">';
 
@@ -131,7 +131,7 @@
                 $html .= render_image($imagePath, $title, "delayed-image-load", "200", $destinationName);
                 $html .= '</div></div></div>';
 
-                $html .= '<div class="grid-cell  u-medium-10-12">';
+                $html .= '<div class="grid-cell  u-medium-9-12">';
                 $html .= '<div class="grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
                 if( $source != "")
