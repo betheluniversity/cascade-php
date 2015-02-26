@@ -391,9 +391,18 @@
 
     // returns the html of the event.
     function get_event_html( $event){
+
+        $title = $event['title'];
         $start = $event['date']['start-date'];
         $end = $event['date']['end-date'];
-
+        if($title == "Seminary San Diego InMinistry Fall Intensives"){
+            echo "<pre>";
+            echo $event['title'];
+            echo $start;
+            echo "  :   ";
+            echo $end;
+            echo "</pre>";
+        }
 
         $html = '<div class="media-box  mv1"><span itemscope="itemscope" itemtype="http://schema.org/Event">';
         $html .= '<p class="events-date-tag">';
@@ -414,10 +423,18 @@
                 // Year
                 $html .= date("Y", $start)."</p>";
 
+            }elseif(time() > $end){
+                // The event is in the past and is over
+                // Month
+                $html .= get_month_shorthand_name(date("F", $end));
+                // Day
+                $html .= "<span>".date("d", $end)."</span>";
+                // Year
+                $html .= date("Y", $end)."</p>";
             }
             else{
-                // start and end date are on different days
-                // So display the current date.
+                // The event is multiple days and it isn't over yet, display the current date instead of the end date
+                // as that would make it seem like its in the future.
 
                 // Month
                 $html .= get_month_shorthand_name(date("F", time()));
