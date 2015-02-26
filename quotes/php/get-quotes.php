@@ -124,7 +124,7 @@
             //render image here.
             $html = '<div class="grid ">';
                 $html .= '<div class="grid-cell  u-medium-2-12">';
-                $html .= '<div class="medium-grid-pad-1x">';
+                $html .= '<div class="grid-pad-1x">';
                 $html .= '<div class="quote__avatar">';
 
                 global $destinationName;
@@ -132,7 +132,7 @@
                 $html .= '</div></div></div>';
 
                 $html .= '<div class="grid-cell  u-medium-10-12">';
-                $html .= '<div class="medium-grid-pad-1x">';
+                $html .= '<div class="grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
                 if( $source != "")
                     $html .= '<cite class="quote__source">–'.$source.'</cite>';
@@ -143,7 +143,7 @@
         {
             $html = '<div class="grid ">';
                 $html .= '<div class="grid-cell  u-medium-12-12">';
-                $html .= '<div class="medium-grid-pad-1x">';
+                $html .= '<div class="grid-pad-1x">';
                 $html .= '<p class="quote__text">'.$text.'</p>';
                 if( $source != "")
                     $html .= '<cite class="quote__source">–'.$source.'</cite>';
