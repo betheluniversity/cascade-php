@@ -23,13 +23,12 @@ function carousel_item($content, $link = null){
     }else{
         echo $content;
     }
-
     echo '</div>';
 }
 
-function srcset($end_path){
+function srcset($end_path, $print=true){
     $rand = rand(1,4);
-    echo "<img srcset='
+    $content = "<img srcset='
                 //cdn$rand.bethel.edu/resize/unsafe/1400x0/smart/$end_path 1400w,
                 //cdn$rand.bethel.edu/resize/unsafe/1200x0/smart/$end_path 1200w,
                 //cdn$rand.bethel.edu/resize/unsafe/1000x0/smart/$end_path 1000w,
@@ -38,5 +37,10 @@ function srcset($end_path){
                 //cdn$rand.bethel.edu/resize/unsafe/400x0/smart/$end_path 400w,
                 //cdn$rand.bethel.edu/resize/unsafe/200x0/smart/$end_path 200w'
                 src='//cdn$rand.bethel.edu/resize/unsafe/320x0/smart/$end_path'></img>";
+    if($print){
+        echo $content;
+    }else{
+        return $content;
+    }
 
 }
