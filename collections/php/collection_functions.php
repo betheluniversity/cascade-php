@@ -46,7 +46,7 @@
 
         $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
 
-        echo '<div class="grid">';
+        echo '<div class="grid  proof-points">';
             display_x_elements_from_array($collectionArray, $numItems);
         echo '</div>';
         return;
