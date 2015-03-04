@@ -146,7 +146,7 @@ function get_news_article_html( $article, $xml ){
 
     $html = '<span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid">';
         $html .= '<div class="grid-cell  u-medium-1-3">';
-            $html .= '<div class="medium-grid-pad-1x">';
+            $html .= '<div class="grid-pad-1x">';
 
             global $destinationName;
             $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';
@@ -156,7 +156,7 @@ function get_news_article_html( $article, $xml ){
         $html .= '</div>';
 
         $html .= '<div class="grid-cell  u-medium-2-3">';
-        $html .= '<div class="medium-grid-pad-1x">';
+        $html .= '<div class="grid-pad-1x">';
         $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$article['title'].'</span></a></h2>';
 
         if( $date != "" && $date != "null" )
@@ -228,7 +228,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
         $html .= '<span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid left false">';
         $html .= '<div class="grid-cell  u-medium-1-2">';
-        $html .= '<div class="medium-grid-pad-1x">';
+        $html .= '<div class="grid-pad-1x">';
 
         global $destinationName;
         $html .= render_image($imagePath, $page_info['title'], "delayed-image-load", "400", $destinationName);
@@ -236,7 +236,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '</div>';
         $html .= '</div>';
         $html .= '<div class="grid-cell  u-medium-1-2">';
-        $html .= '<div class="medium-grid-pad-1x">';
+        $html .= '<div class="grid-pad-1x">';
         if( $page_info['title'] != "")
             $html .= '<h2 class="h5"><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$page_info['title'].'</span></a></h2>';
 
