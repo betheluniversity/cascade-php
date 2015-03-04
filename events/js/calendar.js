@@ -282,16 +282,16 @@
         changeCalendarLocation(loc);
     }
 
-    //$("#list-mode").click(function(){
-    //    var d = document.getElementById("calendar-mode");
-    //    d.className = d.className.replace('calendar-grid','calendar-list');
-    //
-    //});
-    //
-    //$("#grid-mode").click(function(){
-    //    var d = document.getElementById("calendar-mode");
-    //    d.className = d.className.replace('calendar-list','calendar-grid');
-    //});
+    $("#list-mode").click(function(){
+        var d = document.getElementById("calendar-mode");
+        d.className = d.className.replace('calendar-grid','calendar-list');
+
+    });
+
+    $("#grid-mode").click(function(){
+        var d = document.getElementById("calendar-mode");
+        d.className = d.className.replace('calendar-list','calendar-grid');
+    });
 
     function checked_subjects() {
         var checkboxes = $('#filter-content input[name=subjects]:checked');
