@@ -23,7 +23,6 @@ function create_feed($feedType){
         include_once "news_archive.php";
         $feedHTMLArray = create_archive();
     }
-
     return $feedHTMLArray;
 }
 

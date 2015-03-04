@@ -7,6 +7,13 @@
  */
 
 
+function pre($content){
+    echo "<pre>";
+    echo $content;
+    echo "</pre>";
+}
+
+
 function carousel_open($class = ""){
     echo "<div class='slick-carousel $class'>";
 }
@@ -43,4 +50,18 @@ function srcset($end_path, $print=true){
         return $content;
     }
 
+}
+
+function xml2array($xml){
+    $arr = array();
+    foreach ($xml as $element){
+        $tag = $element->getName();
+        $e = get_object_vars($element);
+        if (!empty($e)){
+            $arr[$tag] = $element instanceof SimpleXMLElement ? xml2array($element) : $e;
+        }else{
+            $arr[$tag] = trim($element);
+        }
+    }
+    return $arr;
 }

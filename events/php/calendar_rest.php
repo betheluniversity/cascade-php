@@ -26,6 +26,7 @@
     echo $data;
 
     function build_calendar_data($month, $year){
+        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
         // Set the month and year if it isn't passed in GET
         $next = get_next_month($month, $year);
         $prev = get_prev_month($month, $year);
@@ -221,20 +222,6 @@
         error_log("After XML draw_calendar in $after_xml_time seconds\n", 3, '/tmp/calendar.log');
         error_log("Full draw_calendar in $draw_calendar_time seconds\n", 3, '/tmp/calendar.log');
         return $calendar;
-    }
-
-    function xml2array($xml){
-        $arr = array();
-        foreach ($xml as $element){
-            $tag = $element->getName();
-            $e = get_object_vars($element);
-            if (!empty($e)){
-                $arr[$tag] = $element instanceof SimpleXMLElement ? xml2array($element) : $e;
-            }else{
-                $arr[$tag] = trim($element);
-            }
-        }
-        return $arr;
     }
 
     function get_event_xml(){
