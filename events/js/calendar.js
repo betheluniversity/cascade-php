@@ -1,8 +1,3 @@
-/* Modernizr 2.0.6 (Custom Build) | MIT & BSD
- * Build: http://www.modernizr.com/download/#-canvas-canvastext-mq-teststyles
- */
-;window.Modernizr=function(a,b,c){function y(a,b){return!!~(""+a).indexOf(b)}function x(a,b){return typeof a===b}function w(a,b){return v(prefixes.join(a+";")+(b||""))}function v(a){j.cssText=a}var d="2.0.6",e={},f=b.documentElement,g=b.head||b.getElementsByTagName("head")[0],h="modernizr",i=b.createElement(h),j=i.style,k,l=Object.prototype.toString,m={},n={},o={},p=[],q=function(a,c,d,e){var g,i,j,k=b.createElement("div");if(parseInt(d,10))while(d--)j=b.createElement("div"),j.id=e?e[d]:h+(d+1),k.appendChild(j);g=["&shy;","<style>",a,"</style>"].join(""),k.id=h,k.innerHTML+=g,f.appendChild(k),i=c(k,a),k.parentNode.removeChild(k);return!!i},r=function(b){if(a.matchMedia)return matchMedia(b).matches;var c;q("@media "+b+" { #"+h+" { position: absolute; } }",function(b){c=(a.getComputedStyle?getComputedStyle(b,null):b.currentStyle).position=="absolute"});return c},s,t={}.hasOwnProperty,u;!x(t,c)&&!x(t.call,c)?u=function(a,b){return t.call(a,b)}:u=function(a,b){return b in a&&x(a.constructor.prototype[b],c)},m.canvas=function(){var a=b.createElement("canvas");return!!a.getContext&&!!a.getContext("2d")},m.canvastext=function(){return!!e.canvas&&!!x(b.createElement("canvas").getContext("2d").fillText,"function")};for(var z in m)u(m,z)&&(s=z.toLowerCase(),e[s]=m[z](),p.push((e[s]?"":"no-")+s));v(""),i=k=null,e._version=d,e.mq=r,e.testStyles=q;return e}(this,this.document);
-
 (function($) {
 
     function SimpleDict() {
@@ -363,6 +358,57 @@
             }
         });
 
+        // This is the soda version of the code. The code following this is the www version
+        $('.calendar-toolbar #filter').click(function() {
+            $('.filter-dropdown').toggle(0, function(){
+                var holder = $('#filter-holder'),
+                    h5s = holder.find('h5'),
+                    order = ['Academics', 'General', 'Offices', 'Internal'],
+                    el = $(this);
+                if (h5s.length == 4) { // if not authenticated, sort alphabetically
+                    order.sort();
+                }
+                if (holder.isotope !== undefined) {
+                    //isotope isn't smart enough to know the correct order.  Two categories
+                    // are short and should be on top of eachother, the rest are in separate
+                    // columns.  Use a special sorting order to do this.
+                    holder.isotope({
+                        animationEngine: 'css',
+                        getSortData: {
+                            byTitle: function(elem) {
+                                var  h5 = elem.find('h5').html();
+                                return jQuery.inArray(h5, order);
+                            }
+                        },
+                        sortBy: 'byTitle',
+                        masonry : {columnWidth : 220 }
+                    });
+                }
+                // adjust the height of parent containers as necessary
+                // -- the day view has a really short height -- shorter than the filter,
+                //    which causes a scrollbar to appear.  Get the height of the
+                //    calendar container, and make sure it is at least the height
+                //    of the popup + (the difference between the top of the dropdown
+                //    and the top of the calendar container)
+                var cm = el.parents('#calendar-mode'),
+                    height = el.height() + Math.abs(cm.offset().top - el.offset().top);
+                if (el.css('display')=='none') {
+                    //restore old cm height
+                    if (cm.data('container-height')!=null) {
+                        cm.height(cm.data('container-height'));
+                    }
+                } else {
+                    if (cm.height() < height) {
+                        cm.data('container-height', cm.height());
+                        cm.height(height);
+                    }
+                }
+            });
+            $(this).toggleClass('active');
+            return false;
+        });
+
+        // This is the www version
         $('#calendar-toolbar #filter').click(function() {
             $('#filter-dropdown').toggle(0, function(){
                 var holder = $('#filter-holder'),
