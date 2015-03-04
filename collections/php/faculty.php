@@ -27,6 +27,7 @@ function create_faculty_carousel($categories){
         $first = $ds->first;
         $last = $ds->last;
         $title = $ds->{'job-title'};
+        $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
 
 
@@ -34,7 +35,7 @@ function create_faculty_carousel($categories){
         $html .= srcset($image, $print=false);
         $html .= '</div></div></div>';
         $html .= '<div class="grid-cell  u-medium-9-12"><div class="grid-pad-1x">';
-        $html .= "<div>$first $last</div>";
+        $html .= "<h2><a href='$path'>$first $last</a></h2>";
         $html .= "<div>$title</div>";
         $html .= "</div></div></div></div>";
 
