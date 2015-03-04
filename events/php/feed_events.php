@@ -404,8 +404,8 @@
             echo "</pre>";
         }
 
-        $html = '<div class="media-box  mv1"><span itemscope="itemscope" itemtype="http://schema.org/Event">';
-        $html .= '<p class="events-date-tag">';
+        $html = '<div class="events__item" itemscope="itemscope" itemtype="http://schema.org/Event">';
+        $html .= '<p class="events__date-tile">';
 
         if( $start != "")
         {
@@ -445,10 +445,10 @@
                 // Year
                 $html .= date("Y", time())."</p>";
             }
-            $html .= '<div class="media-box-body">';
+            $html .= '<div class="events__content">';
         }
         // Title + Link
-        $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'"><span itemprop="name">'.$event['title'].'</span></a></h2>';
+        $html .= '<p class="events__headline"><a href="'.convert_path_to_link($event).'"><span itemprop="name">'.$event['title'].'</span></a></h2>';
 
         // Time + Location
         if( $event['date'] )
@@ -473,7 +473,7 @@
 
         // Description
         $html .= '<p><span itemprop="description">'.$event['description'].'</span></p>';
-        $html .= '</div></span></div>';
+        $html .= '</div></div>';
 
 
 
