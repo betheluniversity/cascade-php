@@ -21,7 +21,7 @@ function create_faculty_carousel($categories){
 //    echo "</pre>";
 
 
-    carousel_open("carousel--overlay carousel--quote");
+    carousel_open("carousel--quote");
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
