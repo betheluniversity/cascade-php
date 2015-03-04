@@ -282,13 +282,16 @@
         changeCalendarLocation(loc);
     }
 
-    $("#list-mode").click(function(){
-        $.cookie('cal-mode', "LIST");
-    });
-
-    $("#grid-mode").click(function(){
-        $.cookie('cal-mode', "GRID");
-    });
+    //$("#list-mode").click(function(){
+    //    var d = document.getElementById("calendar-mode");
+    //    d.className = d.className.replace('calendar-grid','calendar-list');
+    //
+    //});
+    //
+    //$("#grid-mode").click(function(){
+    //    var d = document.getElementById("calendar-mode");
+    //    d.className = d.className.replace('calendar-list','calendar-grid');
+    //});
 
     function checked_subjects() {
         var checkboxes = $('#filter-content input[name=subjects]:checked');
@@ -360,8 +363,7 @@
             }
         });
 
-        // Calendar filter big dropdown
-        $('#filter .button').click(function() {
+        $('#calendar-toolbar #filter').click(function() {
             $('#filter-dropdown').toggle(0, function(){
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
@@ -697,11 +699,19 @@
             );
         })();
 
-        if ($.cookie('cal-mode') == "LIST"){
-            $("#list-mode").addClass("active");
-            $("#grid-mode").removeClass("active");
-            $('#view-mode a').click();
-        }
+        var mq  = matchMedia('(min-width: 800px)');
+        mq.addListener(function(mql) {
+            if (mql.matches) {
+                document.querySelector("#calendar-mode").classList.add('calendar-grid');
+                document.querySelector("#calendar-mode").classList.remove('calendar-list');
+                document.querySelector(".view-mode--list > a").classList.remove('active');
+                document.querySelector(".view-mode--grid > a").classList.add('active');
+            }
+            else {
+                document.querySelector("#calendar-mode").classList.add('calendar-list');
+                document.querySelector("#calendar-mode").classList.remove('calendar-grid');
+            }
+        });
     });
 
 })(jQuery);
