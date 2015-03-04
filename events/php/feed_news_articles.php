@@ -144,20 +144,17 @@ function get_news_article_html( $article, $xml ){
 
     $date = $ds->{'publish-date'};
 
-    $html = '<span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid">';
-        $html .= '<div class="grid-cell  u-medium-1-3">';
-            $html .= '<div class="grid-pad-1x">';
+    $html = '<div class="news__item" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">';
+        $html .= '<div class="news__image">';
 
             global $destinationName;
             $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';
             $html .= render_image($imagePath, $article['description'], "delayed-image-load", "", $destinationName);
             $html .= '</a>';
-            $html .= '</div>';
         $html .= '</div>';
 
-        $html .= '<div class="grid-cell  u-medium-2-3">';
-        $html .= '<div class="grid-pad-1x">';
-        $html .= '<h4><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$article['title'].'</span></a></h4>';
+        $html .= '<div class="news__content">';
+        $html .= '<p class="news__headline"><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$article['title'].'</span></a></p>';
 
         if( $date != "" && $date != "null" )
         {
@@ -169,10 +166,9 @@ function get_news_article_html( $article, $xml ){
         {
             $html .= '<p>'.$article['teaser'].'</p>';
         }
-        $html .= '</div>';
 
         $html .= '</div>';
-    $html .= '</div></span>';
+    $html .= '</div>';
 
     return $html;
 }
