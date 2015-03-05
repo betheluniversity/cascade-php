@@ -282,31 +282,21 @@
     }
 
     $(".view-mode--list").click(function(event){
-        var d = document.getElementById("calendar-mode");
-        d.className = d.className.replace('calendar-grid','calendar-list');
-
-        var listMode = document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0];
-
-        if( listMode.className.indexOf(" active") == -1 ) {
-            listMode.className = listMode.className + " active";
-
-            var gridMode = document.getElementsByClassName("view-mode--grid")[0].getElementsByTagName('a')[0];
-            gridMode.className = gridMode.className.replace(' active', '');
+        document.querySelector("#calendar-mode").classList.add('calendar-list');
+        document.querySelector("#calendar-mode").classList.remove('calendar-grid');
+        if( document.querySelector(".view-mode--grid > a").classList.contains("active") ){
+            document.querySelector(".view-mode--list > a").classList.add('active');
+            document.querySelector(".view-mode--grid > a").classList.remove('active');
         }
         event.preventDefault();
     });
 
     $(".view-mode--grid").click(function(event){
-        var d = document.getElementById("calendar-mode");
-        d.className = d.className.replace('calendar-list','calendar-grid');
-
-        var gridMode = document.getElementsByClassName("view-mode--grid")[0].getElementsByTagName('a')[0];
-
-        if( gridMode.className.indexOf(" active") == -1 ){
-            gridMode.className = gridMode.className + " active";
-
-            var listMode = document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0];
-            listMode.className = listMode.className.replace(' active', '');
+        document.querySelector("#calendar-mode").classList.add('calendar-grid');
+        document.querySelector("#calendar-mode").classList.remove('calendar-list');
+        if( document.querySelector(".view-mode--list > a").classList.contains("active") ){
+            document.querySelector(".view-mode--grid > a").classList.add('active');
+            document.querySelector(".view-mode--list > a").classList.remove('active');
         }
         event.preventDefault();
     });
@@ -328,7 +318,7 @@
         }
     }
 
-    $(".today").click(function(){
+    $(".calendar-toolbar > a")[1].click(function(){
         var today = new Date();
         var month = today.getMonth() +1;
         var year = today.getFullYear();
@@ -336,7 +326,7 @@
 
         h = "?month=" + month + "&day=" + day + "&year=" + year;
 
-        if (document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0].className.indexOf(" active") != -1){
+        if (document.querySelector(".view-mode--list > a").classList.contains("active")){
             var mode = "LIST";
         }
         else{
@@ -384,12 +374,12 @@
                 target = $(event.target);
             if (dd.css('display') != 'none') {
                 if (target.parents().filter(dd).length == 0) {
-                    $(".filter-by-category").click();
+                    $(".calendar-toolbar > a")[0].click();
                 }
             }
         });
 
-        $('.filter-by-category').click(function() {
+        $('.calendar-toolbar > a')[0].click(function() {
             $('.filter-dropdown').toggle(0, function(){
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
@@ -439,7 +429,7 @@
         });
 
         $('#filter-close').click(function(event) {
-            $(".filter-by-category").click();
+            $(".calendar-toolbar > a")[0].click();
             event.preventDefault();
         });
 
@@ -624,6 +614,12 @@
                 document.querySelector("#calendar-mode").classList.remove('calendar-grid');
             }
         });
+
+        if ( $(window).width() < 800) {
+            document.querySelector("#calendar-mode").classList.add('calendar-list');
+            document.querySelector("#calendar-mode").classList.remove('calendar-grid');
+        }
+
     });
 
 })(jQuery);
