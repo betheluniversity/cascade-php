@@ -293,6 +293,7 @@
             var gridMode = document.getElementById("grid-mode");
             gridMode.className = gridMode.className.replace(' active', '');
         }
+        event.preventDefault();
     });
 
     $("#grid-mode").click(function(){
@@ -307,6 +308,7 @@
             var listMode = document.getElementById("list-mode");
             listMode.className = listMode.className.replace(' active', '');
         }
+        event.preventDefault();
     });
 
     function checked_subjects() {
@@ -355,6 +357,7 @@
             });
         }
 
+        event.preventDefault();
     });
 
     $(window).bind('jQuery.hashchange', updateCalendar);
@@ -377,7 +380,7 @@
 
         //hide the dropdown if it's open and a click happens outside it
         $("body").click(function(event) {
-            var dd = $('#filter-dropdown'),
+            var dd = $('.filter-dropdown'),
                 target = $(event.target);
             if (dd.css('display') != 'none') {
                 if (target.parents().filter(dd).length == 0) {
