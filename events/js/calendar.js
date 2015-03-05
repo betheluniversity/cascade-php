@@ -212,9 +212,12 @@
         var loc = window.location.toString().replace(/#.*/, '');
 
         this.title.text(data['month_title']);
+        document.querySelector(".calendar-title__month").innerHTML = data['month_title'];
+        document.querySelector(".calendar-title__month").style.display = "block";
+
         getRemoteUser();
         updateWelcomeBar();
-        document.querySelector(".calendar-title__month").style.display = "block";
+
         if (data['next_month_qs'] !== null) {
             this.next_month_link.attr('href', loc + "#" + data['next_month_qs']);
             // Removed the words "Next Month"
