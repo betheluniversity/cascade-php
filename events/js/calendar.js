@@ -281,7 +281,7 @@
         changeCalendarLocation(loc);
     }
 
-    $("#list-mode").click(function(){
+    $(".view-mode--list").click(function(event){
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-grid','calendar-list');
 
@@ -296,7 +296,7 @@
         event.preventDefault();
     });
 
-    $("#grid-mode").click(function(){
+    $(".view-mode--grid").click(function(event){
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-list','calendar-grid');
 
@@ -384,13 +384,12 @@
                 target = $(event.target);
             if (dd.css('display') != 'none') {
                 if (target.parents().filter(dd).length == 0) {
-                    document.getElementById('filter').click();
+                    $(".filter-by-category").click();
                 }
             }
         });
 
-        // This is the soda version of the code. The code following this is the www version
-        $('.calendar-toolbar #filter').click(function() {
+        $('.filter-by-category').click(function() {
             $('.filter-dropdown').toggle(0, function(){
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
@@ -440,7 +439,7 @@
         });
 
         $('#filter-close').click(function(event) {
-            document.getElementById('filter').click();
+            $(".filter-by-category").click();
             event.preventDefault();
         });
 
