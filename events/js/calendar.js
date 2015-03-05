@@ -281,11 +281,28 @@
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-grid','calendar-list');
 
+        var listMode = document.getElementById("list-mode");
+
+        if( listMode.className.indexOf(" active") == -1 ) {
+            listMode.className = listMode.className + " active";
+
+            var gridMode = document.getElementById("grid-mode");
+            gridMode.className = gridMode.className.replace(' active', '');
+        }
     });
 
     $("#grid-mode").click(function(){
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-list','calendar-grid');
+
+        var gridMode = document.getElementById("grid-mode");
+
+        if( gridMode.className.indexOf(" active") == -1 ){
+            gridMode.className = gridMode.className + " active";
+
+            var listMode = document.getElementById("list-mode");
+            listMode.className = listMode.className.replace(' active', '');
+        }
     });
 
     function checked_subjects() {
@@ -305,16 +322,23 @@
         }
     }
 
-    $("#today").click(function(){
+    $(".today").click(function(){
         var today = new Date();
         var month = today.getMonth() +1;
         var year = today.getFullYear();
         var day = today.getDate();
 
         h = "?month=" + month + "&day=" + day + "&year=" + year;
-        var mode = $("#view-mode li .active").text();
+
+        if (document.getElementById("list-mode").className.indexOf(" active") != -1){
+            var mode = "LIST";
+        }
+        else{
+            var mode = "GRID";
+        }
+
         if (mode == "LIST"){
-            h += "&mode=list"
+            h += "&mode=list";
         }
         loc = '/events/calendar/code/calendar_rest' + h;
 
