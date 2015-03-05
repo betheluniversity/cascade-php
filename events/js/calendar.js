@@ -330,7 +330,8 @@
 
         h = "?month=" + month + "&day=" + day + "&year=" + year;
 
-        if (document.querySelector(".view-mode--list > a").classList.contains("active")){
+        // If LIST is selected, or if its on mobile (since mobile is always list) go to Today.
+        if (document.querySelector(".view-mode--list > a").classList.contains("active") || $(window).width() < 800){
             var mode = "LIST";
         }
         else{
