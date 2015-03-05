@@ -318,7 +318,7 @@
         }
     }
 
-    $(".calendar-toolbar > a")[1].click(function(){
+    $('.calendar-toolbar > a:contains("Today")').click(function(){
         var today = new Date();
         var month = today.getMonth() +1;
         var year = today.getFullYear();
@@ -374,12 +374,12 @@
                 target = $(event.target);
             if (dd.css('display') != 'none') {
                 if (target.parents().filter(dd).length == 0) {
-                    $(".calendar-toolbar > a")[0].click();
+                    $('.calendar-toolbar > a:contains("Filter by Category")').click();
                 }
             }
         });
 
-        $('.calendar-toolbar > a')[0].click(function() {
+        $('.calendar-toolbar > a:contains("Filter by Category")').click(function() {
             $('.filter-dropdown').toggle(0, function(){
                 var holder = $('#filter-holder'),
                     h5s = holder.find('h5'),
@@ -429,7 +429,7 @@
         });
 
         $('#filter-close').click(function(event) {
-            $(".calendar-toolbar > a")[0].click();
+            $('.calendar-toolbar > a:contains("Filter by Category")').click();
             event.preventDefault();
         });
 
