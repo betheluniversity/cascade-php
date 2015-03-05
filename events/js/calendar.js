@@ -285,12 +285,12 @@
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-grid','calendar-list');
 
-        var listMode = document.getElementById("list-mode");
+        var listMode = document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0];
 
         if( listMode.className.indexOf(" active") == -1 ) {
             listMode.className = listMode.className + " active";
 
-            var gridMode = document.getElementById("grid-mode");
+            var gridMode = document.getElementsByClassName("view-mode--grid")[0].getElementsByTagName('a')[0];
             gridMode.className = gridMode.className.replace(' active', '');
         }
         event.preventDefault();
@@ -300,12 +300,12 @@
         var d = document.getElementById("calendar-mode");
         d.className = d.className.replace('calendar-list','calendar-grid');
 
-        var gridMode = document.getElementById("grid-mode");
+        var gridMode = document.getElementsByClassName("view-mode--grid")[0].getElementsByTagName('a')[0];
 
         if( gridMode.className.indexOf(" active") == -1 ){
             gridMode.className = gridMode.className + " active";
 
-            var listMode = document.getElementById("list-mode");
+            var listMode = document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0];
             listMode.className = listMode.className.replace(' active', '');
         }
         event.preventDefault();
@@ -336,7 +336,7 @@
 
         h = "?month=" + month + "&day=" + day + "&year=" + year;
 
-        if (document.getElementById("list-mode").className.indexOf(" active") != -1){
+        if (document.getElementsByClassName("view-mode--list")[0].getElementsByTagName('a')[0].className.indexOf(" active") != -1){
             var mode = "LIST";
         }
         else{
