@@ -178,7 +178,7 @@
         this.previous_month_link = $('a.previous-month');
         this.buttons = $('a.button');
         this.month_grid = $('div#calendar-main');
-        this.title = $('div#calendar-title h3');
+        this.title = $('div.calendar-title h3');
     }
 
     function getRemoteUser(){
@@ -216,7 +216,9 @@
 
         if (data['next_month_qs'] !== null) {
             this.next_month_link.attr('href', loc + "#" + data['next_month_qs']);
-            this.next_month_link.html(data['next_title'] + ' &raquo;');
+            // Removed the words "Next Month"
+            //this.next_month_link.html(data['next_title'] + ' &raquo;');
+            this.next_month_link.html('&raquo;');
             this.next_month_link.show()
         } else {
             this.next_month_link.hide();
@@ -225,7 +227,9 @@
         if (data['previous_month_qs'] !== null) {
             this.previous_month_link.attr('href',
                 loc + "#" + data['previous_month_qs']);
-            this.previous_month_link.html('&laquo; ' + data['previous_title']);
+            // Removed the words "Previous Month"
+            //this.previous_month_link.html('&laquo; ' + data['previous_title']);
+            this.previous_month_link.html('&laquo; ');
             this.previous_month_link.show();
         } else {
             this.previous_month_link.hide();
@@ -306,7 +310,7 @@
     });
 
     function checked_subjects() {
-        var checkboxes = $('#filter-content input[name=subjects]:checked');
+        var checkboxes = $('.filter-content input[name=subjects]:checked');
         var values = [];
         $.each(checkboxes, function(index, node){
             values.push($(node).val());
@@ -314,7 +318,7 @@
     }
 
     function set_all_subjects(state) {
-        var checkboxes = $('#filter-content input[name=subjects]');
+        var checkboxes = $('.filter-content input[name=subjects]');
         if (state) {
             checkboxes.attr('checked', 'checked');
         } else {
@@ -377,7 +381,7 @@
                 target = $(event.target);
             if (dd.css('display') != 'none') {
                 if (target.parents().filter(dd).length == 0) {
-                    $('#filter .button').click();
+                    document.getElementById('filter').click();
                 }
             }
         });
@@ -432,62 +436,12 @@
             return false;
         });
 
-        // This is the www version
-        $('#calendar-toolbar #filter').click(function() {
-            $('#filter-dropdown').toggle(0, function(){
-                var holder = $('#filter-holder'),
-                    h5s = holder.find('h5'),
-                    order = ['Academics', 'General', 'Offices', 'Internal'],
-                    el = $(this);
-                if (h5s.length == 4) { // if not authenticated, sort alphabetically
-                    order.sort();
-                }
-                if (holder.isotope !== undefined) {
-                    //isotope isn't smart enough to know the correct order.  Two categories
-                    // are short and should be on top of eachother, the rest are in separate
-                    // columns.  Use a special sorting order to do this.
-                    holder.isotope({
-                        animationEngine: 'css',
-                        getSortData: {
-                            byTitle: function(elem) {
-                                var  h5 = elem.find('h5').html();
-                                return jQuery.inArray(h5, order);
-                            }
-                        },
-                        sortBy: 'byTitle',
-                        masonry : {columnWidth : 220 }
-                    });
-                }
-                // adjust the height of parent containers as necessary
-                // -- the day view has a really short height -- shorter than the filter,
-                //    which causes a scrollbar to appear.  Get the height of the
-                //    calendar container, and make sure it is at least the height
-                //    of the popup + (the difference between the top of the dropdown
-                //    and the top of the calendar container)
-                var cm = el.parents('#calendar-mode'),
-                    height = el.height() + Math.abs(cm.offset().top - el.offset().top);
-                if (el.css('display')=='none') {
-                    //restore old cm height
-                    if (cm.data('container-height')!=null) {
-                        cm.height(cm.data('container-height'));
-                    }
-                } else {
-                    if (cm.height() < height) {
-                        cm.data('container-height', cm.height());
-                        cm.height(height);
-                    }
-                }
-            });
-            $(this).toggleClass('active');
-            return false;
-        });
-
         $('#filter-close').click(function(event) {
-            $('#filter .button').click();
+            document.getElementById('filter').click();
             event.preventDefault();
         });
 
-        $('#filter-content').bind('submit', function(){
+        $('.filter-content').bind('submit', function(){
             var loc = window.location.toString()
             var hashParams = extractHashParameters(loc);
             var queryParams = extractQueryParameters(loc);
@@ -501,7 +455,7 @@
             $(this).attr('action', loc);
         });
 
-        $('#filter-content .filter-actions').bind('click', function(event) {
+        $('.filter-content .filter-actions').bind('click', function(event) {
             var target = $(event.target);
             $.removeCookie('calendar-categories');
             switch (target.attr('name')) {
@@ -519,11 +473,11 @@
             return false;
         });
 
-        $('#view-mode a').click(function(event) {
+        $('.view-mode a').click(function(event) {
             // switch 'active' class on button group, remove old class from
             // calendar div, add new class on calendar div.
             var $el = $(this),
-                $active = $('#view-mode a.active'),
+                $active = $('.view-mode a.active'),
                 $cal = $('#calendar-mode');
             $active.removeClass('active');
             $el.addClass('active');
@@ -532,125 +486,11 @@
             return false;
         });
 
-        //datepicker calendars for day and week buttons
-        (function() { // for scoping vars
-            var d = $('#time-mode a[name=day]'),
-                di = $('<input type="hidden" id="day-picker" />'),
-                w = $('#time-mode a[name=week]'),
-                wi = $('<input type="hidden" id="week-picker" />');
-            d.before(di);
-            di.datepicker({
-                maxDate: 365,
-                minDate: -365,
-                selectOtherMonths: true,
-                showOtherMonths: true,
-                onClose: function(dateText, inst) {
-                    var button = inst.input.next();
-                    if (!button.data('dp-original-state-active')) {
-                        button.removeClass('active');
-                    }
-                },
-                onSelect: function(dateText, inst) {
-                    var d = new Date(dateText),
-                        href = inst.input.next().attr('href');
-                    href = href.replace(/month=\d\d?/,'month='+(d.getMonth()+1)).
-                        replace(/year=\d\d\d?\d?/, 'year='+d.getFullYear()).
-                        replace(/day=\d\d?/, 'day='+d.getDate())
-                    window.location.href = href;
-                }
-            });
-            d.data('dp-state', 'closed')
-            d.data('dp-original-state-active', d.hasClass('active'));
-            d.click(function(event) {
-                var el = $(this),
-                    p = el.prev(),
-                    w = p.datepicker('widget');
-                if (el.data('dp-state') == 'closed' || w.css('display') == 'none') {
-                    p.datepicker('show');
-                    el.data('dp-state', 'open')
-                    w.position({
-                        my: 'top',
-                        at: 'bottom',
-                        of: el,
-                        collision: 'fit fit'
-                    });
-                    if (!el.data('dp-original-state-active')) {
-                        el.addClass('active')
-                    }
-                } else {
-                    // click has happened outside the calendar, so the calendar has
-                    // already hidden the datepicker via a separate event.
-                    // here we just need to update the state of the button
-                    el.data('dp-state', 'closed')
-                }
-                return false;
-            });
-
-            w.before(wi);
-            wi.datepicker({
-                maxDate: 365,
-                minDate: -365,
-                selectOtherMonths: true,
-                showOtherMonths: true,
-                beforeShow: function(input, inst) {
-                    inst.dpDiv.addClass('week-picker');
-                },
-                onClose: function(dateText, inst) {
-                    var button = inst.input.next();
-                    inst.dpDiv.removeClass('week-picker');
-                    if (!button.data('dp-original-state-active')) {
-                        button.removeClass('active');
-                    }
-                },
-                onSelect: function(dateText, inst) {
-                    // we want to start on the most recent Sunday.  So substract the
-                    // day of the week (in milliseconds) from the milliseconds for the
-                    // date, reset window to the new url for the week.
-                    var d = new Date(dateText),
-                        day = d.getDay(), // day of week
-                        dayInMillis = day * 86400000, // day of week in milliseconds
-                        sunday = new Date(d.getTime() - dayInMillis),
-                        href = inst.input.next().attr('href');
-                    href = href.replace(/month=\d\d?/,'month='+(sunday.getMonth()+1)).
-                        replace(/year=\d\d\d?\d?/, 'year='+sunday.getFullYear()).
-                        replace(/day=\d\d?/, 'day='+sunday.getDate());
-                    window.location.href = href;
-                }
-            });
-            wi.datepicker('widget').hide();
-            w.data('dp-state','closed');
-            w.data('dp-original-state-active', w.hasClass('active'));
-            w.click(function(event) {
-                var el = $(this),
-                    p = el.prev(),
-                    w = p.datepicker('widget');
-                if (el.data('dp-state') == 'closed' || w.css('display')=='none') {
-                    p.datepicker('show');
-                    el.data('dp-state', 'open')
-                    w.position({
-                        my: 'top',
-                        at: 'bottom',
-                        of: el,
-                        collision: 'none'
-                    });
-                    if (!el.data('dp-original-state-active')) {
-                        el.addClass('active')
-                    }
-                } else {
-                    // click has happened outside the calendar, so the calendar has
-                    // already hidden the datepicker via a separate event.
-                    // here we just need to update the state of the button
-                    el.data('dp-state', 'closed')
-                }
-                return false;
-            });
-        })(); // end for scoping vars
-
         //when in grid mode, display a hover for the event details.
         (function() {
             var hover_div = $('<div id="event-hover"></div>'),
                 calendar_mode = $('#calendar-mode'),
-                calendar_toolbar = $('#calendar-toolbar'),
+                calendar_toolbar = $('.calendar-toolbar'),
                 calendar_main = $('#calendar-main'),
                 active_dt,
                 display = function(dt) { // display hover, given a dt jquery object
