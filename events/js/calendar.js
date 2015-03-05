@@ -178,7 +178,7 @@
         this.previous_month_link = $('a.previous-month');
         this.buttons = $('a.button');
         this.month_grid = $('div#calendar-main');
-        this.title = $('div.calendar-title h3');
+        this.title = $('div.calendar-title__month h3');
     }
 
     function getRemoteUser(){
@@ -210,10 +210,11 @@
 
     CalendarController.prototype.update = function(data) {
         var loc = window.location.toString().replace(/#.*/, '');
+
         this.title.text(data['month_title']);
         getRemoteUser();
         updateWelcomeBar();
-
+        document.querySelector(".calendar-title__month").style.display = "block";
         if (data['next_month_qs'] !== null) {
             this.next_month_link.attr('href', loc + "#" + data['next_month_qs']);
             // Removed the words "Next Month"
@@ -263,7 +264,7 @@
             var remote_user = $.cookie('cal-user');
             if (!remote_user){
                 //remove the internal categories so they can't be selected via select-all
-                $("#filter-list-internal").remove();
+                $(".filter-list-internal").remove();
                 $.cookie('cal-user', null);
 
             }
@@ -318,7 +319,7 @@
         }
     }
 
-    $('.calendar-toolbar > a:contains("Today")').click(function(){
+    $('.calendar-toolbar > a:contains("Today")').click(function(event){
         var today = new Date();
         var month = today.getMonth() +1;
         var year = today.getFullYear();
@@ -381,29 +382,8 @@
 
         $('.calendar-toolbar > a:contains("Filter by Category")').click(function() {
             $('.filter-dropdown').toggle(0, function(){
-                var holder = $('#filter-holder'),
-                    h5s = holder.find('h5'),
-                    order = ['Academics', 'General', 'Offices', 'Internal'],
-                    el = $(this);
-                if (h5s.length == 4) { // if not authenticated, sort alphabetically
-                    order.sort();
-                }
-                if (holder.isotope !== undefined) {
-                    //isotope isn't smart enough to know the correct order.  Two categories
-                    // are short and should be on top of eachother, the rest are in separate
-                    // columns.  Use a special sorting order to do this.
-                    holder.isotope({
-                        animationEngine: 'css',
-                        getSortData: {
-                            byTitle: function(elem) {
-                                var  h5 = elem.find('h5').html();
-                                return jQuery.inArray(h5, order);
-                            }
-                        },
-                        sortBy: 'byTitle',
-                        masonry : {columnWidth : 220 }
-                    });
-                }
+                var el = $(this);
+
                 // adjust the height of parent containers as necessary
                 // -- the day view has a really short height -- shorter than the filter,
                 //    which causes a scrollbar to appear.  Get the height of the
@@ -619,7 +599,6 @@
             document.querySelector("#calendar-mode").classList.add('calendar-list');
             document.querySelector("#calendar-mode").classList.remove('calendar-grid');
         }
-
     });
 
 })(jQuery);
