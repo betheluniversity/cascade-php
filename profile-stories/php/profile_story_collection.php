@@ -10,15 +10,17 @@
 
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
-    function show_individual_profile_stories($stories){
-        shuffle($stories);
+    function show_individual_profile_stories($stories)
+    {
+//        shuffle($stories);
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
         $xml = simplexml_load_file($file);
 
-
-        $cookie_name = "bethel_proof_point_collection:" + $_SERVER['PHP_SELF'];
-        $numToShift = $_COOKIE[$cookie_name]%sizeof($stories);
-        $stories = shift_array_x_times($stories, $numToShift);
+        $cookie_name = $GLOBALS['proofPointCookieName'];
+        if (isset($_COOKIE[$cookie_name])) {
+            $numToShift = $_COOKIE[$cookie_name] % sizeof($stories);
+            $stories = shift_array_x_times($stories, $numToShift);
+        }
 
         foreach($stories as $story){
             $search = "//system-page[path='/$story']";
@@ -26,13 +28,6 @@
             echo get_profile_stories_html('', $results[0]);
         }
 
-    }
-
-    function shift_array_x_times($array, $num){
-        for($i = 0; $i < $num; $i++){
-            array_shift($array);
-        }
-        return $array;
     }
 
     function show_profile_story_collection($School, $Topic, $CAS, $CAPS, $GS, $SEM){
@@ -51,6 +46,12 @@
 
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
         $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
+
+        $cookie_name = $GLOBALS['proofPointCookieName'];
+        if (isset($_COOKIE[$cookie_name])) {
+            $numToShift = $_COOKIE[$cookie_name] % sizeof($profileStoriesArray);
+            $profileStoriesArray = shift_array_x_times($profileStoriesArray, $numToShift);
+        }
 
         foreach( $profileStoriesArray as $profileStory )
         {
@@ -199,5 +200,12 @@
         return "No";
     }
 
+    // Shift an array X times.
+    function shift_array_x_times($array, $num){
+        for($i = 0; $i < $num; $i++){
+            array_shift($array);
+        }
+        return $array;
+    }
 
 ?>

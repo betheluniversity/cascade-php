@@ -322,7 +322,7 @@
         }
     }
 
-    $('.calendar-toolbar > a:contains("Today")').click(function(event){
+    $('.today').click(function(event){
         var today = new Date();
         var month = today.getMonth() +1;
         var year = today.getFullYear();
