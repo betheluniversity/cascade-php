@@ -23,6 +23,7 @@
 
         $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
 
+
         display_x_elements_from_array($collectionArray, $numItems);
 
         return;
