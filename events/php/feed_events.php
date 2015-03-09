@@ -344,10 +344,10 @@
         // Only display it if it has an image.
         if( $event['image'] != "" && $event['image'] != "/"){
 
-            $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
+            $html = '<div class="mt1 mb2 pa1">';
             $html .= '<div class="grid left false">';
             $html .= '<div class="grid-cell  u-medium-1-2">';
-            $html .= '<div class="medium-grid-pad-1x">';
+            $html .= '<div class="grid-pad-1x">';
 
             global $destinationName;
             $html .= render_image($event['image'], $event['title'], "delayed-image-load", "400", $destinationName);
@@ -355,7 +355,7 @@
             $html .= '</div>';
             $html .= '</div>';
             $html .= '<div class="grid-cell  u-medium-1-2">';
-            $html .= '<div class="medium-grid-pad-1x">';
+            $html .= '<div class="grid-pad-1x">';
 
             if( $event['title'] != "")
                 $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
