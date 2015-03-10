@@ -23,7 +23,10 @@
  */
 
     include_once 'proof-point-logic.php';
-    function show_proof_point_collection($pageSchool, $pageDepartment, $numItems=3, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+    function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $pageSchool='', $pageDepartment=''){
+
+        echo "<!-- new proof points -->";
+
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/proof-points.xml");
         $proof_points = $xml->xpath("//system-block");
@@ -51,7 +54,6 @@
             echo $finalPP['html'];
             gridCellClose();
         }
-
         gridClose();
     }
 
