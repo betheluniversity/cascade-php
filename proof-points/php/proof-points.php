@@ -86,17 +86,13 @@ function number_pp_html($ds){
 
     $html .= '<span class="proof-point__number">';
 
-    if($animate == "Yes"){
-        if($textBefore){
-            $html .= $textBefore;
-        }
-        //UPDATE THIS BEFORE RESPONSIVE IS LIVE
-        $html .= "<span class='odometer' data-final-number='$number'>$number</span>";
-        if($textAfter){
-            $html .= $textAfter;
-        }
-    }else{
-        $html .= $number;
+    if($textBefore){
+        $html .= $textBefore;
+    }
+    //UPDATE THIS BEFORE RESPONSIVE IS LIVE
+    $html .= "<span class='odometer' data-final-number='$number'>$number</span>";
+    if($textAfter){
+        $html .= $textAfter;
     }
 
     $html .= '</span><br>';
