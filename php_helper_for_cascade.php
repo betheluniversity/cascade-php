@@ -34,12 +34,11 @@
 
     // $xml is the possible items that are being checked.
     // $categories is the page's metadata.
-    function match_robust_metadata( $xml, $categories)
+    function match_robust_metadata($xml, $categories)
     {
         // The first part is to build the metadata into an array for the xml.
         // This array mimics the $categories array.
         $xmlCategories = array(array(), array(), array(), array(), array(), array());
-
         foreach( $xml->{'dynamic-metadata'} as $md ){
             $name = $md->name;
             foreach($md->value as $value ){
@@ -80,7 +79,6 @@
                 if($value == "Select" || $value == "none"){
                     continue;
                 }
-
                 if( !in_array($value, $xmlCategories[$i])){
                     return "No";
                 }
@@ -88,6 +86,7 @@
         }
         return "Yes";
     }
+
 
     function display_x_elements_from_array( $array, $numToFind)
     {

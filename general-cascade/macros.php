@@ -13,7 +13,6 @@ function pre($content){
     echo "</pre>";
 }
 
-
 function carousel_open($class = ""){
     echo "<div class='slick-carousel $class'>";
 }
@@ -43,7 +42,7 @@ function srcset($end_path, $print=true){
                 //cdn$rand.bethel.edu/resize/unsafe/600x0/smart/$end_path 600w,
                 //cdn$rand.bethel.edu/resize/unsafe/400x0/smart/$end_path 400w,
                 //cdn$rand.bethel.edu/resize/unsafe/200x0/smart/$end_path 200w'
-                src='//cdn$rand.bethel.edu/resize/unsafe/320x0/smart/$end_path'></img>";
+                src='//cdn$rand.bethel.edu/resize/unsafe/320x0/smart/$end_path'/>";
     if($print){
         echo $content;
     }else{
@@ -64,4 +63,22 @@ function xml2array($xml){
         }
     }
     return $arr;
+}
+
+//classes is a string
+function gridOpen($classes){
+    echo "<div class='grid $classes'>";
+}
+
+function gridClose(){
+    echo "</div>";
+}
+
+//classes is a string
+function gridCellOpen($classes){
+    echo "<div class='grid-cell $classes'>";
+}
+
+function gridCellClose(){
+    echo "</div>";
 }

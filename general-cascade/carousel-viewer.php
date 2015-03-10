@@ -72,17 +72,6 @@
 
         }
 
-
-
-
-        // converts an xml file to an array of proof points
-        function get_xml_carousel_items($fileToLoad, $schoolMetadata, $deptMetadata ){
-            $xml = simplexml_load_file($fileToLoad);
-            $pages = array();
-            $pages = traverse_folder_proof_points($xml, $pages, $schoolMetadata, $deptMetadata);
-            return $pages;
-        }
-
         // Traverse through the proof points
         function traverse_folder_carousel($xml, $carouselItems, $schoolMetadata, $deptMetadata){
             foreach ($xml->children() as $child) {
@@ -119,13 +108,7 @@
 
             $ds = $xml->{'system-data-structure'};
             $dataDefinition = $ds['definition-path'];
-            if( $dataDefinition == "Blocks/Proof Point")
-            {
-                $block_info['html'] = "PROOF POINT";
-                $block_info['match-school'] = match_metadata_carousel($xml, $schoolMetadata);
-                $block_info['match-dept'] = match_metadata_carousel($xml, $deptMetadata);
-            }
-            elseif( $dataDefinition == "Blocks/Quotes")
+            if( $dataDefinition == "Blocks/Quotes")
             {
                 $block_info['html'] = "QUOTE";
                 $block_info['match-school'] = match_metadata_carousel($xml, $schoolMetadata);
@@ -162,73 +145,6 @@
             }
         }
         return "No";
-    }
-
-    // Gets x random proof points from the array of arrays of proof points
-    // Not very well constructed.
-    // Down the road, this should probably be rewritten.
-    function get_x_proof_points($proofPointsArrays, $numToFind){
-        $finalProofPoints = array();
-        foreach( $proofPointsArrays as $proofPointArray)
-        {
-            $sizeOfArray = sizeof($proofPointArray);
-            while( $sizeOfArray > 0)
-            {
-                if( $numToFind <= 0){
-                    break 2;
-                }
-
-                $randomIndex = rand(0,$sizeOfArray);
-                $proofPoint = $proofPointArray[$randomIndex];
-
-                if( $proofPoint != null)
-                {
-                    array_push( $finalProofPoints, $proofPoint );
-
-                    $numToFind--;
-                }
-                unset($proofPointArray[$randomIndex]);
-                array_values($proofPointArray);
-
-                $sizeOfArray = sizeof($proofPointArray);
-            }
-        }
-        return $finalProofPoints;
-    }
-
-    // Divide the array of proof points into arrays of dept/school and premium/not-premium.
-    // This allows for a priority of what proof points to use.
-    function divide_into_arrays_proof_points($proofPointsArrays){
-        $schoolPremium = array();
-        $school = array();
-        $deptPremium = array();
-        $dept = array();
-
-        foreach( $proofPointsArrays as $proofPoint){
-            if( $proofPoint['match-dept'] == "Yes")
-            {
-                if($proofPoint['premium'] == "Yes")
-                {
-                    array_push($deptPremium, $proofPoint);
-                }
-                else{
-                    array_push($dept, $proofPoint);
-                }
-            }
-            elseif( $proofPoint['match-school'] == "Yes")
-            {
-                if($proofPoint['premium'] == "Yes")
-                {
-                    array_push($schoolPremium, $proofPoint);
-                }
-                else{
-                    array_push($school, $proofPoint);
-                }
-            }
-        }
-
-        $finalProofPointArrays = array($deptPremium, $dept, $schoolPremium, $school);
-        return $finalProofPointArrays;
     }
 
 ?>
