@@ -22,51 +22,102 @@
     $SEM = array();
  */
 
-
-    function test($numProofPoints){
-        echo "test";
-        echo "<h2>Test</h2>";
-        get_proof_point_xml();
-    }
-
-    function get_proof_point_xml(){
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/proof-points.xml");
+    include_once 'proof-point-logic.php';
+    function show_proof_point_collection($pageSchool, $pageDepartment, $numItems=3, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+        $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
+        $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/proof-points.xml");
         $proof_points = $xml->xpath("//system-block");
+        $matches = array();
 
-        // For each proof point
-        foreach($proof_points as $proof_point){
-            // For each items or "child" elements
-            foreach( $proof_point as $child){
-                if($child->getName() == "dynamic-metadata"){
-                    // list of metadata
-                    
-                }
-            }
-        }
-    }
-
-    function get_event_xml(){
-
-        ##Create a list of categories the calendar uses
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
-        $categories = array();
-        $xml = $xml->{'system-page'};
-        foreach ($xml->children() as $child) {
-            if($child->getName() == "dynamic-metadata"){
-                foreach($child->children() as $metadata){
-                    if($metadata->getName() == "value"){
-                        array_push($categories, (string)$metadata);
-                    }
-                }
+        foreach($proof_points as $proof_point_xml){
+            $ppInfo = inspect_block_proof_points($proof_point_xml, $pageSchool, $pageDepartment);
+            if( $ppInfo['match-school'] || $ppInfo['match-dept']){
+                array_push($matches, $ppInfo);
             }
         }
 
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
-        $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
-        $dates = array();
-        foreach($event_pages as $child ){
-            $page_data = inspect_page($child, $categories);
-            add_event_to_array($dates, $page_data);
+        // sort into premium, subject, school, etc...
+        $proofPointsArrays = divide_into_arrays_proof_points($matches);
+        // Get random selection of $numItems proof points
+        $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numItems );
+
+        $numProofPoints = count($proofPointsToDisplay);
+
+        //Output structure
+        gridOpen("proof-points proof-point-collection");
+
+        foreach($proofPointsToDisplay as $finalPP){
+            gridCellOpen("medium 1-$numProofPoints animate animate--fadeIn");
+            echo $finalPP['html'];
+            gridCellClose();
         }
-        return $dates;
+
+        gridClose();
     }
+
+    // Returns the html of the proof point
+    function get_proof_point_html($xml){
+        $ds = $xml->{'system-data-structure'};
+        $type = $ds->{'proof-point'}->{'type'};
+        $html = "";
+        if($type == "Text"){
+            $html = text_pp_html($ds);
+        }
+        elseif($type == "Number"){
+            $html = number_pp_html($ds);
+        }
+        return $html;
+    }
+
+function number_pp_html($ds){
+    $number = $ds->{'proof-point'}->{'number-group'}->{'number-field'};
+    if(!$number){
+        $number = $ds->{'proof-point'}->{'number-group'}->{'number'};
+    }
+    $textBefore = $ds->{'proof-point'}->{'number-group'}->{'text-before'};
+    $textAfter = $ds->{'proof-point'}->{'number-group'}->{'text-after'};
+    $animate = $ds->{'proof-point'}->{'number-group'}->{'animate'};
+
+    $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
+    $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
+
+    $html = '<div class="proof-point  center">';
+    $html .= '<p class="proof-point__text">';
+
+    $html .= '<span class="proof-point__number">';
+
+    if($animate == "Yes"){
+        if($textBefore){
+            $html .= $textBefore;
+        }
+        //UPDATE THIS BEFORE RESPONSIVE IS LIVE
+        $html .= "<span class='odometer' data-final-number='$number'>$number</span>";
+        if($textAfter){
+            $html .= $textAfter;
+        }
+    }else{
+        $html .= $number;
+    }
+
+    $html .= '</span><br>';
+
+    $html .= $textBelow;
+    $html .= '</p>';
+    if ($source != "")
+        $html .= '<cite class="proof-point__cite">-' . $source . '</cite>';
+    $html .= '</div>';
+    return $html;
+}
+
+function text_pp_html($ds){
+    $mainText = $ds->{'proof-point'}->{'text'}->{'main-text'};
+    $source = $ds->{'proof-point'}->{'text'}->{'source'};
+    $html = '<div class="proof-point  center">';
+    $html .= '<p class="h2 mb0">' . $mainText . '</p>';
+    if ($source != "")
+        $html .= '<cite class="proof-point__cite">-' . $source . '</cite>';
+    $html .= '</div>';
+    return $html;
+}
+
+
