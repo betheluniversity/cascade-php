@@ -16,12 +16,6 @@
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
         $xml = simplexml_load_file($file);
 
-        $cookie_name = $GLOBALS['proofPointCookieName'];
-        if (isset($_COOKIE[$cookie_name])) {
-            $numToShift = $_COOKIE[$cookie_name] % sizeof($stories);
-            $stories = shift_array_x_times($stories, $numToShift);
-        }
-
         foreach($stories as $story){
             $search = "//system-page[path='/$story']";
             $results = $xml->xpath($search);
