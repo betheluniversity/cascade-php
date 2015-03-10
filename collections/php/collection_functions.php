@@ -18,6 +18,7 @@
         $destinationName = "www";
     }
 
+
     function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
 
@@ -36,20 +37,6 @@
 
         display_x_elements_from_array($collectionArray, $numItems);
 
-        return;
-    }
-
-    function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
-        global $numberOfItems;
-        $numberOfItems = $numItems;
-        $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-
-        $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
-
-        echo '<div class="grid  proof-points">';
-            display_x_elements_from_array($collectionArray, $numItems);
-        echo '</div>';
         return;
     }
 
@@ -121,22 +108,7 @@
                 $page_info['html'] = $html;
             }
         }
-        ## This is a column block
-        else if( $dataDefinition == "Blocks/Proof Point")
-        {
-            $page_info['display'] = match_robust_metadata($xml, $categories);
 
-            if( $page_info['display'] == "Yes" )
-            {
-                // Code to make it a column block
-                global $numberOfItems;
-                $html = "<div class='grid-cell  u-medium-1-".$numberOfItems."'><div class='grid-pad-1x'>";
-                $html .= get_proof_point_html($xml);
-                $html .= '</div></div>';
-                $page_info['html'] = $html;
-            }
-        }
-        return $page_info;
     }
 
     // Returns the profile stories html
