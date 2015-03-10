@@ -41,12 +41,6 @@
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
         $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
 
-        $cookie_name = $GLOBALS['proofPointCookieName'];
-        if (isset($_COOKIE[$cookie_name])) {
-            $numToShift = $_COOKIE[$cookie_name] % sizeof($profileStoriesArray);
-            $profileStoriesArray = shift_array_x_times($profileStoriesArray, $numToShift);
-        }
-
         foreach( $profileStoriesArray as $profileStory )
         {
             echo $profileStory;
@@ -192,14 +186,6 @@
             }
         }
         return "No";
-    }
-
-    // Shift an array X times.
-    function shift_array_x_times($array, $num){
-        for($i = 0; $i < $num; $i++){
-            array_shift($array);
-        }
-        return $array;
     }
 
 ?>
