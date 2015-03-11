@@ -84,7 +84,7 @@ function gridCellClose(){
 }
 
 function navListItem($starts_with, $path, $label, $classes=''){
-    if($pageStartsWith == $startsWith){
+    if($startsWith == $starts_with){
         echo '<li class="active">';
     }else{
         echo '<li>';
