@@ -88,10 +88,11 @@
     }
 
 
-    function display_x_elements_from_array( $array, $numToFind)
+    function display_x_elements_from_array( $array, $numToFind, $shuffle=true)
     {
-        shuffle($array);
-
+        if($shuffle){
+            shuffle($array);
+        }
         while($element = array_pop($array)){
             echo $element;
             $numToFind--;

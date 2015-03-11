@@ -18,7 +18,12 @@ else{ // Live site.
 function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
     $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
     $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
-    display_x_elements_from_array($collectionArray, $numItems);
+    if( strstr(getcwd(), "cms.pub") ){
+        $shuffle = true;
+    }else{
+        $shuffle = false;
+    }
+    display_x_elements_from_array($collectionArray, $numItems, $shuffle);
     return;
 }
 function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
