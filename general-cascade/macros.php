@@ -83,7 +83,7 @@ function gridCellClose(){
     echo "</div>";
 }
 
-function navListItem($starts_with, $path, $label, $classes){
+function navListItem($starts_with, $path, $label, $classes=''){
     if($pageStartsWith == $startsWith){
         echo '<li class="active">';
     }else{
@@ -94,6 +94,5 @@ function navListItem($starts_with, $path, $label, $classes){
     }else{
         echo "<a href='$path'>$label</a>";
     }
-    echo "<a class='$classes' href='$path'>$label</a>";
     echo '</li>';
 }
