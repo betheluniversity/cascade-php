@@ -7,6 +7,8 @@
  */
 
 
+//todo convert to grid and gridcell macros
+
 function create_faculty_carousel($categories){
 
 
@@ -32,7 +34,7 @@ function create_faculty_carousel($categories){
 
 
         $html =  '<div class="pa1  quote  grayLighter"><div class="grid "><div class="grid-cell  u-medium-3-12"><div class="grid-pad-1x"><div class="quote__avatar">';
-        $html .= srcset($image, $print=false);
+        $html .= thumborURL($image, '150', $lazy=true, $print=false);
         $html .= '</div></div></div>';
         $html .= '<div class="grid-cell  u-medium-9-12"><div class="grid-pad-1x">';
         $html .= "<h2><a href='$path'>$first $last</a></h2>";

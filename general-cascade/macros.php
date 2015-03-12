@@ -51,6 +51,23 @@ function srcset($end_path, $print=true){
 
 }
 
+
+function thumborURL($end_path, $width, $lazy=false, $print=true){
+    $rand = rand(1,4);
+    $src = "'//cdn$rand.bethel.edu/resize/unsafe/". $width. "x0/smart/$end_path'";
+    if($lazy){
+        $content = "<img data-lazy=$src/>";
+    }else{
+        $content = "<img src=$src/>";
+    }
+
+    if($print){
+        echo $content;
+    }else{
+        return $content;
+    }
+}
+
 function xml2array($xml){
     $arr = array();
     foreach ($xml as $element){
@@ -83,8 +100,22 @@ function gridCellClose(){
     echo "</div>";
 }
 
-function navListItem($starts_with, $path, $label, $classes=''){
-    if($startsWith == $starts_with){
+function checkInPath($url, $name){
+    $path = $_SERVER['REQUEST_URI'];
+    $pos = 0 === strpos($path, $url);
+    //is this an index false positive?
+    if($pos && $name == "Home"){
+        $pos = $url == $_SERVER['REQUEST_URI'];
+    }
+    if($pos !== false){
+        echo "<li><a href='$url' class='active'>$name</a></li>";
+    }else{
+        echo "<li><a href='$url' class=''>$name</a></li>";
+    }
+}
+
+function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
+    if($pageStartsWith == $test_starts_with){
         echo '<li class="active">';
     }else{
         echo '<li>';
@@ -96,3 +127,4 @@ function navListItem($starts_with, $path, $label, $classes=''){
     }
     echo '</li>';
 }
+

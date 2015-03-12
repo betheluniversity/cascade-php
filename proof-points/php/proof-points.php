@@ -92,7 +92,7 @@ function number_pp_html($ds){
         $html .= $textBefore;
     }
     //UPDATE THIS BEFORE RESPONSIVE IS LIVE
-    $html .= "<span class='odometer' data-final-number='$number'>$number</span>";
+    $html .= "<span class='odometer' data-final-number='$number'>0</span>";
     if($textAfter){
         $html .= $textAfter;
     }
