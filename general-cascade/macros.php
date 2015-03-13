@@ -115,15 +115,19 @@ function checkInPath($url, $name){
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
-    if($pageStartsWith == $test_starts_with){
-        echo '<li class="active">';
-    }else{
-        echo '<li>';
-    }
+    echo '<li>';
     if($classes){
-        echo "<a class='$classes' href='$path'>$label</a>";
+        if($pageStartsWith == $test_starts_with){
+            echo "<a class='$classes active' href='$path'>$label</a>";
+        }else{
+            echo "<a class='$classes' href='$path'>$label</a>";
+        }
     }else{
-        echo "<a href='$path'>$label</a>";
+        if($pageStartsWith == $test_starts_with){
+            echo "<a class='active' href='$path'>$label</a>";
+        }else{
+            echo "<a href='$path'>$label</a>";
+        }
     }
     echo '</li>';
 }
