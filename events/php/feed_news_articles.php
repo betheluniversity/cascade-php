@@ -149,7 +149,7 @@ function get_news_article_html( $article, $xml ){
 
             global $destinationName;
             $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';
-            $html .= srcset($imagePath, false);
+            $html .= thumborURL($imagePath, 215, $lazy=false, $print=false);
             $html .= '</a>';
         $html .= '</div>';
 
