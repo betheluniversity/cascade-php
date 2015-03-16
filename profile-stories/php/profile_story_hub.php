@@ -126,7 +126,7 @@
 
         global $destinationName;
         $html = '<p><a href="http://'.$destinationName.'.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
-        $html .= render_image($imagePath, $xml->description, "delayed-image-load", "400", $destinationName );
+        $html .= thumborURL($imagePath, 400, false, false);
 
         if( $viewerTeaser != "")
             $html .= '<p>'.$viewerTeaser.'</p>';

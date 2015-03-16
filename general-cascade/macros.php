@@ -33,6 +33,9 @@ function carousel_item($content, $link = null){
 }
 
 function srcset($end_path, $print=true){
+    if( strpos($end_path,"www.bethel.edu") == false ) {
+        $end_path = "https://www.bethel.edu/$end_path";
+    }
     $rand = rand(1,4);
     $content = "<img srcset='
                 //cdn$rand.bethel.edu/resize/unsafe/1400x0/smart/$end_path 1400w,
@@ -53,6 +56,9 @@ function srcset($end_path, $print=true){
 
 
 function thumborURL($end_path, $width, $lazy=false, $print=true){
+    if( strpos($end_path,"www.bethel.edu") == false ) {
+        $end_path = "https://www.bethel.edu/$end_path";
+    }
     $rand = rand(1,4);
     $src = "'//cdn$rand.bethel.edu/resize/unsafe/". $width. "x0/smart/$end_path'";
     if($lazy){

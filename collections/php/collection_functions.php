@@ -139,7 +139,7 @@ function get_profile_stories_html( $xml){
     $quote = $ds->{'quote'};
     $html = "<div class='slick-item' style='width:100%'>";
     $html .= '<a href="http://bethel.edu'.$xml->path.'">';
-    $html .= "<img src='$imagePath' style='width:100%' />";
+    $html .= srcset($imagePath, false);
     $html .= '<figure class="feature__figure">';
     $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
     $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';

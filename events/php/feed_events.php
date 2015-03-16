@@ -350,7 +350,7 @@
             $html .= '<div class="grid-pad-1x">';
 
             global $destinationName;
-            $html .= render_image($event['image'], $event['title'], "delayed-image-load", "400", $destinationName);
+            $html .= thumborURL($event['image'], 400, false, false);
 
             $html .= '</div>';
             $html .= '</div>';

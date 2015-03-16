@@ -39,7 +39,7 @@
                         continue;
                     }
 
-                    $image = "https://www.bethel.edu" . $page['image'][0];
+                    $image = srcset($page['image'][0], false);
                     $title = $page['title'][0];
                     $teaser = $page['teaser'][0];
                     $title = str_replace("&", "&amp;", $title);

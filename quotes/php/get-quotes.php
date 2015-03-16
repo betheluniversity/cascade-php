@@ -128,7 +128,7 @@
                 $html .= '<div class="quote__avatar">';
 
                 global $destinationName;
-                $html .= render_image($imagePath, $title, "delayed-image-load", "200", $destinationName);
+                $html .= thumborURL($imagePath, 200, true, false);
                 $html .= '</div></div></div>';
 
                 $html .= '<div class="grid-cell  u-medium-9-12">';
