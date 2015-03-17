@@ -227,7 +227,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '<div class="grid-pad-1x">';
 
         global $destinationName;
-        $html .= render_image($imagePath, $page_info['title'], "delayed-image-load", "400", $destinationName);
+        $html .= thumborURL($imagePath, "400");
 
         $html .= '</div>';
         $html .= '</div>';

@@ -14,24 +14,6 @@
  *
  */
 
-    // Renders images on the php side. This mimics the Cascade version.
-    function render_image( $imgPath, $imgDesc, $imgClass, $width, $siteDestinationName)
-    {
-        if(!isset($siteDestinationName)){
-            $siteDestinationName = "www";
-        }
-        if($imgClass != "feature__img"){
-            $divClass = '';
-        }else{
-            $divClass = 'delayed-image-load';
-
-        }
-        $rand1_4 = rand(1, 4);
-        $path = 'https://cdn' . $rand1_4 . '.bethel.edu/resize/unsafe/{width}x0/smart/https://' . $siteDestinationName . '.bethel.edu' . $imgPath;
-        return '<div class="' . $imgClass . '" data-class="' . $imgClass . '" data-src="'.$path.'" data-alt="'.$imgDesc.'" width="'.$width.'"></div>';
-    }
-
-
     // $xml is the possible items that are being checked.
     // $categories is the page's metadata.
     function match_robust_metadata($xml, $categories)
