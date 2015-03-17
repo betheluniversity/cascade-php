@@ -23,7 +23,7 @@ function escapeEmail($email) {
 if ($staging){
     $url = 'http://staging.bethel.edu/admissions/apply/';
 }else{
-    $url = 'https://apply.bethel.edu/';
+    $url = 'https://www.bethel.edu/admissions/apply';
 }
 
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
