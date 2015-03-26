@@ -50,12 +50,39 @@
                     if ($value == "Select" || $value == "none") {
                         continue;
                     }
-
                     if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
                         return true;
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    function match_generic_school_proof_points($xml, $schools){
+        $schoolsArray = array();
+
+        foreach ($xml->{'dynamic-metadata'} as $md) {
+            foreach ($md->value as $value) {
+                if ($value == "Select" || $value == "none" || $value == "None" || $value == "") {
+                    continue;
+                }
+
+                // Add schools to an array to check later
+                if ($md->name == "school") {
+                    array_push($schoolsArray, htmlspecialchars($value));
+                }
+
+                // if there are any depts, they are not generic. therefore, don't include.
+                if ($md->name == "department" || $md->name == "adult-undergrad-program" || $md->name == "graduate-program" || $md->name == "seminary-program") {
+                    return false;
+                }
+            }
+        }
+
+        // returns true if there are no depts and the school matches.
+        if (sizeof(array_diff($schoolsArray, $schools)) == 0) {
+            return true;
         }
         return false;
     }
@@ -85,9 +112,12 @@
             }
         }
 
-        $block_info['match-school'] = match_metadata_proof_points($xml, $School);
+        // First get one that matches the specific school dept
         if( match_metadata_proof_points($xml, $CAS) || match_metadata_proof_points($xml, $CAPS) || match_metadata_proof_points($xml, $GS) || match_metadata_proof_points($xml, $SEM)  )
             $block_info['match-dept'] = true;
+        // next, grab a GENERIC one from the school ( no depts tagged )
+        $block_info['match-school'] = match_generic_school_proof_points($xml, $School);
+        // Now that we are desparate, just get one that has a topic thats the same.
         $block_info['match-topic'] = match_metadata_proof_points($xml, $Topic);
 
 
