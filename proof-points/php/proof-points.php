@@ -23,7 +23,7 @@
  */
 
     include_once 'proof-point-logic.php';
-    function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $pageSchool='', $pageDepartment=''){
+    function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
 
         echo "<!-- new proof points -->";
 
@@ -33,8 +33,8 @@
         $matches = array();
 
         foreach($proof_points as $proof_point_xml){
-            $ppInfo = inspect_block_proof_points($proof_point_xml, $pageSchool, $pageDepartment);
-            if( $ppInfo['match-school'] || $ppInfo['match-dept']){
+            $ppInfo = inspect_block_proof_points($proof_point_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+            if( $ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic'] ){
                 array_push($matches, $ppInfo);
             }
         }

@@ -41,17 +41,17 @@
     }
 
     // Matches the metadata of the page against the metadata of the proof point
-    function match_metadata_proof_points($xml, $block_value){
-        foreach ($xml->{'dynamic-metadata'} as $md){
-            $name = $md->name;
-            foreach($md->value as $value ){
-                if($value == "Select" || $value == "none"){
-                    continue;
-                }
+    function match_metadata_proof_points($xml, $block_value_array)
+    {
+        foreach( $block_value_array as $block_value){
+            foreach ($xml->{'dynamic-metadata'} as $md) {
+                $name = $md->name;
+                foreach ($md->value as $value) {
+                    if ($value == "Select" || $value == "none") {
+                        continue;
+                    }
 
-                if ($name == "school" || $name == "department"){
-                    // needs the htmlspecialchars() function due to $value being a simplexml element
-                    if (htmlspecialchars($value) == $block_value){
+                    if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
                         return true;
                     }
                 }
@@ -61,7 +61,7 @@
     }
 
     // Gathers the info/html of the proof point
-    function inspect_block_proof_points($xml, $PageSchool, $PageDepartment){
+    function inspect_block_proof_points($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM ){
 
         $block_info = array(
             "html" => "",
@@ -69,6 +69,7 @@
             "premium" => false,
             "match-school" => false,
             "match-dept" => false,
+            "match-topic" => false,
         );
         $ds = $xml->{'system-data-structure'};
         $dataDefinition = $ds['definition-path'];
@@ -83,8 +84,12 @@
                 }
             }
         }
-        $block_info['match-school'] = match_metadata_proof_points($xml, $PageSchool);
-        $block_info['match-dept'] = match_metadata_proof_points($xml, $PageDepartment);
+
+        $block_info['match-school'] = match_metadata_proof_points($xml, $School);
+        if( match_metadata_proof_points($xml, $CAS) || match_metadata_proof_points($xml, $CAPS) || match_metadata_proof_points($xml, $GS) || match_metadata_proof_points($xml, $SEM)  )
+            $block_info['match-dept'] = true;
+        $block_info['match-topic'] = match_metadata_proof_points($xml, $Topic);
+
 
         // Get html
         $block_info['html'] = get_proof_point_html($xml);
@@ -99,6 +104,8 @@
         $school = array();
         $deptPremium = array();
         $dept = array();
+        $topicPremium = array();
+        $topic = array();
         foreach( $proofPointsArrays as $proofPoint){
             if( $proofPoint['match-dept'])
             {
@@ -108,6 +115,16 @@
                 }
                 else{
                     array_push($dept, $proofPoint);
+                }
+            }
+            elseif( $proofPoint['match-topic'])
+            {
+                if($proofPoint['premium'])
+                {
+                    array_push($topicPremium, $proofPoint);
+                }
+                else{
+                    array_push($topic, $proofPoint);
                 }
             }
             elseif( $proofPoint['match-school'])
