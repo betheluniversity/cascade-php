@@ -48,8 +48,10 @@
                 if($value == "Select" || $value == "none"){
                     continue;
                 }
+
                 if ($name == "school" || $name == "department"){
-                    if ($value == $block_value){
+                    // needs the htmlspecialchars() function due to $value being a simplexml element
+                    if (htmlspecialchars($value) == $block_value){
                         return true;
                     }
                 }
@@ -60,6 +62,7 @@
 
     // Gathers the info/html of the proof point
     function inspect_block_proof_points($xml, $PageSchool, $PageDepartment){
+
         $block_info = array(
             "html" => "",
             "display" => false,
@@ -82,6 +85,7 @@
         }
         $block_info['match-school'] = match_metadata_proof_points($xml, $PageSchool);
         $block_info['match-dept'] = match_metadata_proof_points($xml, $PageDepartment);
+
         // Get html
         $block_info['html'] = get_proof_point_html($xml);
 

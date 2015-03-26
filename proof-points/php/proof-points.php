@@ -41,6 +41,7 @@
 
         // sort into premium, subject, school, etc...
         $proofPointsArrays = divide_into_arrays_proof_points($matches);
+
         // Get random selection of $numItems proof points
         $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numItems );
 

@@ -8,6 +8,7 @@
 // Globals
 $PageSchool;
 $PageDepartment;
+
 // Returns an array of proof points to display.
 function get_proof_points($numToFind){
     global $PageSchool;
