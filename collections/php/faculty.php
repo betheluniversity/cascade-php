@@ -16,7 +16,10 @@ function create_faculty_carousel($categories){
     $xml = simplexml_load_file($faculty_file);
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
+
     $bios = find_matching_bios($faculty_pages, $categories);
+    $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/collections/twig');
+    $twig = new Twig_Environment($loader);
 
 //    echo "<pre>";
 //    print_r($faculty_pages[0]);
@@ -31,15 +34,25 @@ function create_faculty_carousel($categories){
         $title = $ds->{'job-title'};
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
+        $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
 
 
-        $html =  '<div class="pa1  quote  grayLighter"><div class="grid "><div class="grid-cell  u-medium-3-12"><div class="grid-pad-1x"><div class="quote__avatar">';
-        $html .= thumborURL($image, '150', $lazy=true, $print=false);
-        $html .= '</div></div></div>';
-        $html .= '<div class="grid-cell  u-medium-9-12"><div class="grid-pad-1x">';
-        $html .= "<h2><a href='$path'>$first $last</a></h2>";
-        $html .= "<div>$title</div>";
-        $html .= "</div></div></div></div>";
+
+//        $html =  '<div class="pa1  quote  grayLighter"><div class="grid "><div class="grid-cell  u-medium-3-12"><div class="grid-pad-1x"><div class="quote__avatar">';
+//        $html .= thumborURL($image, '150', $lazy=true, $print=false);
+//        $html .= '</div></div></div>';
+//        $html .= '<div class="grid-cell  u-medium-9-12"><div class="grid-pad-1x">';
+//        $html .= "<h2><a href='$path'>$first $last</a></h2>";
+//        $html .= "<div>$title</div>";
+//        $html .= "</div></div></div></div>";
+        $html = $twig->render('faculty.html', array(
+            'first' => $first,
+            'last' => $last,
+            'title' => $title,
+            'path' => $path,
+            'thumbURL' => $thumbURL));
+
+
 
         carousel_item($html);
     }
