@@ -18,11 +18,6 @@ function create_faculty_carousel($categories){
     shuffle($faculty_pages);
     $bios = find_matching_bios($faculty_pages, $categories);
 
-//    echo "<pre>";
-//    print_r($faculty_pages[0]);
-//    echo "</pre>";
-
-
     carousel_open("carousel--quote");
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
@@ -32,6 +27,8 @@ function create_faculty_carousel($categories){
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
 
+
+        $thumbor_url = thumborURL($image, '150', $lazy=true, $print=false);
 
         $html =  '<div class="pa1  quote  grayLighter"><div class="grid "><div class="grid-cell  u-medium-3-12"><div class="grid-pad-1x"><div class="quote__avatar">';
         $html .= thumborURL($image, '150', $lazy=true, $print=false);

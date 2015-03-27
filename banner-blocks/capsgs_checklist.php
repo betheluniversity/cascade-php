@@ -10,7 +10,9 @@
 if($select_option == 4){
     return;
 }else{
-    $url = "http://wsapi.bethel.edu/capsgs-checklist/$program_code/$select_option";
+    $call_program_code = str_replace("%", "%25", $program_code);
+    $url = "http://wsapi.bethel.edu/capsgs-checklist/$call_program_code/$select_option";
+    echo "<!-- $url -->";
     $results = json_decode(file_get_contents($url));
     $results = explode("\n", $results->data);
     if($results[0]){

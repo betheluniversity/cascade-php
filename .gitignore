@@ -1,4 +1,5 @@
 .idea
+.idea/
 .idea/workspace.xml
 salesforce/php/userAuth.php
 events/php/calendar.php
