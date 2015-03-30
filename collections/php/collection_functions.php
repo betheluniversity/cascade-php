@@ -26,6 +26,8 @@ function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, 
     display_x_elements_from_array($collectionArray, $numItems, $shuffle);
     return;
 }
+
+// Note: This is hopefully not used anymore.
 function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/quotes/php/get-quotes.php";
     $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
@@ -33,17 +35,19 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
     display_x_elements_from_array($collectionArray, $numItems);
     return;
 }
+
 function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
-    global $numberOfItems;
-    $numberOfItems = $numItems;
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
-    echo '<div class="grid  proof-points">';
-    display_x_elements_from_array($collectionArray, $numItems);
-    echo '</div>';
-    return;
+//    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
+//    global $numberOfItems;
+//    $numberOfItems = $numItems;
+//    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
+//    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
+//    echo '<div class="grid  proof-points">';
+//    display_x_elements_from_array($collectionArray, $numItems);
+//    echo '</div>';
+//    return;
 }
+
 // Converts and xml file to an array of profile stories
 function get_xml_collection($fileToLoad, $categories ){
     $xml = simplexml_load_file($fileToLoad);

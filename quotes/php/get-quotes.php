@@ -6,6 +6,10 @@
  * Time: 2:59 PM
  */
 
+/// This file can be removed. It has been replaced by quote-logic.php and quotes.php
+
+
+
     // Globals
     $PageSchool;
     $PageDepartment;

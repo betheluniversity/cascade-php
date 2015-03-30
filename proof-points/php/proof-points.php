@@ -7,11 +7,6 @@
  */
 
 /*
-    1) create render proof point function
-    2) create a get_proof_points( $numProofPoints )
-        a) Pull ALL proof points\
-        b) return X of them
-    3) add to the /code/general-cascade/carousel-viewer.php file to allow for proof-point carousels.
 
     // Page metadata
     $School = array();
@@ -46,7 +41,6 @@
         $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numItems );
 
         $numProofPoints = count($proofPointsToDisplay);
-
         //Output structure
         gridOpen("proof-points proof-point-collection");
 
