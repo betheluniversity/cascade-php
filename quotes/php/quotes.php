@@ -36,7 +36,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         //Output structure
         carousel_open("carousel--quote");
         foreach ($quotesToDisplay as $finalQuote) {
-            quote_carousel_item($finalQuote['html'], "pa1  quote  grayLighter");
+            echo $finalQuote['html'];
         }
         carousel_close();
     }
@@ -51,10 +51,12 @@ function get_quote_html($xml){
     $text = $ds->{'quote'};
     $source = $ds->{'source'};
 
+
+    $html = '<div class="pa1  quote  grayLighter">';
+    $html .= '<div class="grid ">';
     if( $imagePath != "/" && $imagePath != "")
     {
         //render image here.
-        $html = '<div class="grid ">';
         $html .= '<div class="grid-cell  u-medium-2-12">';
         $html .= '<div class="medium-grid-pad-1x">';
         $html .= '<div class="quote__avatar">';
@@ -69,19 +71,19 @@ function get_quote_html($xml){
         if( $source != "")
             $html .= '<cite class="quote__source">–'.$source.'</cite>';
         $html .= '</div></div>';
-        $html .= '</div>';
     }
     else
     {
-        $html = '<div class="grid ">';
         $html .= '<div class="grid-cell  u-medium-12-12">';
         $html .= '<div class="medium-grid-pad-1x">';
         $html .= '<p class="quote__text">'.$text.'</p>';
         if( $source != "")
             $html .= '<cite class="quote__source">–'.$source.'</cite>';
         $html .= '</div></div>';
-        $html .= '</div>';
     }
+
+    $html .= '</div>';
+    $html .= '</div>';
 
     return $html;
 }

@@ -137,7 +137,3 @@ function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes
     }
     echo '</li>';
 }
-
-function quote_carousel_item($content, $classes){
-    echo "<div class='$classes'>$content</div>";
-}
