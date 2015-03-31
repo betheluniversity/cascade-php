@@ -6,14 +6,22 @@
  * Time: 1:32 PM
  */
 
-
 function pre($content){
     echo "<pre>";
     echo $content;
     echo "</pre>";
 }
 
+function carousel_create($class = "", $content)
+{
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('carousel.html', array(
+        'class' => $class,
+        'content' => $content));
+}
+
 function carousel_open($class = ""){
+
     echo "<div class='slick-carousel $class'>";
 }
 
@@ -23,13 +31,12 @@ function carousel_close(){
 }
 
 function carousel_item($content, $link = null){
-    echo '<div class="slick-item">';
-    if($link){
-        echo "<a href='$link'>$content</a>";
-    }else{
-        echo $content;
-    }
-    echo '</div>';
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('carousel_item.html', array(
+        'link' => $link,
+        'content' => $content));
+
 }
 
 function srcset($end_path, $print=true){
@@ -56,21 +63,16 @@ function srcset($end_path, $print=true){
 
 
 function thumborURL($end_path, $width, $lazy=false, $print=true){
-    if( strpos($end_path,"www.bethel.edu") == false ) {
-        $end_path = "https://www.bethel.edu/$end_path";
-    }
-    $rand = rand(1,4);
-    $src = "'//cdn$rand.bethel.edu/resize/unsafe/". $width. "x0/smart/$end_path'";
-    if($lazy){
-        $content = "<img data-lazy=$src/>";
-    }else{
-        $content = "<img src=$src/>";
-    }
-
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $html = $twig->render('thumorURL.html', array(
+        'end_path' => $end_path,
+        'width' => $width,
+        'lazy' => $lazy
+    ));
     if($print){
-        echo $content;
+        echo $html;
     }else{
-        return $content;
+        return $html;
     }
 }
 
@@ -113,28 +115,30 @@ function checkInPath($url, $name){
     if($pos && $name == "Home"){
         $pos = $url == $_SERVER['REQUEST_URI'];
     }
-    if($pos !== false){
-        echo "<li><a href='$url' class='active'>$name</a></li>";
-    }else{
-        echo "<li><a href='$url' class=''>$name</a></li>";
-    }
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('checkInPath.html', array(
+        'pos' => $pos,
+        'name' => $name,
+        'url' => $url));
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
-    echo '<li>';
-    if($classes){
-        if($pageStartsWith == $test_starts_with){
-            echo "<a class='$classes active' href='$path'>$label</a>";
-        }else{
-            echo "<a class='$classes' href='$path'>$label</a>";
-        }
-    }else{
-        if($pageStartsWith == $test_starts_with){
-            echo "<a class='active' href='$path'>$label</a>";
-        }else{
-            echo "<a href='$path'>$label</a>";
-        }
-    }
-    echo '</li>';
+
+
+    //twig version
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('navListItem.html', array(
+       'pageStartsWith' => $pageStartsWith,
+        'test_starts_with' => $test_starts_with,
+        'path' => $path,
+        'label' => $label,
+        'classes' => $classes));
 }
 
+function makeTwigEnviron($path){
+
+    $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . $path);
+    $twig = new Twig_Environment($loader);
+    return $twig;
+
+}

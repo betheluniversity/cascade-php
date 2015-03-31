@@ -3,6 +3,7 @@
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
+
 $staging = strstr(getcwd(), "staging/public");
 $soda = strstr(getcwd(), "soda");
 

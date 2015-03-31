@@ -6,6 +6,7 @@
  * Time: 3:29 PM
  */
 
+$twig = makeTwigEnviron('/code/banner-blocks/twig');
 
 if($select_option == 4){
     return;
@@ -14,11 +15,8 @@ if($select_option == 4){
     $results = json_decode(file_get_contents($url));
     $results = explode("\n", $results->data);
     if($results[0]){
-        echo "<ul>";
-        foreach($results as $result){
-            echo "<li>$result</li>";
-        }
-        echo "</ul>";
+        echo $twig->render('capsgs_checklist.html', array(
+            'results' => $results));
     }
 }
 

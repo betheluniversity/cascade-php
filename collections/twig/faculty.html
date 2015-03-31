@@ -3,14 +3,14 @@
         <div class="grid-cell  u-medium-3-12">
             <div class="grid-pad-1x">
                 <div class="quote__avatar">
-                    {{ thumbURL }}
+                    {{thumbURL|raw}}
                 </div>
             </div>
         </div>
         <div class="grid-cell  u-medium-9-12">
             <div class="grid-pad-1x">
                 <h2><a href='{{ path }}'>{{ first }} {{ last }}</a></h2>
-                <div>{{ title }}</div>
+               <div>{{ title }}</div>
             </div>
         </div>
     </div>

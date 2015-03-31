@@ -33,11 +33,18 @@
     }
 
     function display_password_reset_text_fields(){
-        return '<div><label> Password<input type="password" id="firstPassword" /></label>
-                <br />
-                <label>Retype Password<input type="password" id="secondPassword" /></label>
-                <br />
-                <button id="reset-button">Submit</button></div>';
+        $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/salesforce/twig');
+        $twig = new Twig_Environment($loader);
+
+//        return '<div><label> Password<input type="password" id="firstPassword" /></label>
+//                <br />
+//                <label>Retype Password<input type="password" id="secondPassword" /></label>
+//                <br />
+//                <button id="reset-button">Submit</button></div>';
+
+        //twig version
+        //todo test and delete above
+        return $twig->render('password-rest.html', array());
     }
 
     function reset_password($id, $firstPassword, $secondPassword){

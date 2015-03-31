@@ -118,10 +118,25 @@
         $imagePath = $ds->{'image'}->{'path'};
         $text = $ds->{'quote'};
         $source = $ds->{'source'};
+        //todo see of this can be added to metadata
+        $twig = makeTwigEnviron('/code/quotes/twig');
 
         if( $imagePath != "/" && $imagePath != "")
         {
             //render image here.
+            //Twig version
+
+//            $thumbURL = thumborURL($imagePath, 200, true, false);
+//
+//            //todo test and delete original version if works
+//            $html = $twig->render('faculty.html', array(
+//                'thumbURL' => $thumbURL,
+//                'text' => $text,
+//                'source' => $source));
+
+//            global $destinationName;
+
+            //original version
             $html = '<div class="grid ">';
                 $html .= '<div class="grid-cell  u-medium-3-12">';
                 $html .= '<div class="grid-pad-1x">';
@@ -141,6 +156,14 @@
         }
         else
         {
+            //twig version
+            //todo test then delete original
+//            $html = $twig->render('faculty.html', array(
+//                'text' => $text,
+//                'source' => $source));
+
+
+            //original version
             $html = '<div class="grid ">';
                 $html .= '<div class="grid-cell  u-medium-12-12">';
                 $html .= '<div class="grid-pad-1x">';

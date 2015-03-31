@@ -1,0 +1,7 @@
+<ol>
+    foreach($gifts->{'result'} as $result){
+    {%for result in results%}
+        <li>{{ attribute(result,1) }}, {{ attribute(result,2) }} gifts</li>
+    {% endfor %}
+
+</ol>
