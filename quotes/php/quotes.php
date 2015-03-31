@@ -50,40 +50,43 @@ function get_quote_html($xml){
     $imagePath = $ds->{'image'}->{'path'};
     $text = $ds->{'quote'};
     $source = $ds->{'source'};
-
+    $gradYear = $ds->{'grad-year'};
+    $job = $ds->{'job-grad-school'};
 
     $html = '<div class="pa1  quote  grayLighter">';
     $html .= '<div class="grid ">';
+
     if( $imagePath != "/" && $imagePath != "")
     {
         //render image here.
-        $html .= '<div class="grid-cell  u-medium-2-12">';
+        $html .= '<div class="grid-cell  u-medium-3-12">';
         $html .= '<div class="medium-grid-pad-1x">';
         $html .= '<div class="quote__avatar">';
-
-        global $destinationName;
         $html .= thumborURL($imagePath, "200", true, false);
         $html .= '</div></div></div>';
 
-        $html .= '<div class="grid-cell  u-medium-10-12">';
-        $html .= '<div class="medium-grid-pad-1x">';
-        $html .= '<p class="quote__text">'.$text.'</p>';
-        if( $source != "")
-            $html .= '<cite class="quote__source">–'.$source.'</cite>';
-        $html .= '</div></div>';
+        $textWidth = 9;
     }
     else
     {
-        $html .= '<div class="grid-cell  u-medium-12-12">';
-        $html .= '<div class="medium-grid-pad-1x">';
-        $html .= '<p class="quote__text">'.$text.'</p>';
-        if( $source != "")
-            $html .= '<cite class="quote__source">–'.$source.'</cite>';
-        $html .= '</div></div>';
+        $textWidth = 12;
     }
 
-    $html .= '</div>';
-    $html .= '</div>';
+    // text block
+    $html .= "<div class='grid-cell  u-medium-$textWidth-12'>";
+    $html .= '<div class="medium-grid-pad-1x">';
+    $html .= '<p class="quote__text">'.$text.'</p>';
+    if( $source != "") {
+        $html .= '<cite class="quote__source">–' . $source;
+        if( $gradYear != "")
+            $html .= " $gradYear";
+        if( $job != "")
+            $html .= "<br />$job";
+        $html .= '</cite>';
+    }
+    $html .= '</div></div>'; // end of text
+
+    $html .= '</div></div>'; // end of quote block
 
     return $html;
 }
