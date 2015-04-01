@@ -38,7 +38,7 @@
                     if($page['categories'][0][0] == "President Announcements"){
                         continue;
                     }
-
+//
                     $image = srcset($page['image'][0], false);
                     $title = $page['title'][0];
                     $teaser = $page['teaser'][0];

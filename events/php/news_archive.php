@@ -33,34 +33,14 @@ function create_archive(){
     $arrayOfArticles = sort_news_articles( $arrayOfArticles );
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
+    $twig = makeTwigEnviron('/code/events/twig');
+
     foreach( $arrayOfArticles as $yearArray )
     {
-        echo "<div class='archive-year year-" . $yearArray['01'][0]['year'] . "' >";
-        //$yearArray['01'][0]['year']
-        for( $i = 12; $i >= 0  ;$i--)
-        {
-            if( $i < 10 )
-            {
-                //todo what is a newi?
-                //newi is the new i value. If i is less than 10, it needs to have a '0' appended to it.
-                $newi = '0'.$i;
-            }
-            else
-                $newi = $i;
-            if( sizeof($yearArray[$newi]) > 0)
-            {
-                echo "<a name='" . strtolower($yearArray[$newi][0]['month-name']) . "'></a>";
-                echo "<h4>" . $yearArray[$newi][0]['month-name'] . "</h4>";
-
-                echo '<ul style="list-style:none outside none;padding-left:15px;">';
-                foreach( $yearArray[$newi] as $article)
-                {
-                    echo $article['html'];
-                }
-                echo "</ul>";
-            }
-        }
-        echo "</div>";
+        //twig version
+        echo $twig->render('news_archive.html',array(
+           'yearArray' => $yearArray
+        ));
     }
 
     // This should return an array of 5 items. Each of those includes a full years worth of articles, pre-sorted, and including the headers.
@@ -139,13 +119,13 @@ function get_news_article_html( $article, $xml ){
     $title = $article['title'];
 
     $day = $article['day'];
+    $twig = makeTwigEnviron('/code/events/twig');
 
-    $html = "<li>";
-    if( $externalPath == "")
-        $html .= $day . " - <a href='http://www.bethel.edu" .$path . "'>" . $title . "</a>";
-    else
-        $html .= $day . " - <a href='" . $externalPath . "'>" . $title . "</a>";
-    $html .= "</li>";
+    $html = $twig->render('get_news_article_html.html', array(
+        'externalPath' => $externalPath,
+        'path' => $path,
+        'title' => $title,
+        'day' => $day));
 
     return $html;
 }

@@ -20,13 +20,14 @@ function create_faculty_carousel($categories){
     $bios = find_matching_bios($faculty_pages, $categories);
     $twig = makeTwigEnviron('/code/collections/twig');
 
+
 //    echo "<pre>";
 //    print_r($faculty_pages[0]);
 //    echo "</pre>";
 
 
-    //carousel_open("carousel--quote");
-   $carousel_items = '';
+//    carousel_open("carousel--quote");
+   $carousel_items = "";
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
@@ -44,9 +45,9 @@ function create_faculty_carousel($categories){
             'thumbURL' => $thumbURL));
 
         $carousel_items .= carousel_item($html);
+
     }
     carousel_create("carousel--quote", $carousel_items);
-    //carousel_close();
 
 
     // todo: Display 7 bios that match one of the values in $categories and have the following info:

@@ -14,7 +14,7 @@ function pre($content){
 
 function carousel_create($class = "", $content)
 {
-    $twig = makeTwigEnviron('/code/general-cascade/twig');
+   $twig = makeTwigEnviron('/code/general-cascade/twig');
     echo $twig->render('carousel.html', array(
         'class' => $class,
         'content' => $content));
@@ -63,6 +63,7 @@ function srcset($end_path, $print=true){
 
 
 function thumborURL($end_path, $width, $lazy=false, $print=true){
+
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumorURL.html', array(
         'end_path' => $end_path,
@@ -115,6 +116,7 @@ function checkInPath($url, $name){
     if($pos && $name == "Home"){
         $pos = $url == $_SERVER['REQUEST_URI'];
     }
+
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     echo $twig->render('checkInPath.html', array(
         'pos' => $pos,
@@ -123,7 +125,6 @@ function checkInPath($url, $name){
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
-
 
     //twig version
     $twig = makeTwigEnviron('/code/general-cascade/twig');

@@ -126,7 +126,7 @@
             $html .= thumborURL($imagePath, 1500, true, false);
             $html .= '<figure class="feature__figure">';
             $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
-            $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
+            $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption><p>CALEBVABREG</p>';
 
             $html .= '</figure>';
         $html .= '</a>';

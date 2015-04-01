@@ -1,6 +1,6 @@
 <!--Needs end_path, width, lazy variables-->
 
-{% if "www.bethel.edu.carl" in end_path %}
+{% if "www.bethel.edu" not in end_path %}
     {% set end_path = 'https://www.bethel.edu/' ~ end_path %}
 {% endif %}
 

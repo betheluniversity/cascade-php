@@ -1,0 +1,30 @@
+<!--Needs destinationName, thumborURL, page_info, path, formattedDate, date, options-->
+
+<div class="mt1 mb2 pa1" style="background: #f4f4f4">
+    <span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid left false">
+        <div class="grid-cell  u-medium-1-2">
+            <div class="grid-pad-1x">
+                {{thumborURL|raw}}
+            </div>
+        </div>
+        <div class="grid-cell  u-medium-1-2">
+            <div class="grid-pad-1x">
+                {% if page_info['title'] != "" %}
+                    <h4><a href="http://{{destinationName}}.bethel.edu{{path}}"><span itemprop="headline">{{page_info['title']}}</span></a></h4>
+                {% endif %}
+
+                {% if date != "" and date != "null" %}
+                    <p>formattedDate</p>
+                {% endif %}
+
+                {% if options[1] != "" %}
+                    <p>options[1]</p>
+                {% elseif page_info['description'] != "" %}
+                    <p>page_info['description']</p>
+                {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </span>
+</div>

@@ -1,0 +1,47 @@
+<!--Need Global destinationName, thumborURL, article, path,date, formatteddate, DisplayTeaser-->
+<div class="news__item" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
+    <div class="news__image">
+        <a href="http://{{destinationName}}.bethel.edu{{path}}">
+            {{thumborURL|raw}}
+        </a>
+    </div>
+    <div class="news__content">
+        <p class="news__headline"><a href="http://{{destinationName}}.bethel.edu{{path}}"><span itemprop="headline">{{article['title']}}</span></a></p>
+        {% if date != "" and date != "null" %}
+            <p>{{formattedDate}}</p>
+        {% endif %}
+        {% if DisplayTeaser == "Yes" %}
+            <p>{{article['teaser']}}</p>
+        {% endif %}
+    </div>
+</div>
+
+
+
+<!--ORGINAL CONTENT DELETED-->
+
+<!--$html = '<div class="news__item" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">';-->
+    <!--$html .= '<div class="news__image">';-->
+
+        <!--global $destinationName;-->
+        <!--$html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';-->
+            <!--$html .= thumborURL($imagePath, 215, $lazy=false, $print=false);-->
+            <!--$html .= '</a>';-->
+        <!--$html .= '</div>';-->
+
+    <!--$html .= '<div class="news__content">';-->
+        <!--$html .= '<p class="news__headline"><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$article['title'].'</span></a></p>';-->
+
+        <!--if( $date != "" && $date != "null" )-->
+        <!--{-->
+        <!--$formattedDate = format_featured_date_news_article($date);-->
+        <!--$html .= "<p>".$formattedDate."</p>";-->
+        <!--}-->
+        <!--global $DisplayTeaser;-->
+        <!--if( $DisplayTeaser == "Yes" )-->
+        <!--{-->
+        <!--$html .= '<p>'.$article['teaser'].'</p>';-->
+        <!--}-->
+
+        <!--$html .= '</div>';-->
+    <!--$html .= '</div>';-->
