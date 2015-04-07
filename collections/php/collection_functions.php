@@ -115,28 +115,6 @@ function inspect_page_collection($xml, $categories){
 
         }
     }
-    ## This is a column block
-    else if( $dataDefinition == "Blocks/Proof Point")
-    {
-        $page_info['display'] = match_robust_metadata($xml, $categories);
-        if( $page_info['display'] == "Yes" )
-        {
-            // Code to make it a column block
-            global $numberOfItems;
-//            $html = "<div class='grid-cell  u-medium-1-".$numberOfItems."'><div class='grid-pad-1x'>";
-//            $html .= get_proof_point_html($xml);
-//            $html .= '</div></div>';
-
-            //twig version
-            //todo test then delete above version
-            $twig = makeTwigEnviron('/code/collections/twig');
-            $html = $twig->render('inspect_page_collection_2.html', array(
-                'numberOfItems' => $numberOfItems,
-                'proof_points' => get_proof_point_html($xml)));
-
-            $page_info['html'] = $html;
-        }
-    }
     return $page_info;
 }
 // Returns the profile stories html
@@ -158,6 +136,7 @@ function get_profile_stories_html( $xml){
     {
         $teaser = $viewerTeaser;
     }
+
     $quote = $ds->{'quote'};
     $html = "<div class='slick-item' style='width:100%'>";
     $html .= '<a href="http://bethel.edu'.$xml->path.'">';

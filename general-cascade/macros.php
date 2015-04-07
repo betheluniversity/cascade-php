@@ -7,9 +7,17 @@
  */
 
 function pre($content){
-    echo "<pre>";
-    echo $content;
-    echo "</pre>";
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('pre.html', array('content' => $content));
+}
+
+function carousel_open($class = ""){
+    echo "<div class='slick-carousel $class'>";
+}
+
+function carousel_close(){
+    // basic for now but just in case it gets more complicated
+    echo "</div>";
 }
 
 function carousel_create($class = "", $content)
@@ -18,16 +26,6 @@ function carousel_create($class = "", $content)
     echo $twig->render('carousel.html', array(
         'class' => $class,
         'content' => $content));
-}
-
-function carousel_open($class = ""){
-
-    echo "<div class='slick-carousel $class'>";
-}
-
-function carousel_close(){
-    // basic for now but just in case it gets more complicated
-    echo "</div>";
 }
 
 function carousel_item($content, $link = null){
@@ -43,16 +41,11 @@ function srcset($end_path, $print=true){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
-    $rand = rand(1,4);
-    $content = "<img srcset='
-                //cdn$rand.bethel.edu/resize/unsafe/1400x0/smart/$end_path 1400w,
-                //cdn$rand.bethel.edu/resize/unsafe/1200x0/smart/$end_path 1200w,
-                //cdn$rand.bethel.edu/resize/unsafe/1000x0/smart/$end_path 1000w,
-                //cdn$rand.bethel.edu/resize/unsafe/800x0/smart/$end_path 800w,
-                //cdn$rand.bethel.edu/resize/unsafe/600x0/smart/$end_path 600w,
-                //cdn$rand.bethel.edu/resize/unsafe/400x0/smart/$end_path 400w,
-                //cdn$rand.bethel.edu/resize/unsafe/200x0/smart/$end_path 200w'
-                src='//cdn$rand.bethel.edu/resize/unsafe/320x0/smart/$end_path'/>";
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $content = $twig->render('srcset.html', array(
+        'end_path' => $end_path));
+
     if($print){
         echo $content;
     }else{
@@ -91,6 +84,24 @@ function xml2array($xml){
     return $arr;
 }
 
+
+
+function createGrid($classes, $content){
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('grid.html', array(
+        'classes' => $classes,
+        'content' => $content));
+
+}
+
+function gridCellOpen($classes){
+    echo "<div class='grid-cell $classes'>";
+}
+
+function gridCellClose(){
+    echo "</div>";
+}
+
 //classes is a string
 function gridOpen($classes){
     echo "<div class='grid $classes'>";
@@ -100,14 +111,13 @@ function gridClose(){
     echo "</div>";
 }
 
-//classes is a string
-function gridCellOpen($classes){
-    echo "<div class='grid-cell $classes'>";
+function createGridCell($classes, $content){
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('gridCell.html', array(
+        'classes' => $classes,
+        'content' => $content));
 }
 
-function gridCellClose(){
-    echo "</div>";
-}
 
 function checkInPath($url, $name){
     $path = $_SERVER['REQUEST_URI'];

@@ -120,17 +120,13 @@
             $teaser = $viewerTeaser;
         }
         $quote = $ds->{'quote'};
-        $html = '<div class="slick-item">';
-        $html .= '<a href="http://bethel.edu'.$xml->path.'">';
 
-            $html .= thumborURL($imagePath, 1500, true, false);
-            $html .= '<figure class="feature__figure">';
-            $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
-            $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption><p>CALEBVABREG</p>';
+        $twig = makeTwigEnviron('/code/profile-stores/twig');
+        $html = $twig->render('profile_story_collection.html', array(
+            'thumborURL' => thumborURL($imagePath, 1500, true, false),
+            'quote' => $quote,
+            'teaser' => $teaser));
 
-            $html .= '</figure>';
-        $html .= '</a>';
-        $html .= '</div>';
         return $html;
     }
 
