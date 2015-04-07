@@ -6,18 +6,9 @@
  * Time: 10:36 AM
  */
 
-/*
-
-    // Page metadata
-    $School = array();
-    $Topic = array();
-    $CAS = array();
-    $CAPS = array();
-    $GS = array();
-    $SEM = array();
- */
-
     include_once 'proof-point-logic.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . "/code/general-cascade/macros.php";
+
     function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
 
         echo "<!-- new proof points -->";
@@ -30,6 +21,7 @@
         foreach($proof_points as $proof_point_xml){
             $ppInfo = inspect_block_proof_points($proof_point_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
             if( $ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic'] ){
+                echo "<!-- MATCH -->";
                 array_push($matches, $ppInfo);
             }
         }
@@ -41,7 +33,8 @@
         $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numItems );
 
         $numProofPoints = count($proofPointsToDisplay);
-        //Output structure
+
+        // Output structure
         gridOpen("proof-points proof-point-collection");
 
         foreach($proofPointsToDisplay as $finalPP){

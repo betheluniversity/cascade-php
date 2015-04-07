@@ -6,7 +6,6 @@
  * Time: 1:32 PM
  */
 
-
 function pre($content){
     echo "<pre>";
     echo $content;
