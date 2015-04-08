@@ -15,7 +15,7 @@
             "path" => $xml->path,
             "html" => "",
             "display" => "No",
-            "match-school" => false,
+            "match-school" => false, // this is deprecated. We do not use this anymore.
             "match-dept" => false,
             "match-topic" => false,
         );
@@ -26,8 +26,7 @@
             // First get one that matches the specific school dept
             if( match_metadata_quotes($xml, $CAS) || match_metadata_quotes($xml, $CAPS) || match_metadata_quotes($xml, $GS) || match_metadata_quotes($xml, $SEM)  )
                 $block_info['match-dept'] = true;
-            // next, grab a GENERIC one from the school ( no depts tagged )
-            $block_info['match-school'] = match_generic_school_quotes($xml, $School);
+
             // Now that we are desparate, just get one that has a topic thats the same.
             $block_info['match-topic'] = match_metadata_quotes($xml, $Topic);
 
@@ -62,64 +61,27 @@
         return false;
     }
 
-    function match_generic_school_quotes($xml, $schools){
-        $schoolsArray = array();
-
-        foreach ($xml->{'dynamic-metadata'} as $md) {
-            foreach ($md->value as $value) {
-                if ($value == "Select" || $value == "none" || $value == "None" || $value == "") {
-                    continue;
-                }
-
-                // Add schools to an array to check later
-                if ($md->name == "school") {
-                    array_push($schoolsArray, htmlspecialchars($value));
-                }
-
-                // if there are any depts, they are not generic. therefore, don't include.
-                if ($md->name == "department" || $md->name == "adult-undergrad-program" || $md->name == "graduate-program" || $md->name == "seminary-program") {
-                    return false;
-                }
-            }
-        }
-
-        // Fix the values on $schools (it likes to store & as &amp;
-        for( $i = 0; $i < sizeof($schools); $i++){
-            $schools[$i] = htmlspecialchars($schools[$i]);
-        }
-
-        // returns true if there are no depts and the school matches.
-        if (sizeof(array_diff_assoc($schoolsArray, $schools)) == 0) {
-            return true;
-        }
-        return false;
-    }
-
 
     // Gets x random proof points from the array of arrays of quotes
-    // Not very well constructed.
-    // Down the road, this should probably be rewritten.
     function get_x_quotes($quotesArrays, $numToFind){
         $finalQuotes = array();
-        foreach( $quotesArrays as $quoteArray)
-        {
-            $sizeOfArray = sizeof($quoteArray);
-            while( $sizeOfArray > 0)
-            {
-                if( $numToFind <= 0){
-                    break 2;
-                }
-                $randomIndex = rand(0,$sizeOfArray);
-                $quote = $quoteArray[$randomIndex];
-                if( $quote != null)
-                {
-                    array_push( $finalQuotes, $quote );
-                    $numToFind--;
-                }
-                unset($quoteArray[$randomIndex]);
-                array_values($quoteArray);
-                $sizeOfArray = sizeof($quoteArray);
+        foreach( $quotesArrays as $quoteArray) {
+            // randomize the quotes grabbed
+            shuffle($quoteArray);
+
+            // grab quotes
+            foreach($quoteArray as $quote){
+                array_push($finalQuotes, $quote);
+                $numToFind--;
+
+                // if X quotes are already grabbed, break out
+                if( $numToFind == 0)
+                    return $finalQuotes;
             }
+
+            // If quotes were grabbed, then don't grab any more!!!
+            if( sizeof( $quoteArray) >= 1 )
+                return $finalQuotes;
         }
         return $finalQuotes;
     }
@@ -128,18 +90,18 @@
     // Divide the array of proof points into arrays of dept/school and premium/not-premium.
     // This allows for a priority of what proof points to use.
     function divide_into_arrays_quotes($quotesArrays){
-        $school = array();
         $dept = array();
+        $topic = array();
         foreach( $quotesArrays as $quote){
             if( $quote['match-dept'])
             {
                 array_push($dept, $quote);
             }
-            elseif( $quote['match-school'])
+            elseif( $quote['match-topic'])
             {
-                array_push($school, $quote);
+                array_push($topic, $quote);
             }
         }
-        $finalQuoteArrays = array($dept, $school);
+        $finalQuoteArrays = array($dept, $topic);
         return $finalQuoteArrays;
     }

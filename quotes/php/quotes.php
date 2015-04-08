@@ -20,7 +20,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
 
     foreach($quotes as $quote_xml){
         $quote_info = inspect_block_quotes($quote_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-        if( $quote_info['match-school'] || $quote_info['match-dept'] || $quote_info['match-topic'] ){
+        if( $quote_info['match-dept'] || $quote_info['match-topic'] ){
             array_push($matches, $quote_info);
         }
     }
