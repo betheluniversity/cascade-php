@@ -118,60 +118,22 @@
         $imagePath = $ds->{'image'}->{'path'};
         $text = $ds->{'quote'};
         $source = $ds->{'source'};
-        //todo see of this can be added to metadata
         $twig = makeTwigEnviron('/code/quotes/twig');
 
         if( $imagePath != "/" && $imagePath != "")
         {
             //render image here.
-            //Twig version
-
-//            $thumbURL = thumborURL($imagePath, 200, true, false);
-//
-//            //todo test and delete original version if works
-//            $html = $twig->render('faculty.html', array(
-//                'thumbURL' => $thumbURL,
-//                'text' => $text,
-//                'source' => $source));
-
-//            global $destinationName;
-
-            //original version
-            $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-3-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<div class="quote__avatar">';
-
-                global $destinationName;
-                $html .= thumborURL($imagePath, 200, true, false);
-                $html .= '</div></div></div>';
-
-                $html .= '<div class="grid-cell  u-medium-9-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<p class="quote__text">'.$text.'</p>';
-                if( $source != "")
-                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
-                $html .= '</div></div>';
-            $html .= '</div>';
+            global $destinationName;
+            $html = $twig->render('get-quotes.html', array(
+                'thumbURL' => thumborURL($imagePath, 200, true, false),
+                'text' => $text,
+                'source' => $source));
         }
         else
         {
-            //twig version
-            //todo test then delete original
-//            $html = $twig->render('faculty.html', array(
-//                'text' => $text,
-//                'source' => $source));
-
-
-            //original version
-            $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-12-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<p class="quote__text">'.$text.'</p>';
-                if( $source != "")
-                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
-                $html .= '</div></div>';
-            $html .= '</div>';
+            $html = $twig->render('get-quotes2.html', array(
+                'text' => $text,
+                'source' => $source));
         }
 
         return $html;

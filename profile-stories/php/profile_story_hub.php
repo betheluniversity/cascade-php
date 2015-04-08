@@ -125,13 +125,15 @@
         $quote = $ds->{'quote'};
 
         global $destinationName;
-        $html = '<p><a href="http://'.$destinationName.'.bethel.edu'.$xml->path.'">'.$page_info['title'].'</a></p>';
-        $html .= thumborURL($imagePath, 400, false, false);
 
-        if( $viewerTeaser != "")
-            $html .= '<p>'.$viewerTeaser.'</p>';
-        elseif( $homepageTeaser != "")
-            $html .= '<p>'.$homepageTeaser.'</p>';
+        $twig = makeTwigEnviron('/code/profile_stories/twig');
+        $html = $twig->render('profile_story_hub.html', array(
+            'destinationName' => $destinationName,
+            'viewerTeaser' => $viewerTeaser,
+            'homepageTeaser' => $homepageTeaser,
+            'title' => $page_info['title'],
+            'path' => $xml->path,
+            'thumborURL' => thumborURL($imagePath, 400, false, false)));
 
         return $html;
     }
