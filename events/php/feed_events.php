@@ -344,43 +344,17 @@
         // Only display it if it has an image.
         if( $event['image'] != "" && $event['image'] != "/"){
 
-            $html = '<div class="mt1 mb2 pa1">';
-            $html .= '<div class="grid left false">';
-            $html .= '<div class="grid-cell  u-medium-1-2">';
-            $html .= '<div class="grid-pad-1x">';
-
             global $destinationName;
-            $html .= thumborURL($event['image'], 400, false, false);
-
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '<div class="grid-cell  u-medium-1-2">';
-            $html .= '<div class="grid-pad-1x">';
-
-            if( $event['title'] != "")
-                $html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';
-
-            if( $featuredEventOptions[2] == "No"){
-                if( sizeof($dates) > 1)
-                {
-                    $formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );
-                    $html .= "<p>".$formattedDate."</p>";
-                }
-                else{
-                    $formattedDate = format_featured_event_date($firstDate);
-                    $html .= "<p>".$formattedDate."</p>";
-                }
-            }
-
-            if( $featuredEventOptions[1] != "" )
-                $html .= '<p>'.$featuredEventOptions[1].'</p>';
-            elseif( $event['description'] != "")
-                $html .= '<p>'.$event['description'].'</p>';
-
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
+            $twig = makeTwigEnviron('/code/events/twig');
+            $twig->addFilter(new Twig_SimpleFilter('convert_path_to_link','convert_path_to_link'));
+            $twig->addFilter(new Twig_SimpleFilter('format_featured_event_date','format_featured_event_date'));
+            $html = $twig->render('feed_events.html', array(
+                'destinationName' => $destinationName,
+                'thumborURL'=> thumborURL($event['image'], 400, false, false),
+                'event' => $event,
+                'featuredEventOptions' => $featuredEventOptions,
+                'dates' => $dates,
+                'firstDate' => $firstDate));
 
         }
         else
@@ -395,87 +369,16 @@
         $title = $event['title'];
         $start = $event['date']['start-date'];
         $end = $event['date']['end-date'];
-        if($title == "Seminary San Diego InMinistry Fall Intensives"){
-            echo "<pre>";
-            echo $event['title'];
-            echo $start;
-            echo "  :   ";
-            echo $end;
-            echo "</pre>";
-        }
 
-        $html = '<div class="events__item" itemscope="itemscope" itemtype="http://schema.org/Event">';
-        $html .= '<p class="events__date-tile">';
-
-        if( $start != "")
-        {
-            // start and end date are on the same day
-            // OR if the event hasn't started yet.
-            // THEN display the start date as the date.
-            if( (date("F d, Y", $start) == date("F d, Y", $end)) || time() < $start )
-            {
-                // Month
-                $html .= get_month_shorthand_name(date("F", $start));
-
-                // Day
-                $html .= "<span>".date("d", $start)."</span>";
-
-                // Year
-                $html .= date("Y", $start)."</p>";
-
-            }elseif(time() > $end){
-                // The event is in the past and is over
-                // Month
-                $html .= get_month_shorthand_name(date("F", $end));
-                // Day
-                $html .= "<span>".date("d", $end)."</span>";
-                // Year
-                $html .= date("Y", $end)."</p>";
-            }
-            else{
-                // The event is multiple days and it isn't over yet, display the current date instead of the end date
-                // as that would make it seem like its in the future.
-
-                // Month
-                $html .= get_month_shorthand_name(date("F", time()));
-
-                // Day
-                $html .= "<span>".date("d", time())."</span>";
-
-                // Year
-                $html .= date("Y", time())."</p>";
-            }
-            $html .= '<div class="events__content">';
-        }
-        // Title + Link
-        $html .= '<p class="events__headline"><a href="'.convert_path_to_link($event).'"><span itemprop="name">'.$event['title'].'</span></a></h2>';
-
-        // Time + Location
-        if( $event['date'] )
-            $date = format_fancy_event_date($event['date']);
-        else
-            $date = "";
-        if($date != ""){
-            if( $event['location'] != "")
-            {
-                $html .= '<p class="mb0">'.$date.' | <span itemprop="location">'.$event['location'].'</span></p>';
-            }
-            else{
-                $html .= '<p class="mb0">'.$date.'</p>';
-            }
-        }
-        else{
-            if( $event['location'] != "")
-            {
-                $html .= '<p class="mb0">'.$event['location'].'</p>';
-            }
-        }
-
-        // Description
-        $html .= '<p><span itemprop="description">'.$event['description'].'</span></p>';
-        $html .= '</div></div>';
-
-
+        $twig = makeTwigEnviron('/code/events/twig');
+        $twig->addFilter(new Twig_SimpleFilter('convert_path_to_link','convert_path_to_link'));
+        $twig->addFilter(new Twig_SimpleFilter('format_fancy_event_date','format_fancy_event_date'));
+        $twig->addFilter(new Twig_SimpleFilter('get_month_shorthand_name','get_month_shorthand_name'));
+        $html = $twig->render('get_event_html.html', array(
+            'title' => $title,
+            'event' => $event,
+            'start' => $start,
+            'end' => $end));
 
         return $html;
     }

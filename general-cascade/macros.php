@@ -35,6 +35,7 @@ function carousel_item($content, $link = null){
         'link' => $link,
         'content' => $content));
 
+
 }
 
 function srcset($end_path, $print=true){
@@ -63,6 +64,7 @@ function thumborURL($end_path, $width, $lazy=false, $print=true){
         'width' => $width,
         'lazy' => $lazy
     ));
+
     if($print){
         echo $html;
     }else{

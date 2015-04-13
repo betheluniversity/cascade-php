@@ -8,74 +8,165 @@
         </div>
         <div id="todayseventscont">
             <ul id="todayseventslist" class="alternating uportal-channel-text">
-                {%for event in todays_events%}
+                {% for event in todays_events %}
                     <li>
                         <h4>
-                            {% if attribute(event,'external-link')[0] %}
-                                {% set link = attribute(event,'external-link')[0] %}
+                            {% if event.external-link.0 %}
+                                {% set link = event.external-link.0 %}
                             {% else %}
-                                {% set link = 'http://www.bethel.edu' ~ event['path'][0] %}
+                                {% set link = 'http://www.bethel.edu' ~ event.path.0 %}
                             {% endif %}
 
-                            //move all this to event_helper.php
-                            {% set title = event['title'][0] %}
-                            {% set start = event['specific_start'][0] %}
-                            {% set end = event['specific_end'][0] %}
-                            {% set all_day = event['specific_all_day'] %}
-                            {% set location = event['location'][0] %}
-                            {% set description = event['description'][0] %}
-                            {% set start_date = date %}
-                            $start_date->setTimestamp($start / 1000);
-                            $start = $start_date->format("g:i a");
-
-                            $title = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $title);
-                            $location = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $location);
-                            $description = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $description);
+                            <!--move all this to event_helper.php-->
+                            {% set title = event.title.0 %}
+                            {% set start = event.specific_start.0 %}
+                            {% set end = event.specific_end.0 %}
+                            {% set all_day = event.specific_all_day %}
+                            {% set location = event.location.0 %}
+                            {% set description = event.description.0 %}
+                            {% set start_date = start / 1000 %}
+                            {% set start = start_date|date("g:i a") %}
 
 
-                if (substr($start, -6, 3) == ':00'){
-                $start = $start_date->format("g a");
-                }
-                $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                $end_date->setTimestamp($end / 1000);
-                $end = $end_date->format("g:i a");
-                if (substr($end, -6, 3) == ':00'){
-                $end = $end_date->format("g a");
-                }
-                if ($start && $end && !$all_day){
-                if ($start == $end)
-                $event_date = $start;
-                else
-                $event_date = $start . '-' . $end;
-                }
-                echo "<a href='$link'>$title</a>";
-                echo '</h4>';
-                echo '<p>';
+                            {% set title = '/&(?!#?[a-z0-9]+;)/'|preg_replace('&amp;', title) %}
+                            {% set location = '/&(?!#?[a-z0-9]+;)/'|preg_replace('&amp;', location) %}
+                            {% set description = '/&(?!#?[a-z0-9]+;)/'|preg_replace('&amp;', description) %}
 
-                $info = "";
 
-                if ($location){
-                $info .=  $location;
-                }
-                if ($event_date){
-                if ($info != ""){
-                $info .= " | ";
-                }
-                $info .= $event_date;
+                            {% if start|slice(-6, 3) == ':00' %}
+                                {% set start = start_date|date("g a") %}
+                            {% endif %}
+                            {% set end_date = end / 1000 %}
+                            {% set end = end_date|date("g:i a") %}
 
-                }
-                if ($description){
-                if ($info != ""){
-                $info .= " | ";
-                }
-                $info .= $description;
-                }
-                echo $info;
-                echo '</p>';
-                echo '</li>';
-                }
-                ?>
+                            {% if end|slice(-6, 3) == ':00' %}
+                                {% set end = end_date|date("g a") %}
+                            {% endif %}
+                            {% if start and end and not all_day %}
+                                {% if start == end %}
+                                    {% set event_date = start %}
+                                {% else %}
+                                    {% set event_date = start ~ "-" ~ end %}
+                                {% endif %}
+                            {% endif %}
+                            <a href='{{link}}'>{{title}}</a>
+                        </h4>
+                        <p>
+
+                            {% set info = "" %}
+
+                            {% if location %}
+                                {% set info = info ~ location %}
+                            {% endif %}
+
+                            {% if event_date %}
+                                {% if info != "" %}
+                                    {% set info = info ~ " | " %}
+                                {% endif %}
+                                {% set info = info ~ event_date %}
+                            {% endif %}
+
+                            {% if description %}
+                                {% if info != "" %}
+                                    {% set info = info ~ " | " %}
+                                {% endif %}
+                                {% set info = info  ~ description %}
+                            {% endif %}
+                            {{info}}
+                        </p>
+                    </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
 </div>
+
+
+
+<!--original content replaced-->
+<!--<div class="channel-section">-->
+    <!--<div class="uportal-cms-block">-->
+        <!--<div class="uportal-channel-text" style="text-align: right">-->
+            <!--<span style="float:left"><?php echo $display_date ?> </span>-->
+            <!--<a href="http://tinker.bethel.edu/event/" title="Submit Events">Submit</a>-->
+            <!--|-->
+            <!--<a href="https://www.bethel.edu/events/calendar/" title="Full Calendar of Events">Full Calendar</a>-->
+        <!--</div>-->
+        <!--<div id="todayseventscont">-->
+            <!--<ul id="todayseventslist" class="alternating uportal-channel-text">-->
+                <!--<?php-->
+<!--foreach($todays_events as $event){-->
+
+        <!--echo "<li>";-->
+                <!--echo '<h4>';-->
+                <!--if ($event['external-link'][0]){-->
+                <!--$link = $event['external-link'][0];-->
+                <!--}else{-->
+                <!--$link = 'http://www.bethel.edu'. $event['path'][0];-->
+                <!--}-->
+                <!--//move all this to event_helper.php-->
+                <!--$title = $event['title'][0];-->
+                <!--$start = $event['specific_start'][0];-->
+                <!--$end = $event['specific_end'][0];-->
+                <!--$all_day = $event['specific_all_day'];-->
+                <!--$location = $event['location'][0];-->
+                <!--$description = $event['description'][0];-->
+                <!--$start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));-->
+                <!--$start_date->setTimestamp($start / 1000);-->
+                <!--$start = $start_date->format("g:i a");-->
+
+                <!--$title = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $title);-->
+                <!--$location = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $location);-->
+                <!--$description = preg_replace('/&(?!#?[a-z0-9]+;)/', '&amp;', $description);-->
+
+
+                <!--if (substr($start, -6, 3) == ':00'){-->
+                <!--$start = $start_date->format("g a");-->
+                <!--}-->
+                <!--$end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));-->
+                <!--$end_date->setTimestamp($end / 1000);-->
+                <!--$end = $end_date->format("g:i a");-->
+                <!--if (substr($end, -6, 3) == ':00'){-->
+                <!--$end = $end_date->format("g a");-->
+                <!--}-->
+                <!--if ($start && $end && !$all_day){-->
+                <!--if ($start == $end)-->
+                <!--$event_date = $start;-->
+                <!--else-->
+                <!--$event_date = $start . '-' . $end;-->
+                <!--}-->
+                <!--echo "<a href='$link'>$title</a>";-->
+                <!--echo '</h4>';-->
+                <!--echo '<p>';-->
+
+                <!--$info = "";-->
+
+                <!--if ($location){-->
+                <!--$info .=  $location;-->
+                <!--}-->
+                <!--if ($event_date){-->
+                <!--if ($info != ""){-->
+                <!--$info .= " | ";-->
+                <!--}-->
+                <!--$info .= $event_date;-->
+
+                <!--}-->
+                <!--if ($description){-->
+                <!--if ($info != ""){-->
+                <!--$info .= " | ";-->
+                <!--}-->
+                <!--$info .= $description;-->
+                <!--}-->
+                <!--echo $info;-->
+                <!--echo '</p>';-->
+                <!--echo '</li>';-->
+                <!--}-->
+
+
+
+
+                <!--?>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
