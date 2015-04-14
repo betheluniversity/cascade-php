@@ -1,6 +1,8 @@
 <?php
 
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
     require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
+
     error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
     $total_time_start = microtime(true);
     $month = $_GET['month'];
@@ -24,6 +26,9 @@
     $cache->close();
     $total_run_time = microtime(true) - $total_time_start;
     error_log("Full Run in $total_run_time\n", 3, '/tmp/calendar.log');
+
+//
+//    $data = autoCache("build_calendar_data", array($month, $year));
     echo $data;
 
     function build_calendar_data($month, $year){

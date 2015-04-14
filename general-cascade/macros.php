@@ -155,3 +155,38 @@ function makeTwigEnviron($path){
     return $twig;
 
 }
+
+function autoCache($func, $inputs, $cache_name = null){
+
+    //if no cache_name is passed in it defaults to all inputs strung together with -
+    if($cache_name == null) {
+        $cache_name = "$inputs[0]";
+        reset($inputs);
+        while (next($inputs) !== FALSE) {
+            $cache_name .= "-" . current($inputs);
+        }
+    }
+
+    $cache = new Memcache;
+    $cache->addserver('localhost', 11211);
+    $data = $cache->get($cache_name);
+    if(!$data){
+        error_log("Full Data Array Memcache miss\n", 3, '/tmp/calendar.log');
+        $data = call_user_func_array($func, $inputs);
+        $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, 300);
+        error_log("Cache Status: ", 3, '/tmp/calendar.log');
+    }else{
+        error_log("Full Data Array Memcache hit\n", 3, '/tmp/calendar.log');
+    }
+    $cache->close();
+    error_log("Full Run in Really Fast\n", 3, '/tmp/calendar.log');
+
+    return $data;
+
+}
+
+
+
+
+
+
