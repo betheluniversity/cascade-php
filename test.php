@@ -9,7 +9,8 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 //
 //$cache = new Memcache;
 //$cache->addServer('localhost', 11211);
-echo autoCache("testarino", array("caleb", "hello"));
+echo autoCache("testarino", array("caleb", "yo"), "caleb");
+
 
 function testarino($name, $hello){
     return "$name       $hello";

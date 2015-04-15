@@ -11,24 +11,8 @@
         $month = date('n');
         $year = date('Y');
     }
-    $cache_name = "$month-$year";
-    $cache = new Memcache;
-    $cache->addServer('localhost', 11211);
-    $data = $cache->get($cache_name);
-    if(!$data){
-        error_log("Full Data Array Memcache miss\n", 3, '/tmp/calendar.log');
-        $data = build_calendar_data($month, $year);
-        $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, 300);
-        error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-    }else{
-        error_log("Full Data Array Memcache hit\n", 3, '/tmp/calendar.log');
-    }
-    $cache->close();
-    $total_run_time = microtime(true) - $total_time_start;
-    error_log("Full Run in $total_run_time\n", 3, '/tmp/calendar.log');
+    $data = autoCache("build_calendar_data", array($month, $year));
 
-//
-//    $data = autoCache("build_calendar_data", array($month, $year));
     echo $data;
 
     function build_calendar_data($month, $year){
@@ -86,22 +70,7 @@
 
         $calendar = '';
 
-        $cache_time_start = microtime(true);
-        $cache_name = 'CALENDAR_XML';
-        $cache = new Memcache;
-        $cache->addServer('localhost', 11211);
-        $xml = $cache->get($cache_name);
-        if(!$xml){
-            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
-            $xml = get_event_xml();
-            $cache->set($cache_name, $xml, MEMCACHE_COMPRESSED, 300);
-            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-        }else{
-            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
-        }
-        $cache->close();
-        $get_xml_total_time = microtime(time) - $get_xml_start_time;
-        error_log("Retrieve XML in $get_xml_total_time seconds\n", 3, '/tmp/calendar.log');
+        $xml = autoCache("get_event_xml", array(), 'CALENDAR_XML');
 
         $after_xml_time_start = microtime(true);
         $classes = array(
@@ -155,7 +124,8 @@
     function get_event_xml(){
 
         ##Create a list of categories the calendar uses
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+        $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml"), 'get_event_xml');
         $categories = array();
         $xml = $xml->{'system-page'};
         foreach ($xml->children() as $child) {
@@ -167,7 +137,8 @@
                 }
             }
         }
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+        $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/events.xml"), 'get_event_xml_2');
         $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
         $dates = array();
         foreach($event_pages as $child ){

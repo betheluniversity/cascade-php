@@ -52,10 +52,12 @@
         global $destinationName;
         // Dynamically get the correct xml.
         if( $destinationName == "staging/public" ){
-            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
+//            $arrayOfEvents = autoCache("get_xml", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories),  'feed_events_staging');
+
         }
         else{
             $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
+//            $arrayOfEvents = autoCache("get_xml", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories), 'feed_events_ww');
         }
 
 

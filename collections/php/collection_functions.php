@@ -17,35 +17,7 @@ if( strstr(getcwd(), "staging/public") ){
 else{ // Live site.
     $destinationName = "www";
 }
-function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
-    if( strstr(getcwd(), "cms.pub") ){
-        $shuffle = true;
-    }else{
-        $shuffle = false;
-    }
-    display_x_elements_from_array($collectionArray, $numItems, $shuffle);
-    return;
-}
-function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/quotes/php/get-quotes.php";
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/quotes.xml", $categories);
-    display_x_elements_from_array($collectionArray, $numItems);
-    return;
-}
-function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
-    global $numberOfItems;
-    $numberOfItems = $numItems;
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
-    echo '<div class="grid  proof-points">';
-    display_x_elements_from_array($collectionArray, $numItems);
-    echo '</div>';
-    return;
-}
+
 // Converts and xml file to an array of profile stories
 function get_xml_collection($fileToLoad, $categories ){
     $xml = simplexml_load_file($fileToLoad);

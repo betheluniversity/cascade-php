@@ -34,7 +34,8 @@ function create_news_article_feed(){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", "");
 
-    $sortedArticles = sort_array($arrayOfArticles);
+    $sortedArticles = autoCache("sort_array", array($arrayOfArticles), 'feed_news_sorted');
+
 
     // Only grab the first X number of articles.
     global $NumArticles;
