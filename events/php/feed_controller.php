@@ -6,6 +6,11 @@
  * Time: 3:36 PM
  */
 
+// This file should be re-written to become a helper file.
+// Event feeds, news feeds, and news archives should be calling their files directly.
+// (then the files can be moved to the appropriate folders... news-feed => news folder.)
+
+
 ////////////////////////
 // The Controller
 ////////////////////////

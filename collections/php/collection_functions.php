@@ -37,15 +37,15 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
 }
 
 function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-//    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
-//    global $numberOfItems;
-//    $numberOfItems = $numItems;
-//    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-//    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
-//    echo '<div class="grid  proof-points">';
-//    display_x_elements_from_array($collectionArray, $numItems);
-//    echo '</div>';
-//    return;
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
+    global $numberOfItems;
+    $numberOfItems = $numItems;
+    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
+    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
+    echo '<div class="grid  proof-points">';
+    display_x_elements_from_array($collectionArray, $numItems);
+    echo '</div>';
+    return;
 }
 
 // Converts and xml file to an array of profile stories

@@ -10,16 +10,17 @@
 include_once 'quote-logic.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 //include_once $_SERVER["DOCUMENT_ROOT"] . "/php_helper_for_cascade.php";
+// Todo: remove $School. But you also need to remove it from the format: https://cms.bethel.edu/entity/open.act?id=e255c37e8c586513100ee2a71077c3b4&type=format
+//       Then all pages with quote carousels need to be republished.
 function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
     echo "<!-- new quotes -->";
 
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
     $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/quotes.xml");
     $quotes = $xml->xpath("//system-block");
     $matches = array();
 
     foreach($quotes as $quote_xml){
-        $quote_info = inspect_block_quotes($quote_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+        $quote_info = inspect_block_quotes($quote_xml, $Topic, $CAS, $CAPS, $GS, $SEM);
         if( $quote_info['match-dept'] || $quote_info['match-topic'] ){
             array_push($matches, $quote_info);
         }

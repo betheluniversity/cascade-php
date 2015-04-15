@@ -6,8 +6,8 @@
  * Time: 2:59 PM
  */
 
-/// This file can be removed. It has been replaced by quote-logic.php and quotes.php
-
+// This file can be removed soon. It has been replaced by quote-logic.php and quotes.php
+// Salesforce is using this format here: https://cms.bethel.edu/entity/open.act?id=7e1da6148c58651364871d5b01ae949b&type=format&
 
 
     // Globals

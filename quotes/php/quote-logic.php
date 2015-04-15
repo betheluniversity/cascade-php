@@ -7,7 +7,7 @@
  */
 
     // Gets the correct info/html of the quote
-    function inspect_block_quotes($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+    function inspect_block_quotes($xml, $Topic, $CAS, $CAPS, $GS, $SEM){
         $block_info = array(
             "display-name" => $xml->{'display-name'},
             "published" => $xml->{'last-published-on'},

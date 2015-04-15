@@ -5,6 +5,12 @@
  * Date: 7/25/14
  * Time: 1:13 PM
  */
+
+
+// This file can be removed soon. It has been replaced by proof-point-logic.php and proof-points.php
+// Salesforce is using this format here: https://cms.bethel.edu/entity/open.act?id=7e1da6148c58651364871d5b01ae949b&type=format&
+
+
 // Globals
 $PageSchool;
 $PageDepartment;

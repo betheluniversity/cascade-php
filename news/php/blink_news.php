@@ -13,6 +13,9 @@
 
 ?>
 
+// This file has been replaced by a cascade version: "/_blink-content/news-channel/blink-news-channel"
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
