@@ -175,8 +175,6 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
     if(!$data){
         error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
-//        if($xml)
-//            $data = $data->asXML();
         try{
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
         }catch(Exception $e) {
@@ -187,8 +185,6 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
     }
     error_log("End of autoCache run\n----------------------------------\n", 3, '/tmp/memcache.log');
     $cache->close();
-//    if($xml)
-//        $data = simplexml_load_string($data);
 
     return $data;
 

@@ -14,7 +14,8 @@
     {
 //        shuffle($stories);
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
-        $xml = simplexml_load_file($file);
+        $xml = autoCache("simplexml_load_file", array($file), 'profile_story_collection');
+
 
         foreach($stories as $story){
             $search = "//system-page[path='/$story']";
@@ -39,7 +40,8 @@
         }
 
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-        $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
+        $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array');
+
 
         foreach( $profileStoriesArray as $profileStory )
         {

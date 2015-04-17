@@ -30,7 +30,7 @@ function create_archive(){
 //    foreach($arrayOfArticles as $value )
 //        echo $value['html'];
 
-    $arrayOfArticles = sort_news_articles( $arrayOfArticles );
+    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), "news_archive_sorted");
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
     $twig = makeTwigEnviron('/code/events/twig');
