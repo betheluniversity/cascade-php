@@ -6,7 +6,6 @@
  * Time: 3:29 PM
  */
 
-
 if($select_option == 4){
     return;
 }else{
@@ -18,7 +17,8 @@ if($select_option == 4){
     if($results[0]){
         echo "<ul>";
         foreach($results as $result){
-            echo "<li>$result</li>";
+            if( $result != "")
+                echo "<li>$result</li>";
         }
         echo "</ul>";
     }
