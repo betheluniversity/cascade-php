@@ -197,9 +197,3 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
     return $data;
 
 }
-
-
-
-
-
-

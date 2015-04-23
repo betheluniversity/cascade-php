@@ -1,21 +1,34 @@
-<div class="grid ">
-   <div class="grid-cell  u-medium-3-12">
-        <div class="grid-pad-1x">
-            <div class="quote__avatar">
-                {{thumbURL|raw}}
+{% if thumbURL != "" %}
+    <div class="grid ">
+       <div class="grid-cell  u-medium-3-12">
+            <div class="grid-pad-1x">
+                <div class="quote__avatar">
+                    {{thumbURL|raw}}
+                </div>
+            </div>
+       </div>
+
+        <div class="grid-cell  u-medium-9-12">
+            <div class="grid-pad-1x">
+                <p class="quote__text">{{text}}</p>
+                {% if source != "" %}
+                    <cite class="quote__source">–{{source}}</cite>
+                {% endif %}
             </div>
         </div>
-   </div>
-
-    <div class="grid-cell  u-medium-9-12">
-        <div class="grid-pad-1x">
-            <p class="quote__text">{{text}}</p>
-            {% if source != "" %}
+    </div>
+{% else %}
+    <div class="grid ">
+        <div class="grid-cell  u-medium-12-12">
+            <div class="grid-pad-1x">
+                <p class="quote__text">{{text}}</p>
+                {% if source != "" %}
                 <cite class="quote__source">–{{source}}</cite>
-            {% endif %}
+                {%endif%}
+            </div>
         </div>
     </div>
-</div>
+{% endif %}
 
 
 
