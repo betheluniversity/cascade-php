@@ -87,29 +87,27 @@ function inspect_block_proof_points($xml, $PageSchool, $PageDepartment){
 function get_proof_point_html( $xml){
     $ds = $xml->{'system-data-structure'};
     $type = $ds->{'proof-point'}->{'type'};
+    $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = "";
     if( $type == "Text")
     {
         $mainText = $ds->{'proof-point'}->{'text'}->{'main-text'};
         $source = $ds->{'proof-point'}->{'text'}->{'source'};
-        $html = '<div class="proof-point  center">';
-        $html .= '<p class="h2 mb0">'.$mainText.'</p>';
-        if( $source != "")
-            $html .= '<cite class="proof-point__cite">-'.$source.'</cite>';
-        $html .= '</div>';
+
+        $html = $twig->render('get_proof_point_html_text.html', array(
+            'mainText' => $mainText,
+            'source' => $source));
     }
     elseif( $type == "Number"){
         $number = $ds->{'proof-point'}->{'number-group'}->{'number'};
         $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
         $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
-        $html = '<div class="proof-point  center">';
-        $html .= '<p class="proof-point__text">';
-        $html .= '<span class="proof-point__number">'.$number.'</span><br>';
-        $html .= $textBelow;
-        $html .= '</p>';
-        if( $source != "")
-            $html .= '<cite class="proof-point__cite">-'.$source.'</cite>';
-        $html .= '</div>';
+
+        $html = $twig->render('get_proof_point_html_text.html', array(
+            'textBelow' => $textBelow,
+            'source' => $source,
+            'number' => $number));
+
     }
     return $html;
 }

@@ -1,0 +1,37 @@
+{% if staging %}
+    {% if cms_url %}
+        <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
+            This page is a <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>TESTING</a> version.
+        </div>
+    {% else %}
+        <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
+            This page is a TESTING version.
+        </div>
+    {% endif %}
+{% endif %}
+
+{% if cms_url %}
+    <div id="cms_url" style="display:none">
+        {{cms_url|raw}}
+    </div>
+{% endif %}
+
+
+<!--original content deleted-->
+
+<!--if( $staging ){-->
+
+<!--if ($cms_url){-->
+<!--$testing = "<a href='$cms_url' style='color: white; text-decoration: underline;'>TESTING</a>";-->
+<!--}else{-->
+<!--$testing = "TESTING";-->
+<!--}-->
+
+<!--echo "<div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>This page is a $testing version.</div>";-->
+<!--}-->
+
+<!--if ($cms_url) {-->
+<!--echo '<div id="cms_url" style="display:none">';-->
+    <!--echo $cms_url;-->
+    <!--echo '</div>';-->
+<!--}-->

@@ -54,6 +54,15 @@
         echo '</div>';
     }
 
+    //twig version
+//    $twig = makeTwigEnviron('/code/feeds/twig');
+//    $twig->getExtension('core')->setTimeZone('America/Chicago');
+//    echo $twig->render('facebook_feed.html', array(
+//        'limit' => $limit,
+//        'xml' => $xml,
+//        'count' => $count
+//    ));
+
 
 ?>
 

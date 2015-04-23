@@ -122,37 +122,22 @@
         $imagePath = $ds->{'image'}->{'path'};
         $text = $ds->{'quote'};
         $source = $ds->{'source'};
+        $twig = makeTwigEnviron('/code/quotes/twig');
 
         if( $imagePath != "/" && $imagePath != "")
         {
             //render image here.
-            $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-3-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<div class="quote__avatar">';
-
-                global $destinationName;
-                $html .= thumborURL($imagePath, 200, true, false);
-                $html .= '</div></div></div>';
-
-                $html .= '<div class="grid-cell  u-medium-9-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<p class="quote__text">'.$text.'</p>';
-                if( $source != "")
-                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
-                $html .= '</div></div>';
-            $html .= '</div>';
+            global $destinationName;
+            $html = $twig->render('get-quotes.html', array(
+                'thumbURL' => thumborURL($imagePath, 200, true, false),
+                'text' => $text,
+                'source' => $source));
         }
         else
         {
-            $html = '<div class="grid ">';
-                $html .= '<div class="grid-cell  u-medium-12-12">';
-                $html .= '<div class="grid-pad-1x">';
-                $html .= '<p class="quote__text">'.$text.'</p>';
-                if( $source != "")
-                    $html .= '<cite class="quote__source">–'.$source.'</cite>';
-                $html .= '</div></div>';
-            $html .= '</div>';
+            $html = $twig->render('get-quotes2.html', array(
+                'text' => $text,
+                'source' => $source));
         }
 
         return $html;

@@ -34,15 +34,19 @@
 
         $numProofPoints = count($proofPointsToDisplay);
 
+<<<<<<< HEAD
         // Output structure
         gridOpen("proof-points proof-point-collection");
+=======
+        //Output structure
+>>>>>>> twig
 
+        $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
-            gridCellOpen("medium 1-$numProofPoints animate animate--fadeIn");
-            echo $finalPP['html'];
-            gridCellClose();
+           $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP['html']);
         }
-        gridClose();
+        echo createGrid("proof-points proof-point-collection test", $toReturn);
+
     }
 
     // Returns the html of the proof point
@@ -71,38 +75,26 @@ function number_pp_html($ds){
     $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
 
-    $html = '<div class="proof-point  center">';
-    $html .= '<p class="proof-point__text">';
+    $twig = makeTwigEnviron('/code/proof-points/twig');
+    $html = $twig->render('number_pp_html.html', array(
+        'textBefore' => $textBefore,
+        'textAfter' => $textAfter,
+        'textBelow' => $textBelow,
+        'source' => $source,
+        'number' => $number));
 
-    $html .= '<span class="proof-point__number">';
-
-    if($textBefore){
-        $html .= $textBefore;
-    }
-    //UPDATE THIS BEFORE RESPONSIVE IS LIVE
-    $html .= "<span class='odometer' data-final-number='$number'>0</span>";
-    if($textAfter){
-        $html .= $textAfter;
-    }
-
-    $html .= '</span><br>';
-
-    $html .= $textBelow;
-    $html .= '</p>';
-    if ($source != "")
-        $html .= '<cite class="proof-point__cite">-' . $source . '</cite>';
-    $html .= '</div>';
     return $html;
 }
 
 function text_pp_html($ds){
     $mainText = $ds->{'proof-point'}->{'text'}->{'main-text'};
     $source = $ds->{'proof-point'}->{'text'}->{'source'};
-    $html = '<div class="proof-point  center">';
-    $html .= '<p class="h2 mb0">' . $mainText . '</p>';
-    if ($source != "")
-        $html .= '<cite class="proof-point__cite">-' . $source . '</cite>';
-    $html .= '</div>';
+
+    $twig = makeTwigEnviron('/code/proof-points/twig');
+    $html = $twig->render('text_pp_html.html', array(
+        'mainText' => $mainText,
+        'source' => $source));
+
     return $html;
 }
 

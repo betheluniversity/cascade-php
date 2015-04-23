@@ -1,0 +1,184 @@
+
+<!--/* This starts at the first day of the month on the appropriate day of the week*/-->
+{% for list_day in 1..days_in_month %}
+    <li class="{{classes.days_in_this_week}}event">
+        <!--/* add in the day number */-->
+        <span name="{{list_day}}">{{list_day}}</span>
+        {% set date %}
+            {{year}}-{{month}}-{{list_day}}
+        {% endset %}
+        {% set key = date|date("Y-m-d")  %}
+        <!--// Probably seperate this out.-->
+        {% if attribute(xml, key) is defined %}
+            <dl>
+                {% for event in attribute(xml, key) %}
+                    {% set start = event.specific_start %}
+                    {% set end = event.specific_end %}
+                    {% set all_day = event.specific_all_day %}
+                    {% if event.published %}
+                        <div class="vevent">
+                            <dt class="summary">
+                                {% if event.external-link != "" %}
+                                    <a href="{{event.external-link}}">{{event.title}}</a>
+                                {% else %}
+                                    <a href="//www.bethel.edu{{event.path}}">{{event.title}}</a>
+                                {% endif %}
+                            </dt>
+                            <dd>
+                                <!--//Check really specifically because $all_day is an XML object still.-->
+                                <!--//So if($all_day) is always true-->
+                                {% if all_day == true %}
+                                    {% set start = '' %}
+                                    {% set end = '' %}
+                                {% else %}
+                                    {% set start = start/1000 %}
+                                    {% set start = start|date("g:i a") %}
+                                    {% if start|slice(-6, 3) == ':00' %}
+                                        {% set start = start|date("g a") %}
+                                    {% endif %}
+                                    {% set end = end/1000 %}
+                                    {% set end = end|date("g:i a") %}
+                                    {% if end|slice(-6, 3) == ':00' %}
+                                        {% set end = end|date("g a") %}
+                                    {% endif %}
+                                <!--//test-->
+                                {% endif %}
+                                <span class="event-description">
+                                    {% if event.description %}
+                                        {{event.description}}</br>
+                                    {% endif %}
+                                    {% if start and end %}
+                                        {% if start == end %}
+                                            {{start}}<br>
+                                        {% else %}
+                                            {{start}}-{{end}}<br>
+                                        {% endif %}
+                                    {% endif %}
+                                    <span class="location">{{event.location}}</span>
+                                </span>
+                                <ul class="categories" style="display:none">
+                                    {% for md in event.md %}
+                                        <li class="category" data-category="{{md}}">{{md}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                      </div>
+                    {% endif %}
+                {% endfor %}
+            </dl>
+        {% endif %}
+    </li>
+    <!--//Create a new row if this week is full-->
+    {% if running_day == 6 %}
+        </ul>
+        {% if day_counter+1 != days_in_month %}
+            <ul class="calendar-row">
+        {% endif %}
+        {% set running_day = -1 %}
+        {% set days_in_this_week = 0 %}
+    {% endif %}
+    {% set days_in_this_week = days_in_this_week + 1 %}
+    {% set running_day = running_day + 1 %}
+    {% set day_counter = day_counter + 1 %}
+{% endfor %}
+<!--// keep track of this separate so it doesn't break the for loop-->
+{% set day_of_week = days_in_this_week %}
+{% if days_in_this_week < 8 and days_in_this_week != 1 %}
+    {% for next_month_days in 1..(8 - days_in_this_week) %}
+        <li class="{{classes.day_of_week}}event not-current"><span>{{next_month_days}}</span></li>
+    {% endfor %}
+{% endif %}
+</ul>
+
+<!--deleted original content-->
+<!--/* This starts at the first day of the month on the appropriate day of the week*/-->
+<!--//        for($list_day = 1; $list_day <= $days_in_month; $list_day++){-->
+<!--//            $calendar.= '<li class="' . $classes[$days_in_this_week] . ' event">';-->
+    <!--//            /* add in the day number */-->
+    <!--//            $calendar.= '<span name="' . $list_day .  '">'. $list_day . '</span>';-->
+    <!--//            $date = new DateTime($year . '-' . $month . "-" . $list_day);-->
+    <!--//            $key = $date->format('Y-m-d');-->
+    <!--//            // Probably seperate this out.-->
+    <!--//            if (isset($xml[$key])){-->
+    <!--//                $calendar .= '<dl>';-->
+        <!--//                foreach($xml[$key] as $event){-->
+        <!--//                    $start = $event['specific_start'];-->
+        <!--//                    $end = $event['specific_end'];-->
+        <!--//                    $all_day = $event['specific_all_day'];-->
+        <!--//                    if($event['published']){-->
+        <!--//                        $calendar .= '<div class="vevent">';-->
+            <!--//                        $calendar .= '<dt class="summary">';-->
+                <!--//                        if( $event['external-link'] != ""){-->
+                <!--//                            $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';-->
+                <!--//                        }-->
+                <!--//                        else{-->
+                <!--//                            $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';-->
+                <!--//                        }-->
+                <!--//                        $calendar .= '</dt>';-->
+            <!--//                        $calendar .= '<dd>';-->
+                <!--//                        //Check really specifically because $all_day is an XML object still.-->
+                <!--//                        //So if($all_day) is always true-->
+                <!--//                        if($all_day == true){-->
+                <!--//                            $start = '';-->
+                <!--//                            $end = '';-->
+                <!--//                        }else{-->
+                <!--//                            $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));-->
+                <!--//                            $start_date->setTimestamp($start / 1000);-->
+                <!--//                            $start = $start_date->format("g:i a");-->
+                <!--//                            if (substr($start, -6, 3) == ':00'){-->
+                <!--//                                $start = $start_date->format("g a");-->
+                <!--//                            }-->
+                <!--//                            $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));-->
+                <!--//                            $end_date->setTimestamp($end / 1000);-->
+                <!--//                            $end = $end_date->format("g:i a");-->
+                <!--//                            if (substr($end, -6, 3) == ':00'){-->
+                <!--//                                $end = $end_date->format("g a");-->
+                <!--//                            }-->
+                <!--//                            //test-->
+                <!--//                        }-->
+                <!--//                        $calendar .= '<span class="event-description">';-->
+<!--//                        if ($event['description']){-->
+<!--//                            $calendar .= $event['description']. '</br> ';-->
+<!--//                        }-->
+<!--//                        if ($start && $end){-->
+<!--//                            if ($start == $end)-->
+<!--//                                $calendar .= $start . '<br>';-->
+<!--//                            else-->
+<!--//                                $calendar .= $start . '-' . $end . '<br>';-->
+<!--//                        }-->
+<!--//                        $calendar .= '<span class="location">' . $event['location'] . '</span>';-->
+<!--//                        $calendar .= '</span>';-->
+                <!--//                        $calendar .= '<ul class="categories" style="display:none">';-->
+                    <!--//                        foreach($event['md'] as $md){-->
+                    <!--//                            $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';-->
+                    <!--//                        }-->
+                    <!--//                        $calendar .= '</ul>';-->
+                <!--//                        $calendar .= '</dd>';-->
+            <!--//                        $calendar .= '</div>';-->
+        <!--//                    }-->
+        <!--//                }-->
+        <!--//                $calendar .= '</dl>';-->
+    <!--//            }-->
+    <!--//            /** QUERY THE DATABASE FOR AN ENulY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/-->
+    <!--//            // $calendar.= sul_repeat('<p> </p>',2);-->
+    <!--//            $calendar.= '</li>';-->
+<!--//            //Create a new row if this week is full-->
+<!--//            if($running_day == 6){-->
+<!--//                $calendar.= '</ul>';-->
+<!--//                if(($day_counter+1) != $days_in_month){-->
+<!--//                    $calendar.= '<ul class="calendar-row">';-->
+    <!--//                }-->
+    <!--//                $running_day = -1;-->
+    <!--//                $days_in_this_week = 0;-->
+    <!--//            }-->
+    <!--//            $days_in_this_week++; $running_day++; $day_counter++;-->
+    <!--//        }-->
+    <!--//        // keep track of this separate so it doesn't break the for loop-->
+    <!--//        $day_of_week = $days_in_this_week;-->
+    <!--//        if($days_in_this_week < 8 && $days_in_this_week != 1){-->
+    <!--//            for($x = 1; $x <= (8 - $days_in_this_week); $x++){-->
+    <!--//                $calendar.= '<li class="' . $classes[$day_of_week] . ' event not-current"><span>' . ($list_day++  - $days_in_month). '</span></li>';-->
+    <!--//            }-->
+    <!--//        }-->
+    <!--//        /* final row */-->
+    <!--//        $calendar.= '</ul>';-->

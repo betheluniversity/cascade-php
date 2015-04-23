@@ -1,0 +1,17 @@
+<!--requires pos, url, name variables-->
+
+{% if pos != false %}
+   <li><a href='{{url|raw}}' class='active'>{{name|raw}}</a></li>
+{% else %}
+    <li><a href='{{url|raw}}' class=''>{{name|raw}}</a></li>
+{% endif %}
+
+
+
+<!--ORIGINAL CONTENT-->
+
+<!--//    if($pos !== false){-->
+<!--//        echo "<li><a href='$url' class='active'>$name</a></li>";-->
+<!--//    }else{-->
+<!--//        echo "<li><a href='$url' class=''>$name</a></li>";-->
+<!--//    }-->

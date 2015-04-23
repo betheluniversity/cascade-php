@@ -1,5 +1,8 @@
 <?php
 
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
+    require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
+
     error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
     $total_time_start = microtime(true);
     $month = $_GET['month'];
@@ -8,21 +11,8 @@
         $month = date('n');
         $year = date('Y');
     }
-    $cache_name = "$month-$year";
-    $cache = new Memcache;
-    $cache->addServer('localhost', 11211);
-    $data = $cache->get($cache_name);
-    if(!$data){
-        error_log("Full Data Array Memcache miss\n", 3, '/tmp/calendar.log');
-        $data = build_calendar_data($month, $year);
-        $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, 300);
-        error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-    }else{
-        error_log("Full Data Array Memcache hit\n", 3, '/tmp/calendar.log');
-    }
-    $cache->close();
-    $total_run_time = microtime(true) - $total_time_start;
-    error_log("Full Run in $total_run_time\n", 3, '/tmp/calendar.log');
+    $data = autoCache("build_calendar_data", array($month, $year));
+
     echo $data;
 
     function build_calendar_data($month, $year){
@@ -80,22 +70,7 @@
 
         $calendar = '';
 
-        $cache_time_start = microtime(true);
-        $cache_name = 'CALENDAR_XML';
-        $cache = new Memcache;
-        $cache->addServer('localhost', 11211);
-        $xml = $cache->get($cache_name);
-        if(!$xml){
-            error_log("Memcache miss\n", 3, '/tmp/calendar.log');
-            $xml = get_event_xml();
-            $cache->set($cache_name, $xml, MEMCACHE_COMPRESSED, 300);
-            error_log("Cache Status: $status", 3, '/tmp/calendar.log');
-        }else{
-            error_log("Memcache hit\n", 3, '/tmp/calendar.log');
-        }
-        $cache->close();
-        $get_xml_total_time = microtime(time) - $get_xml_start_time;
-        error_log("Retrieve XML in $get_xml_total_time seconds\n", 3, '/tmp/calendar.log');
+        $xml = autoCache("get_event_xml", array(), 'CALENDAR_XML');
 
         $after_xml_time_start = microtime(true);
         $classes = array(
@@ -115,105 +90,27 @@
         /* row for week one */
         $calendar.= '<ul class="calendar-row">';
         /* print previous month days until the first of the current month */
-        for($x = 0; $x < $running_day; $x++){
+        for($x = 0; $x < $running_day; $x++) {
             //Go in the past $x many days in the past
             $back = ($running_day - $x);
             $back = '-' . ($back) . ' days';
             $last_month_date = date('j', strtotime($back, strtotime($year . '-' . $month . '-01')));
-            $calendar.= '<li class="'. $classes[$days_in_this_week] . ' event not-current"><span>' . $last_month_date . '</span></li>';
+            $calendar .= '<li class="' . $classes[$days_in_this_week] . ' event not-current"><span>' . $last_month_date . '</span></li>';
             $days_in_this_week++;
         }
-        /* This starts at the first day of the month on the appropriate day of the week*/
-        for($list_day = 1; $list_day <= $days_in_month; $list_day++){
-            $calendar.= '<li class="' . $classes[$days_in_this_week] . ' event">';
-            /* add in the day number */
-            $calendar.= '<span name="' . $list_day .  '">'. $list_day . '</span>';
-            $date = new DateTime($year . '-' . $month . "-" . $list_day);
-            $key = $date->format('Y-m-d');
-            // Probably seperate this out.
-            if (isset($xml[$key])){
-                $calendar .= '<dl>';
-                foreach($xml[$key] as $event){
-                    $start = $event['specific_start'];
-                    $end = $event['specific_end'];
-                    $all_day = $event['specific_all_day'];
-                    if($event['published']){
-                        $calendar .= '<div class="vevent">';
-                        $calendar .= '<dt class="summary">';
-                        if( $event['external-link'] != ""){
-                            $calendar .= '<a href="' . $event['external-link'] . '">' . $event['title'] . '</a>';
-                        }
-                        else{
-                            $calendar .= '<a href="//www.bethel.edu' . $event['path'] . '">' . $event['title'] . '</a>';
-                        }
-                        $calendar .= '</dt>';
-                        $calendar .= '<dd>';
-                        //Check really specifically because $all_day is an XML object still.
-                        //So if($all_day) is always true
-                        if($all_day == true){
-                            $start = '';
-                            $end = '';
-                        }else{
-                            $start_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                            $start_date->setTimestamp($start / 1000);
-                            $start = $start_date->format("g:i a");
-                            if (substr($start, -6, 3) == ':00'){
-                                $start = $start_date->format("g a");
-                            }
-                            $end_date = $date = new DateTime('now', new DateTimeZone('America/Chicago'));
-                            $end_date->setTimestamp($end / 1000);
-                            $end = $end_date->format("g:i a");
-                            if (substr($end, -6, 3) == ':00'){
-                                $end = $end_date->format("g a");
-                            }
-                            //test
-                        }
-                        $calendar .= '<span class="event-description">';
-                        if ($event['description']){
-                            $calendar .= $event['description']. '</br> ';
-                        }
-                        if ($start && $end){
-                            if ($start == $end)
-                                $calendar .= $start . '<br>';
-                            else
-                                $calendar .= $start . '-' . $end . '<br>';
-                        }
-                        $calendar .= '<span class="location">' . $event['location'] . '</span>';
-                        $calendar .= '</span>';
-                        $calendar .= '<ul class="categories" style="display:none">';
-                        foreach($event['md'] as $md){
-                            $calendar .= '<li class="category" data-category="' . $md  . '">' . $md . '</li>';
-                        }
-                        $calendar .= '</ul>';
-                        $calendar .= '</dd>';
-                        $calendar .= '</div>';
-                    }
-                }
-                $calendar .= '</dl>';
-            }
-            /** QUERY THE DATABASE FOR AN ENulY FOR THIS DAY !!  IF MATCHES FOUND, PRINT THEM !! **/
-            // $calendar.= sul_repeat('<p> </p>',2);
-            $calendar.= '</li>';
-            //Create a new row if this week is full
-            if($running_day == 6){
-                $calendar.= '</ul>';
-                if(($day_counter+1) != $days_in_month){
-                    $calendar.= '<ul class="calendar-row">';
-                }
-                $running_day = -1;
-                $days_in_this_week = 0;
-            }
-            $days_in_this_week++; $running_day++; $day_counter++;
-        }
-        // keep track of this separate so it doesn't break the for loop
-        $day_of_week = $days_in_this_week;
-        if($days_in_this_week < 8 && $days_in_this_week != 1){
-            for($x = 1; $x <= (8 - $days_in_this_week); $x++){
-                $calendar.= '<li class="' . $classes[$day_of_week] . ' event not-current"><span>' . ($list_day++  - $days_in_month). '</span></li>';
-            }
-        }
-        /* final row */
-        $calendar.= '</ul>';
+
+        $twig = makeTwigEnviron('/code/events/twig');
+        $twig->getExtension('core')->setTimezone('America/Chicago');
+        $calendar .= $twig->render('calendar_rest.html',array(
+            'running_day' => $running_day,
+            'days_in_month' => $days_in_month,
+            'days_in_this_week' => $days_in_this_week,
+            'day_counter' => $day_counter,
+            'classes' => $classes,
+            'xml' => $xml,
+            'year' => $year,
+            'month' => $month));
+
         /* all done, return result */
         $draw_calendar_time_end = microtime(true);
 
@@ -227,7 +124,8 @@
     function get_event_xml(){
 
         ##Create a list of categories the calendar uses
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
+        $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml"), 'get_event_xml');
         $categories = array();
         $xml = $xml->{'system-page'};
         foreach ($xml->children() as $child) {
@@ -239,7 +137,8 @@
                 }
             }
         }
-        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
+        $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/events.xml"), 'get_event_xml_2');
         $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
         $dates = array();
         foreach($event_pages as $child ){

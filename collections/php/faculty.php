@@ -13,12 +13,25 @@ function create_faculty_carousel($categories){
 
 
     $faculty_file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/faculty-bios.xml";
-    $xml = simplexml_load_file($faculty_file);
+    $xml = autoCache("simplexml_load_file", array($faculty_file), 'faculty_carousel_xml');
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
-    $bios = find_matching_bios($faculty_pages, $categories);
 
+    $bios = find_matching_bios($faculty_pages, $categories);
+    $twig = makeTwigEnviron('/code/collections/twig');
+
+
+<<<<<<< HEAD
     carousel_open("carousel--quote");
+=======
+//    echo "<pre>";
+//    print_r($faculty_pages[0]);
+//    echo "</pre>";
+
+
+//    carousel_open("carousel--quote");
+   $carousel_items = "";
+>>>>>>> twig
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
@@ -26,8 +39,16 @@ function create_faculty_carousel($categories){
         $title = $ds->{'job-title'};
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
+        $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
 
+        $html = $twig->render('faculty.html', array(
+            'first' => $first,
+            'last' => $last,
+            'title' => $title,
+            'path' => $path,
+            'thumbURL' => $thumbURL));
 
+<<<<<<< HEAD
         $thumbor_url = thumborURL($image, '150', $lazy=true, $print=false);
 
         $html =  '<div class="pa1  quote  grayLighter"><div class="grid "><div class="grid-cell  u-medium-3-12"><div class="grid-pad-1x"><div class="quote__avatar">';
@@ -37,10 +58,13 @@ function create_faculty_carousel($categories){
         $html .= "<h2><a href='$path'>$first $last</a></h2>";
         $html .= "<div>$title</div>";
         $html .= "</div></div></div></div>";
+=======
+        $carousel_items .= carousel_item($html);
+>>>>>>> twig
 
-        carousel_item($html);
     }
-    carousel_close();
+    carousel_create("carousel--quote", $carousel_items);
+
 
     // todo: Display 7 bios that match one of the values in $categories and have the following info:
     //   -  name, job title, image

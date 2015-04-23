@@ -1,0 +1,21 @@
+<!--Needs link and Content Variables-->
+
+<div class="slick-item">
+    {% if link %}
+        <a href='{{link}}'>{{content|raw}}</a>
+    {% else %}
+        {{content|raw}}
+    {% endif %}
+ </div>
+
+
+
+
+<!--Original Content Deleted-->
+    <!--echo '<div class="slick-item">';-->
+        <!--if($link){-->
+           <!--echo "<a href='$link'>$content</a>";-->
+       <!--}else{-->
+            <!--echo $content;-->
+        <!--}-->
+        <!--echo '</div>';-->

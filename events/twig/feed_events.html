@@ -1,0 +1,80 @@
+
+<div class="mt1 mb2 pa1">
+    <div class="grid left false">
+        <div class="grid-cell  u-medium-1-2">
+            <div class="grid-pad-1x">
+                {{thumborURL|raw}}
+            </div>
+        </div>
+        <div class="grid-cell  u-medium-1-2">
+            <div class="grid-pad-1x">
+
+                {% if event.title != "" %}
+                    <h2 class="h5"><a href="{{event|convert_path_to_link}}">{{event.title}}</a></h2>
+                {% endif %}
+
+                {% if featuredEventOptions.2 == "No" %}
+                    {% if dates|length > 1 %}
+                        {% set start_date = firstDate.start-date / 1000 %}
+                        {% set start_date = start_date|date("l, F d") %}
+                        {% set end_date = firstDate.end-date / 1000 %}
+                        {% set end_date = end_date|date("l, F d") %}
+                        {% set formattedDate = start_date ~ "-" ~ end_date;
+                        <p>{{formattedDate}}</p>
+                    {% else %}
+                        {% set formattedDate = firstDate|format_featured_event_date %}
+                        <p>{{formattedDate}}</p>}}
+                    {% endif %}
+                {% endif %}
+
+                {% if featuredEventOptions.1 != "" %}
+                    <p>{{featuredEventOptions.1}}</p>
+                {% elseif( event.description != "")
+                    <p>{{event.description}}</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Original Content Deleted-->
+
+<!--$html = '<div class="mt1 mb2 pa1">';-->
+    <!--$html .= '<div class="grid left false">';-->
+        <!--$html .= '<div class="grid-cell  u-medium-1-2">';-->
+            <!--$html .= '<div class="grid-pad-1x">';-->
+
+                <!--global $destinationName;-->
+                <!--$html .= thumborURL($event['image'], 400, false, false);-->
+
+                <!--$html .= '</div>';-->
+            <!--$html .= '</div>';-->
+        <!--$html .= '<div class="grid-cell  u-medium-1-2">';-->
+            <!--$html .= '<div class="grid-pad-1x">';-->
+
+                <!--if( $event['title'] != "")-->
+                <!--$html .= '<h2 class="h5"><a href="'.convert_path_to_link($event).'">'.$event['title'].'</a></h2>';-->
+
+                <!--if( $featuredEventOptions[2] == "No"){-->
+                <!--if( sizeof($dates) > 1)-->
+                <!--{-->
+                <!--$formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );-->
+                <!--$html .= "<p>".$formattedDate."</p>";-->
+                <!--}-->
+                <!--else{-->
+                <!--$formattedDate = format_featured_event_date($firstDate);-->
+                <!--$html .= "<p>".$formattedDate."</p>";-->
+                <!--}-->
+                <!--}-->
+
+                <!--if( $featuredEventOptions[1] != "" )-->
+                <!--$html .= '<p>'.$featuredEventOptions[1].'</p>';-->
+                <!--elseif( $event['description'] != "")-->
+                <!--$html .= '<p>'.$event['description'].'</p>';-->
+
+                <!--$html .= '</div>';-->
+            <!--$html .= '</div>';-->
+        <!--$html .= '</div>';-->
+    <!--$html .= '</div>';-->

@@ -1,0 +1,55 @@
+<!--Needs yearArray-->
+<div class="archive-year year-{{yearArray['01'][0]['year']}}">
+    {% for i in range(12,0) %}
+        {% if i < 10 %}
+            <!--newi is the new i value. If i is less than 10, it needs to have a '0' appended to it.-->
+            {% set newi = "0" ~ i %}
+        {% else %}
+            {% set newi = i %}
+        {% endif %}
+
+        {% if yearArray[newi]|length > 0 %}
+            <a name="{{yearArray[newi][0]['month-name']|lower}}"></a>
+            <h4>{{yearArray[newi][0]['month-name']}}</h4>
+
+            <ul style="list-style:none outside none;padding-left:15px;">
+
+                {% for article in yearArray[newi] %}
+                    {{article['html']|raw}}
+                {% endfor %}
+
+            </ul>
+        {% endif %}
+    {% endfor%}
+</div>
+
+
+
+<!--CONTENT THAT WAS REPLACED-->
+
+<!--echo "<div class='archive-year year-" . $yearArray['01'][0]['year'] . "' >";-->
+<!--//        //$yearArray['01'][0]['year']-->
+<!--//        for( $i = 12; $i >= 0  ;$i--)-->
+<!--//        {-->
+<!--//            if( $i < 10 )-->
+<!--//            {-->
+<!--//                //todo what is a newi?-->
+<!--//                //newi is the new i value. If i is less than 10, it needs to have a '0' appended to it.-->
+<!--//                $newi = '0'.$i;-->
+<!--//            }-->
+<!--//            else-->
+<!--//                $newi = $i;-->
+<!--//            if( sizeof($yearArray[$newi]) > 0)-->
+<!--//            {-->
+<!--//                echo "<a name='" . strtolower($yearArray[$newi][0]['month-name']) . "'></a>";-->
+<!--//                echo "<h4>" . $yearArray[$newi][0]['month-name'] . "</h4>";-->
+<!--//-->
+<!--//                echo '<ul style="list-style:none outside none;padding-left:15px;">';-->
+    <!--//                foreach( $yearArray[$newi] as $article)-->
+    <!--//                {-->
+    <!--//                    echo $article['html'];-->
+    <!--//                }-->
+    <!--//                echo "</ul>";-->
+<!--//            }-->
+<!--//        }-->
+<!--//        echo "</div>";-->

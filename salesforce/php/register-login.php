@@ -8,8 +8,7 @@
 
 session_start();
 $username = $_SESSION['username'];
-$password = $_SESSION['password']
-
+$password = $_SESSION['password'];
 
 ?>
 <form method="post" style="display:none" id="register-login" action="https://auth.xp.bethel.edu/cas/login?service=https://auth.xp.bethel.edu/auth/sf-portal-login.cgi">
@@ -17,6 +16,12 @@ $password = $_SESSION['password']
     <?php
         echo "<input type='text' name='username' id='username' value='$username'/>";
         echo "<input type='password' name='password' id='password' value='$password'/>";
+
+        //twig version
+//        $twig = makeTwigEnviron('/code/salesforce/twig');
+//        echo $twig->render('faculty.html', array(
+//            'username' =>$username,
+//            'password' => $password));
     ?>
 </form>
 

@@ -34,10 +34,13 @@ function create_news_article_feed(){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", "");
 
-    $sortedArticles = sort_array($arrayOfArticles);
+
+    global $NumArticles;
+    $sortedArticles = autoCache("sort_array", array($arrayOfArticles), 'feed_news_sorted_tes'.$NumArticles);
+
+
 
     // Only grab the first X number of articles.
-    global $NumArticles;
     $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
 
     $articleArray = array();
@@ -144,31 +147,21 @@ function get_news_article_html( $article, $xml ){
 
     $date = $ds->{'publish-date'};
 
-    $html = '<div class="news__item" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">';
-        $html .= '<div class="news__image">';
-
-            global $destinationName;
-            $html .= '<a href="http://'.$destinationName.'.bethel.edu'.$path.'">';
-            $html .= thumborURL($imagePath, 215, $lazy=false, $print=false);
-            $html .= '</a>';
-        $html .= '</div>';
-
-        $html .= '<div class="news__content">';
-        $html .= '<p class="news__headline"><a href="http://'.$destinationName.'.bethel.edu'.$path.'"><span itemprop="headline">'.$article['title'].'</span></a></p>';
-
-        if( $date != "" && $date != "null" )
-        {
-            $formattedDate = format_featured_date_news_article($date);
-            $html .= "<p>".$formattedDate."</p>";
-        }
-        global $DisplayTeaser;
-        if( $DisplayTeaser == "Yes" )
-        {
-            $html .= '<p>'.$article['teaser'].'</p>';
-        }
-
-        $html .= '</div>';
-    $html .= '</div>';
+    global $DisplayTeaser;
+    global $destinationName;
+    if( $date != "" && $date != "null" )
+    {
+        $formattedDate = format_featured_date_news_article($date);
+    }
+    $twig = makeTwigEnviron('/code/events/twig');
+    $html = $twig->render('feed_news_article.html', array(
+       'DisplayTeaser' => $DisplayTeaser,
+        'destinationName' => $destinationName,
+        'date' => $date,
+        'formattedDate' => $formattedDate,
+        'article' => $article,
+        'path' => $path,
+        'thumborURL' => thumborURL($imagePath, 215, $lazy=false, $print=false)));
 
     return $html;
 }
@@ -251,6 +244,22 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '</div>';
         $html .= '</div></span>';
         $html .= '</div>';
+
+        //twig version todo test and delete original
+//        global $destinationName;
+//        if( $date != "" && $date != "null" )
+//        {
+//            $formattedDate = format_featured_date_news_article($date);
+//        }
+//        $twig = makeTwigEnviron('/code/events/twig');
+//        $html = $twig->render('feed_news_article.html', array(
+//            'destinationName' => $destinationName,
+//            'date' => $date,
+//            'formattedDate' => $formattedDate,
+//            'page_info' => $page_info,
+//            'path' => $path,
+//            'options' => $options,
+//            'thumborURL' => thumborURL($imagePath, "400")));
 
     }
     else

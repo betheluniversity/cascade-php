@@ -1,0 +1,31 @@
+<!--NEEDS xml, limit, count -->
+<div class="facebook-updates">
+    {% set logo = xml.logo %}
+
+    {% for entry in xml.entry if count != limit %}
+
+        {% set message = entry.message %}
+        {% set link = entry.link.href %}
+        {% set title = entry.content %}
+        {% set title = title|split('<br/>') %}
+        {% set title = title[0] %}
+        {% set date = entry.published %}
+        {% set author = entry.author.name %}
+
+        {% set count = count + 1 %}
+        <div class="media mb2">
+            <a class='img' href='{{link}}'><img src='{{logo}}'></a>
+            <div class="bd">
+                <p>
+                    {{title}}
+                </p>
+                <p class="date">
+                     {{date|date("F j, Y | g:i a")}}
+                </p>
+                <a href='{{link}}'>
+                    {{author}}
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>

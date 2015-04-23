@@ -7,9 +7,8 @@
  */
 
 function pre($content){
-    echo "<pre>";
-    echo $content;
-    echo "</pre>";
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('pre.html', array('content' => $content));
 }
 
 function carousel_open($class = ""){
@@ -21,30 +20,41 @@ function carousel_close(){
     echo "</div>";
 }
 
-function carousel_item($content, $link = null){
-    echo '<div class="slick-item">';
-    if($link){
-        echo "<a href='$link'>$content</a>";
+function carousel_create($class = "", $content)
+{
+   $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('carousel.html', array(
+        'class' => $class,
+        'content' => $content));
+}
+
+// $print is to support image banks not echo-ing the carousel_item call.
+function carousel_item($content, $link = null, $print=true){
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $render_content = $twig->render('carousel_item.html', array(
+        'link' => $link,
+        'content' => $content
+    ));
+
+    if($print){
+        echo $render_content;
     }else{
-        echo $content;
+        return $render_content;
     }
-    echo '</div>';
+
+
 }
 
 function srcset($end_path, $print=true){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
-    $rand = rand(1,4);
-    $content = "<img srcset='
-                //cdn$rand.bethel.edu/resize/unsafe/1400x0/smart/$end_path 1400w,
-                //cdn$rand.bethel.edu/resize/unsafe/1200x0/smart/$end_path 1200w,
-                //cdn$rand.bethel.edu/resize/unsafe/1000x0/smart/$end_path 1000w,
-                //cdn$rand.bethel.edu/resize/unsafe/800x0/smart/$end_path 800w,
-                //cdn$rand.bethel.edu/resize/unsafe/600x0/smart/$end_path 600w,
-                //cdn$rand.bethel.edu/resize/unsafe/400x0/smart/$end_path 400w,
-                //cdn$rand.bethel.edu/resize/unsafe/200x0/smart/$end_path 200w'
-                src='//cdn$rand.bethel.edu/resize/unsafe/320x0/smart/$end_path'/>";
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $content = $twig->render('srcset.html', array(
+        'end_path' => $end_path));
+
     if($print){
         echo $content;
     }else{
@@ -55,21 +65,18 @@ function srcset($end_path, $print=true){
 
 
 function thumborURL($end_path, $width, $lazy=false, $print=true){
-    if( strpos($end_path,"www.bethel.edu") == false ) {
-        $end_path = "https://www.bethel.edu/$end_path";
-    }
-    $rand = rand(1,4);
-    $src = "'//cdn$rand.bethel.edu/resize/unsafe/". $width. "x0/smart/$end_path'";
-    if($lazy){
-        $content = "<img data-lazy=$src/>";
-    }else{
-        $content = "<img src=$src/>";
-    }
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $html = $twig->render('thumorURL.html', array(
+        'end_path' => $end_path,
+        'width' => $width,
+        'lazy' => $lazy
+    ));
 
     if($print){
-        echo $content;
+        echo $html;
     }else{
-        return $content;
+        return $html;
     }
 }
 
@@ -87,6 +94,24 @@ function xml2array($xml){
     return $arr;
 }
 
+
+
+function createGrid($classes, $content){
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('grid.html', array(
+        'classes' => $classes,
+        'content' => $content));
+
+}
+
+function gridCellOpen($classes){
+    echo "<div class='grid-cell $classes'>";
+}
+
+function gridCellClose(){
+    echo "</div>";
+}
+
 //classes is a string
 function gridOpen($classes){
     echo "<div class='grid $classes'>";
@@ -96,14 +121,13 @@ function gridClose(){
     echo "</div>";
 }
 
-//classes is a string
-function gridCellOpen($classes){
-    echo "<div class='grid-cell $classes'>";
+function createGridCell($classes, $content){
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('gridCell.html', array(
+        'classes' => $classes,
+        'content' => $content));
 }
 
-function gridCellClose(){
-    echo "</div>";
-}
 
 function checkInPath($url, $name){
     $path = $_SERVER['REQUEST_URI'];
@@ -112,27 +136,75 @@ function checkInPath($url, $name){
     if($pos && $name == "Home"){
         $pos = $url == $_SERVER['REQUEST_URI'];
     }
-    if($pos !== false){
-        echo "<li><a href='$url' class='active'>$name</a></li>";
-    }else{
-        echo "<li><a href='$url' class=''>$name</a></li>";
-    }
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('checkInPath.html', array(
+        'pos' => $pos,
+        'name' => $name,
+        'url' => $url));
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
-    echo '<li>';
-    if($classes){
-        if($pageStartsWith == $test_starts_with){
-            echo "<a class='$classes active' href='$path'>$label</a>";
-        }else{
-            echo "<a class='$classes' href='$path'>$label</a>";
-        }
-    }else{
-        if($pageStartsWith == $test_starts_with){
-            echo "<a class='active' href='$path'>$label</a>";
-        }else{
-            echo "<a href='$path'>$label</a>";
+
+    //twig version
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('navListItem.html', array(
+       'pageStartsWith' => $pageStartsWith,
+        'test_starts_with' => $test_starts_with,
+        'path' => $path,
+        'label' => $label,
+        'classes' => $classes));
+}
+
+function makeTwigEnviron($path){
+
+    $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . $path);
+    $twig = new Twig_Environment($loader);
+    return $twig;
+
+}
+
+function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
+
+    //if no cache_name is passed in it defaults to all inputs strung together with -
+    if(!$cache_name) {
+        $cache_name = $inputs[0];
+        reset($inputs);
+        while (next($inputs) !== FALSE) {
+            $cache_name .= "-" . current($inputs);
         }
     }
+
+    $cache = new Memcache;
+    $cache->connect('localhost', 11211);
+    $data = $cache->get($cache_name);
+    error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
+    error_log("$func function being used and the cache_name is $cache_name\n", 3, '/tmp/memcache.log');
+    if(!$data){
+        error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
+        $data = call_user_func_array($func, $inputs);
+        try{
+            $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
+        }catch(Exception $e) {
+            error_log("Error\n----------------------------------\n" . $e->getMessage() . "\n----------------------------------\n", 3, '/tmp/memcache.log');
+        }
+    }else{
+        error_log("Full Data Array Memcache hit\n", 3, '/tmp/memcache.log');
+    }
+<<<<<<< HEAD
     echo '</li>';
 }
+=======
+    error_log("End of autoCache run\n----------------------------------\n", 3, '/tmp/memcache.log');
+    $cache->close();
+
+    return $data;
+
+}
+
+
+
+
+
+
+>>>>>>> twig
