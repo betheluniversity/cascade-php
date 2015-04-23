@@ -9,7 +9,6 @@
 // This file can be removed soon. It has been replaced by quote-logic.php and quotes.php
 // Salesforce is using this format here: https://cms.bethel.edu/entity/open.act?id=7e1da6148c58651364871d5b01ae949b&type=format&
 
-
     // Globals
     $PageSchool;
     $PageDepartment;
@@ -118,27 +117,22 @@
     function get_quote_html($xml){
         $ds = $xml->{'system-data-structure'};
 
-        $title = $xml->{'title'};
         $imagePath = $ds->{'image'}->{'path'};
         $text = $ds->{'quote'};
         $source = $ds->{'source'};
-        $twig = makeTwigEnviron('/code/quotes/twig');
 
-        if( $imagePath != "/" && $imagePath != "")
-        {
-            //render image here.
-            global $destinationName;
-            $html = $twig->render('get-quotes.html', array(
-                'thumbURL' => thumborURL($imagePath, 200, true, false),
-                'text' => $text,
-                'source' => $source));
+        if( $imagePath != "/" && $imagePath != "") {
+            $thumbURL = thumborURL($imagePath, 200, true, false);
+        }else {
+            $thumbURL = "";
         }
-        else
-        {
-            $html = $twig->render('get-quotes2.html', array(
-                'text' => $text,
-                'source' => $source));
-        }
+
+        $twig = makeTwigEnviron('/code/quotes/twig');
+        $html = $twig->render('quote.html', array(
+            'thumbURL' => $thumbURL,
+            'text' => $text,
+            'source' => $source));
+
 
         return $html;
     }

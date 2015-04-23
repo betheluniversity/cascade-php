@@ -29,10 +29,11 @@ function carousel_create($class = "", $content)
 }
 
 // $print is to support image banks not echo-ing the carousel_item call.
-function carousel_item($content, $link = null, $print=true){
+function carousel_item($content, $classes, $link = null, $print=true){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $render_content = $twig->render('carousel_item.html', array(
+        'classes' => $classes,
         'link' => $link,
         'content' => $content
     ));
@@ -195,4 +196,3 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
 
     return $data;
 }
-

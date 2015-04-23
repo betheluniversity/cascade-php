@@ -6,42 +6,30 @@
  * Time: 11:28 AM
  */
 
-    global $destinationName;
-
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
     function show_individual_profile_stories($stories)
     {
-//        shuffle($stories);
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
         $xml = autoCache("simplexml_load_file", array($file), 'profile_story_collection');
-
 
         foreach($stories as $story){
             $search = "//system-page[path='/$story']";
             $results = $xml->xpath($search);
-            echo get_profile_stories_html('', $results[0]);
+            echo get_profile_stories_html($results[0]);
         }
-
     }
 
-    function show_profile_story_collection($School, $Topic, $CAS, $CAPS, $GS, $SEM){
+    function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
         $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-        global $destinationName;
 
         //todo Clean up using $_SERVER
-        //todo Do we need Destination name?
-
-        if( strstr(getcwd(), "staging/public") ){
-            $destinationName = "staging";
-        }
-        else{ // Live site.
-            $destinationName = "www";
-        }
 
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
         $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array');
 
+//        testing
+//        $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
 
         foreach( $profileStoriesArray as $profileStory )
         {
@@ -71,8 +59,9 @@
                 // Set the page data.
                 $profileStory = inspect_page_profile_stories($child, $categories);
 
-                if( $profileStory['display'] == "Metadata Matches")
+                if( $profileStory['display'] == "Metadata Matches"){
                     array_push($profileStories, $profileStory['html']);
+                }
             }
         }
 
@@ -96,8 +85,7 @@
         if( $dataDefinition == "Profile Story")
         {
             // Get html
-            $page_info['html'] = get_profile_stories_html($page_info, $xml);
-
+            $page_info['html'] = get_profile_stories_html($xml);
             $page_info['display'] = match_metadata_profile_stories($xml, $categories);
 
         }
@@ -105,8 +93,7 @@
     }
 
     // Returns the profile stories html
-    function get_profile_stories_html( $block_info, $xml){
-        global $destinationName;
+    function get_profile_stories_html( $xml){
         $ds = $xml->{'system-data-structure'};
         // The image that shows up in the 'column' view.
         $imagePath = $ds->{'images'}->{'homepage-image'}->path;
@@ -123,11 +110,13 @@
         }
         $quote = $ds->{'quote'};
 
-        $twig = makeTwigEnviron('/code/profile-stores/twig');
+        $twig = makeTwigEnviron('/code/profile-stories/twig');
         $html = $twig->render('profile_story_collection.html', array(
+            'path' => $xml->path,
             'thumborURL' => thumborURL($imagePath, 1500, true, false),
             'quote' => $quote,
-            'teaser' => $teaser));
+            'teaser' => $teaser)
+        );
 
         return $html;
     }

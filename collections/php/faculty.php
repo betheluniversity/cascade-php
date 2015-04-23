@@ -28,9 +28,9 @@ function create_faculty_carousel($categories){
             'last' => $last,
             'title' => $title,
             'path' => $path,
-            'thumbURL' => $thumbURL
-        ));
-        $carousel_items .= carousel_item($html);
+            'thumbURL' => $thumbURL));
+
+        $carousel_items .= carousel_item($html, "", null, false);
     }
     carousel_create("carousel--quote", $carousel_items);
     // todo: Display 7 bios that match one of the values in $categories and have the following info:
