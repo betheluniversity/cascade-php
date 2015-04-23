@@ -6,6 +6,9 @@
  * Time: 2:59 PM
  */
 
+    // REMOVE THIS IN THE FUTURE
+    // used by salesforce and office homepages at the moment
+
     // Globals
     $PageSchool;
     $PageDepartment;
