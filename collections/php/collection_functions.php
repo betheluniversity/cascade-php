@@ -69,7 +69,7 @@ function inspect_page_collection($xml, $categories){
         {
             //todo hasn't been tested yet
             $twig = makeTwigEnviron('/code/general-cascade/twig');
-            $html = $twig->render('slick-item.html', array(
+            $html = $twig->render('flickity--cell.html', array(
                 'html' => get_quote_html($xml)));
             $page_info['html'] = $html;
         }
