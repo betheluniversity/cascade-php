@@ -164,10 +164,11 @@ function makeTwigEnviron($path){
 
 }
 
-function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
+function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
+{
 
     //if no cache_name is passed in it defaults to all inputs strung together with -
-    if(!$cache_name) {
+    if (!$cache_name) {
         $cache_name = $inputs[0];
         reset($inputs);
         while (next($inputs) !== FALSE) {
@@ -180,31 +181,18 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
     $data = $cache->get($cache_name);
     error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
     error_log("$func function being used and the cache_name is $cache_name\n", 3, '/tmp/memcache.log');
-    if(!$data){
+    if (!$data) {
         error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
-        try{
+        try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             error_log("Error\n----------------------------------\n" . $e->getMessage() . "\n----------------------------------\n", 3, '/tmp/memcache.log');
         }
-    }else{
+    } else {
         error_log("Full Data Array Memcache hit\n", 3, '/tmp/memcache.log');
     }
-<<<<<<< HEAD
-    echo '</li>';
-}
-=======
-    error_log("End of autoCache run\n----------------------------------\n", 3, '/tmp/memcache.log');
-    $cache->close();
 
     return $data;
-
 }
 
-
-
-
-
-
->>>>>>> twig

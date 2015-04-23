@@ -5,8 +5,6 @@
  * Date: 9/2/14
  * Time: 11:28 AM
  */
-
-
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 //todo Do we need Destination name?
 global $destinationName;
@@ -17,42 +15,6 @@ if( strstr(getcwd(), "staging/public") ){
 else{ // Live site.
     $destinationName = "www";
 }
-<<<<<<< HEAD
-function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
-    if( strstr(getcwd(), "cms.pub") ){
-        $shuffle = true;
-    }else{
-        $shuffle = false;
-    }
-    display_x_elements_from_array($collectionArray, $numItems, $shuffle);
-    return;
-}
-
-// Note: This is hopefully not used anymore.
-function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/quotes/php/get-quotes.php";
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/quotes.xml", $categories);
-    display_x_elements_from_array($collectionArray, $numItems);
-    return;
-}
-
-function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/proof-points/php/get-proof-points.php";
-    global $numberOfItems;
-    $numberOfItems = $numItems;
-    $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
-    $collectionArray = get_xml_collection($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/proof-points.xml", $categories);
-    echo '<div class="grid  proof-points">';
-    display_x_elements_from_array($collectionArray, $numItems);
-    echo '</div>';
-    return;
-}
-=======
->>>>>>> twig
-
 // Converts and xml file to an array of profile stories
 function get_xml_collection($fileToLoad, $categories ){
     $xml = simplexml_load_file($fileToLoad);
@@ -79,7 +41,6 @@ function traverse_folder_collection($xml, $collection, $categories){
 }
 // Gathers the info/html of the page.
 function inspect_page_collection($xml, $categories){
-
     $page_info = array(
         "display-name" => $xml->{'display-name'},
         "published" => $xml->{'last-published-on'},
@@ -106,41 +67,11 @@ function inspect_page_collection($xml, $categories){
         $page_info['display'] = match_robust_metadata($xml, $categories);
         if( $page_info['display'] == "Yes" )
         {
-            // Code to make it a carousel
-<<<<<<< HEAD
-            $html = '<div class="flickity--cell">';
-            $html .= '<div class="pa1  quote  grayLighter">';
-            $html .= get_quote_html($xml);
-            $html .= '</div></div>';
-            $page_info['html'] = $html;
-        }
-    }
-    ## This is a column block
-    else if( $dataDefinition == "Blocks/Proof Point")
-    {
-        $page_info['display'] = match_robust_metadata($xml, $categories);
-        if( $page_info['display'] == "Yes" )
-        {
-            // Code to make it a column block
-            global $numberOfItems;
-            $html = "<div class='grid-cell  u-medium-1-".$numberOfItems."'><div class='grid-pad-1x'>";
-            $html .= get_proof_point_html($xml);
-            $html .= '</div></div>';
-=======
-//            $html = '<div class="slick-item">';
-//            $html .= '<div class="pa1  quote  grayLighter">';
-//            $html .= get_quote_html($xml);
-//            $html .= '</div></div>';
-
-            //Twig version
             //todo hasn't been tested yet
             $twig = makeTwigEnviron('/code/general-cascade/twig');
             $html = $twig->render('slick-item.html', array(
                 'html' => get_quote_html($xml)));
-
->>>>>>> twig
             $page_info['html'] = $html;
-
         }
     }
     return $page_info;
@@ -149,7 +80,6 @@ function inspect_page_collection($xml, $categories){
 function get_profile_stories_html( $xml){
     //todo put this is metadata-check
     $twig = makeTwigEnviron('/code/collections/twig');
-
     global $destinationName;
     $ds = $xml->{'system-data-structure'};
     // The image that shows up in the 'column' view.
@@ -164,26 +94,13 @@ function get_profile_stories_html( $xml){
     {
         $teaser = $viewerTeaser;
     }
-
     $quote = $ds->{'quote'};
-    $html = "<div class='flickity--cell' style='width:100%'>";
-    $html .= '<a href="http://bethel.edu'.$xml->path.'">';
-    $html .= srcset($imagePath, false);
-    $html .= '<figure class="feature__figure">';
-    $html .= '<blockquote class="feature__blockquote">'.$quote.'</blockquote>';
-    $html .= '<figcaption class="feature__figcaption">'.$teaser.'</figcaption>';
-    $html .= '</figure>';
-    $html .= '</a>';
-    $html .= "</div>";
-
-    //twig version
-    //todo test and delete above version
-//    $html = $twig->render('get_profile_stories_html.html', array(
-//        'quote' => $quote,
-//        'teaser' => $teaser,
-//        'image' => srcset($imagePath, false)));
-
-
+    //todo test
+    $html = $twig->render('get_profile_stories_html.html', array(
+        'quote' => $quote,
+        'teaser' => $teaser,
+        'image' => srcset($imagePath, false)
+    ));
     return $html;
 }
 ?>

@@ -34,13 +34,6 @@
 
         $numProofPoints = count($proofPointsToDisplay);
 
-<<<<<<< HEAD
-        // Output structure
-        gridOpen("proof-points proof-point-collection");
-=======
-        //Output structure
->>>>>>> twig
-
         $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
            $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP['html']);
