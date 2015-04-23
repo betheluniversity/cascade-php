@@ -11,15 +11,6 @@ function pre($content){
     echo $twig->render('pre.html', array('content' => $content));
 }
 
-function carousel_open($class = ""){
-    echo "<div class='slick-carousel $class'>";
-}
-
-function carousel_close(){
-    // basic for now but just in case it gets more complicated
-    echo "</div>";
-}
-
 function carousel_create($class = "", $content)
 {
    $twig = makeTwigEnviron('/code/general-cascade/twig');

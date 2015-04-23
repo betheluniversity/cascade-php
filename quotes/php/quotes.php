@@ -31,11 +31,11 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
 
     if( sizeof($quotesToDisplay) > 0) {
         //Output structure
-        carousel_open("carousel--quote");
+        $html = "";
         foreach ($quotesToDisplay as $finalQuote) {
-            echo $finalQuote['html'];
+            $html .= carousel_item($finalQuote['html'], "", null, false);
         }
-        carousel_close();
+        carousel_create("", $html);
     }
 }
 

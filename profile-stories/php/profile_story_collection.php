@@ -13,11 +13,14 @@
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
         $xml = autoCache("simplexml_load_file", array($file), 'profile_story_collection');
 
+        $html = "";
         foreach($stories as $story){
             $search = "//system-page[path='/$story']";
             $results = $xml->xpath($search);
-            echo get_profile_stories_html($results[0]);
+            $val = get_profile_stories_html($results[0]);
+            $html .= carousel_item($val, "", null, $print=false);
         }
+        carousel_create("", $html);
     }
 
     function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
@@ -25,17 +28,14 @@
 
         //todo Clean up using $_SERVER
 
-        include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
         $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array');
 
-//        testing
-//        $profileStoriesArray = get_xml_profile_stories($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories);
-
+        $html = "";
         foreach( $profileStoriesArray as $profileStory )
         {
-            echo $profileStory;
+            $html .= carousel_item($profileStory, "", null, $print=false);
         }
-        return;
+        carousel_create("", $html);
     }
 
     // Converts and xml file to an array of profile stories
