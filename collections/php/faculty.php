@@ -44,7 +44,7 @@ function create_faculty_carousel($categories){
             'path' => $path,
             'thumbURL' => $thumbURL));
 
-        $carousel_items .= carousel_item($html);
+        $carousel_items .= carousel_item($html, "", null, false);
 
     }
     carousel_create("carousel--quote", $carousel_items);
