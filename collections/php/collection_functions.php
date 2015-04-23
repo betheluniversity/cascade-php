@@ -101,7 +101,7 @@ function inspect_page_collection($xml, $categories){
         if( $page_info['display'] == "Yes" )
         {
             // Code to make it a carousel
-            $html = '<div class="slick-item">';
+            $html = '<div class="flickity--cell">';
             $html .= '<div class="pa1  quote  grayLighter">';
             $html .= get_quote_html($xml);
             $html .= '</div></div>';
@@ -141,7 +141,7 @@ function get_profile_stories_html( $xml){
         $teaser = $viewerTeaser;
     }
     $quote = $ds->{'quote'};
-    $html = "<div class='slick-item' style='width:100%'>";
+    $html = "<div class='flickity--cell' style='width:100%'>";
     $html .= '<a href="http://bethel.edu'.$xml->path.'">';
     $html .= srcset($imagePath, false);
     $html .= '<figure class="feature__figure">';
