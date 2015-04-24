@@ -1,5 +1,3 @@
-<!--Needs end_path, width, lazy variables-->
-
 {% if "www.bethel.edu" not in end_path %}
     {% set end_path = 'https://www.bethel.edu/' ~ end_path %}
 {% endif %}
@@ -9,25 +7,3 @@
 {% else %}
     <img src=//cdn{{random(3) + 1}}.bethel.edu/resize/unsafe/{{width}}x0/smart/{{end_path}} />
 {% endif %}
-
-
-
-
-<!--ORGINAL CONTENT REPLACED-->
-<!--//    if( strpos($end_path,"www.bethel.edu") == false ) {-->
-<!--//        $end_path = "https://www.bethel.edu/$end_path";-->
-<!--//    }-->
-<!--//    $rand = rand(1,4);-->
-<!--//    $src = "'//cdn$rand.bethel.edu/resize/unsafe/". $width. "x0/smart/$end_path'";-->
-<!--//    if($lazy){-->
-<!--//        $content = "<img data-lazy=$src/>";-->
-<!--//    }else{-->
-<!--//        $content = "<img src=$src/>";-->
-<!--//    }-->
-<!--//-->
-<!--//    if($print){-->
-<!--//        echo $content;-->
-<!--//    }else{-->
-<!--//        return $content;-->
-<!--//    }-->
-
