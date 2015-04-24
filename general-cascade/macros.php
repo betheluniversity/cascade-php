@@ -19,6 +19,15 @@ function carousel_create($class = "", $content)
         'content' => $content));
 }
 
+function carousel_open($class = ""){
+    echo "<div class='slick-carousel $class'>";
+}
+
+function carousel_close(){
+    // basic for now but just in case it gets more complicated
+    echo "</div>";
+}
+
 // $print is to support image banks not echo-ing the carousel_item call.
 function carousel_item($content, $classes, $link = null, $print=true){
 
@@ -147,6 +156,8 @@ function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes
         'label' => $label,
         'classes' => $classes));
 }
+
+
 
 function makeTwigEnviron($path){
 

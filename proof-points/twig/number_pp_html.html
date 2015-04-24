@@ -1,4 +1,4 @@
-<div class="proof-point  center">
+<div class="proof-point">
     <p class="proof-point__text">
         <span class="proof-point__number">
 
@@ -13,9 +13,9 @@
                 {% endif %}
 
         </span><br>
-        {{textBelow|raw}}
+        <span class="proof-point__text_below">{{textBelow|raw}}</span>
         </p>
     {% if source != "" %}
-        <cite class="proof-point__cite">-{{source}}</cite>
+        <cite class="proof-point__cite">- {{source}}</cite>
     {% endif %}
 </div>
