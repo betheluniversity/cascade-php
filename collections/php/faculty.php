@@ -22,7 +22,7 @@ function create_faculty_carousel($categories){
         $title = $ds->{'job-title'};
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
-        $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
+        $thumbURL = thumborURL($image, '150', $lazy=false, $print=false);
         $html = $twig->render('faculty.html', array(
             'first' => $first,
             'last' => $last,
