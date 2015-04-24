@@ -57,11 +57,17 @@ function get_quote_html($xml){
         $thumbURL = "";
     }
 
+    $gradYear = $ds->{'grad-year'};
+    $job = $ds->{'job-grad-school'};
+
     $twig = makeTwigEnviron('/code/quotes/twig');
     $html = $twig->render('quote.html', array(
-        'thumbURL' => $thumbURL,
-        'text' => $text,
-        'source' => $source));
+        'thumbURL'  => $thumbURL,
+        'text'      => $text,
+        'source'    => $source,
+        'gradYear'  => $gradYear,
+        'job'       => $job
+    ));
 
 
     return $html;
