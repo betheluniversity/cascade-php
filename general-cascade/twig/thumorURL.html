@@ -2,8 +2,4 @@
     {% set end_path = 'https://www.bethel.edu/' ~ end_path %}
 {% endif %}
 
-{% if lazy %}
-    <img data-lazy=//cdn{{random(3) + 1}}.bethel.edu/resize/unsafe/{{width}}x0/smart/{{end_path}} />
-{% else %}
-    <img src=//cdn{{random(3) + 1}}.bethel.edu/resize/unsafe/{{width}}x0/smart/{{end_path}} />
-{% endif %}
+<img class="lazyload" data-src="//cdn{{random(3) + 1}}.bethel.edu/resize/unsafe/{{width}}x0/smart/{{end_path}}"/>
