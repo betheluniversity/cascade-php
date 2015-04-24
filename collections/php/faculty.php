@@ -28,7 +28,8 @@ function create_faculty_carousel($categories){
             'last' => $last,
             'title' => $title,
             'path' => $path,
-            'thumbURL' => $thumbURL));
+            'thumbURL' => $thumbURL
+        ));
 
         $carousel_items .= carousel_item($html, "", null, false);
     }

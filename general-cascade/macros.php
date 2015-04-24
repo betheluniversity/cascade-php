@@ -16,7 +16,8 @@ function carousel_create($class = "", $content)
    $twig = makeTwigEnviron('/code/general-cascade/twig');
     echo $twig->render('carousel.html', array(
         'class' => $class,
-        'content' => $content));
+        'content' => $content
+    ));
 }
 
 function carousel_open($class = ""){
@@ -43,8 +44,6 @@ function carousel_item($content, $classes, $link = null, $print=true){
     }else{
         return $render_content;
     }
-
-
 }
 
 function srcset($end_path, $print=true){
@@ -101,7 +100,8 @@ function createGrid($classes, $content){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     return $twig->render('grid.html', array(
         'classes' => $classes,
-        'content' => $content));
+        'content' => $content
+    ));
 
 }
 
@@ -126,7 +126,8 @@ function createGridCell($classes, $content){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     return $twig->render('gridCell.html', array(
         'classes' => $classes,
-        'content' => $content));
+        'content' => $content
+    ));
 }
 
 
@@ -142,7 +143,8 @@ function checkInPath($url, $name){
     echo $twig->render('checkInPath.html', array(
         'pos' => $pos,
         'name' => $name,
-        'url' => $url));
+        'url' => $url
+    ));
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
@@ -154,7 +156,8 @@ function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes
         'test_starts_with' => $test_starts_with,
         'path' => $path,
         'label' => $label,
-        'classes' => $classes));
+        'classes' => $classes
+    ));
 }
 
 
