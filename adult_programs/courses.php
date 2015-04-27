@@ -19,6 +19,5 @@ function course_catalog($code, $values){
     );
     $url = "http://wsapi.bethel.edu/courses/course-catalog/$code";
     $context  = stream_context_create($options);
-    $content = file_get_contents($url, false, $context);
-
+    return file_get_contents($url, false, $context);
 }
