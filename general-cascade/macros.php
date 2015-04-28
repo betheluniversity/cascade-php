@@ -11,8 +11,7 @@ function pre($content){
     echo $twig->render('pre.html', array('content' => $content));
 }
 
-function carousel_create($class = "", $content)
-{
+function carousel_create($class = "", $content){
    $twig = makeTwigEnviron('/code/general-cascade/twig');
     echo $twig->render('carousel.html', array(
         'class' => $class,
@@ -20,10 +19,21 @@ function carousel_create($class = "", $content)
     ));
 }
 
-function carousel_open($class = ""){
-    echo "<div class='slick-carousel $class'>";
+function build_carousel_from_array($array, $class){
+    $content = "";
+    foreach($array as $item){
+        $content .= $item;
+    }
+
+    carousel_create($class, $content);
 }
 
+// Currently some velocity files are using this. (should be deleted soon)
+function carousel_open($class = ""){
+    echo "<div class='flickity $class'>";
+}
+
+// Currently some velocity files are using this. (should be deleted soon)
 function carousel_close(){
     // basic for now but just in case it gets more complicated
     echo "</div>";
