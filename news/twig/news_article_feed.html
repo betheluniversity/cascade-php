@@ -1,0 +1,16 @@
+<div class="news__item" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
+    <div class="news__image">
+        <a href="http://www.bethel.edu{{path}}"> <!-- FIX -->
+            {{thumborURL|raw}}
+        </a>
+    </div>
+    <div class="news__content">
+        <p class="news__headline"><a href="http://www.bethel.edu{{path}}"><span itemprop="headline">{{article['title']}}</span></a></p> <!-- FIX -->
+        {% if date != "" and date != "null" %}
+        <p>{{formattedDate}}</p>
+        {% endif %}
+        {% if DisplayTeaser == "Yes" %}
+        <p>{{article['teaser']}}</p>
+        {% endif %}
+    </div>
+</div>
