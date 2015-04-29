@@ -11,21 +11,9 @@
 $yearChosen;
 $uniqueNews;
 // returns an array of html elements.
-function create_archive(){
-
-    // Feed
-    global $feed_metadata;
-    $categories = $feed_metadata;
-
-    // Staging Site
-    global $destinationName;
-    //todo update this using $_SERVER
-    if( strstr(getcwd(), "staging/public") ){
-        $destinationName = "staging";
-    }
-
+function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
+    $arrayOfArticles = get_xml_news_archive($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
 
 //    foreach($arrayOfArticles as $value )
 //        echo $value['html'];
@@ -33,13 +21,13 @@ function create_archive(){
     $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), "news_archive_sorted");
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
-    $twig = makeTwigEnviron('/code/events/twig');
+    $twig = makeTwigEnviron('/code/news/twig');
 
     foreach( $arrayOfArticles as $yearArray )
     {
         //twig version
-        echo $twig->render('news_archive.html',array(
-           'yearArray' => $yearArray
+        echo $twig->render('news_article_archive.html',array(
+            'yearArray' => $yearArray
         ));
     }
 
@@ -51,7 +39,7 @@ function create_archive(){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+function inspect_news_archive_page($xml){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -68,30 +56,6 @@ function inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM
         return "";
 
     $ds = $xml->{'system-data-structure'};
-
-
-    // Needs to be re-written
-//    $match = false;
-//    foreach ($xml->children() as $child) {
-//        if($child->getName() == "dynamic-metadata"){
-//            foreach($child->children() as $metadata){
-//                if($metadata->getName() == "value"){
-//                    if( $metadata == "Select" || $metadata == "None" || $metadata == "none" )
-//                        continue;
-//                    if(in_array($metadata, $categories)){
-//                        $match = true;
-//                    }
-//                }
-//                //$metadata;
-//            }
-//        }
-//    }
-    $match = false;
-
-    if(!$match) {
-        return;
-    }
-
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
@@ -99,7 +63,7 @@ function inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM
     global $uniqueNews;
 
     $isInternal = in_array("Internal", $uniqueNews);
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )// && $isInternal == TRUE )//&& ( strstr($xml->path, $yearChosen) ) )
+    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )
     {
         //check if is internal
         $date = $page_info['date'];
@@ -122,7 +86,7 @@ function get_news_article_html( $article, $xml ){
     $title = $article['title'];
 
     $day = $article['day'];
-    $twig = makeTwigEnviron('/code/events/twig');
+    $twig = makeTwigEnviron('/code/news/twig');
 
     $html = $twig->render('get_news_article_html.html', array(
         'externalPath' => $externalPath,
@@ -174,6 +138,37 @@ function sort_news_archive( $array ){
 function sort_by_day($a, $b)
 {
     return strcmp($a["day"], $b["day"]);
+}
+
+function get_xml_news_archive($fileToLoad){
+    $xml = simplexml_load_file($fileToLoad);
+    $pages = array();
+    $pages = traverse_folder_news_archive($xml, $pages);
+    return $pages;
+}
+
+function traverse_folder_news_archive($xml, $pages){
+    if(!$xml){
+        return;
+    }
+    foreach ($xml->children() as $child) {
+
+        $name = $child->getName();
+
+        if ($name == 'system-folder'){
+            $pages = traverse_folder_news_archive($child, $pages);
+        }elseif ($name == 'system-page'){
+            // Set the page data.
+            $page = inspect_news_archive_page($child);
+
+            // Add to an event array.
+            if( $page['display-on-feed'] ) {
+                array_push($pages, $page);
+            }
+        }
+    }
+
+    return $pages;
 }
 
 ?>
