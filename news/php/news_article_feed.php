@@ -21,13 +21,11 @@ $featuredArticleOptions;
 
 // returns an array of html elements.
 function create_news_article_feed($categories){
-
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
-
+    $arrayOfArticles = get_news_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
 
     global $NumArticles;
-    $sortedArticles = autoCache("sort_array", array($arrayOfArticles), 'feed_news_sorted_tes'.$NumArticles);
+    $sortedArticles = autoCache("sort_news_array", array($arrayOfArticles), 'feed_news_sorted_tes'.$NumArticles);
 
 
 
@@ -285,22 +283,22 @@ function format_featured_date_news_article( $date)
 }
 
 // Sort an array
-function sort_array( $array ){
+function sort_news_array( $array ){
 
     if( sizeof($array) != 0)
     {
-        usort($array, 'sort_by_date');
+        usort($array, 'sort_news_array_by_date');
     }
 
     return array_reverse($array);
 }
 
-function sort_by_date($a, $b)
+function sort_news_array_by_date($a, $b)
 {
     return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
 }
 
-function get_xml($fileToLoad, $categories){
+function get_news_xml($fileToLoad, $categories){
     $xml = simplexml_load_file($fileToLoad);
     $pages = array();
     $pages = traverse_news_folder($xml, $pages, $categories);

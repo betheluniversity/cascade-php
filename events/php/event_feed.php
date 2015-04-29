@@ -70,8 +70,7 @@ function create_event_feed($categories){
     }
 
     /////////////////////////////////////////
-
-    $sortedEvents = sort_array($eventArrayWithMultipleEvents);
+    $sortedEvents = array_reverse(sort_by_date($eventArrayWithMultipleEvents));
     // Only grab the first X number of events.
     global $NumEvents;
 
@@ -444,17 +443,17 @@ function get_month_shorthand_name( $month){
 }
 
 //Sort an array
-function sort_event_array( $array ){
+function sort_by_date( $array ){
 
     if( sizeof($array) != 0)
     {
-        ursort($array, 'sort_event_by_date');
+        usort($array, 'sort_by_date_helper');
     }
 
     return array_reverse($array);
 }
 
-function sort_event_by_date($a, $b)
+function sort_by_date_helper($a, $b)
 {
     return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
 }
