@@ -53,7 +53,9 @@ function create_news_article_feed($categories){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
+
 function inspect_news_article($xml, $categories){
+
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -82,6 +84,7 @@ function inspect_news_article($xml, $categories){
         $page_info['html'] = get_news_article_html($page_info, $xml);
 
         $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
+
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
 
         // Featured Articles
@@ -102,6 +105,7 @@ function inspect_news_article($xml, $categories){
 
     return $page_info;
 }
+
 
 function match_metadata_news_articles($xml, $categories){
     foreach( $categories as $category) {
@@ -181,6 +185,63 @@ function get_news_article_html( $article, $xml ){
         'thumborURL' => thumborURL($imagePath, 215, $lazy=false, $print=false)));
 
     return $html;
+}
+
+
+// Matches the metadata of the page against the metadata of the proof point
+function match_metadata_department_news_article($xml, $feed_value_array)
+{
+    foreach( $feed_value_array as $feed_value){
+        foreach ($xml->{'dynamic-metadata'} as $md) {
+            $name = $md->name;
+            foreach ($md->value as $value) {
+                if ($value == "Select" || $value == "none") {
+                    continue;
+                }
+                if (htmlspecialchars($value) == htmlspecialchars($feed_value)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function match_generic_school_news_articles($xml, $schools){
+
+    $schoolsArray = array();
+    foreach ($xml->{'dynamic-metadata'} as $md) {
+        foreach ($md->value as $value) {
+            if ($value == "Select" || $value == "none" || $value == "None" || $value == "") {
+                continue;
+            }
+
+            // Add schools to an array to check later
+            if ($md->name == "school") {
+                array_push($schoolsArray, htmlspecialchars($value));
+            }
+
+            // if there are any depts, they are not generic. therefore, don't include.
+            if ($md->name == "department" || $md->name == "adult-undergrad-program" || $md->name == "graduate-program" || $md->name == "seminary-program") {
+                return false;
+            }
+        }
+    }
+    // event has no schools
+    if( sizeof( $schoolsArray) == 0)
+        return false;
+
+
+    // Fix the values on $schools (it likes to store & as &amp;
+    for( $i = 0; $i < sizeof($schools); $i++){
+        $schools[$i] = htmlspecialchars($schools[$i]);
+    }
+
+    // returns true if the two arrays are equal
+    if (sizeof(array_diff_assoc($schoolsArray, $schools)) == 0 ) {
+        return true;
+    }
+    return false;
 }
 
 // Create the Featured Articles.

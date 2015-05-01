@@ -39,7 +39,9 @@ function create_news_article_archive($categories){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
+
 function inspect_news_archive_page($xml){
+
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -56,6 +58,7 @@ function inspect_news_archive_page($xml){
         return "";
 
     $ds = $xml->{'system-data-structure'};
+
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 

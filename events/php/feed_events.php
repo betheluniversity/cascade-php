@@ -200,6 +200,7 @@
 
     // Gathers the information of an event page
     function inspect_event_page($xml, $General, $Offices, $AcademicDates, $CAS, $CAPS, $GS, $SEM, $Internal){
+
         //echo "inspecting page";
         $page_info = array(
             "title" => $xml->title,
