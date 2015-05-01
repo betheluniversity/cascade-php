@@ -29,3 +29,9 @@ function individual_courses($code, $values){
     return file_get_contents($url, false);
 }
 
+function load_course_catalog ($values, $code) {
+
+    $content = autoCache('course_catalog', array('$code', $values), '$code', 0);
+    $content = json_decode($content, true);
+    echo $content['data'];
+}
