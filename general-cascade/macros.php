@@ -11,31 +11,49 @@ function pre($content){
     echo $twig->render('pre.html', array('content' => $content));
 }
 
-function carousel_open($class = ""){
-    echo "<div class='slick-carousel $class'>";
+function carousel_create($class = "", $content){
+   $twig = makeTwigEnviron('/code/general-cascade/twig');
+    echo $twig->render('carousel.html', array(
+        'class' => $class,
+        'content' => $content
+    ));
 }
 
+function build_carousel_from_array($array, $class){
+    $content = "";
+    foreach($array as $item){
+        $content .= $item;
+    }
+
+    carousel_create($class, $content);
+}
+
+// Currently some velocity files are using this. (should be deleted soon)
+function carousel_open($class = ""){
+    echo "<div class='flickity $class'>";
+}
+
+// Currently some velocity files are using this. (should be deleted soon)
 function carousel_close(){
     // basic for now but just in case it gets more complicated
     echo "</div>";
 }
 
-function carousel_create($class = "", $content)
-{
-   $twig = makeTwigEnviron('/code/general-cascade/twig');
-    echo $twig->render('carousel.html', array(
-        'class' => $class,
-        'content' => $content));
-}
-
-function carousel_item($content, $link = null){
+// $print is to support image banks not echo-ing the carousel_item call.
+function carousel_item($content, $classes, $link = null, $print=true){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
-    return $twig->render('carousel_item.html', array(
+    $render_content = $twig->render('carousel_item.html', array(
+        'classes' => $classes,
         'link' => $link,
-        'content' => $content));
+        'content' => $content
+    ));
 
-
+    if($print){
+        echo $render_content;
+    }else{
+        return $render_content;
+    }
 }
 
 function srcset($end_path, $print=true){
@@ -92,7 +110,8 @@ function createGrid($classes, $content){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     return $twig->render('grid.html', array(
         'classes' => $classes,
-        'content' => $content));
+        'content' => $content
+    ));
 
 }
 
@@ -117,7 +136,8 @@ function createGridCell($classes, $content){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     return $twig->render('gridCell.html', array(
         'classes' => $classes,
-        'content' => $content));
+        'content' => $content
+    ));
 }
 
 
@@ -133,7 +153,8 @@ function checkInPath($url, $name){
     echo $twig->render('checkInPath.html', array(
         'pos' => $pos,
         'name' => $name,
-        'url' => $url));
+        'url' => $url
+    ));
 }
 
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
@@ -145,8 +166,11 @@ function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes
         'test_starts_with' => $test_starts_with,
         'path' => $path,
         'label' => $label,
-        'classes' => $classes));
+        'classes' => $classes
+    ));
 }
+
+
 
 function makeTwigEnviron($path){
 
@@ -156,10 +180,11 @@ function makeTwigEnviron($path){
 
 }
 
-function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
+function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
+{
 
     //if no cache_name is passed in it defaults to all inputs strung together with -
-    if(!$cache_name) {
+    if (!$cache_name) {
         $cache_name = $inputs[0];
         reset($inputs);
         while (next($inputs) !== FALSE) {
@@ -172,26 +197,17 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300){
     $data = $cache->get($cache_name);
     error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
     error_log("$func function being used and the cache_name is $cache_name\n", 3, '/tmp/memcache.log');
-    if(!$data){
+    if (!$data) {
         error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
-        try{
+        try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             error_log("Error\n----------------------------------\n" . $e->getMessage() . "\n----------------------------------\n", 3, '/tmp/memcache.log');
         }
-    }else{
+    } else {
         error_log("Full Data Array Memcache hit\n", 3, '/tmp/memcache.log');
     }
-    error_log("End of autoCache run\n----------------------------------\n", 3, '/tmp/memcache.log');
-    $cache->close();
 
     return $data;
-
 }
-
-
-
-
-
-

@@ -5,6 +5,9 @@
  * Date: 8/28/14
  * Time: 10:21 AM
  */
+
+// This file has been replaced by a cascade version: "/_blink-content/events-channel/blink-events-channel"
+
     header('Content-type: application/xml');
     require_once 'events_helper.php';
     require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';

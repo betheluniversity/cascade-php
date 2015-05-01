@@ -62,6 +62,8 @@
     function match_generic_school_proof_points($xml, $schools){
         $schoolsArray = array();
 
+
+
         foreach ($xml->{'dynamic-metadata'} as $md) {
             foreach ($md->value as $value) {
                 if ($value == "Select" || $value == "none" || $value == "None" || $value == "") {
@@ -80,8 +82,13 @@
             }
         }
 
-        // returns true if there are no depts and the school matches.
-        if (sizeof(array_diff($schoolsArray, $schools)) == 0) {
+        // Fix the values on $schools (it likes to store & as &amp;
+        for( $i = 0; $i < sizeof($schools); $i++){
+            $schools[$i] = htmlspecialchars($schools[$i]);
+        }
+
+        // returns true if the two arrays are equal
+        if (sizeof(array_diff_assoc($schoolsArray, $schools)) == 0 ) {
             return true;
         }
         return false;
@@ -117,6 +124,7 @@
             $block_info['match-dept'] = true;
         // next, grab a GENERIC one from the school ( no depts tagged )
         $block_info['match-school'] = match_generic_school_proof_points($xml, $School);
+
         // Now that we are desparate, just get one that has a topic thats the same.
         $block_info['match-topic'] = match_metadata_proof_points($xml, $Topic);
 

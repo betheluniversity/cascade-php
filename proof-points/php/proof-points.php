@@ -5,37 +5,37 @@
  * Date: 3/9/15
  * Time: 10:36 AM
  */
-
-/*
-    1) create render proof point function
-    2) create a get_proof_points( $numProofPoints )
-        a) Pull ALL proof points\
-        b) return X of them
-    3) add to the /code/general-cascade/carousel-viewer.php file to allow for proof-point carousels.
-
-    // Page metadata
-    $School = array();
-    $Topic = array();
-    $CAS = array();
-    $CAPS = array();
-    $GS = array();
-    $SEM = array();
- */
-
+    require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
     include_once 'proof-point-logic.php';
+    include_once $_SERVER['DOCUMENT_ROOT'] . "/code/general-cascade/macros.php";
+
+
     function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
 
         echo "<!-- new proof points -->";
+        $proofPointsToDisplay = get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
 
-        $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
+        $numProofPoints = count($proofPointsToDisplay);
+
+        $toReturn = "";
+        foreach($proofPointsToDisplay as $finalPP){
+           $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP);
+        }
+        echo createGrid("proof-points proof-point-collection test", $toReturn);
+
+    }
+
+    function get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+//        $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/proof-points.xml");
-        $proof_points = $xml->xpath("//system-block");
+        $proof_points = $xml->xpath("system-block");
         $matches = array();
 
         foreach($proof_points as $proof_point_xml){
             $ppInfo = inspect_block_proof_points($proof_point_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
             if( $ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic'] ){
-                array_push($matches, $ppInfo);
+                echo "<!-- MATCH -->";
+                array_push($matches, $ppInfo['html']);
             }
         }
 
@@ -43,18 +43,7 @@
         $proofPointsArrays = divide_into_arrays_proof_points($matches);
 
         // Get random selection of $numItems proof points
-        $proofPointsToDisplay = get_x_proof_points( $proofPointsArrays, $numItems );
-
-        $numProofPoints = count($proofPointsToDisplay);
-
-        //Output structure
-
-        $toReturn = "";
-        foreach($proofPointsToDisplay as $finalPP){
-           $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP['html']);
-        }
-        echo createGrid("proof-points proof-point-collection test", $toReturn);
-
+        return get_x_proof_points( $proofPointsArrays, $numItems );
     }
 
     // Returns the html of the proof point
@@ -72,6 +61,7 @@
     }
 
 function number_pp_html($ds){
+    $html = "";
     $number = $ds->{'proof-point'}->{'number-group'}->{'number-field'};
     if(!$number){
         $number = $ds->{'proof-point'}->{'number-group'}->{'number'};
@@ -82,6 +72,7 @@ function number_pp_html($ds){
 
     $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
+
 
     $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = $twig->render('number_pp_html.html', array(
@@ -95,6 +86,7 @@ function number_pp_html($ds){
 }
 
 function text_pp_html($ds){
+    $html = "";
     $mainText = $ds->{'proof-point'}->{'text'}->{'main-text'};
     $source = $ds->{'proof-point'}->{'text'}->{'source'};
 

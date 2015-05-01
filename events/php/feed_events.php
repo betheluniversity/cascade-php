@@ -32,7 +32,7 @@
 
 
     // Create the Event Feed events.
-    function create_event_feed(){
+    function create_event_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM){
         global $destinationName;
         // Staging Site
         if( strstr(getcwd(), "staging/public") ){
@@ -45,18 +45,14 @@
         // include helper
         include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 
-        // EVENT FEED
-        global $eventFeedCategories;
-        $categories = $eventFeedCategories;
-
         global $destinationName;
         // Dynamically get the correct xml.
         if( $destinationName == "staging/public" ){
 //            $arrayOfEvents = autoCache("get_xml", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories),  'feed_events_staging',true,20);
-            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
+            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $School, $Topic, $CAS, $CAPS, $GS, $SEM);
         }
         else{
-            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
+            $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $School, $Topic, $CAS, $CAPS, $GS, $SEM);
 //            $arrayOfEvents = autoCache("get_xml", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories), 'feed_events_ww',true,20);
         }
 
@@ -203,7 +199,7 @@
     }
 
     // Gathers the information of an event page
-    function inspect_event_page($xml, $categories){
+    function inspect_event_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
         //echo "inspecting page";
         $page_info = array(
             "title" => $xml->title,
@@ -216,7 +212,7 @@
             "dates" => array(),
             "md" => array(),
             "html" => "",
-            "display-on-feed" => "No",
+            "display-on-feed" => false,
             "external-link" => "",
             "image" => "",
             "xml" => $xml,
@@ -226,7 +222,8 @@
 
         $ds = $xml->{'system-data-structure'};
 
-        $page_info['display-on-feed'] = match_metadata_events($xml, $categories);
+//        $page_info['display-on-feed'] = match_metadata_events($xml);
+        $page_info['display-on-feed'] = false;
 
         $dataDefinition = $ds['definition-path'];
 

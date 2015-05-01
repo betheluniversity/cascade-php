@@ -5,29 +5,16 @@
  * Date: 3/3/15
  * Time: 2:12 PM
  */
-
-
 //todo convert to grid and gridcell macros
-
 function create_faculty_carousel($categories){
-
-
     $faculty_file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/faculty-bios.xml";
     $xml = autoCache("simplexml_load_file", array($faculty_file), 'faculty_carousel_xml');
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
-
     $bios = find_matching_bios($faculty_pages, $categories);
     $twig = makeTwigEnviron('/code/collections/twig');
 
-
-//    echo "<pre>";
-//    print_r($faculty_pages[0]);
-//    echo "</pre>";
-
-
-//    carousel_open("carousel--quote");
-   $carousel_items = "";
+    $carousel_items = "";
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
@@ -35,30 +22,23 @@ function create_faculty_carousel($categories){
         $title = $ds->{'job-title'};
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
-        $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
-
+        $thumbURL = thumborURL($image, '150', $lazy=false, $print=false);
         $html = $twig->render('faculty.html', array(
             'first' => $first,
             'last' => $last,
             'title' => $title,
             'path' => $path,
-            'thumbURL' => $thumbURL));
+            'thumbURL' => $thumbURL
+        ));
 
-        $carousel_items .= carousel_item($html);
-
+        $carousel_items .= carousel_item($html, "", null, false);
     }
     carousel_create("carousel--quote", $carousel_items);
-
-
     // todo: Display 7 bios that match one of the values in $categories and have the following info:
     //   -  name, job title, image
     //   - Name should link to the bio page.
     // They should be in a carousel (see general-cascade/marcos.php and example above)
-
-
-  }
-
-
+}
 function find_matching_bios($xml, $categories){
     $return_bios = array();
     foreach($xml as $bio){
@@ -79,5 +59,4 @@ function find_matching_bios($xml, $categories){
         }
     }
     return $return_bios;
-
 }

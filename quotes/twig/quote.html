@@ -1,0 +1,29 @@
+<div class="pa1  quote  grayLighter">
+    <div class="grid ">
+        {% if thumbURL != "" %}
+           <div class="grid-cell  u-medium-3-12">
+                <div class="grid-pad-1x">
+                    <div class="quote__avatar">
+                        {{thumbURL|raw}}
+                    </div>
+                </div>
+           </div>
+        {% endif %}
+
+        <div class="grid-cell  u-medium-12-12">
+            <div class="grid-pad-1x">
+                <p class="quote__text">{{text}}</p>
+                {% if source != "" %}
+                <cite class="quote__source">–{{source}}
+                    {% if gradYear != "" %}
+                        {{gradYear}}
+                    {% endif %}
+                    {% if job != "" %}
+                        <br />{{job}}
+                    {% endif %}
+                </cite>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

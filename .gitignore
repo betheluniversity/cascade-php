@@ -1,9 +1,11 @@
 .idea
+.idea/
 .idea/workspace.xml
 salesforce/php/userAuth.php
 events/php/calendar.php
 salesforce/php/toolkit/
-
+vendor
+vendor/
 .idea/deployment.xml
 
 .idea/modules.xml

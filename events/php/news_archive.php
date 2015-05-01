@@ -51,7 +51,7 @@ function create_archive(){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_archive_page($xml, $categories){
+function inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -62,28 +62,31 @@ function inspect_news_archive_page($xml, $categories){
         "date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
-        "display-on-feed" => "Yes",
+        "display-on-feed" => true,
     );
     if( strpos($page_info['path'],"_testing") !== false)
         return "";
 
     $ds = $xml->{'system-data-structure'};
 
+
+    // Needs to be re-written
+//    $match = false;
+//    foreach ($xml->children() as $child) {
+//        if($child->getName() == "dynamic-metadata"){
+//            foreach($child->children() as $metadata){
+//                if($metadata->getName() == "value"){
+//                    if( $metadata == "Select" || $metadata == "None" || $metadata == "none" )
+//                        continue;
+//                    if(in_array($metadata, $categories)){
+//                        $match = true;
+//                    }
+//                }
+//                //$metadata;
+//            }
+//        }
+//    }
     $match = false;
-    foreach ($xml->children() as $child) {
-        if($child->getName() == "dynamic-metadata"){
-            foreach($child->children() as $metadata){
-                if($metadata->getName() == "value"){
-                    if( $metadata == "Select" || $metadata == "None" || $metadata == "none" )
-                        continue;
-                    if(in_array($metadata, $categories)){
-                        $match = true;
-                    }
-                }
-                //$metadata;
-            }
-        }
-    }
 
     if(!$match) {
         return;

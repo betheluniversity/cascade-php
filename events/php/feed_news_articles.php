@@ -20,8 +20,7 @@ $DisplayTeaser;
 $featuredArticleOptions;
 
 // returns an array of html elements.
-function create_news_article_feed(){
-
+function create_news_article_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM){
     // Staging Site
     global $destinationName;
     if( strstr(getcwd(), "staging/public") ){
@@ -32,7 +31,7 @@ function create_news_article_feed(){
     }
 
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", "");
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", "", $School, $Topic, $CAS, $CAPS, $GS, $SEM);
 
 
     global $NumArticles;
@@ -65,7 +64,7 @@ function create_news_article_feed(){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-function inspect_news_article_page($xml){
+function inspect_news_article_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
@@ -75,14 +74,15 @@ function inspect_news_article_page($xml){
         "date-for-sorting" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
         "md" => array(),
         "html" => "",
-        "display-on-feed" => "No",
+        "display-on-feed" => false,
     );
 
     if( strpos($page_info['path'],"_testing") !== false)
         return "";
 
     $ds = $xml->{'system-data-structure'};
-    $page_info['display-on-feed'] = match_metadata_news_articles($xml);
+
+
 //    $page_info['date-for-sorting'] = time();
 
     // To get the correct definition path.
@@ -92,7 +92,11 @@ function inspect_news_article_page($xml){
     {
         $page_info['teaser'] = $xml->teaser;
         $page_info['html'] = get_news_article_html($page_info, $xml);
+
+
+        $page_info['display-on-feed'] = match_metadata_news_article($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
+
         // Featured Articles
         global $featuredArticleOptions;
         global $AddFeaturedArticle;
@@ -112,27 +116,64 @@ function inspect_news_article_page($xml){
     return $page_info;
 }
 
+function match_metadata_news_article($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+    // Check to see what the news feed is looking for.
+    if( sizeof($School) != 0 ){
+        $checkSchool = true;
+    } else
+        $checkSchool = false;
+    if( sizeof($CAS) != 0 || sizeof($CAPS) != 0 || sizeof($GS) != 0 || sizeof($SEM) != 0 ){
+        $checkDept = true;
+    } else
+        $checkDept = false;
+
+    // check to see if the article matches dept.
+    if( match_metadata_department_news_article($xml, $CAS) || match_metadata_department_news_article($xml, $CAPS) || match_metadata_department_news_article($xml, $GS) || match_metadata_department_news_article($xml, $SEM)  )
+        $matchesDept = true;
+    else
+        $matchesDept = false;
+
+    // check to see if the article matches school
+    if( match_generic_school_news_articles($xml, $School))
+        $matchesSchool = true;
+    else
+        $matchesSchool = false;
+
+    if( $checkDept && $checkSchool){
+        if( $matchesDept && $matchesSchool)
+            return true;
+    }elseif( $checkDept){
+        return $matchesDept;
+    }elseif( $checkSchool){
+        return $matchesSchool;
+    }
+
+    return false;
+}
+
 // Determine if the news article falls within the given range to be displayed
 function display_on_feed_news_articles($page_info, $ds){
     $publishDate = $ds->{'publish-date'} / 1000;
     $currentDate = time();
     global $ExpireAfterXDays;
     $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
-    if( $page_info['display-on-feed'] == "Metadata Matches")
+    if( $page_info['display-on-feed'] == true)
     {
         // Check if it falls between the given range.
         if( $ExpireAfterXDays != "" ){
             // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
             if( $publishDate > $currentDate - $ExpiresInSeconds){
-                return "Yes";
+                return true;
+            }else{
+                return false;
             }
         }
         else
         {
-            return "Yes";
+            return true;
         }
     }
-    return "No";
+    return false;
 }
 
 // Returns the html of the news article
@@ -166,25 +207,61 @@ function get_news_article_html( $article, $xml ){
     return $html;
 }
 
-// Checks the metadata of the page against the metadata of the news articles.
-// if it matches, return "Metadata Matches"
-// else, return "No"
-function match_metadata_news_articles($xml){
-    global $feed_metadata;
-    foreach ($xml->{'dynamic-metadata'} as $md){
-
-        $name = $md->name;
-
-        foreach($md->value as $value ){
-
-            if (in_array($value, $feed_metadata)){
-                return "Metadata Matches";
+// Matches the metadata of the page against the metadata of the proof point
+function match_metadata_department_news_article($xml, $feed_value_array)
+{
+    foreach( $feed_value_array as $feed_value){
+        foreach ($xml->{'dynamic-metadata'} as $md) {
+            $name = $md->name;
+            foreach ($md->value as $value) {
+                if ($value == "Select" || $value == "none") {
+                    continue;
+                }
+                if (htmlspecialchars($value) == htmlspecialchars($feed_value)) {
+                    return true;
+                }
             }
         }
     }
-    return "No";
+    return false;
 }
 
+function match_generic_school_news_articles($xml, $schools){
+
+    $schoolsArray = array();
+    foreach ($xml->{'dynamic-metadata'} as $md) {
+        foreach ($md->value as $value) {
+            if ($value == "Select" || $value == "none" || $value == "None" || $value == "") {
+                continue;
+            }
+
+            // Add schools to an array to check later
+            if ($md->name == "school") {
+                array_push($schoolsArray, htmlspecialchars($value));
+            }
+
+            // if there are any depts, they are not generic. therefore, don't include.
+            if ($md->name == "department" || $md->name == "adult-undergrad-program" || $md->name == "graduate-program" || $md->name == "seminary-program") {
+                return false;
+            }
+        }
+    }
+    // event has no schools
+    if( sizeof( $schoolsArray) == 0)
+        return false;
+
+
+    // Fix the values on $schools (it likes to store & as &amp;
+    for( $i = 0; $i < sizeof($schools); $i++){
+        $schools[$i] = htmlspecialchars($schools[$i]);
+    }
+
+    // returns true if the two arrays are equal
+    if (sizeof(array_diff_assoc($schoolsArray, $schools)) == 0 ) {
+        return true;
+    }
+    return false;
+}
 
 // Create the Featured Articles.
 function create_featured_articles_array(){
