@@ -35,3 +35,11 @@ function load_course_catalog ($values, $code) {
     $content = json_decode($content, true);
     echo $content['data'];
 }
+
+
+//called by cas-summer-courses format so it can use autoCache
+function summer_courses($code){
+
+    $url = "http://wsapi.bethel.edu/courses/$code";
+    return file_get_contents($url);
+}

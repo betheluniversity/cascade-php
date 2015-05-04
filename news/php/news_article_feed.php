@@ -22,10 +22,11 @@ $featuredArticleOptions;
 // returns an array of html elements.
 function create_news_article_feed($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    $arrayOfArticles = get_news_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     global $NumArticles;
-    $sortedArticles = autoCache("sort_news_array", array($arrayOfArticles), 'feed_news_sorted_tes'.$NumArticles);
+    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted'.$NumArticles);
 
 
 
@@ -39,7 +40,8 @@ function create_news_article_feed($categories){
 
 
     // FEATURED ARTICLES
-    $featuredArticles = create_featured_articles_array();
+    global $featuredArticleOptions;
+    $featuredArticles = create_featured_array($featuredArticleOptions);
 
     $numArticles = sizeof($articleArray );
     if( $numArticles == 0){
@@ -83,7 +85,8 @@ function inspect_news_article($xml, $categories){
         $page_info['teaser'] = $xml->teaser;
         $page_info['html'] = get_news_article_html($page_info, $xml);
 
-        $page_info['display-on-feed'] = match_metadata_news_articles($xml, $categories);
+        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program');
+        $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
 
@@ -104,31 +107,6 @@ function inspect_news_article($xml, $categories){
     }
 
     return $page_info;
-}
-
-
-function match_metadata_news_articles($xml, $categories){
-    foreach( $categories as $category) {
-        foreach ($xml->{'dynamic-metadata'} as $md) {
-
-            $name = $md->name;
-
-            $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program');
-
-            foreach ($md->value as $value) {
-                if ($value == "None" || $value == "none" || $value == "select" || $value == "Select") {
-                    continue;
-                }
-                if (in_array($name, $options)) {
-                    if (in_array($value, $category)) {
-                        return true;
-                    }
-                }
-
-            }
-        }
-    }
-    return false;
 }
 
 // Determine if the news article falls within the given range to be displayed
@@ -244,20 +222,6 @@ function match_generic_school_news_articles($xml, $schools){
     return false;
 }
 
-// Create the Featured Articles.
-function create_featured_articles_array(){
-    $featuredArticles = array();
-
-    global $featuredArticleOptions;
-
-    foreach( $featuredArticleOptions as $key=>$options ){
-        if( $options[3] != "null" && $options[3] != ""){
-            array_push($featuredArticles, $options[3]);
-        }
-    }
-    return $featuredArticles;
-}
-
 // Returns the featured Article html.
 function get_featured_article_html($page_info, $xml, $options){
     $ds = $xml->{'system-data-structure'};
@@ -343,50 +307,5 @@ function format_featured_date_news_article( $date)
     return $formattedDate;
 }
 
-// Sort an array
-function sort_news_array( $array ){
 
-    if( sizeof($array) != 0)
-    {
-        usort($array, 'sort_news_array_by_date');
-    }
-
-    return array_reverse($array);
-}
-
-function sort_news_array_by_date($a, $b)
-{
-    return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
-}
-
-function get_news_xml($fileToLoad, $categories){
-    $xml = simplexml_load_file($fileToLoad);
-    $pages = array();
-    $pages = traverse_news_folder($xml, $pages, $categories);
-    return $pages;
-}
-
-function traverse_news_folder($xml, $pages, $categories){
-    if(!$xml){
-        return;
-    }
-    foreach ($xml->children() as $child) {
-
-        $name = $child->getName();
-
-        if ($name == 'system-folder'){
-            $pages = traverse_news_folder($child, $pages, $categories);
-        }elseif ($name == 'system-page'){
-
-            // Set the page data.=
-            $page = inspect_news_article($child, $categories);
-            // Add to an event array.
-            if( $page['display-on-feed'] ) {
-                array_push($pages, $page);
-            }
-        }
-    }
-
-    return $pages;
-}
 ?>

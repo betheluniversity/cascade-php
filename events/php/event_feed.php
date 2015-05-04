@@ -24,10 +24,11 @@ $EndDate;
 
 /////////////////////////////////////////////////////////////////////
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 // Create the Event Feed events.
 function create_event_feed($categories){
-    $arrayOfEvents = get_event_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories);
+    $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
     // Turn all dates into individual events
@@ -85,7 +86,8 @@ function create_event_feed($categories){
     $eventArray = array_slice($eventArray, 0, $numEventsToFind, true);
 
     // FEATURED EVENTS
-    $featuredEvents = create_featured_event_array();
+    global $featuredEventOptions;
+    $featuredEvents = create_featured_array($featuredEventOptions);
 
     $numEvents = sizeof( $eventArray);
 
@@ -95,22 +97,6 @@ function create_event_feed($categories){
     }
     $combinedArray = array($featuredEvents, $eventArray, $numEvents );
     return $combinedArray;
-}
-
-// Create the Featured Events.
-// The 3rd index in each '$featuredEvent' is the html of the event.
-//  ( 0-2 include the info of the event. )
-function create_featured_event_array(){
-    $featuredEvents = array();
-
-    global $featuredEventOptions;
-
-    foreach( $featuredEventOptions as $key=>$featuredEvent ){
-        if( $featuredEvent[3] != null && $featuredEvent[3] != ""){
-            array_push($featuredEvents, $featuredEvent[3]);
-        }
-    }
-    return $featuredEvents;
 }
 
 // A function to check if the event is art or theatre.
@@ -144,30 +130,6 @@ function check_if_art_or_theatre($event){
     return false;
 }
 
-function match_metadata_events($xml, $categories){
-    foreach($categories as $category) {
-        foreach ($xml->{'dynamic-metadata'} as $md) {
-
-            $name = $md->name;
-
-            $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
-
-            foreach ($md->value as $value) {
-                if ($value == "None" || $value == "none" || $value == "select" || $value == "Select") {
-                    continue;
-                }
-                if (in_array($name, $options)) {
-                    if (in_array(htmlspecialchars($value), $category)) {
-                        return true;
-                    }
-                }
-
-            }
-        }
-    }
-    return false;
-}
-
 // Gathers the information of an event page
 function inspect_event_page($xml, $categories){
     //echo "inspecting page";
@@ -192,7 +154,8 @@ function inspect_event_page($xml, $categories){
 
     $ds = $xml->{'system-data-structure'};
 
-    $page_info['display-on-feed'] = match_metadata_events($xml, $categories);
+    $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
+    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "event");
 
     $dataDefinition = $ds['definition-path'];
 
@@ -442,51 +405,6 @@ function get_month_shorthand_name( $month){
     }
 }
 
-//Sort an array
-function sort_by_date( $array ){
-
-    if( sizeof($array) != 0)
-    {
-        usort($array, 'sort_by_date_helper');
-    }
-
-    return array_reverse($array);
-}
-
-function sort_by_date_helper($a, $b)
-{
-    return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
-}
-
-function get_event_xml($fileToLoad, $categories){
-    $xml = simplexml_load_file($fileToLoad);
-    $pages = array();
-    $pages = traverse_folder_events($xml, $pages, $categories);
-    return $pages;
-}
-
-function traverse_folder_events($xml, $pages, $categories){
-    if(!$xml){
-        return;
-    }
-    foreach ($xml->children() as $child) {
-
-        $name = $child->getName();
-
-        if ($name == 'system-folder'){
-            $pages = traverse_folder_events($child, $pages, $categories);
-        }elseif ($name == 'system-page'){
-            // Set the page data.
-            $page = inspect_event_page($child, $categories);
-
-            // Add to an event array.
-            if( $page['display-on-feed'] ) {
-                array_push($pages, $page);
-            }
-        }
-    }
-
-    return $pages;
-}
-
 ?>
+
+
