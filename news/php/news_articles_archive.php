@@ -13,7 +13,8 @@ $uniqueNews;
 // returns an array of html elements.
 function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    $arrayOfArticles = get_xml_news_archive($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories);
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
 
 //    foreach($arrayOfArticles as $value )
 //        echo $value['html'];
@@ -49,7 +50,7 @@ function inspect_news_archive_page($xml){
         "description" => $xml->{'description'},
         "path" => $xml->path,
         "external-path" => $xml->{'system-data-structure'}->{'external-link'},
-        "date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
+        "sort-by-date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
         "display-on-feed" => true,
@@ -69,7 +70,7 @@ function inspect_news_archive_page($xml){
     if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )
     {
         //check if is internal
-        $date = $page_info['date'];
+        $date = $page_info['sort-by-date'];
         $page_info['day'] = date("d", $date);
         $page_info['year'] = date("Y", $date);
         $page_info['month'] = date("m", $date);
@@ -126,52 +127,13 @@ function sort_news_articles( $articles ){
         {
             $currentMonth = array_search($monthArray, $yearArray);
             //echo $currentYear."--".$currentMonth."<br/>";
-            $finalArray[$currentYear][$currentMonth] = sort_news_archive($monthArray);
+            $finalArray[$currentYear][$currentMonth] = sort_by_date($monthArray);
         }
     }
 
     return $finalArray;
 }
 
-function sort_news_archive( $array ){
-    usort($array, 'sort_by_day');
-    return array_reverse($array);
-}
 
-function sort_by_day($a, $b)
-{
-    return strcmp($a["day"], $b["day"]);
-}
-
-function get_xml_news_archive($fileToLoad){
-    $xml = simplexml_load_file($fileToLoad);
-    $pages = array();
-    $pages = traverse_folder_news_archive($xml, $pages);
-    return $pages;
-}
-
-function traverse_folder_news_archive($xml, $pages){
-    if(!$xml){
-        return;
-    }
-    foreach ($xml->children() as $child) {
-
-        $name = $child->getName();
-
-        if ($name == 'system-folder'){
-            $pages = traverse_folder_news_archive($child, $pages);
-        }elseif ($name == 'system-page'){
-            // Set the page data.
-            $page = inspect_news_archive_page($child);
-
-            // Add to an event array.
-            if( $page['display-on-feed'] ) {
-                array_push($pages, $page);
-            }
-        }
-    }
-
-    return $pages;
-}
 
 ?>

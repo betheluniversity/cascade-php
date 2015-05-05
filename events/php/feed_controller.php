@@ -11,84 +11,40 @@
 // (then the files can be moved to the appropriate folders... news-feed => news folder.)
 
 
+//TODO unsure if still needed. general-cascade/feed_helper.php has kind of replaced this.
+//TODO exact copies of code have been deleted, but I will leave the rest commented out
 ////////////////////////
 // The Controller
 ////////////////////////
-function create_feed($feedType, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    $feedHTMLArray = array();
-    if( $feedType == "Event Feed" ){
-        include_once "feed_events.php";
-        $feedHTMLArray = create_event_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    }
-    elseif( $feedType == "News Article Feed" ){
-        include_once "feed_news_articles.php";
-        $feedHTMLArray = create_news_article_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    }
-    elseif( $feedType == "News Archive" ){
-        include_once "news_archive.php";
-        $feedHTMLArray = create_archive();
-    }
-    return $feedHTMLArray;
-}
-
-// Sort an array
-function sort_array( $array ){
-
-    if( sizeof($array) != 0)
-    {
-        usort($array, 'sort_by_date');
-    }
-
-    return array_reverse($array);
-}
-
-function sort_by_date($a, $b)
-{
-    return strcmp($a["date-for-sorting"], $b["date-for-sorting"]);
-}
-
-function get_xml($fileToLoad, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    $xml = simplexml_load_file($fileToLoad);
-    $pages = array();
-    $pages = traverse_folder($xml, $pages, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    return $pages;
-}
-
-function traverse_folder($xml, $pages, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    if(!$xml){
-        return;
-    }
-    foreach ($xml->children() as $child) {
-
-        $name = $child->getName();
-
-        if ($name == 'system-folder'){
-            $pages = traverse_folder($child, $pages, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-        }elseif ($name == 'system-page'){
-            // Set the page data.
-            $page = inspect_page($child, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-
-            // Add to an event array.
-            if( $page['display-on-feed'] ) {
-                array_push($pages, $page);
-            }
-        }
-    }
-
-    return $pages;
-}
-
-// Get the corresponding page.
-function inspect_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-    global $feedType;
-
-    if( $feedType == "Event Feed" )
-        return inspect_event_page( $xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    elseif( $feedType == "News Article Feed" )
-        return inspect_news_article_page( $xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    elseif( $feedType == "News Archive" ){
-        return inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-    }
-}
-
-?>
+//function create_feed($feedType, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+//    $feedHTMLArray = array();
+//    if( $feedType == "Event Feed" ){
+//        include_once "feed_events.php";
+//        $feedHTMLArray = create_event_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM);
+//    }
+//    elseif( $feedType == "News Article Feed" ){
+//        include_once "feed_news_articles.php";
+//        $feedHTMLArray = create_news_article_feed($School, $Topic, $CAS, $CAPS, $GS, $SEM);
+//    }
+//    elseif( $feedType == "News Archive" ){
+//        include_once "news_archive.php";
+//        $feedHTMLArray = create_archive();
+//    }
+//    return $feedHTMLArray;
+//}
+//
+//
+//// Get the corresponding page.
+//function inspect_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+//    global $feedType;
+//
+//    if( $feedType == "Event Feed" )
+//        return inspect_event_page( $xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+//    elseif( $feedType == "News Article Feed" )
+//        return inspect_news_article_page( $xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+//    elseif( $feedType == "News Archive" ){
+//        return inspect_news_archive_page($xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+//    }
+//}
+//
+//?>

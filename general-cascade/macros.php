@@ -183,9 +183,9 @@ function makeTwigEnviron($path){
 function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
 {
 
-    //if no cache_name is passed in it defaults to all inputs strung together with -
+    //if no cache_name is passed in it defaults to the function name and all inputs strung together with -
     if (!$cache_name) {
-        $cache_name = $inputs[0];
+        $cache_name = $func . "-". $inputs[0];
         reset($inputs);
         while (next($inputs) !== FALSE) {
             $cache_name .= "-" . current($inputs);

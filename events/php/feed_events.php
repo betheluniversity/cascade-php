@@ -100,7 +100,7 @@
 
         /////////////////////////////////////////
 
-        $sortedEvents = array_reverse(sort_array($eventArrayWithMultipleEvents));
+        $sortedEvents = array_reverse(sort_by_date($eventArrayWithMultipleEvents));
         // Only grab the first X number of events.
         global $NumEvents;
 
