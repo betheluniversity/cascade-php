@@ -192,11 +192,16 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
         }
     }
 
+    //display name is used to make memcache.log more readable
+    $display_name = $cache_name;
+    $URI = $_SERVER['REQUEST_URI'];
+    $cache_name = $cache_name . "-" . $URI;
+
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
     error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
-    error_log("$func function being used and the cache_name is $cache_name\n", 3, '/tmp/memcache.log');
+    error_log("$func function being used and the display_name is $display_name\n$URI\n", 3, '/tmp/memcache.log');
     if (!$data) {
         error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);

@@ -11,7 +11,7 @@
     function show_individual_profile_stories($stories)
     {
         $file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml";
-        $xml = autoCache("simplexml_load_file", array($file), 'profile_story_collection'.$_SERVER['REQUEST_URI']);
+        $xml = autoCache("simplexml_load_file", array($file), 'profile_story_collection');
 
         $html = "";
         foreach($stories as $story){
@@ -28,7 +28,7 @@
 
         //todo Clean up using $_SERVER
 
-        $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array'.$_SERVER['REQUEST_URI']);
+        $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array');
 
         $html = "";
         foreach( $profileStoriesArray as $profileStory )

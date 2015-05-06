@@ -26,7 +26,7 @@ function create_news_article_feed($categories){
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     global $NumArticles;
-    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted_'.$_SERVER['REQUEST_URI'].$NumArticles);
+    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted_'.$NumArticles);
 
 
 

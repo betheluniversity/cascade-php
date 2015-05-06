@@ -65,10 +65,4 @@ function _removeParameterFromQueryString($parameterName, $queryString)
     );
 }
 
-//called by cas-summer-courses format so it can use autoCache
-function summer_courses($code){
-
-    $url = "http://wsapi.bethel.edu/courses/$code";
-    return file_get_contents($url);
-}
 

@@ -28,10 +28,10 @@
 
         global $destinationName;
         if( $destinationName == "staging" ){
-            $profileStories = autoCache("get_xml_profile_story_hub", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml"), 'profile_story_hub_staging'.$_SERVER['REQUEST_URI']);
+            $profileStories = autoCache("get_xml_profile_story_hub", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml"), 'profile_story_hub_staging');
         }
         else{
-            $profileStories = autoCache("get_xml_profile_story_hub", array("/var/www/cms.pub/_shared-content/xml/profile-stories.xml"), 'profile_story_hub'.$_SERVER['REQUEST_URI']);
+            $profileStories = autoCache("get_xml_profile_story_hub", array("/var/www/cms.pub/_shared-content/xml/profile-stories.xml"), 'profile_story_hub');
         }
         // Divide the single large array in the 4-5 school arrays, then put them back together.
         // I would prefer a dynamic way to do this.
