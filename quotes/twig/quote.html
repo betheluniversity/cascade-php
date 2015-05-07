@@ -8,18 +8,21 @@
                     </div>
                 </div>
            </div>
+
+        <div class="grid-cell  u-medium-9-12">
+        {% else %}
+        <div class="grid-cell  u-medium-12-12">
         {% endif %}
 
-        <div class="grid-cell  u-medium-12-12">
             <div class="grid-pad-1x">
                 <p class="quote__text">{{text}}</p>
                 {% if source != "" %}
                 <cite class="quote__source">–{{source}}
                     {% if gradYear != "" %}
-                        {{gradYear}}
+                    {{gradYear}}
                     {% endif %}
                     {% if job != "" %}
-                        <br />{{job}}
+                    <br />{{job}}
                     {% endif %}
                 </cite>
                 {% endif %}
