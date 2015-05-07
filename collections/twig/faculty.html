@@ -1,22 +1,16 @@
-<div class="pa1">
-    <div class="grid ">
-        {% if thumbURL != "" %}
-        <div class="grid-cell  u-medium-3-12">
-            <div class="grid-pad-1x">
-                <div class="quote__avatar">
-                    {{thumbURL|raw}}
-                </div>
-            </div>
+<div class="quote">
+
+    {% if thumbURL != "" %}
+
+        <div class="quote__avatar">
+            {{thumbURL|raw}}
         </div>
 
-        <div class="grid-cell  u-medium-9-12">
-        {% else %}
-        <div class="grid-cell  u-medium-12-12">
-        {% endif %}
-            <div class="grid-pad-1x">
-                <h2><a href='{{ path }}'>{{ first }} {{ last }}</a></h2>
-               <div>{{ title }}</div>
-            </div>
-        </div>
+    {% endif %}
+
+    <div class="quote__text">
+        <p class="h2"><a href='{{ path }}'>{{ first }} {{ last }}</a></p>
+        <p>{{ title }}</p>
     </div>
+
 </div>
