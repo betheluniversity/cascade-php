@@ -210,7 +210,8 @@
             "md" => array(),
         );
         $ds = $xml->{'system-data-structure'};
-        $page_info["external-link"] = $ds->{'link'};
+        $page_info["externallink"] = $ds->{'link'};
+
         // Add the dates
         $dates = $ds->{'event-dates'};
         foreach ($dates as $date){
