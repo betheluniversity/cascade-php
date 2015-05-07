@@ -17,14 +17,14 @@
             <div class="grid-pad-1x">
                 <p class="quote__text">{{text}}</p>
                 {% if source != "" %}
-                <cite class="quote__source">–{{source}}
+                <div class="quote__source">–{{source}}
                     {% if gradYear != "" %}
                     {{gradYear}}
                     {% endif %}
                     {% if job != "" %}
                     <br />{{job}}
                     {% endif %}
-                </cite>
+                </div>
                 {% endif %}
             </div>
         </div>
