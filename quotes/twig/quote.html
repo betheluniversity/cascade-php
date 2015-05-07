@@ -12,7 +12,7 @@
         <p>{{text}}</p>
         
         {% if source != "" %}
-            <cite class="quote__source">–{{source}}
+            <p class="quote__source">–{{source}}
             
                 {% if gradYear != "" %}
                     {{gradYear}}
@@ -21,7 +21,7 @@
                 {% if job != "" %}
                     <br />{{job}}
                 {% endif %}
-            </cite>
+            </p>
         {% endif %}
     </div>
 
