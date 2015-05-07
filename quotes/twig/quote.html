@@ -1,32 +1,28 @@
-<div class="pa1">
-    <div class="grid ">
-        {% if thumbURL != "" %}
-           <div class="grid-cell  u-medium-3-12">
-                <div class="grid-pad-1x">
-                    <div class="quote__avatar">
-                        {{thumbURL|raw}}
-                    </div>
-                </div>
-           </div>
+<div class="quote">
 
-        <div class="grid-cell  u-medium-9-12">
-        {% else %}
-        <div class="grid-cell  u-medium-12-12">
-        {% endif %}
+    {% if thumbURL != "" %}
 
-            <div class="grid-pad-1x">
-                <p class="quote__text">{{text}}</p>
-                {% if source != "" %}
-                <div class="quote__source">–{{source}}
-                    {% if gradYear != "" %}
-                    {{gradYear}}
-                    {% endif %}
-                    {% if job != "" %}
-                    <br />{{job}}
-                    {% endif %}
-                </div>
-                {% endif %}
-            </div>
+        <div class="quote__avatar">
+            {{thumbURL|raw}}
         </div>
+
+    {% endif %}
+
+    <div class="quote__text">
+        <p>{{text}}</p>
+        
+        {% if source != "" %}
+            <cite class="quote__source">–{{source}}
+            
+                {% if gradYear != "" %}
+                    {{gradYear}}
+                {% endif %}
+                
+                {% if job != "" %}
+                    <br />{{job}}
+                {% endif %}
+            </cite>
+        {% endif %}
     </div>
+
 </div>
