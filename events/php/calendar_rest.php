@@ -69,7 +69,6 @@
         $get_xml_start_time = microtime(true);
 
         $calendar = '';
-
         $xml = autoCache("get_event_xml", array(), 'CALENDAR_XML');
 
         $after_xml_time_start = microtime(true);

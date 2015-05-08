@@ -51,14 +51,23 @@ function get_quote_html($xml){
     $text = $ds->{'quote'};
     $source = $ds->{'source'};
 
+
+
+    $gradYear = $ds->{'grad-year'};
+    $job = $ds->{'job-grad-school'};
+
+    $html = get_twig_html($imagePath, $text, $source, $gradYear, $job);
+
+    return $html;
+}
+
+function get_twig_html($imagePath, $text, $source, $gradYear, $job){
+
     if( $imagePath != "/" && $imagePath != "") {
         $thumbURL = thumborURL($imagePath, 200, true, false);
     }else {
         $thumbURL = "";
     }
-
-    $gradYear = $ds->{'grad-year'};
-    $job = $ds->{'job-grad-school'};
 
     $twig = makeTwigEnviron('/code/quotes/twig');
     $html = $twig->render('quote.html', array(
@@ -68,7 +77,10 @@ function get_quote_html($xml){
         'gradYear'  => $gradYear,
         'job'       => $job
     ));
-
-
     return $html;
+}
+
+function testerino($imagePath, $text, $source, $gradYear, $job){
+    echo $imagePath . "      " . $text . "      " . $source . "      " . $gradYear . "      " . $job;
+    return;
 }

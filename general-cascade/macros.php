@@ -191,12 +191,12 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
             $cache_name .= "-" . current($inputs);
         }
     }
-
     //display name is used to make memcache.log more readable
     $display_name = $cache_name;
     $URI = $_SERVER['REQUEST_URI'];
     $cache_name = $cache_name . "-" . $URI;
 
+    //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
