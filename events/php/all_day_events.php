@@ -8,6 +8,7 @@
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 function create_list($categories){
+    echo "<h3>All events that are all-day:</h3>";
     echo "<ol>";
     get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "check_if_all_day");
     echo "</ol>";
@@ -17,7 +18,6 @@ function create_list($categories){
 
 function check_if_all_day($xml, $categories){
     $ds = $xml->{'system-data-structure'};
-
     if( $ds['definition-path'] == "Event")
     {
         $id = $xml['id'];
