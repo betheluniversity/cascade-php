@@ -12,7 +12,6 @@ function create_faculty_carousel($categories){
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
     $bios = find_matching_bios($faculty_pages, $categories);
-    $twig = makeTwigEnviron('/code/collections/twig');
 
     $carousel_items = "";
     foreach($bios as $bio){
@@ -22,14 +21,7 @@ function create_faculty_carousel($categories){
         $title = $ds->{'job-title'};
         $path = $bio->path;
         $image = "https://www.bethel.edu" . $ds->image->path[0];
-        $thumbURL = thumborURL($image, '150', $lazy=false, $print=false);
-        $html = $twig->render('faculty.html', array(
-            'first' => $first,
-            'last' => $last,
-            'title' => $title,
-            'path' => $path,
-            'thumbURL' => $thumbURL
-        ));
+        $html = create_twig_html($image, $first, $last, $title, $path);
 
         $carousel_items .= carousel_item($html, "", null, false);
     }
@@ -59,4 +51,19 @@ function find_matching_bios($xml, $categories){
         }
     }
     return $return_bios;
+}
+
+function create_twig_html($image, $first, $last, $title, $path){
+
+    $twig = makeTwigEnviron('/code/collections/twig');
+    $thumbURL = thumborURL($image, '150', $lazy=false, $print=false);
+
+    $html = $twig->render('faculty.html', array(
+        'first'     => $first,
+        'last'      => $last,
+        'title'     => $title,
+        'path'      => $path,
+        'thumbURL'  => $thumbURL
+    ));
+    return $html;
 }

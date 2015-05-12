@@ -41,7 +41,7 @@ function create_news_article_archive($categories){
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
 
-function inspect_news_archive_page($xml){
+function inspect_news_archive_page($xml, $categories){
 
     $page_info = array(
         "title" => $xml->title,
@@ -75,6 +75,9 @@ function inspect_news_archive_page($xml){
         $page_info['year'] = date("Y", $date);
         $page_info['month'] = date("m", $date);
         $page_info['month-name'] = date("F", $date);
+
+        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program');
+        $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
         $page_info['html'] = get_news_article_html($page_info, $xml);
     }
