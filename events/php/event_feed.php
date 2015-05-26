@@ -388,7 +388,7 @@ function format_fancy_event_date( $date){
 function convert_path_to_link( $event){
     if( $event["external-link"] != "" )
         return $event["external-link"];
-    return "http://bethel.edu".$event['path'];
+    return "https://bethel.edu".$event['path'];
 }
 
 // Returns the correct shorthand for each event date

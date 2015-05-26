@@ -27,7 +27,7 @@ function check_if_all_day($xml, $categories){
         if($dates->{'all-day'}->{"value"} == "Yes")
         {
             $page_info["display-on-feed"] = true;
-            echo "<li><a href='http://www.bethel.edu$xml->path'>$xml->path</a> --- <a href='$path'>$xml->title</a></li>";
+            echo "<li><a href='https://www.bethel.edu$xml->path'>$xml->path</a> --- <a href='$path'>$xml->title</a></li>";
         }
     }
 

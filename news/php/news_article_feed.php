@@ -237,7 +237,7 @@ function get_featured_article_html($page_info, $xml, $options){
     if( $imagePath != "" && $imagePath != "/")
     {
         $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
-        $html .= '<span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid left false">';
+        $html .= '<span itemscope="itemscope" itemtype="https://schema.org/NewsArticle"><div class="grid left false">';
         $html .= '<div class="grid-cell  u-medium-1-2">';
         $html .= '<div class="grid-pad-1x">';
 
@@ -249,7 +249,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '<div class="grid-pad-1x">';
         // FIX THIS
         if( $page_info['title'] != "")
-            $html .= '<h4"><a href="http://'.'.bethel.edu'.$path.'"><span itemprop="headline">'.$page_info['title'].'</span></a></h4>';
+            $html .= '<h4"><a href="https://'.'.bethel.edu'.$path.'"><span itemprop="headline">'.$page_info['title'].'</span></a></h4>';
 
         if( $date != "" && $date != "null" )
         {

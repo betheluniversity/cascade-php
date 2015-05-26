@@ -8,7 +8,7 @@
 
 
 
-    $gifts = json_decode(file_get_contents("http://wsapi.bethel.edu/roar/total-num-gifts"));
+    $gifts = json_decode(file_get_contents("https://wsapi.bethel.edu/roar/total-num-gifts"));
     $results = $gifts->{'results'};
 
     $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/roar-day/twig');

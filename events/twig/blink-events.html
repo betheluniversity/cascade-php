@@ -2,7 +2,7 @@
     <div class="uportal-cms-block">
         <div class="uportal-channel-text" style="text-align: right">
             <span style="float:left">{{display_date}}</span>
-            <a href="http://tinker.bethel.edu/event/" title="Submit Events">Submit</a>
+            <a href="https://tinker.bethel.edu/event/" title="Submit Events">Submit</a>
             |
             <a href="https://www.bethel.edu/events/calendar/" title="Full Calendar of Events">Full Calendar</a>
         </div>
@@ -14,7 +14,7 @@
                             {% if event.external-link.0 %}
                                 {% set link = event.external-link.0 %}
                             {% else %}
-                                {% set link = 'http://www.bethel.edu' ~ event.path.0 %}
+                                {% set link = 'https://www.bethel.edu' ~ event.path.0 %}
                             {% endif %}
 
                             <!--move all this to event_helper.php-->

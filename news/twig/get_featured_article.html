@@ -1,7 +1,7 @@
 <!--Needs destinationName, thumborURL, page_info, path, formattedDate, date, options-->
 
 <div class="mt1 mb2 pa1" style="background: #f4f4f4">
-    <span itemscope="itemscope" itemtype="http://schema.org/NewsArticle"><div class="grid left false">
+    <span itemscope="itemscope" itemtype="https://schema.org/NewsArticle"><div class="grid left false">
         <div class="grid-cell  u-medium-1-2">
             <div class="grid-pad-1x">
                 {{thumborURL|raw}}
@@ -10,7 +10,7 @@
         <div class="grid-cell  u-medium-1-2">
             <div class="grid-pad-1x">
                 {% if page_info['title'] != "" %}
-                    <h4><a href="http://{{destinationName}}.bethel.edu{{path}}"><span itemprop="headline">{{page_info['title']}}</span></a></h4>
+                    <h4><a href="https://{{destinationName}}.bethel.edu{{path}}"><span itemprop="headline">{{page_info['title']}}</span></a></h4>
                 {% endif %}
 
                 {% if date != "" and date != "null" %}
