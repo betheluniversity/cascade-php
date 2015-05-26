@@ -9,7 +9,7 @@
 
 function howToApply($code, $option){
     $twig = makeTwigEnviron('/code/banner-blocks/twig');
-    if($select_option == 4){
+    if($option == 4){
         return;
     }else{
         $call_program_code = str_replace("%", "%25", $code);
