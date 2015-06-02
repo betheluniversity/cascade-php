@@ -347,9 +347,7 @@
 
         var search = "[name=" + day + "]";
         if(mode == "LIST"){
-            $('html,body').animate({
-                scrollTop:  $(search).offset().top
-            });
+            setTimeout(function() {$('html,body').animate({scrollTop:  $(search).offset().top})}, 300);
         }
 
         event.preventDefault();
