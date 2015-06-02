@@ -11,7 +11,7 @@ if($program == "CAPS")
     $program = "COPN";
 else
     $program = "GOPN";
-$url = "https://wsapi.bethel.edu/open-enrollment-courses/$program";
+$url = "http://wsapi.bethel.edu/open-enrollment-courses/$program";
 $results = json_decode(file_get_contents($url));
 echo $results->data;
 

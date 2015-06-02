@@ -17,20 +17,17 @@ function course_catalog($code, $values){
             'content' => http_build_query($data),
         ),
     );
-    $url = "https://wsapi.bethel.edu/courses/course-catalog/$code";
+    $url = "http://wsapi.bethel.edu/courses/course-catalog/$code";
     $context  = stream_context_create($options);
     return file_get_contents($url, false, $context);
-
 }
 
 function individual_courses($code, $values){
-
-    $url = "https://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
+    $url = "http://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
     return file_get_contents($url, false);
 }
 
 function load_course_catalog ($values, $code) {
-
     $content = autoCache('course_catalog', array($code, $values), $code, 1);
     $content = json_decode($content, true);
     echo $content['data'];
