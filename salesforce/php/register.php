@@ -192,7 +192,7 @@ $result = file_get_contents($auth_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['status'] == "success"){
-    $url = "https://www.bethel.edu/admissions/apply/confirm";
+    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
 
     $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
     mail($mail_to,$subject,$subject,"From: $from\n");
