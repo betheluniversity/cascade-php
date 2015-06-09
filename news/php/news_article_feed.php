@@ -85,7 +85,7 @@ function inspect_news_article($xml, $categories){
         $page_info['teaser'] = $xml->teaser;
         $page_info['html'] = get_news_article_html($page_info, $xml);
 
-        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program');
+        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
         $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
         $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
