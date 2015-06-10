@@ -253,7 +253,6 @@ function display_on_feed_events($page_info){
 
 // Returns the featured Event html.
 function get_featured_event_html($event, $featuredEventOptions){
-
     // Get the most recent start/enddate pair.
     //  Get it in the form of a date object with start/end/all-day
     $dates = $event['dates'];
@@ -271,24 +270,43 @@ function get_featured_event_html($event, $featuredEventOptions){
     if( ($lastDate->{'end-date'} / 1000) < time() )
         return '';
 
+    $title = $event['title'];
+    $path = convert_path_to_link($event);
+
+    if( $featuredEventOptions[2] == "No"){
+        if( sizeof($dates) > 1)
+        {
+            $formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );
+        }
+        else{
+            $formattedDate = format_featured_event_date($firstDate);
+        }
+        $date = $formattedDate;
+    }
+
+    if( $featuredEventOptions[1] != "" )
+        $description = $featuredEventOptions[1];
+    elseif( $event['description'] != "")
+        $description = $event['description'];
 
     // Only display it if it has an image.
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
-        $twig->addFilter(new Twig_SimpleFilter('convert_path_to_link','convert_path_to_link'));
-        $twig->addFilter(new Twig_SimpleFilter('format_featured_event_date','format_featured_event_date'));
-        $html = $twig->render('feed_events.html', array(
+        $html = $twig->render('get_featured_event_html.html', array(
             'thumborURL'=> thumborURL($event['image'], 400, false, false),
-            'event' => $event,
-            'featuredEventOptions' => $featuredEventOptions,
-            'dates' => $dates,
-            'firstDate' => $firstDate));
+            'path' => $path,
+            'title' => $title,
+            'date' => $date,
+            'description' => $description));
 
+
+
+//        $html = "TEST";
+        return $html;
     }
     else
         return null;
 
-    return $html;
 }
 
 // returns the html of the event.
