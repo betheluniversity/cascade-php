@@ -16,9 +16,6 @@ function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
 
-//    foreach($arrayOfArticles as $value )
-//        echo $value['html'];
-
     $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), "news_archive_sorted");
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
@@ -26,14 +23,12 @@ function create_news_article_archive($categories){
 
     foreach( $arrayOfArticles as $yearArray )
     {
+        // This should return an array of 5 items. Each of those includes a full years worth of articles, pre-sorted, and including the headers.
         //twig version
         echo $twig->render('news_article_archive.html',array(
             'yearArray' => $yearArray
         ));
     }
-
-    // This should return an array of 5 items. Each of those includes a full years worth of articles, pre-sorted, and including the headers.
-//    return $articleArray;
     return;
 }
 
@@ -76,7 +71,7 @@ function inspect_news_archive_page($xml, $categories){
         $page_info['month'] = date("m", $date);
         $page_info['month-name'] = date("F", $date);
 
-        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program');
+        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
         $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
         $page_info['html'] = get_news_article_html($page_info, $xml);

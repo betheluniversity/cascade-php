@@ -50,7 +50,7 @@ function match_metadata_articles($xml, $categories, $options, $feedType){
             $name = $md->name;
 
             foreach ($md->value as $value) {
-                if ($value == "None" || $value == "none" || $value == "select" || $value == "Select") {
+                if (strtolower($value) == "none"|| strtolower($value) == "select") {
                     continue;
                 }
                 if ($feedType == 'event')
