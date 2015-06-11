@@ -29,7 +29,7 @@
                 $proofPoint = $proofPointArray[$randomIndex];
                 if( $proofPoint != null)
                 {
-                    array_push( $finalProofPoints, $proofPoint );
+                    array_push( $finalProofPoints, $proofPoint['html'] );
                     $numToFind--;
                 }
                 unset($proofPointArray[$randomIndex]);
@@ -47,11 +47,10 @@
             foreach ($xml->{'dynamic-metadata'} as $md) {
                 $name = $md->name;
                 foreach ($md->value as $value) {
-                    if ($value == "Select" || $value == "none") {
-                        continue;
-                    }
-                    if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
-                        return true;
+                    if (strtolower($value) != "select" && strtolower($value) != "none") {
+                        if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -122,6 +121,7 @@
         // First get one that matches the specific school dept
         if( match_metadata_proof_points($xml, $CAS) || match_metadata_proof_points($xml, $CAPS) || match_metadata_proof_points($xml, $GS) || match_metadata_proof_points($xml, $SEM)  )
             $block_info['match-dept'] = true;
+
         // next, grab a GENERIC one from the school ( no depts tagged )
         $block_info['match-school'] = match_generic_school_proof_points($xml, $School);
 
@@ -155,16 +155,6 @@
                     array_push($dept, $proofPoint);
                 }
             }
-            elseif( $proofPoint['match-topic'])
-            {
-                if($proofPoint['premium'])
-                {
-                    array_push($topicPremium, $proofPoint);
-                }
-                else{
-                    array_push($topic, $proofPoint);
-                }
-            }
             elseif( $proofPoint['match-school'])
             {
                 if($proofPoint['premium'])
@@ -173,6 +163,16 @@
                 }
                 else{
                     array_push($school, $proofPoint);
+                }
+            }
+            elseif( $proofPoint['match-topic'])
+            {
+                if($proofPoint['premium'])
+                {
+                    array_push($topicPremium, $proofPoint);
+                }
+                else{
+                    array_push($topic, $proofPoint);
                 }
             }
         }

@@ -34,8 +34,7 @@
         foreach($proof_points as $proof_point_xml){
             $ppInfo = inspect_block_proof_points($proof_point_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
             if( $ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic'] ){
-                echo "<!-- MATCH -->";
-                array_push($matches, $ppInfo['html']);
+                array_push($matches, $ppInfo);
             }
         }
 
