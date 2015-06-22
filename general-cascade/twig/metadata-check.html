@@ -1,15 +1,16 @@
-{% if staging %}
-    {% if cms_url %}
-        <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
-            This page is a <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>TESTING</a> version.
-        </div>
-    {% else %}
-        <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
-            This page is a TESTING version.
-        </div>
-    {% endif %}
-{% endif %}
+<!--{% if staging %}-->
+    <!--{% if cms_url %}-->
+        <!--<div style='z-index:1;position:fixed;width:100%;text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;z-index:50' id="warning">-->
+            <!--This page is a <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>TESTING</a> version.-->
+        <!--</div>-->
+    <!--{% else %}-->
+        <!--<div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>-->
+            <!--This page is a TESTING version.-->
+        <!--</div>-->
+    <!--{% endif %}-->
+<!--{% endif %}-->
 
 {% if cms_url %}
 <meta name="cms_url"  content="{{cms_url|raw}}">
 {% endif %}
+<!---->

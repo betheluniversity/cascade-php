@@ -19,9 +19,9 @@ $soda = strstr(getcwd(), "soda");
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
-echo $twig->render('metadata-check.html', array(
-    'staging' => $staging,
-    'cms_url' => $cms_url));
+//echo $twig->render('metadata-check.html', array(
+//    'staging' => $staging,
+//    'cms_url' => $cms_url));
 
 
 
