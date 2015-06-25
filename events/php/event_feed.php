@@ -276,7 +276,7 @@ function get_featured_event_html($event, $featuredEventOptions){
     if( $featuredEventOptions[2] == "No"){
         if( sizeof($dates) > 1)
         {
-            $formattedDate = date("l, F d", $firstDate->{'start-date'}/1000)." - ".date("l, F d", $lastDate->{'end-date'}/1000 );
+            $formattedDate = date("l, F j", $firstDate->{'start-date'}/1000)." - ".date("l, F j", $lastDate->{'end-date'}/1000 );
         }
         else{
             $formattedDate = format_featured_event_date($firstDate);
@@ -341,21 +341,21 @@ function format_featured_event_date( $date ){
     // If it spans multiple days, do not display a time.
     // if all day, do not display a time.
     if( date("m/d/Y", $startDate) != date("m/d/Y", $endDate) ){
-        return date("F d, Y", $startDate)." - ".date("F d, Y", $endDate);
+        return date("F j, Y", $startDate)." - ".date("F j, Y", $endDate);
     }
 
     // if it is all day
     if( $allDay == "Yes" ){
-        return date("F d, Y", $startDate);
+        return date("F j, Y", $startDate);
     }
 
     // if it is normal.
     // if 12 pm, change to noon
     if( date("g:i", $startDate) == "12:00 pm"){
-        return date("F d, Y |", $startDate)." noon";
+        return date("F j, Y |", $startDate)." noon";
     }
     else{
-        $returnedDate = date("F d, Y | g:i a", $startDate);
+        $returnedDate = date("F j, Y | g:i a", $startDate);
         // Change am/pm to a.m./p.m.
         $returnedDate = str_replace("am", "a.m.", $returnedDate);
         $returnedDate = str_replace("pm", "p.m.", $returnedDate);
