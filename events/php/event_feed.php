@@ -299,12 +299,10 @@ function get_featured_event_html($event, $featuredEventOptions){
             'date' => $date,
             'description' => $description));
 
-
-
-//        $html = "TEST";
         return $html;
     }
     else
+        echo "<!-- skipping featured event -- event has no image -->";
         return null;
 
 }
