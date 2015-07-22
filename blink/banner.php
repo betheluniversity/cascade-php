@@ -26,4 +26,10 @@ if($staging){
 }else{
     $url = "https://banner.bethel.edu/ssomanager/c/SSB?pkg=" . $_GET['url'];
 }
+
+// logging
+$current_time = date("m/d/Y h:i:s");
+error_log("$current_time 1) Blink channel to Banner url: " + $_GET['url']);
+error_log("$current_time 2) Submitted url: $url");
+
 header( 'Location: ' . $url ) ;
