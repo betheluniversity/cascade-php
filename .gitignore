@@ -21,3 +21,5 @@ collections/php/collection_functions.php
 collections/php/faculty.php
 
 collections/twig/get_profile_stories_html.html
+
+blink/php-error.log
