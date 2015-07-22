@@ -30,7 +30,7 @@ if($staging){
 // logging
 ini_set("log_errors", 1);
 ini_set("error_log", "php-error.log");
-error_log("1) Original blink/banner url after going through varnish: " + $_GET['url']);
+error_log("1) Original blink/banner url after going through varnish: " . $_GET['url']);
 error_log("2) Submitted url after going through php script: $url");
 
 header( 'Location: ' . $url ) ;
