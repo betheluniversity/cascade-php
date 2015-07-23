@@ -30,5 +30,9 @@ function individual_courses($code, $values){
 function load_course_catalog ($values, $code) {
     $content = autoCache('course_catalog', array($code, $values), $code, 1);
     $content = json_decode($content, true);
-    echo $content['data'];
+
+    if( strpos($content['data'], '<li') !== false ) {
+        echo "<h2>Courses</h2>";
+        echo $content['data'];
+    }
 }
