@@ -8,7 +8,6 @@
 
 
 function course_catalog($code, $values){
-
     $data = array('options' => $values);
     $options = array(
         'http' => array(
