@@ -1,4 +1,6 @@
 <?php
+$staging = strstr(getcwd(), "staging/public");
+$soda = strstr(getcwd(), "soda");
 
 if ($require_auth == "Yes" || $check_auth == "Yes"){
     header("Cache-Control: no-cache, must-revalidate");
@@ -13,8 +15,7 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
 
-$staging = strstr(getcwd(), "staging/public");
-$soda = strstr(getcwd(), "soda");
+
 
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
