@@ -1,5 +1,4 @@
 <?php
-
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
@@ -35,8 +34,8 @@ function build_calendar_data($month, $year){
     $data['next_title'] = "Next Month";
     $data['remote_user'] = $_SERVER['REMOTE_USER'];
 
-    $total_time_end = microtime(true);
-    $time = $total_time_end - $total_time_start;
+//    $total_time_end = microtime(true);
+//    $time = $total_time_end - $total_time_start;
     return json_encode($data);
 }
 

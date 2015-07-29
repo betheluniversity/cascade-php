@@ -111,7 +111,7 @@
         // Get all categores that are checked
         var externalCategories = getExternalCategories();
 
-        // Unceck any that shouldn't be checked (for example, on page reload)
+        // Uncheck any that shouldn't be checked (for example, on page reload)
         $(".subject-external").each(function(){
             if (externalCategories.indexOf(this.value) == -1){
                 $(this).attr('checked', false);
@@ -137,7 +137,7 @@
             var hide = true;
             for (var index = 0; index < categories.length; ++index) {
                 var category = $(categories[index]).data()['category'];
-                if (internalCategories.indexOf(category) > -1 && username != "null"){
+                if (internalCategories && internalCategories.indexOf(category) > -1 && username != "null"){
                     hide = false;
                 }
                 if (externalCategories.indexOf(category) > -1){
@@ -185,13 +185,7 @@
         if($.cookie('cal-user') && $.cookie('cal-user') != null && $.cookie('cal-user') != "null"){
             return $.cookie('cal-user');
         }else{
-            var url = '/code/general-cascade/get_remote_user';
-            $.getJSON(url, function(data){
-                var remote_user = data['remote_user'];
-                if( remote_user){
-                    $.cookie('cal-user', remote_user);
-                }
-            });
+            $.cookie('cal-user', $.cookie('remote-user'));
         }
 
     }
@@ -268,8 +262,6 @@
             if (!remote_user){
                 //remove the internal categories so they can't be selected via select-all
                 $(".filter-list-internal").remove();
-                $.cookie('cal-user', null);
-
             }
             checkEventCategories();
         });

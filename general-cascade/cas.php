@@ -6,7 +6,6 @@
  * Time: 9:47 AM
  */
 
-
 require_once 'cas_config.php';
 require_once $phpcas_path . '/CAS.php';
 
@@ -20,8 +19,6 @@ phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate
 //authorized to use CAS. Build the URL ourselves without a port and call setFixedServiceURL
 if($staging){
     $final_url = 'https://staging.bethel.edu';
-}elseif($soda){
-    $final_url = 'https://soda.bethel.edu';
 }else{
     $final_url = 'https://www.bethel.edu';
 }
@@ -48,9 +45,11 @@ if($require_auth == "Yes"){
     header("Cache-Control: no-store, no-cache, must-revalidate");
     ##set remove user variable
     $remote_user = phpCAS::getUser();
+    setcookie('remote-user', $remote_user);
 }else if($check_auth == "Yes"){
     if(phpCAS::checkAuthentication()){
         $remote_user = phpCAS::getUser();
+        setcookie('remote-user', $remote_user);
     }else{
         $remote_user = null;
     }
