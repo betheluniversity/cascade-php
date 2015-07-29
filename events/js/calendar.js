@@ -308,7 +308,7 @@
     function set_all_subjects(state) {
         var checkboxes = $('.filter-content input[name=subjects]');
         if (state) {
-            checkboxes.attr('checked', 'checked');
+            checkboxes.prop('checked', 'checked');
         } else {
             checkboxes.removeAttr('checked');
         }
