@@ -12,7 +12,6 @@
 
     function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
 
-        echo "<!-- new proof points -->";
         $proofPointsToDisplay = get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
 
         $numProofPoints = count($proofPointsToDisplay);
