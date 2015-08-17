@@ -16,6 +16,7 @@ $NumArticles;
 $AddFeaturedArticle;
 $ExpireAfterXDays;
 $DisplayTeaser;
+$DisplayImages;
 
 $featuredArticleOptions;
 
@@ -59,15 +60,15 @@ function create_news_article_feed($categories){
 function inspect_news_article($xml, $categories){
 
     $page_info = array(
-        "title" => $xml->title,
-        "display-name" => $xml->{'display-name'},
-        "published" => $xml->{'last-published-on'},
-        "description" => $xml->{'description'},
-        "path" => $xml->path,
-        "date-for-sorting" => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
-        "md" => array(),
-        "html" => "",
-        "display-on-feed" => false,
+        "title"             => $xml->title,
+        "display-name"      => $xml->{'display-name'},
+        "published"         => $xml->{'last-published-on'},
+        "description"       => $xml->{'description'},
+        "path"              => $xml->path,
+        "date-for-sorting"  => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
+        "md"                => array(),
+        "html"              => "",
+        "display-on-feed"   => false,
     );
 
     if( strpos($page_info['path'],"_testing") !== false)
@@ -152,15 +153,20 @@ function get_news_article_html( $article, $xml ){
         $formattedDate = format_featured_date_news_article($date);
     }
 
-    $twig = makeTwigEnviron('/code/news/twig');
+    global $DisplayImages;
+    if( $DisplayImages === "Yes")
+        $thumborURL = thumborURL($imagePath, 215, $lazy=false, $print=false);
+    else
+        $thumborURL = '';
 
+    $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
         'DisplayTeaser' => $DisplayTeaser,
         'date' => $date,
         'formattedDate' => $formattedDate,
         'article' => $article,
         'path' => $path,
-        'thumborURL' => thumborURL($imagePath, 215, $lazy=false, $print=false)));
+        'thumborURL' => $thumborURL));
 
     return $html;
 }
