@@ -8,7 +8,7 @@
 
 
 function homecoming_guest_list($class_year){
-    $url = "http://wsapi.bethel.edu/admissions/homecoming-guest-list/$class_year";
+    $url = "http://wsapi.bethel.edu/admissions/homecoming-guest-list/" . rawurlencode($class_year);
     $list = json_decode(file_get_contents($url));
     $names_list = Array();
     foreach($list->result as $key => $value){
