@@ -1,4 +1,8 @@
 <?php
+session_start();
+$referer = $_SESSION["HTTP_REFERER"];
+$referer = explode('/', $referer);
+
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "e-jameson@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
@@ -49,13 +53,13 @@ try {
     $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
     $output = print_r($response,1);
-    error_log('contact search : ' . $output);
+    error_log('contact search : ' . $output, 3, 'apply.log');
     $has_contact = sizeof($records);
     if ($has_contact > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $records[0]->Id;
     }else{
-        error_log('no contact found');
+        error_log('no contact found', 3, 'apply.log');
         //Create one and save the id
         $sObject = new stdclass();
         $sObject->FirstName = $first;
@@ -64,18 +68,18 @@ try {
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
         $contact_id = $createResponse[0]->id;
         $output = print_r($createResponse,1);
-        error_log('contact create : ' . $output);
+        error_log('contact create : ' . $output, 3, 'apply.log');
     }
 
     if ($contact_id == ""){
         $url .= "?cid=false";
         $subject = "failed to find contact id for email $email";
-        error_log($subject);
+        error_log($subject, 3, 'apply.log');
         mail($mail_to,$subject,$subject,"From: $from\n");
         header("Location: $url");
         exit;
     }else{
-        error_log("contact id is : " . $contact_id);
+        error_log("contact id is : " . $contact_id, 3, 'apply.log');
     }
 
 
@@ -86,10 +90,10 @@ try {
     if ($has_user > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
         $user_id = $records[0]->Id;
-        error_log('found user_id');
+        error_log('found user_id', 3, 'apply.log');
     }
     else{
-        error_log('user lookup failed');
+        error_log('user lookup failed', 3, 'apply.log');
         $user_id = false;
     }
 
@@ -111,7 +115,7 @@ try {
         $sObject->LanguageLocaleKey = "en_US";
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
         $output = print_r($createResponse,1);
-        error_log('create user : ' . $output);
+        error_log('create user : ' . $output, 3, 'apply.log');
         $user_id = $createResponse[0]->id;
     }
 
@@ -119,11 +123,11 @@ try {
         $url .= "?uid=false";
         $subject = "failed to find or create user id for email $email with cid=$contact_id";
         mail($mail_to,$subject,$subject,"From: $from\n");
-        error_log($subject);
+        error_log($subject, 3, 'apply.log');
         header("Location: $url");
         exit;
     }else{
-        error_log("user id is : " . $user_id);
+        error_log("user id is : " . $user_id, 3, 'apply.log');
     }
 
 } catch (Exception $e) {
@@ -196,13 +200,13 @@ if($json['status'] == "success"){
 
     $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
     mail($mail_to,$subject,$subject,"From: $from\n");
-    error_log($subject);
+    error_log($subject, 3, 'apply.log');
 
     header("Location: $url");
 }else{
     $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
     mail($mail_to,$subject,$subject,"From: $from\n");
-    error_log($subject);
+    error_log($subject, 3, 'apply.log');
     $url .= "?email=false";
     header("Location: $url");
 }
