@@ -7,7 +7,11 @@
  */
 
 $url = 'http://wsapi.bethel.edu/blink/admissions-checklist/';
-$username = $_GET['urn:sungardhe:dir:loginId'];
+
+if ( array_key_exists('urn:sungardhe:dir:loginId', $_GET))
+    $username = $_GET['urn:sungardhe:dir:loginId'];
+else
+    $username = $_GET['username'];
 
 $url = $url.$username;
 $results = json_decode(file_get_contents($url), true);
