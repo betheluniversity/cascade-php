@@ -36,9 +36,10 @@ require_once ('userAuth.php');
     $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
     $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
-    $email = '1dancerforever@gmail.com';
+    $email = 'e-jameson%2Btest-referrer@bethel.edu';
+    $email = 'e-jameson+test-staging@bethel.edu';
 
-    $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
+    $response = $mySforceConnection->query("SELECT Email, Id, referrer_site__c FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
     print_r($response);
 
