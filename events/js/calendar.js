@@ -193,12 +193,12 @@
     function updateWelcomeBar(){
         var remote_user = $.cookie('cal-user');
         if (remote_user != null && remote_user != "null"){
-            $("#bu-topbar-welcome").html("Welcome " + remote_user);
+            $(".bu-topbar-welcome").html("Welcome " + remote_user);
         }else{
             var append = document.URL.replace("#", "?");
             var url = "https://auth.bethel.edu/cas/login?service=" + append;
             //url = url.replace("https", "http");
-            $("#bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
+            $(".bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
     }
 
