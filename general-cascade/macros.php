@@ -56,14 +56,16 @@ function carousel_item($content, $classes, $link = null, $print=true){
     }
 }
 
-function srcset($end_path, $print=true){
+function srcset($end_path, $print=true, $lazy=true){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
-        'end_path' => $end_path));
+        'end_path' => $end_path,
+        'lazy' => $lazy)
+    );
 
     if($print){
         echo $content;
