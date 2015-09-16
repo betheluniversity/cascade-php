@@ -103,9 +103,11 @@
             "match-school" => false,
             "match-dept" => false,
             "match-topic" => false,
+            "animate"   =>  'No'
         );
         $ds = $xml->{'system-data-structure'};
         $dataDefinition = $ds['definition-path'];
+        $block_info['animate'] = $ds->{'proof-point'}->{'number-group'}->{'animate'};
 
         $nodes = $xml->{'dynamic-metadata'};
         foreach( $nodes as $node){

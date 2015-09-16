@@ -18,7 +18,8 @@
 
         $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
-           $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP);
+            // Add an if to add/remove animate depending on the PP
+            $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP);
         }
         echo createGrid("proof-points proof-point-collection test", $toReturn);
 
@@ -71,14 +72,14 @@ function number_pp_html($ds){
     $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
 
-
     $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = $twig->render('number_pp_html.html', array(
         'textBefore' => $textBefore,
         'textAfter' => $textAfter,
         'textBelow' => $textBelow,
         'source' => $source,
-        'number' => $number));
+        'number' => $number,
+        'animate'   =>  $animate));
 
     return $html;
 }
