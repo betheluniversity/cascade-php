@@ -74,7 +74,7 @@ function srcset($end_path, $print=true){
 }
 
 
-function thumborURL($end_path, $width, $lazy=false, $print=true){
+function thumborURL($end_path, $width, $lazy=true, $print=true){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumorURL.html', array(

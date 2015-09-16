@@ -157,7 +157,7 @@ function get_news_article_html( $article, $xml ){
     if( $DisplayImages && $DisplayImages === "No")
         $thumborURL = '';
     else
-        $thumborURL = thumborURL($imagePath, 215, $lazy=false, $print=false);
+        $thumborURL = thumborURL($imagePath, 215, $lazy=true, $print=false);
 
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
