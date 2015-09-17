@@ -25,7 +25,7 @@ function create_faculty_carousel($categories){
 
         $carousel_items .= carousel_item($html, "", null, false);
     }
-    carousel_create("carousel--employee js-rotate-order-carousel js-load-on-demand", $carousel_items);
+    carousel_create("js-flickity  carousel--employee", $carousel_items);
     // todo: Display 7 bios that match one of the values in $categories and have the following info:
     //   -  name, job title, image
     //   - Name should link to the bio page.
