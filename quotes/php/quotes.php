@@ -21,7 +21,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
-        carousel_create("js-rotate-order-carousel carousel--quote", $html);
+        carousel_create("js-rotate-order-carousel carousel--quote  js-load-on-demand", $html);
     }
 }
 
