@@ -289,6 +289,8 @@ function get_featured_event_html($event, $featuredEventOptions){
     elseif( $event['description'] != "")
         $description = $event['description'];
 
+    $description = strip_tags($description, '<a><br><hr>');
+
     // Only display it if it has an image.
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
