@@ -25,7 +25,7 @@ function create_faculty_carousel($categories){
 
         $carousel_items .= carousel_item($html, "", null, false);
     }
-    carousel_create("carousel--quote", $carousel_items);
+    carousel_create("js-flickity  carousel--employee", $carousel_items);
     // todo: Display 7 bios that match one of the values in $categories and have the following info:
     //   -  name, job title, image
     //   - Name should link to the bio page.
@@ -56,7 +56,7 @@ function find_matching_bios($xml, $categories){
 function create_twig_html($image, $first, $last, $title, $path){
 
     $twig = makeTwigEnviron('/code/collections/twig');
-    $thumbURL = thumborURL($image, '150', $lazy=false, $print=false);
+    $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
 
     $html = $twig->render('faculty.html', array(
         'first'     => $first,

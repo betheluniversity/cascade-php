@@ -21,7 +21,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
-        carousel_create("carousel--quote", $html);
+        carousel_create("js-flickity  carousel--quote", $html);
     }
 }
 
@@ -64,7 +64,7 @@ function get_quote_html($xml){
 function get_twig_html($imagePath, $text, $source, $gradYear, $job){
 
     if( $imagePath != "/" && $imagePath != "") {
-        $thumbURL = thumborURL($imagePath, 200, true, false);
+        $thumbURL = thumborURL($imagePath, 200, $lazy=true, $print=false);
     }else {
         $thumbURL = "";
     }

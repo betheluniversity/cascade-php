@@ -289,11 +289,13 @@ function get_featured_event_html($event, $featuredEventOptions){
     elseif( $event['description'] != "")
         $description = $event['description'];
 
+    $description = strip_tags($description, '<a><br><hr>');
+
     // Only display it if it has an image.
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
         $html = $twig->render('get_featured_event_html.html', array(
-            'thumborURL'=> thumborURL($event['image'], 400, false, false),
+            'thumborURL'=> srcset($event['image'], $print=false, $lazy=true),
             'path' => $path,
             'title' => $title,
             'date' => $date,

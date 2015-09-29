@@ -30,7 +30,7 @@ function build_carousel_from_array($array, $class){
 
 // Currently some velocity files are using this. (should be deleted soon)
 function carousel_open($class = ""){
-    echo "<div class='flickity $class'>";
+    echo "<div class='flickity js-rotate-order-carousel js-load-on-demand $class'>";
 }
 
 // Currently some velocity files are using this. (should be deleted soon)
@@ -56,14 +56,16 @@ function carousel_item($content, $classes, $link = null, $print=true){
     }
 }
 
-function srcset($end_path, $print=true){
+function srcset($end_path, $print=true, $lazy=true){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
-        'end_path' => $end_path));
+        'end_path' => $end_path,
+        'lazy' => $lazy)
+    );
 
     if($print){
         echo $content;
@@ -74,7 +76,7 @@ function srcset($end_path, $print=true){
 }
 
 
-function thumborURL($end_path, $width, $lazy=false, $print=true){
+function thumborURL($end_path, $width, $lazy=true, $print=true){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumorURL.html', array(
