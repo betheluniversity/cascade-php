@@ -10,14 +10,11 @@
 
     <div class="quote__text">
         <p>{{text}}</p>
-        
         {% if source != "" %}
             <p class="quote__source">–{{source}}
-            
                 {% if gradYear != "" %}
                     {{gradYear}}
                 {% endif %}
-                
                 {% if job != "" %}
                     <br />{{job}}
                 {% endif %}

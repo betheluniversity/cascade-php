@@ -1,9 +1,17 @@
 <div class="proof-point">
     <p class="proof-point__text">
-        <span class="proof-point__number">{% if textBefore %}{{textBefore|raw}}{% endif %}<span class='odometer' data-final-number='{{number}}'>0</span>{% if textAfter %}{{textAfter|raw}}{% endif %}</span>
+        <span class="proof-point__number">
+            {% if textBefore %}{{textBefore|raw}}{% endif %}
+            {# The textAfter needs to be inside the if statement or else an awkward space appears#}
+            {% if animate %}
+                <span class='odometer' data-final-number='{{number}}'>0</span>{% if textAfter %}{{textAfter|raw}}{% endif %}
+            {% else %}
+                <span class='noAnimationProof'>{{number}}</span>{% if textAfter %}{{textAfter|raw}}{% endif %}
+            {% endif %}
+        </span>
         <br>
         <span class="proof-point__text_below">{{textBelow|raw}}</span>
-        </p>
+    </p>
     {% if source != "" %}
         <cite class="proof-point__cite">- {{source}}</cite>
     {% endif %}

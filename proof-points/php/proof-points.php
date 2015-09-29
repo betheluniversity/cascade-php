@@ -74,11 +74,12 @@ function number_pp_html($ds){
 
     $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = $twig->render('number_pp_html.html', array(
-        'textBefore' => $textBefore,
-        'textAfter' => $textAfter,
-        'textBelow' => $textBelow,
-        'source' => $source,
-        'number' => $number));
+        'animate'       => $animate,
+        'textBefore'    => $textBefore,
+        'textAfter'     => $textAfter,
+        'textBelow'     => $textBelow,
+        'source'        => $source,
+        'number'        => $number));
 
     return $html;
 }
