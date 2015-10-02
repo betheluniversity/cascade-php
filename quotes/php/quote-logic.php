@@ -26,6 +26,7 @@ function inspect_block_quotes($xml, $Topic, $CAS, $CAPS, $GS, $SEM){
         // First get one that matches the specific school dept
         if( match_metadata_quotes($xml, $CAS) || match_metadata_quotes($xml, $CAPS) || match_metadata_quotes($xml, $GS) || match_metadata_quotes($xml, $SEM)  )
             $block_info['match-dept'] = true;
+
         // Now that we are desparate, just get one that has a topic thats the same.
         $block_info['match-topic'] = match_metadata_quotes($xml, $Topic);
         // Get html
@@ -45,11 +46,10 @@ function match_metadata_quotes($xml, $block_value_array)
         foreach ($xml->{'dynamic-metadata'} as $md) {
             $name = $md->name;
             foreach ($md->value as $value) {
-                if ($value == "Select" || $value == "none") {
-                    continue;
-                }
-                if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
-                    return true;
+                if (strtolower($value) != "select" && strtolower($value) != "none") {
+                    if (htmlspecialchars($value) == htmlspecialchars($block_value)) {
+                        return true;
+                    }
                 }
             }
         }
