@@ -20,13 +20,24 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
-// returns an array of html elements.
 function create_news_article_feed($categories){
+    $feed = autoCache("create_news_article_feed_logic", array($categories));
+    return $feed;
+
+}
+
+// returns an array of html elements.
+function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
+
+
+    $arrayOfArticles = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+
+    // $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     global $NumArticles;
+    // echo 'feed_news_sorted_'.$NumArticles;
     $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted_'.$NumArticles);
 
 
@@ -167,6 +178,9 @@ function get_news_article_html( $article, $xml ){
         'article' => $article,
         'path' => $path,
         'thumborURL' => $thumborURL));
+
+
+
 
     return $html;
 }

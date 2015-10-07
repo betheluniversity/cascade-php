@@ -185,6 +185,12 @@ function makeTwigEnviron($path){
 function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
 {
 
+    // if $inputs[0] is an array, use the string version of print_r as the cache name, and then append the current path.
+    // This is the most likely case because feeds pass an array of an array
+    if( is_array($inputs[0])){
+        $cache_name = trim(print_r($inputs, true)) . $_SERVER['REQUEST_URI'];
+    }
+
     //if no cache_name is passed in it defaults to the function name and all inputs strung together with -
     if (!$cache_name) {
         $cache_name = $func . "-". $inputs[0];
@@ -192,6 +198,7 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
         while (next($inputs) !== FALSE) {
             $cache_name .= "-" . current($inputs);
         }
+        $cache_name .= "-" . $_SERVER['REQUEST_URI'];
     }
     //display name is used to make memcache.log more readable
     $display_name = $cache_name;

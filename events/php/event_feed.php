@@ -26,9 +26,21 @@ $EndDate;
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-// Create the Event Feed events.
 function create_event_feed($categories){
-    $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
+    $feed = autoCache("create_event_feed_logic", array($categories));
+
+    return $feed;
+
+}
+
+
+// Create the Event Feed events.
+function create_event_feed_logic($categories){
+
+    $arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
+
+
+    // $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
     // Turn all dates into individual events
