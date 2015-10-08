@@ -103,7 +103,8 @@
             "match-school" => false,
             "match-dept" => false,
             "match-topic" => false,
-            "animate"   =>  'No'
+            "animate"   =>  'No',
+            "hide" => false
         );
         $ds = $xml->{'system-data-structure'};
         $dataDefinition = $ds['definition-path'];
@@ -119,7 +120,9 @@
                 }
             }
         }
-
+        if($ds->{'hide'} == 'Yes'){
+            $block_info['hide'] = true;
+        }
         // First get one that matches the specific school dept
         if( match_metadata_proof_points($xml, $CAS) || match_metadata_proof_points($xml, $CAPS) || match_metadata_proof_points($xml, $GS) || match_metadata_proof_points($xml, $SEM)  )
             $block_info['match-dept'] = true;

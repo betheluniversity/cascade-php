@@ -33,7 +33,7 @@
 
         foreach($proof_points as $proof_point_xml){
             $ppInfo = inspect_block_proof_points($proof_point_xml, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-            if( $ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic'] ){
+            if( ($ppInfo['match-school'] || $ppInfo['match-dept'] || $ppInfo['match-topic']) && !$ppInfo['hide'] ){
                 array_push($matches, $ppInfo);
             }
         }
