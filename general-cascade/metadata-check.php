@@ -10,13 +10,16 @@ if ($require_auth == "Yes" || $check_auth == "Yes"){
     header("Cache-Control: public, must-revalidate, max-age=86400");
 }
 
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
+
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
+// $client = new Raven_Client($config['RAVEN_URL']);
 
 
-
-
+//require_once $_SERVER["DOCUMENT_ROOT"] . "/code/vendor/raven/raven/lib/Raven/Autoloader.php";
+//Raven_Autoloader::register();
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
