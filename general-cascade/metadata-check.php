@@ -1,4 +1,5 @@
 <?php
+session_start();
 $staging = strstr(getcwd(), "staging/public");
 $soda = strstr(getcwd(), "soda");
 
@@ -18,12 +19,8 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 $client = new Raven_Client($config['RAVEN_URL']);
 $error_handler = new Raven_ErrorHandler($client);
 $error_handler->registerExceptionHandler();
-
-// log warnings in staging only
-if ($staging){
-    $error_handler->registerErrorHandler();
-    $error_handler->registerShutdownFunction();
-}
+$error_handler->registerErrorHandler();
+$error_handler->registerShutdownFunction();
 
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
