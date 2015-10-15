@@ -81,6 +81,7 @@ function number_pp_html($ds){
         'number' => $number,
         'animate'   =>  $animate));
 
+    
     return $html;
 }
 
