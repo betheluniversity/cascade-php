@@ -15,11 +15,16 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
-// $client = new Raven_Client($config['RAVEN_URL']);
+$client = new Raven_Client($config['RAVEN_URL']);
+$error_handler = new Raven_ErrorHandler($client);
+$error_handler->registerExceptionHandler();
 
+// log warnings in staging only
+if ($staging){
+    $error_handler->registerErrorHandler();
+    $error_handler->registerShutdownFunction();
+}
 
-//require_once $_SERVER["DOCUMENT_ROOT"] . "/code/vendor/raven/raven/lib/Raven/Autoloader.php";
-//Raven_Autoloader::register();
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
