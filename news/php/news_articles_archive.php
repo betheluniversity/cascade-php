@@ -61,7 +61,7 @@ function inspect_news_archive_page($xml, $categories){
     global $yearChosen;
     global $uniqueNews;
 
-    $isInternal = in_array("Internal", $uniqueNews);
+    $isInternal = $uniqueNews && in_array("Internal", $uniqueNews);
     if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )
     {
         //check if is internal
