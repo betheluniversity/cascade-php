@@ -108,8 +108,9 @@ function sort_news_articles( $articles ){
     {
         $articleYear = find('year', $article);
         $articleMonth = find('month', $article);
-
-        if( sizeof( $finalArray[ $articleYear ][ $articleMonth ]) > 0)
+        $finalYear = find($articleYear, $finalArray);
+        $finalMonth = find($articleMonth, $finalYear);
+        if( sizeof( $finalMonth) > 0)
             $tempMonthArray = $finalArray[ $articleYear ][ $articleMonth ];
         else
             $tempMonthArray = array();
