@@ -21,7 +21,7 @@ function course_catalog($code, $values){
     return file_get_contents($url, false, $context);
 }
 
-function individual_courses($code, $values){
+function individual_courses($code){
     $url = "http://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
     return file_get_contents($url, false);
 }
