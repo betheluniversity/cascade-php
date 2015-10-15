@@ -149,7 +149,13 @@ function display_on_feed_news_articles($page_info, $ds){
 function get_news_article_html( $article, $xml ){
     $ds = $xml->{'system-data-structure'};
     $imagePath = $ds->{'media'}->{'image'}->{'path'};
-    $externalPath = $article['external-path'];
+
+    if (array_key_exists('external-path', $article)){
+        $externalPath = $article['external-path'];
+    }else{
+        $externalPath = "";
+    }
+
     if( $externalPath == "")
         $path = $article['path'];
     else
