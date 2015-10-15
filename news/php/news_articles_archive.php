@@ -57,7 +57,7 @@ function inspect_news_archive_page($xml, $categories){
 
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
-    
+
     global $yearChosen;
     global $uniqueNews;
 
@@ -106,8 +106,8 @@ function sort_news_articles( $articles ){
     // Puts the articles into the correct arrays
     foreach( $articles as $article)
     {
-        $articleYear = $article['year'];
-        $articleMonth = $article['month'];
+        $articleYear = find('year', $article);
+        $articleMonth = find('month', $article);
 
         if( sizeof( $finalArray[ $articleYear ][ $articleMonth ]) > 0)
             $tempMonthArray = $finalArray[ $articleYear ][ $articleMonth ];
@@ -130,6 +130,14 @@ function sort_news_articles( $articles ){
     }
 
     return $finalArray;
+}
+
+function find($key, $array){
+    if(array_key_exists($key, $array)){
+        return $array[$key];
+    }else{
+        return null;
+    }
 }
 
 
