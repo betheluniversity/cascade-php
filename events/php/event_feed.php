@@ -52,33 +52,32 @@ function create_event_feed_logic($categories){
     {
         $dates = $event['dates'];
         // foreach date
-        foreach($dates as $date)
-        {
-            $newDate['start-date'] = $date->{'start-date'} / 1000;
-            $newDate['end-date'] = $date->{'end-date'} / 1000;
-            $newDate['all-day'] = $date->{'all-day'}->{'value'};
+        if($dates) {
+            foreach ($dates as $date) {
+                $newDate['start-date'] = $date->{'start-date'} / 1000;
+                $newDate['end-date'] = $date->{'end-date'} / 1000;
+                $newDate['all-day'] = $date->{'all-day'}->{'value'};
 
 
-            // This will hide all events prior to today.
-            if( time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
-                continue;
+                // This will hide all events prior to today.
+                if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
+                    continue;
 
-            $newEvent = $event;
-            $newEvent['date'] = $newDate;
-            $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
+                $newEvent = $event;
+                $newEvent['date'] = $newDate;
+                $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
-            $newEvent['html'] = get_event_html($newEvent);
+                $newEvent['html'] = get_event_html($newEvent);
 
-            if (display_on_feed_events($newEvent))
-            {
-                array_push($eventArrayWithMultipleEvents, $newEvent);
+                if (display_on_feed_events($newEvent)) {
+                    array_push($eventArrayWithMultipleEvents, $newEvent);
+                }
+
+
+                // art exhibits and theatre productions only add 1 date.
+                if (check_if_art_or_theatre($newEvent))
+                    break;
             }
-
-
-
-            // art exhibits and theatre productions only add 1 date.
-            if(check_if_art_or_theatre($newEvent) )
-                break;
         }
     }
 
