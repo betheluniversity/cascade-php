@@ -11,7 +11,7 @@
  */
 
 
-
+    // todo:
     // Gets x random proof points from the array of arrays of proof points
     // Not very well constructed.
     // Down the road, this should probably be rewritten.
@@ -26,6 +26,11 @@
                     break 2;
                 }
                 $randomIndex = rand(0,$sizeOfArray);
+                if(array_key_exists($randomIndex, $proofPointArray)){
+                    $proofPoint = $proofPointArray[$randomIndex];
+                }else{
+                    $proofPoint = null;
+                }
                 $proofPoint = $proofPointArray[$randomIndex];
                 if( $proofPoint != null)
                 {
