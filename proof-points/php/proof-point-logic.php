@@ -29,7 +29,6 @@
                 if(array_key_exists($randomIndex, $proofPointArray)){
                     $proofPoint = $proofPointArray[$randomIndex];
                 }else{
-                    echo "does not exist";
                     $proofPoint = null;
                 }
                 if( $proofPoint != null)
