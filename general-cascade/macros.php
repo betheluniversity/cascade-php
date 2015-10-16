@@ -209,8 +209,9 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
+    $small = substr($display_name, 0, 100) . ". . . .";
     error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
-    error_log("$func function being used and the display_name is $display_name\n$URI\n", 3, '/tmp/memcache.log');
+    error_log("$func function being used and the display_name is $small$URI\n", 3, '/tmp/memcache.log');
     if (!$data) {
         error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
