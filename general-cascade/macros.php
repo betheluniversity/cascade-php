@@ -205,23 +205,25 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
     $URI = $_SERVER['REQUEST_URI'];
     $cache_name = $cache_name . "-" . $URI;
 
+    //turns cache name into a md5 hash to reduce characters needed
+    $cache_name = md5($cache_name);
+
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
-    $small = substr($display_name, 0, 100) . ". . . .";
-    error_log("\n\nNew Run of AutoCache\n----------------------------------\n", 3, '/tmp/memcache.log');
-    error_log("$func function being used and the display_name is $small$URI\n", 3, '/tmp/memcache.log');
+    error_log("\n-----------New Run of AutoCache----------------\n", 3, '/tmp/memcache.log');
+    error_log("$func function being used. Searching for hash - $cache_name\n", 3, '/tmp/memcache.log');
     if (!$data) {
-        error_log("Full Data Array Memcache miss\n", 3, '/tmp/memcache.log');
+        error_log("Full Data Array Memcache miss", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
         } catch (Exception $e) {
-            error_log("Error\n----------------------------------\n" . $e->getMessage() . "\n----------------------------------\n", 3, '/tmp/memcache.log');
+            error_log("\nError - " . $e->getMessage(), 3, '/tmp/memcache.log');
         }
     } else {
-        error_log("Full Data Array Memcache hit\n", 3, '/tmp/memcache.log');
+        error_log("Full Data Array Memcache hit", 3, '/tmp/memcache.log');
     }
 
     return $data;
