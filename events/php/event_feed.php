@@ -57,17 +57,27 @@ function create_event_feed_logic($categories){
                 $newDate['start-date'] = $date->{'start-date'} / 1000;
                 $newDate['end-date'] = $date->{'end-date'} / 1000;
                 $newDate['all-day'] = $date->{'all-day'}->{'value'};
+                $isArtOrTheater = check_if_art_or_theatre($event);
+                $threeDaysSinceStart = ($date->{'start-date'}/1000) + (3 * 24 * 60 * 60);
 
 
                 // This will hide all events prior to today.
                 if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
                     continue;
 
+                //hides gallery events three days after they begin.
+                if($isArtOrTheater == 1 && time() > $threeDaysSinceStart){
+                    continue;
+                }
+
+
                 $newEvent = $event;
                 $newEvent['date'] = $newDate;
                 $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
+
                 $newEvent['html'] = get_event_html($newEvent);
+
 
                 if (display_on_feed_events($newEvent)) {
                     array_push($eventArrayWithMultipleEvents, $newEvent);
@@ -75,7 +85,7 @@ function create_event_feed_logic($categories){
 
 
                 // art exhibits and theatre productions only add 1 date.
-                if (check_if_art_or_theatre($newEvent))
+                if ($isArtOrTheater != 0)
                     break;
             }
         }
@@ -126,19 +136,18 @@ function check_if_art_or_theatre($event){
 
             if (in_array($name,$options)){
 
-                if (   'Art Galleries' == $value
-                    || 'Johnson Gallery' == $value
-                    || 'Olson Gallery' == $value
-                    || 'Theatre' == $value
-                )
+                if ('Art Galleries' == $value || 'Johnson Gallery' == $value || 'Olson Gallery' == $value)
                 {
-                    return true;
+                    return 1;
+                }
+                else if('Theatre' == $value){
+                    return 2;
                 }
             }
 
         }
     }
-    return false;
+    return 0;
 }
 
 // Gathers the information of an event page
