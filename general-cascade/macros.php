@@ -212,7 +212,7 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
-    error_log("\n-----------New Run of AutoCache----------------\n", 3, '/tmp/memcache.log');
+    error_log("\n-----------AutoCache for $URI----------------\n", 3, '/tmp/memcache.log');
     error_log("$func function being used. Searching for hash - $cache_name\n", 3, '/tmp/memcache.log');
     if (!$data) {
         error_log("Full Data Array Memcache miss", 3, '/tmp/memcache.log');
