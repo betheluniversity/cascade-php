@@ -26,21 +26,19 @@ $EndDate;
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-function create_event_feed($categories){
-    $feed = autoCache("create_event_feed_logic", array($categories));
+function create_event_feed($categories, $heading=""){
 
+    $feed = autoCache("create_event_feed_logic", array($categories, $heading));
     return $feed;
 
 }
 
 
 // Create the Event Feed events.
-function create_event_feed_logic($categories){
+function create_event_feed_logic($categories, $heading){
 
     $arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
-
-
-    // $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
+    //$arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
     // Turn all dates into individual events
@@ -66,7 +64,7 @@ function create_event_feed_logic($categories){
                     continue;
 
                 //hides gallery events three days after they begin.
-                if($isArtOrTheater == 1 && time() > $threeDaysSinceStart){
+                if(($isArtOrTheater == 1 && time() > $threeDaysSinceStart) && !($heading == "Olson Gallery" || $heading == "Johnson Gallery")){
                     continue;
                 }
 
@@ -78,15 +76,15 @@ function create_event_feed_logic($categories){
 
                 $newEvent['html'] = get_event_html($newEvent);
 
-
                 if (display_on_feed_events($newEvent)) {
                     array_push($eventArrayWithMultipleEvents, $newEvent);
                 }
 
 
                 // art exhibits and theatre productions only add 1 date.
-                if ($isArtOrTheater != 0)
+                if ($isArtOrTheater != 0) {
                     break;
+                }
             }
         }
     }
@@ -141,7 +139,7 @@ function check_if_art_or_theatre($event){
                     return 1;
                 }
                 else if('Theatre' == $value){
-                    return 2;
+                    return 1;
                 }
             }
 
