@@ -159,6 +159,21 @@ function checkInPath($url, $name){
     ));
 }
 
+
+function semCheckInPath($url, $name){
+
+    if ($name == "Programs") {
+        echo checkInPath($url, $name);
+    } else {
+        // if the name is Programs and its a faculty URL, skip it.
+        $path = $_SERVER['REQUEST_URI'];
+        $pos = 0 === strpos($path . 'faculty', $url);
+        if (!$pos) {
+            echo checkInPath($url, $name);
+        }
+    }
+}
+
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
 
     //twig version
