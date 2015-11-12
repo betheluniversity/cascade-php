@@ -162,14 +162,21 @@ function checkInPath($url, $name){
 
 function semCheckInPath($url, $name){
 
-    if ($name == "Programs") {
+    if ($name != "Programs") {
         echo checkInPath($url, $name);
     } else {
         // if the name is Programs and its a faculty URL, skip it.
         $path = $_SERVER['REQUEST_URI'];
-        $pos = 0 === strpos($path . 'faculty', $url);
+        $pos = 0 === strpos($path, $url . 'faculty');
         if (!$pos) {
             echo checkInPath($url, $name);
+        }else{
+            $twig = makeTwigEnviron('/code/general-cascade/twig');
+            echo $twig->render('checkInPath.html', array(
+                'pos' => false,
+                'name' => $name,
+                'url' => $url
+            ));
         }
     }
 }
