@@ -37,8 +37,8 @@ function create_event_feed($categories, $heading=""){
 // Create the Event Feed events.
 function create_event_feed_logic($categories, $heading){
 
-    $arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
-    //$arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
+    //$arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
+    $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
     // Turn all dates into individual events
