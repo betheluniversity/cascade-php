@@ -20,7 +20,7 @@
             $val = get_profile_stories_html($results[0]);
             $html .= carousel_item($val, "", null, $print=false);
         }
-        carousel_create("js-rotate-order-carousel js-load-on-demand", $html);
+        carousel_create("js-rotate-order-carousel", $html);
     }
 
     function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
