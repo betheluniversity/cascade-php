@@ -20,7 +20,7 @@
             $val = get_profile_stories_html($results[0]);
             $html .= carousel_item($val, "", null, $print=false);
         }
-        carousel_create("js-rotate-order-carousel", $html);
+        carousel_create("js-rotate-order-carousel  js-load-on-demand", $html);
     }
 
     function show_profile_story_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
@@ -35,7 +35,7 @@
         {
             $html .= carousel_item($profileStory, "", null, $print=false);
         }
-        carousel_create("js-rotate-order-carousel", $html);
+        carousel_create("js-rotate-order-carousel  js-load-on-demand", $html);
     }
 
     // Converts and xml file to an array of profile stories
