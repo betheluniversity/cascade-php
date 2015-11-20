@@ -30,7 +30,7 @@ function build_carousel_from_array($array, $class){
 
 // Currently some velocity files are using this. (should be deleted soon)
 function carousel_open($class = ""){
-    echo "<div class='flickity js-rotate-order-carousel $class'>";
+    echo "<div class='flickity js-rotate-order-carousel  js-load-on-demand $class'>";
 }
 
 // Currently some velocity files are using this. (should be deleted soon)
