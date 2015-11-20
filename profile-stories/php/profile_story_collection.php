@@ -35,7 +35,7 @@
         {
             $html .= carousel_item($profileStory, "", null, $print=false);
         }
-        carousel_create("js-rotate-order-carousel js-load-on-demand", $html);
+        carousel_create("js-rotate-order-carousel", $html);
     }
 
     // Converts and xml file to an array of profile stories
