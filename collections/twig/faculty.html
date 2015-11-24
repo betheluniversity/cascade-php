@@ -1,18 +1,16 @@
-<div class="ratio-box">
-    <div class="quote">
+<div class="quote">
 
-        {% if thumbURL != "" %}
+    {% if thumbURL != "" %}
 
-            <div class="quote__avatar">
-                {{thumbURL|raw}}
-            </div>
-
-        {% endif %}
-
-        <div class="quote__text">
-            <p class="h2"><a href='{{ path }}'>{{ first }} {{ last }}</a></p>
-            <p>{{ title }}</p>
+        <div class="quote__avatar">
+            {{thumbURL|raw}}
         </div>
 
+    {% endif %}
+
+    <div class="quote__text">
+        <p class="h2"><a href='{{ path }}'>{{ first }} {{ last }}</a></p>
+        <p>{{ title }}</p>
     </div>
+
 </div>
