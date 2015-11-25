@@ -46,6 +46,7 @@ function inspect_news_archive_page($xml, $categories){
         "path" => $xml->path,
         "external-path" => $xml->{'system-data-structure'}->{'external-link'},
         "sort-by-date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
+        "date-for-sorting" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
         "display-on-feed" => true,
@@ -126,7 +127,7 @@ function sort_news_articles( $articles ){
         {
             $currentMonth = array_search($monthArray, $yearArray);
             //echo $currentYear."--".$currentMonth."<br/>";
-            $finalArray[$currentYear][$currentMonth] = sort_by_date($monthArray);
+            $finalArray[$currentYear][$currentMonth] = sort_by_date($monthArray, false);
         }
     }
 
@@ -134,7 +135,7 @@ function sort_news_articles( $articles ){
 }
 
 function find($key, $array){
-    if(array_key_exists($key, $array)){
+    if($array != null && array_key_exists($key, $array)){
         return $array[$key];
     }else{
         return null;

@@ -69,14 +69,18 @@ function match_metadata_articles($xml, $categories, $options, $feedType){
 }
 
 //Sort an array
-function sort_by_date( $array ){
+function sort_by_date( $array, $reverse = true){
 
     if( sizeof($array) != 0)
     {
-        usort($array, 'sort_by_date_helper');
+        // ran into a php bug here. used the following stackoverflow to solve it.
+        // http://stackoverflow.com/questions/3235387/usort-array-was-modified-by-the-user-comparison-function
+        @usort($array, 'sort_by_date_helper');
     }
-
-    return array_reverse($array);
+    if( $reverse )
+        return array_reverse($array);
+    else
+        return $array;
 }
 
 function sort_by_date_helper($a, $b)
