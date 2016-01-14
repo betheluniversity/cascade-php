@@ -16,5 +16,8 @@ else
 $url = $url.$username;
 $results = json_decode(file_get_contents($url), true);
 
-echo html_entity_decode($results['html']);
+$html = html_entity_decode($results['html']);
+// blink requires that all & are escaped, and we just decoded them. re-encode the ones in school names
+$html = str_replace(' & ',' &amp; ', $html);
+echo $html;
 
