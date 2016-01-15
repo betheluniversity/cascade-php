@@ -63,7 +63,16 @@ function inspect_news_archive_page($xml, $categories){
     global $uniqueNews;
 
     $isInternal = $uniqueNews && in_array("Internal", $uniqueNews);
-    if( $dataDefinition == "News Article" && ( strstr($xml->path, '2012') || strstr($xml->path, '2013') || ( strstr($xml->path, '2014')) || ( strstr($xml->path, '2015'))) )
+
+    $year_works = false;
+    for( $i = 2012; $i <= intval(date("Y")); $i++ ){
+        if( strstr($xml->path, "$i") ){
+            $year_works = true;
+            break;
+        }
+    }
+
+    if( $dataDefinition == "News Article" && $year_works )
     {
         //check if is internal
         $date = $page_info['sort-by-date'];
@@ -74,7 +83,6 @@ function inspect_news_archive_page($xml, $categories){
 
         $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
         $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
-
         $page_info['html'] = get_news_article_html($page_info, $xml);
     }
     return $page_info;
