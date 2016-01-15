@@ -66,7 +66,7 @@ function inspect_news_archive_page($xml, $categories){
 
     $year_works = false;
     for( $i = 2012; $i <= intval(date("Y")); $i++ ){
-        if( strstr($xml->path, "$i") ){
+        if( strstr($xml->path, "/$i/") ){
             $year_works = true;
             break;
         }
