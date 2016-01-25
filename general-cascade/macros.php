@@ -56,6 +56,19 @@ function carousel_item($content, $classes, $link = null, $print=true){
     }
 }
 
+function image_carousel($images){
+    shuffle($images);
+    $final_content = '';
+    foreach($images as $img){
+        $content = srcset("https://www.bethel.edu/$img", $print=false,$lazy=true);
+        $final_content = $final_content . carousel_item($content, '','',false);
+    }
+    echo '<div class="site__image-bank">';
+    carousel_create('flickity  carousel--image-bank', $final_content);
+    echo '</div>';
+}
+
+
 function srcset($end_path, $print=true, $lazy=true){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
