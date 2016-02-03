@@ -61,13 +61,13 @@
 
                     {% if date != "" %}
                         {% if event.location != "" %}
-                            <p class="mb0  events__location">{{date}} | <span itemprop="location">{{event.location}}</span></p>
+                            <p class="events__location">{{date}} | <span itemprop="location">{{event.location}}</span></p>
                         {% else %}
-                            <p class="mb0  events__location">{{date}}</p>
+                            <p class="events__location">{{date}}</p>
                         {% endif %}
                     {% else %}
                         {% if event.location != "" %}
-                            <p class="mb0  events__location">{{event.location}}</p>
+                            <p class="events__location">{{event.location}}</p>
                         {% endif %}
                     {% endif %}
 
