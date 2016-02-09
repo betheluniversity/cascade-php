@@ -63,9 +63,11 @@ function image_carousel($images){
         $content = srcset("https://www.bethel.edu/$img", $print=false,$lazy=true);
         $final_content = $final_content . carousel_item($content, '','',false);
     }
-    echo '<div class="site__image-bank">';
-    carousel_create('flickity  carousel--image-bank', $final_content);
-    echo '</div>';
+    if( sizeof($images) > 0 ) {
+        echo '<div class="site__image-bank">';
+        carousel_create('flickity  carousel--image-bank', $final_content);
+        echo '</div>';
+    }
 }
 
 
