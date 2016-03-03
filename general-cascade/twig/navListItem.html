@@ -1,15 +1,15 @@
 <li>
     {% if classes %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='{{classes}} active' href='{{path}}'>{{label}}</a>
+            <a class='{{classes}} active' href='{{path}}?src=head'>{{label}}</a>
         {% else %}
-            <a class='{{classes}}' href='{{path}}'>{{label}}</a>
+            <a class='{{classes}}' href='{{path}}?src=head'>{{label}}</a>
         {% endif %}
     {% else %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='active' href='{{path}}'>{{label}}</a>
+            <a class='active' href='{{path}}?src=head'>{{label}}</a>
         {% else %}
-            <a href='{{path}}'>{{label}}</a>
+            <a href='{{path}}?src=head'>{{label}}</a>
         {% endif %}
     {% endif %}
 </li>
