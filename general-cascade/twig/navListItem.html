@@ -1,15 +1,17 @@
+{# This class is used to work with GoogleAnalytics as per https://github.com/betheluniversity/cascade/issues/714 #}
+{% set additional_classes = 'header-link' %}
 <li>
     {% if classes %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='{{classes}} active' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{classes}} {{additional_classes}} active' href='{{path}}?src=head'>{{label}}</a>
         {% else %}
-            <a class='{{classes}}' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{classes}} {{additional_classes}}' href='{{path}}?src=head'>{{label}}</a>
         {% endif %}
     {% else %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='active' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{additional_classes}} active' href='{{path}}?src=head'>{{label}}</a>
         {% else %}
-            <a href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{additional_classes}}' href='{{path}}?src=head'>{{label}}</a>
         {% endif %}
     {% endif %}
 </li>
