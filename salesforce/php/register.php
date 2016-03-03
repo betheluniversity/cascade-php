@@ -34,7 +34,7 @@ function escapeEmail($email) {
 }
 
 function log_entry($message){
-    error_log($message . "\n", 3, 'apply.log');
+    error_log($message . "\n");
 }
 
 function search_for_contact($email){
