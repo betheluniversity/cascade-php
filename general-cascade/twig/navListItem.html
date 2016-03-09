@@ -3,15 +3,15 @@
 <li>
     {% if classes %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='{{classes}} {{additional_classes}} active' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{classes}} {{additional_classes}} active' href='{{path}}'>{{label}}</a>
         {% else %}
-            <a class='{{classes}} {{additional_classes}}' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{classes}} {{additional_classes}}' href='{{path}}'>{{label}}</a>
         {% endif %}
     {% else %}
         {% if pageStartsWith == test_starts_with %}
-            <a class='{{additional_classes}} active' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{additional_classes}} active' href='{{path}}'>{{label}}</a>
         {% else %}
-            <a class='{{additional_classes}}' href='{{path}}?src=head'>{{label}}</a>
+            <a class='{{additional_classes}}' href='{{path}}'>{{label}}</a>
         {% endif %}
     {% endif %}
 </li>
