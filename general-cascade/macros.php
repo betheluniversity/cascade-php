@@ -209,8 +209,6 @@ function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes
     ));
 }
 
-
-
 function makeTwigEnviron($path){
 
     $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . $path);

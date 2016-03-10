@@ -22,9 +22,9 @@ $date_array = explode('-', $date);
 if( strlen($date_array[0]) == 1)
     $date = '0'.$date;
 
-get_proof_points($date);
+get_e_announcements($date);
 
-function get_proof_points($date){
+function get_e_announcements($date){
     $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/e-announcements.xml");
     $e_announcements = $xml->xpath("//system-page");
     $matches = array();
@@ -37,6 +37,7 @@ function get_proof_points($date){
     }
 
     //sort alpha
+    // Todo: update sort to be by publish date.
     usort($matches, "alpha_sort");
 
     // Get random selection of $numItems proof points
@@ -74,9 +75,9 @@ function inspect_block_e_announcements($xml){
     $roles_string = implode(", ", $roles_array);
 
     // For some reason, I was unable to get twig to work with this. So I defaulted to building it here in php.
-    $page_info['html'] = '<div class="mb3"><h3 style="margin:0;padding:0;font-family:"Lucida Grande",Helvetica,Arial,sans-serif;margin-top:10px;font-size:12px;margin-top:30px">' . $title . '</h3>';
+    $page_info['html'] = '<div class="mb2 grid-cell"><h3 class="mb1">' . $title . '</h3>';
     $page_info['html'] .= $message;
-    $page_info['html'] .= '<span style="color:#777;font-size:10px">' . $roles_string . '</span></div>';
+    $page_info['html'] .= '<div style="color:#777;font-size:10px">' . $roles_string . '</div></div>';
 
     return $page_info;
 }
