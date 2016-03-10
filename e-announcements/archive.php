@@ -61,7 +61,7 @@ function inspect_block_e_announcements($xml){
     $page_info['second-date'] = $ds->{'second-date'};
 
     $title = $xml->{'title'};
-    $message = $xml->{'system-data-structure'}->{'message'};
+    $message = $xml->{'system-data-structure'}->{'message'}->asXML();
 
     $md = $xml->{'dynamic-metadata'};
     $roles_array = array();
@@ -74,9 +74,9 @@ function inspect_block_e_announcements($xml){
     $roles_string = implode(", ", $roles_array);
 
     // For some reason, I was unable to get twig to work with this. So I defaulted to building it here in php.
-    $page_info['html'] = '<h3 style="margin:0;padding:0;font-family:"Lucida Grande",Helvetica,Arial,sans-serif;margin-top:10px;font-size:12px;margin-top:30px">' . $title . '</h3>';
+    $page_info['html'] = '<div class="mb3"><h3 style="margin:0;padding:0;font-family:"Lucida Grande",Helvetica,Arial,sans-serif;margin-top:10px;font-size:12px;margin-top:30px">' . $title . '</h3>';
     $page_info['html'] .= $message;
-    $page_info['html'] .= '<span style="color:#777;font-size:10px">' . $roles_string . '</span>';
+    $page_info['html'] .= '<span style="color:#777;font-size:10px">' . $roles_string . '</span></div>';
 
     return $page_info;
 }
