@@ -11,6 +11,7 @@
 // find all that match
 // create twig and return them
 
+require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 if( array_key_exists("date", $_GET) )
     $date = $_GET["date"];
@@ -62,6 +63,7 @@ function inspect_block_e_announcements($xml){
     $page_info['second-date'] = $ds->{'second-date'};
 
     $title = $xml->{'title'};
+    // Todo: this is including <message></message> tags. Those should be removed.
     $message = $xml->{'system-data-structure'}->{'message'}->asXML();
 
     $md = $xml->{'dynamic-metadata'};
@@ -74,10 +76,10 @@ function inspect_block_e_announcements($xml){
     }
     $roles_string = implode(", ", $roles_array);
 
-    // For some reason, I was unable to get twig to work with this. So I defaulted to building it here in php.
-    $page_info['html'] = '<div class="mb2 grid-cell"><h3 class="mb1">' . $title . '</h3>';
-    $page_info['html'] .= $message;
-    $page_info['html'] .= '<div style="color:#777;font-size:10px">' . $roles_string . '</div></div>';
+    // Todo: move this to twig.
+    $content = createGridCell('u-large-2-3',"<h3 class='mb1'>$title</h3>$message<div style='color:#777;font-size:10px'>$roles_string</div>" );
+
+    $page_info['html'] = createGrid('grid--center mt4', $content);
 
     return $page_info;
 }
