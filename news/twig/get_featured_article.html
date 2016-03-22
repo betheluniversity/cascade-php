@@ -10,7 +10,7 @@
         <div class="grid-cell  u-medium-1-2">
             <div class="grid-pad-1x">
                 {% if page_info['title'] != "" %}
-                    <h4><a href="https://{{destinationName}}.bethel.edu{{path}}"><span itemprop="headline">{{page_info['title']}}</span></a></h4>
+                    <h4><a href="https://{{destinationName}}.bethel.edu{{path|formatAnchorTag}}"><span itemprop="headline">{{page_info['title']}}</span></a></h4>
                 {% endif %}
 
                 {% if date != "" and date != "null" %}

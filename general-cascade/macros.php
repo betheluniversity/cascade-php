@@ -261,5 +261,10 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
     return $data;
 }
 
+// This replicates the formatAnchorTag in the cascade macros file.
+function formatAnchorTag($path){
+    return str_replace('/index', '/', $path);
+}
+
 
 ?>

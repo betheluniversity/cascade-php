@@ -1,8 +1,8 @@
 <!--Needs externalPath, day, title, externalPath-->
 <li>
     {% if externalPath == "" %}
-    {{day}} - <a href='https://www.bethel.edu{{path}}'>{{title}}</a>
+    {{day}} - <a href='https://www.bethel.edu{{path|formatAnchorTag}}'>{{title}}</a>
     {% else %}
-    {{day}} - <a href='{{externalPath}}'>{{title}}</a>
+    {{day}} - <a href='{{externalPath|formatAnchorTag}}'>{{title}}</a>
     {% endif %}
 </li>

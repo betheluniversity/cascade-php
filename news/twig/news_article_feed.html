@@ -1,13 +1,13 @@
 <div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
     {% if thumborURL != '' %}
         <div class="news__image">
-            <a href="https://www.bethel.edu{{path}}"> <!-- FIX -->
+            <a href="https://www.bethel.edu{{path|formatAnchorTag}}"> <!-- FIX -->
                 {{thumborURL|raw}}
             </a>
         </div>
     {% endif %}
     <div class="news__content">
-        <p class="news__headline"><a href="https://www.bethel.edu{{path}}"><span itemprop="headline">{{article['title']}}</span></a></p> <!-- FIX -->
+        <p class="news__headline"><a href="https://www.bethel.edu{{path|formatAnchorTag}}"><span itemprop="headline">{{article['title']}}</span></a></p> <!-- FIX -->
         {% if date != "" and date != "null" %}
         <p>{{formattedDate}}</p>
         {% endif %}

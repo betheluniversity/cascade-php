@@ -14,7 +14,7 @@
 
         {% set count = count + 1 %}
         <div class="media mb2">
-            <a class='img' href='{{link}}'><img src='{{logo}}'></a>
+            <a class='img' href='{{link|formatAnchorTag}}'><img src='{{logo}}'></a>
             <div class="bd">
                 <p>
                     {{title}}
@@ -22,7 +22,7 @@
                 <p class="date">
                      {{date|date("F j, Y | g:i a")}}
                 </p>
-                <a href='{{link}}'>
+                <a href='{{link|formatAnchorTag}}'>
                     {{author}}
                 </a>
             </div>

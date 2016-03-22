@@ -12,6 +12,7 @@
     header('Content-type: application/xml');
     require_once 'events_helper.php';
     require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
+    require $_SERVER["DOCUMENT_ROOT"] . '/code/general-cascade/macros.php';
 
     $month = date('n');
     $year = date('Y');
@@ -32,6 +33,7 @@
     $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/events/twig');
     $twig = new Twig_Environment($loader);
     $twig->addFilter(new Twig_SimpleFilter('preg_replace','preg_replace'));
+    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag', 'formatAnchorTag'));
     echo $twig->render('blink-events.html', array(
         'month' => $month,
         'year' => $year,
