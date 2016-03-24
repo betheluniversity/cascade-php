@@ -25,7 +25,6 @@ $EndDate;
 /////////////////////////////////////////////////////////////////////
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
-include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
 function create_event_feed($categories, $heading=""){
 
@@ -313,7 +312,6 @@ function get_featured_event_html($event, $featuredEventOptions){
     // Only display it if it has an image.
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
-        $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
         $html = $twig->render('get_featured_event_html.html', array(
             'thumborURL'=> srcset($event['image'], $print=false, $lazy=true),
             'path' => $path,
@@ -340,7 +338,6 @@ function get_event_html( $event){
     $twig->addFilter(new Twig_SimpleFilter('convert_path_to_link','convert_path_to_link'));
     $twig->addFilter(new Twig_SimpleFilter('format_fancy_event_date','format_fancy_event_date'));
     $twig->addFilter(new Twig_SimpleFilter('get_month_shorthand_name','get_month_shorthand_name'));
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
     $html = $twig->render('get_event_html.html', array(
         'title' => $title,
         'event' => $event,

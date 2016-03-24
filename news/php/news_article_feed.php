@@ -20,8 +20,6 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
-include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
-
 function create_news_article_feed($categories){
     $feed = autoCache("create_news_article_feed_logic", array($categories));
     return $feed;
@@ -178,7 +176,6 @@ function get_news_article_html( $article, $xml ){
         $thumborURL = thumborURL($imagePath, 215, $lazy=true, $print=false);
 
     $twig = makeTwigEnviron('/code/news/twig');
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
     $html = $twig->render('news_article_feed.html', array(
         'DisplayTeaser' => $DisplayTeaser,
         'date' => $date,

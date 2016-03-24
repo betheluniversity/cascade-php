@@ -65,12 +65,12 @@ function create_twig_html($image, $first, $last, $title, $path){
 
     $twig = makeTwigEnviron('/code/collections/twig');
     $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag', 'formatAnchorTag'));
+
     $html = $twig->render('faculty.html', array(
         'first'     => $first,
         'last'      => $last,
         'title'     => $title,
-        'path'      => formatAnchorTag($path),
+        'path'      => $path,
         'thumbURL'  => $thumbURL
     ));
     return $html;

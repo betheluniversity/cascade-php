@@ -5,7 +5,6 @@
  * Date: 10/2/14
  * Time: 11:01 AM
  */
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
     //$feed_url = "https://www.facebook.com/feeds/page.php?id=111223872355829&format=atom10";
     $ch = curl_init($feed_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -37,7 +36,7 @@
             $count++;
         }
         echo '<div class="media mb2">';
-            echo "<a class='img' href='" . formatAnchorTag($link) . "'><img src='$logo'></a>";
+            echo "<a class='img' href='$link'><img src='$logo'></a>";
             echo '<div class="bd">';
                 echo '<p>';
                     echo $title;
@@ -47,7 +46,7 @@
                     $date = date('F j, Y | g:i a', strtotime($date));
                     echo $date;
                 echo '</p>';
-                echo "<a href='" . formatAnchorTag($link) . "'>";
+                echo "<a href='$link'>";
                 echo $author;
                 echo "</a>";
 

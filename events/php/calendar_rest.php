@@ -101,7 +101,6 @@ function draw_calendar($month,$year, $day=1){
 
     $twig = makeTwigEnviron('/code/events/twig');
     $twig->getExtension('core')->setTimezone('America/Chicago');
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag', 'formatAnchorTag'));
     $calendar .= $twig->render('calendar_rest.html',array(
         'running_day' => $running_day,
         'days_in_month' => $days_in_month,

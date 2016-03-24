@@ -7,7 +7,6 @@
  */
 
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
     function show_individual_profile_stories($stories)
     {
@@ -112,7 +111,6 @@
         $quote = $ds->{'quote'};
 
         $twig = makeTwigEnviron('/code/profile-stories/twig');
-        $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
         $html = $twig->render('profile_story_collection.html', array(
             'path' => $xml->path,
             'thumborURL' => thumborURL($imagePath, 1500, true, false),

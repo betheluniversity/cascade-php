@@ -19,9 +19,9 @@
                         <div class="vevent">
                             <dt class="summary">
                                 {% if event.externallink != "" %}
-                                    <a href="{{event.externallink|formatAnchorTag}}">{{event.title}}</a>
+                                    <a href="{{event.externallink}}">{{event.title}}</a>
                                 {% else %}
-                                    <a href="//www.bethel.edu{{event.path|formatAnchorTag}}">{{event.title}}</a>
+                                    <a href="//www.bethel.edu{{event.path}}">{{event.title}}</a>
                                 {% endif %}
                             </dt>
                             <dd>

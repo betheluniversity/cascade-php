@@ -14,15 +14,12 @@ $uniqueNews;
 function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
-
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
 
     $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), "news_archive_sorted");
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
     $twig = makeTwigEnviron('/code/news/twig');
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
 
     foreach( $arrayOfArticles as $yearArray )
     {
@@ -101,7 +98,6 @@ function get_news_article_html( $article, $xml ){
 
     $day = $article['day'];
     $twig = makeTwigEnviron('/code/news/twig');
-    $twig->addFilter(new Twig_SimpleFilter('formatAnchorTag','formatAnchorTag'));
 
     $html = $twig->render('get_news_article_html.html', array(
         'externalPath' => $externalPath,
