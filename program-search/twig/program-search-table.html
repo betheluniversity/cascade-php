@@ -1,0 +1,24 @@
+{% for school in schools %}
+    <div class="mb3">
+        <h3>{{school}}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Delivery</th>
+                    <th>Degree Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for program in programs %}
+                    {% for program_school in program.md.school %}
+                        {% if program_school == school %}
+                            <tr>{{program.html|raw}}</tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+
