@@ -1,0 +1,25 @@
+<td>
+    {% if concentration_page != '/' %}
+        <a href="{{concentration_page}}">
+    {% endif %}
+
+    {{title}}
+    {% for type in program_types %}
+        <span class="btn btn-mini major ml1">{{type}}</span>
+    {% endfor %}
+
+    {% if concentration_page != '/' %}
+        </a>
+    {% endif %}
+
+</td>
+<td>
+    {{ deliveries | sort | join(', ') }}
+</td>
+<td>
+    {{ degrees | sort | join(', ') }}
+</td>
+
+<td>
+    <input type="checkbox"/>
+</td>

@@ -1,3 +1,7 @@
+{% if programs|length == 0 %}
+<div class="mb4"><h3>No programs match your search.</h3></div>
+{% endif %}
+
 {% for school in schools %}
     <div class="mb3">
         <h3>{{school}}</h3>
@@ -7,15 +11,16 @@
                     <th>Name</th>
                     <th>Delivery</th>
                     <th>Degree Type</th>
+                    <th>Compare Programs</th>
                 </tr>
             </thead>
             <tbody>
                 {% for program in programs %}
-                    {% for program_school in program.md.school %}
-                        {% if program_school == school %}
-                            <tr>{{program.html|raw}}</tr>
-                        {% endif %}
-                    {% endfor %}
+                    {% if school in program.md.school %}
+                        {% for concentration in program.concentrations %}
+                            <tr>{{concentration.html|raw}}</tr>
+                        {% endfor %}
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

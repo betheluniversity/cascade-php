@@ -54,10 +54,14 @@ function get_html_for_table($programs, $schools){
 }
 
 
-function get_html_for_program($program){
+function get_html_for_program_concentration($program, $concentration){
     $twig = makeTwigEnviron('/code/program-search/twig');
-    $html = $twig->render('program.html', array(
-        'program'=> $program
+    $html = $twig->render('concentration.html', array(
+        'title'                 => $concentration['concentration_name'],
+        'program_types'         => $program['md']['program-type'],
+        'concentration_page'    => $concentration['concentration_page'],
+        'deliveries'            => $program['deliveries'],
+        'degrees'               => $program['md']['degree']
     ));
 
     return $html;
@@ -65,7 +69,7 @@ function get_html_for_program($program){
 
 
 function search_programs($program_data, $inputs){
-    $search_term = $inputs[0];
+    $search_term = strtolower($inputs[0]);
     $schoolArray = $inputs[1];
     $deliveryArray = $inputs[2];
     $degreeType = $inputs[3];
@@ -87,24 +91,37 @@ function search_programs($program_data, $inputs){
         }
 
         // 3) degree type matches
-        if( !($degreeType == 'All' || $degreeType == 'all') && $degreeType != strval($program['md']['degree']) )
+        if( !($degreeType == 'All' || $degreeType == 'all') && check_degree_types($program, $degreeType) )
             continue;
 
-
-        // default -- displaying all
+        // default -- displaying all if no search term is entered
         if( $search_term == '' ) {
             array_push($return_values, $program);
         }
         // program title matches -- if search key is in program title
-        elseif( strpos($program['title'], $search_term) !== false ) {
+        elseif( strpos(strtolower($program['title']), $search_term) !== false ) {
             array_push($return_values, $program);
         }
         // cluster matches -- if search key is in cluster
-        elseif( sizeof($program['md']['cluster']) > 0 && in_array($search_term, $program['md']['cluster']) ){
+        elseif( sizeof($program['md']['cluster']) > 0 && in_array($search_term, strtolower($program['md']['cluster'])) ){
             array_push($return_values, $program);
         }
     }
     return $return_values;
+}
+
+
+function check_degree_types($program, $check_degree){
+    $degrees = $program['md']['degree'];
+
+    if( sizeof($degrees) == 0 )
+        return true;
+
+    foreach( $degrees as $degree ){
+        if( strstr($degree, $check_degree ) == false )
+            return true;
+    }
+    return false;
 }
 
 
@@ -241,12 +258,15 @@ function inspect_program($xml){
 
             $temp_concentration['concentration_code'] = $concentration->{'concentration_code'};
             $temp_concentration['concentration_description'] = $concentration->{'concentration_description'};
-            $temp_concentration['concentration_page'] = $concentration->{'concentration_page'};
+            $temp_concentration['concentration_page'] = $concentration->{'concentration_page'}->{'path'};
             $temp_concentration['total_credits'] = $concentration->{'total_credits'};
             $temp_concentration['program_length'] = $concentration->{'program_length'};
             // todo: add courses
 
-            $temp_concentration['concentration_name'] = $concentration->{'concentration_banner'}->{'concentration_name'};
+            $concentration_title = $concentration->{'concentration_banner'}->{'concentration_name'};
+            if( $concentration_title == '' )
+                $concentration_title = $page_info['title'];
+            $temp_concentration['concentration_name'] = $concentration_title;
             $temp_concentration['cost'] = $concentration->{'concentration_banner'}->{'cost'};
 
             $temp_concentration['cohorts'] = array();
@@ -256,19 +276,22 @@ function inspect_program($xml){
                 $temp_cohort_details['semester_start'] = $cohort_detail->{'semester_start'};
                 $temp_cohort_details['year_start'] = $cohort_detail->{'year_start'};
                 $temp_cohort_details['delivery_label'] = $cohort_detail->{'delivery_label'};
+                if( in_array('College of Arts & Sciences', $page_info['md']['school']) )
+                    $temp_cohort_details['delivery_label'] = 'Face to Face';
                 $temp_cohort_details['delivery_subheading'] = $cohort_detail->{'delivery_subheading'};
                 $temp_cohort_details['delivery_description'] = $cohort_detail->{'delivery_description'};
                 $temp_cohort_details['location'] = $cohort_detail->{'location'};
 
-                if( !in_array(strval($temp_cohort_details['delivery_label']), $page_info['deliveries']) )
-                    array_push($page_info['deliveries'], strval($temp_cohort_details['delivery_label']));
+                $delivery_value = trim(strval($temp_cohort_details['delivery_label']));
+                if( !in_array($delivery_value, $page_info['deliveries']) )
+                    array_push($page_info['deliveries'], $delivery_value);
                 array_push($temp_concentration['cohorts'], $temp_cohort_details);
             }
 
+            $temp_concentration['html'] = get_html_for_program_concentration($page_info, $temp_concentration);
             array_push($page_info['concentrations'], $temp_concentration);
         }
-
-        $page_info['html'] = get_html_for_program($page_info);
+        $page_info['deliveries'] = array_unique($page_info['deliveries']);
     }
 
     return $page_info;
