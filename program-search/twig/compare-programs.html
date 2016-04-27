@@ -1,0 +1,54 @@
+<a id='close-' class="btn btn-small mb2" onclick="closeCompareSearch()">Close</a>
+<hr/>
+
+<div class="grid">
+    {% for program_concentration in program_concentrations %}
+        {% set program = program_concentration[0] %}
+        {% set concentration = program_concentration[1] %}
+
+        <div class="grid-cell">
+            <div class="medium-grid-pad-1x">
+                {% if concentration.concentration_name %}
+                    <h3>{{concentration.concentration_name}}</h3>
+                    {{program.md.degree | join(', ') }}
+                    {% if program.md.school | length > 0 %}
+                        | {{program.md.school | join(', ')}}{% endif %}
+
+                    <hr/>
+                {% endif %}
+
+
+
+                {% if concentration.total_credits %}
+                    <p><strong>Total Credits</strong></p>
+                    {{concentration.total_credits}}
+                {% endif %}
+
+                {% if concentration.cost != '' and concentration.cost != '$None' %}
+                    <p><strong>Cost per Credit</strong></p>
+                    {{concentration.cost}}
+                {% endif %}
+
+                {% if concentration.program_length %}
+                    <p><strong>Program Length</strong></p>
+                    {{concentration.program_length}}
+                {% endif %}
+
+                {% if concentration.concentration_description %}
+                    <p><strong>Description</strong></p>
+                    {{concentration.concentration_description | raw}}
+                {% endif %}
+
+                {% if concentration.cohorts[0].semester_start %}
+                    <p><strong>Next Start Date:</strong></p>
+                    {{concentration.cohorts[0].semester_start}} {{concentration.cohorts[0].year_start}}
+                {% endif %}
+
+                {% if concentration.cohorts[0].delivery_label %}
+                    <p><strong>Deliveries:</strong></p>
+                    {{concentration.cohorts[0].delivery_label}}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

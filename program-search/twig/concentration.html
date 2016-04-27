@@ -13,13 +13,15 @@
     {% endif %}
 
 </td>
+
 <td>
     {{ deliveries | sort | join(', ') }}
 </td>
+
 <td>
     {{ degrees | sort | join(', ') }}
 </td>
 
 <td>
-    <input type="checkbox"/>
+    <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}"/><a class="btn btn-small ml1" onclick="comparePrograms()">Compare Programs</a>
 </td>

@@ -6,17 +6,52 @@
  * Time: 1:54 PM
  */
 
+// General Todos:
+// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one
+// Todo: how do we compare CAS and post trad programs
+
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
-test_run();
+route_to_functions();
 
-function test_run(){
+function route_to_functions(){
+    $inputs = json_decode( file_get_contents( "php://input" ));
+    $function_name = $inputs[0];
+    $data = $inputs[1];
+
+    if( $function_name == 'program-search-results')
+        call_program_search($data);
+    elseif( $function_name == 'compare-programs')
+        call_compare_programs($data);
+}
+
+function call_compare_programs($program_id_list){
+    $programs_to_compare = array();
+
+    // Todo: make this less nasty through cache, and also how it is gathered?
+    $programs = get_program_xml();
+    foreach($programs as $program){
+        foreach($program['concentrations'] as $concentration){
+            if( $concentration['concentration_code'] != '' && in_array($concentration['concentration_code'], $program_id_list)){
+                array_push($programs_to_compare, array($program, $concentration));
+            }
+        }
+    }
+    $twig = makeTwigEnviron('/code/program-search/twig');
+    $html = $twig->render('compare-programs.html', array(
+        'program_concentrations'=> $programs_to_compare,
+    ));
+
+    echo $html;
+}
+
+
+function call_program_search($input_data){
     // TOdo cache this
     $program_data = integrate_xml_and_csv();
-    $inputs = json_decode( file_get_contents( "php://input" ));
 
-    $programs = search_programs($program_data, $inputs);
+    $programs = search_programs($program_data, $input_data);
 
     usort($programs, 'program_sort_by_school_then_title');
 
@@ -53,7 +88,7 @@ function get_html_for_table($programs, $schools){
     return $html;
 }
 
-
+// Todo: call the functions for creating grid/grid cells
 function get_html_for_program_concentration($program, $concentration){
     $twig = makeTwigEnviron('/code/program-search/twig');
     $html = $twig->render('concentration.html', array(
@@ -61,18 +96,19 @@ function get_html_for_program_concentration($program, $concentration){
         'program_types'         => $program['md']['program-type'],
         'concentration_page'    => $concentration['concentration_page'],
         'deliveries'            => $program['deliveries'],
-        'degrees'               => $program['md']['degree']
+        'degrees'               => $program['md']['degree'],
+        'concentration_code'    => $concentration['concentration_code']
     ));
 
     return $html;
 }
 
 
-function search_programs($program_data, $inputs){
-    $search_term = strtolower($inputs[0]);
-    $schoolArray = $inputs[1];
-    $deliveryArray = $inputs[2];
-    $degreeType = $inputs[3];
+function search_programs($program_data, $data){
+    $search_term = strtolower($data[0]);
+    $schoolArray = $data[1];
+    $deliveryArray = $data[2];
+    $degreeType = $data[3];
 
     $return_values = array();
 
@@ -257,7 +293,7 @@ function inspect_program($xml){
             $temp_concentration = array();
 
             $temp_concentration['concentration_code'] = $concentration->{'concentration_code'};
-            $temp_concentration['concentration_description'] = $concentration->{'concentration_description'};
+            $temp_concentration['concentration_description'] = recursive_convert_xml_to_string($concentration->{'concentration_description'}->asXML());
             $temp_concentration['concentration_page'] = $concentration->{'concentration_page'}->{'path'};
             $temp_concentration['total_credits'] = $concentration->{'total_credits'};
             $temp_concentration['program_length'] = $concentration->{'program_length'};
@@ -275,26 +311,45 @@ function inspect_program($xml){
 
                 $temp_cohort_details['semester_start'] = $cohort_detail->{'semester_start'};
                 $temp_cohort_details['year_start'] = $cohort_detail->{'year_start'};
-                $temp_cohort_details['delivery_label'] = $cohort_detail->{'delivery_label'};
-                if( in_array('College of Arts & Sciences', $page_info['md']['school']) )
-                    $temp_cohort_details['delivery_label'] = 'Face to Face';
                 $temp_cohort_details['delivery_subheading'] = $cohort_detail->{'delivery_subheading'};
                 $temp_cohort_details['delivery_description'] = $cohort_detail->{'delivery_description'};
                 $temp_cohort_details['location'] = $cohort_detail->{'location'};
 
+                // Get all deliveries
+                $temp_cohort_details['delivery_label'] = $cohort_detail->{'delivery_label'};
+                if( in_array('College of Arts & Sciences', $page_info['md']['school']) )
+                    $temp_cohort_details['delivery_label'] = 'Face to Face';
                 $delivery_value = trim(strval($temp_cohort_details['delivery_label']));
                 if( !in_array($delivery_value, $page_info['deliveries']) )
                     array_push($page_info['deliveries'], $delivery_value);
+
+                // add the entire cohort
                 array_push($temp_concentration['cohorts'], $temp_cohort_details);
             }
 
+            // get html for concentration
             $temp_concentration['html'] = get_html_for_program_concentration($page_info, $temp_concentration);
+            // add concentration to program
             array_push($page_info['concentrations'], $temp_concentration);
         }
-        $page_info['deliveries'] = array_unique($page_info['deliveries']);
     }
 
     return $page_info;
 }
 
+
+function recursive_convert_xml_to_string($xml, $string=''){
+    if( $xml && $xml != '' && property_exists($xml, 'hasChildren') && $xml->hasChildren() ){
+        foreach($xml as $key => $child){
+            if( $child->hasChildren() )
+                recursive_convert_xml_to_string($child, $string);
+            else
+                $string .= "<$key>$child</$key>";
+        }
+    } else {
+        $string .= "$xml";
+    }
+
+    return $string;
+}
 

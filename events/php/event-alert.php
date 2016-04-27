@@ -10,7 +10,7 @@ function create_event_alert($schools, $offCampusLocation, $firstDate){
     // convert cascade timestamp to a normal timestamp, and then to a date
     $firstDate = Date((int)$firstDate/1000);
     $today = time();
-    
+
     // if the school does not include Seminary San Diego.
     // if it is on campus
     // if the date is after today
