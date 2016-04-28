@@ -23,5 +23,10 @@
 </td>
 
 <td>
-    <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}"/><a class="btn btn-small ml1" onclick="comparePrograms()">Compare Programs</a>
+    {% if "College of Arts & Sciences" not in schools %}
+        <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}" onclick="countCheckedBoxes()" /><a class="btn btn-small ml1" onclick="comparePrograms()">Compare Programs</a>
+    {% else %}
+        <p>N/A</p>
+    {% endif %}
+
 </td>
