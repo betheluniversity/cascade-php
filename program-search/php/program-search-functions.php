@@ -7,146 +7,6 @@
  */
 
 
-function program_sort_by_school_then_title($a, $b) {
-    $c = strcmp($a['md']['school'][0], $b['md']['school'][0]);
-    if($c != 0) {
-        return $c;
-    }
-
-    return strcmp($a['title'], $b['title']);
-}
-
-
-function get_html_for_table($programs, $schools){
-    $twig = makeTwigEnviron('/code/program-search/twig');
-    $html = $twig->render('program-search-table.html', array(
-        'programs'=> $programs,
-        'schools' => $schools
-    ));
-
-    return $html;
-}
-
-// Todo: call the functions for creating grid/grid cells
-function get_html_for_program_concentration($program, $concentration){
-    $twig = makeTwigEnviron('/code/program-search/twig');
-    $html = $twig->render('concentration.html', array(
-        'title'                 => $concentration['concentration_name'],
-        'program_types'         => $program['md']['program-type'],
-        'concentration_page'    => $concentration['concentration_page'],
-        'deliveries'            => $program['deliveries'],
-        'degrees'               => $program['md']['degree'],
-        'concentration_code'    => $concentration['concentration_code'],
-        'schools'                => $program['md']['school']
-    ));
-
-    return $html;
-}
-
-
-function search_programs($program_data, $data){
-    $search_term = strtolower($data[0]);
-    $schoolArray = $data[1];
-    $deliveryArray = $data[2];
-    $degreeType = $data[3];
-
-    $return_values = array();
-
-    // Todo: add the csv data
-    // Todo: depending on what adds it to the list, should that effect sorting?
-    foreach($program_data as $program){
-        // 1) school matches
-        if( !(in_array('All', $schoolArray) || in_array('all', $schoolArray)) && !count(array_intersect($schoolArray, $program['md']['school'])) )
-            continue;
-
-        // 2) delivery matches -- if F2F is selected and school is CAS, it should be shown
-        if( !count(array_intersect($deliveryArray, $program['deliveries'])) ){
-            if( !(in_array('Face to Face', $deliveryArray) && in_array('College of Arts & Sciences', $program['md']['school'])) ) {
-                continue;
-            }
-        }
-
-        // 3) degree type matches
-        if( !($degreeType == 'All' || $degreeType == 'all') && check_degree_types($program, $degreeType) )
-            continue;
-
-        // default -- displaying all if no search term is entered
-        if( $search_term == '' ) {
-            array_push($return_values, $program);
-        }
-        // program title matches -- if search key is in program title
-        elseif( strpos(strtolower($program['title']), $search_term) !== false ) {
-            array_push($return_values, $program);
-        }
-        // cluster matches -- if search key is in cluster
-        elseif( sizeof($program['md']['cluster']) > 0 && in_array($search_term, strtolower($program['md']['cluster'])) ){
-            array_push($return_values, $program);
-        }
-    }
-    return $return_values;
-}
-
-
-function check_degree_types($program, $check_degree){
-    $degrees = $program['md']['degree'];
-
-    if( sizeof($degrees) == 0 )
-        return true;
-
-    foreach( $degrees as $degree ){
-        if( strstr($degree, $check_degree ) == false )
-            return true;
-    }
-    return false;
-}
-
-
-function integrate_xml_and_csv(){
-    // Get the program_data from xml here
-    $program_data = get_program_xml();
-
-    // for each child
-    $dir = realpath($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/');
-
-    $files = scandir($dir);
-    foreach($files as $name){
-        if( $name != '.' && $name != '..') {
-            $program_name = str_replace('.csv', '', $name);
-            $program_data[$program_name]['csv-data'] = read_csv_file("$dir/$name");
-        }
-    }
-
-    return $program_data;
-}
-
-
-function read_csv_file($path){
-    $return_array = array();
-    $column_headers = array();
-    $row = 1;
-
-    // Todo: this could probably be done in a couple lines less
-    if (($handle = fopen($path, "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $num = count($data);
-            if( $row == 1 ) {
-                $column_headers = $data;
-            } else {
-                $temp_data_array = array();
-                foreach( $data as $i => $value ){
-                    $temp_data_array[$column_headers[$i]] = $value;
-                }
-                array_push($return_array, $temp_data_array);
-            }
-            $row++;
-        }
-        fclose($handle);
-    }
-
-    return $return_array;
-}
-
-
 function get_program_xml(){
     $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/programs.xml");
     $programs = array();
@@ -239,10 +99,7 @@ function inspect_program($xml){
             $temp_concentration['program_length'] = $concentration->{'program_length'};
             // todo: add courses
 
-            $concentration_title = $concentration->{'concentration_banner'}->{'concentration_name'};
-            if( $concentration_title == '' )
-                $concentration_title = $page_info['title'];
-            $temp_concentration['concentration_name'] = $concentration_title;
+            $temp_concentration['concentration_name'] = strval($concentration->{'concentration_banner'}->{'concentration_name'});
             $temp_concentration['cost'] = $concentration->{'concentration_banner'}->{'cost'};
 
             $temp_concentration['cohorts'] = array();
@@ -291,4 +148,168 @@ function recursive_convert_xml_to_string($xml, $string=''){
     }
 
     return $string;
+}
+
+
+function program_sort_by_school_then_title($a, $b) {
+    // compare by school
+    $c = strcmp($a['program']['md']['school'][0], $b['program']['md']['school'][0]);
+    if($c != 0) {
+        return $c;
+    }
+
+    // compare by concentration_name or by title
+    $aName = '';
+    if( $a['concentration']['concentration_name'] != '')
+        $aName = $a['concentration']['concentration_name'];
+    else
+        $aName = $a['program']['title'];
+
+    $bName = '';
+    if( $b['concentration']['concentration_name'] != '')
+        $bName = $b['concentration']['concentration_name'];
+    else
+        $bName = $b['program']['title'];
+
+    return strcmp($aName, $bName);
+}
+
+
+function get_html_for_table($programs, $schools){
+    $twig = makeTwigEnviron('/code/program-search/twig');
+    $html = $twig->render('program-search-table.html', array(
+        'programs'=> $programs,
+        'schools' => $schools
+    ));
+
+    return $html;
+}
+
+// Todo: call the functions for creating grid/grid cells?
+function get_html_for_program_concentration($program, $concentration){
+    $twig = makeTwigEnviron('/code/program-search/twig');
+    $html = $twig->render('concentration.html', array(
+        'concentration_name'    => $concentration['concentration_name'],
+        'title'                 => $program['title'],
+        'program_types'         => $program['md']['program-type'],
+        'concentration_page'    => $concentration['concentration_page'],
+        'deliveries'            => $program['deliveries'],
+        'degrees'               => $program['md']['degree'],
+        'concentration_code'    => $concentration['concentration_code'],
+        'schools'               => $program['md']['school']
+    ));
+
+    return $html;
+}
+
+
+function search_programs($program_data, $data){
+    // gather the input data
+    $search_term = trim(strtolower($data[0]));
+    $schoolArray = $data[1];
+    $deliveryArray = $data[2];
+    $degreeType = $data[3];
+
+    // Get the csv data as single csv file
+    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv');
+    $return_values = array();
+
+    // Todo: depending on what adds it to the list, should that effect sorting?
+    // for example, if cluster matches, should that be lower on the search? (or should highlighting do anything?)
+    foreach($program_data as $program){
+        // 1) school does not match
+        if( !(in_array('All', $schoolArray) || in_array('all', $schoolArray)) && !count(array_intersect($schoolArray, $program['md']['school'])) )
+            continue;
+
+        // 2) delivery does not match -- if F2F is selected and school is CAS, it should be shown
+        if( !count(array_intersect($deliveryArray, $program['deliveries'])) ){
+            if( !(in_array('Face to Face', $deliveryArray) && in_array('College of Arts & Sciences', $program['md']['school'])) ) {
+                continue;
+            }
+        }
+
+        // 3) degree type does not match
+        if( !($degreeType == 'All' || $degreeType == 'all') && check_degree_types($program, $degreeType) )
+            continue;
+
+        foreach( $program['concentrations'] as $concentration){
+            $values_to_push = array('program' => $program, 'concentration' => $concentration);
+            $cluster_lower_case = array_map('strtolower', $program['md']['cluster']);
+
+            // 4) If the $search_term matches, then add it
+            // default -- displaying all if no search term is entered
+            if( $search_term == '' ) {
+                array_push($return_values, $values_to_push);
+            }
+            // program title matches -- if search key is in program title
+            elseif( strpos(strtolower($concentration['concentration_name']), $search_term) !== false ) {
+                array_push($return_values, $values_to_push);
+            }
+            // cluster matches -- if search key is in cluster
+            elseif( sizeof($program['md']['cluster'] > 0) && in_array($search_term, $cluster_lower_case) ){
+                array_push($return_values, $values_to_push);
+            }
+            // csv matches
+            elseif( search_csv_values($csv_data, $concentration['concentration_code'], $search_term) ){
+                array_push($return_values, $values_to_push);
+            }
+        }
+
+
+
+
+    }
+    return $return_values;
+}
+
+
+function search_csv_values($csv_data, $concentration_code, $search_term){
+    foreach($csv_data as $row){
+        if( $search_term == trim(strtolower($row['Tag'])) && $concentration_code == $row['Concentration Code'] )
+            return true;
+    }
+    return false;
+}
+
+
+function read_csv_file($path){
+    $path = realpath($path);
+
+    $return_array = array();
+    $column_headers = array();
+    $row = 1;
+
+    // Todo: this could probably be done in a couple lines less
+    if (($handle = fopen($path, "r")) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            $num = count($data);
+            if( $row == 1 ) {
+                $column_headers = $data;
+            } else {
+                $temp_data_array = array();
+                foreach( $data as $i => $value ){
+                    $temp_data_array[$column_headers[$i]] = $value;
+                }
+                array_push($return_array, $temp_data_array);
+            }
+            $row++;
+        }
+        fclose($handle);
+    }
+
+    return $return_array;
+}
+
+
+function check_degree_types($program, $check_degree){
+    $degrees = $program['md']['degree'];
+
+    if( sizeof($degrees) == 0 )
+        return true;
+
+    foreach( $degrees as $degree ){
+        if( strstr($degree, $check_degree ) == false )
+            return true;
+    }
+    return false;
 }

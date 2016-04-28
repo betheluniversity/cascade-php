@@ -15,11 +15,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for program in programs %}
-                    {% if school in program.md.school %}
-                        {% for concentration in program.concentrations %}
-                            <tr>{{concentration.html|raw}}</tr>
-                        {% endfor %}
+                {% for program_concentration_array in programs %}
+                    {% set real_program = program_concentration_array['program'] %}
+                    {% set real_concentration = program_concentration_array['concentration'] %}
+
+                    {% if school in real_program.md.school %}
+                        <tr>{{real_concentration.html|raw}}</tr>
                     {% endif %}
                 {% endfor %}
             </tbody>

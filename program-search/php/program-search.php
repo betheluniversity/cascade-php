@@ -7,8 +7,7 @@
  */
 
 // General Todos:
-// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one
-// Todo: how do we compare CAS and post trad programs
+// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
 
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
@@ -29,15 +28,14 @@ function route_to_functions(){
 
 
 function call_program_search($input_data){
-    // TOdo cache this
-    $program_data = integrate_xml_and_csv();
+    $program_data = get_program_xml();
 
     $programs = search_programs($program_data, $input_data);
-
     usort($programs, 'program_sort_by_school_then_title');
 
+    // get unique schools
     // only show the schools that match, and order them as follows
-    $uniqueSchools = array_unique(array_map(function ($i) { return $i['md']['school'][0]; }, $programs));
+    $uniqueSchools = array_unique(array_map(function ($i) { return $i['program']['md']['school'][0]; }, $programs));
     $school_order = array('College of Arts & Sciences', 'College of Adult & Professional Studies', 'Graduate School', 'Bethel Seminary');
     foreach( $school_order as $key => $school){
         if( !in_array($school, $uniqueSchools))

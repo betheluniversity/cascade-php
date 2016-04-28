@@ -8,16 +8,19 @@
 
         <div class="grid-cell">
             <div class="medium-grid-pad-1x">
+                <h3>
                 {% if concentration.concentration_name %}
-                    <h3>{{concentration.concentration_name}}</h3>
-                    {{program.md.degree | join(', ') }}
-                    {% if program.md.school | length > 0 %}
-                        | {{program.md.school | join(', ')}}{% endif %}
-
-                    <hr/>
+                    {{concentration.concentration_name}}
+                {% else %}
+                    {{program.title}}
                 {% endif %}
+                </h3>
 
+                {{program.md.degree | join(', ') }}
+                {% if program.md.school | length > 0 %}
+                    | {{program.md.school | join(', ')}}{% endif %}
 
+                <hr/>
 
                 {% if concentration.total_credits %}
                     <p><strong>Total Credits</strong></p>
