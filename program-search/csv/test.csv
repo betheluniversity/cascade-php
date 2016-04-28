@@ -1,0 +1,19 @@
+Concentration Code,Tag,Outcome,Other Name,Topic of Interest
+2-MBA-B-FINA,Test Global 1,True,False,True
+2-MBA-B-FINA,test Global 2,True,True,False
+2-MBA-B-FINA,test Global 3,False,True,True
+2-MBA-B-FINA,test finance 1,True,False,True
+2-MBA-B-FINA,test finance 2,False,True,True
+2-MBA-B-FINA,test finance 3,True,True,False
+2-MBA-B-GLOB,Test Global 1,True,False,True
+2-MBA-B-GLOB,test Global 2,True,True,False
+2-MBA-B-GLOB,test Global 3,False,True,True
+2-MBA-B-GLOB,test global-mgmt 1,True,False,True
+2-MBA-B-GLOB,test global-mgmt 2,False,True,True
+2-MBA-B-GLOB,test global-mgmt 3,True,True,False
+2-MBA-B-MGMT,Test Global 1,True,False,True
+2-MBA-B-MGMT,test Global 2,True,True,False
+2-MBA-B-MGMT,test Global 3,False,True,True
+2-MBA-B-MGMT,test management 1,True,False,True
+2-MBA-B-MGMT,test management 2,False,True,True
+2-MBA-B-MGMT,test management 3,True,True,False
