@@ -36,7 +36,6 @@ function traverse_folder($xml, $programs){
 }
 
 
-// Todo: Add more to this
 // Todo: can we use xpath here or something? its pretty ugly as is.
 // Gathers the information of an event page
 function inspect_program($xml){
@@ -89,6 +88,7 @@ function inspect_program($xml){
         $page_info['program_description'] = $ds->{'program'}->{'program_description'};
         $page_info['concentrations'] = array();
 
+        // todo: add courses?
         foreach( $ds->{'concentration'} as $concentration){
             $temp_concentration = array();
 
@@ -97,8 +97,6 @@ function inspect_program($xml){
             $temp_concentration['concentration_page'] = $concentration->{'concentration_page'}->{'path'};
             $temp_concentration['total_credits'] = $concentration->{'total_credits'};
             $temp_concentration['program_length'] = $concentration->{'program_length'};
-            // todo: add courses
-
             $temp_concentration['concentration_name'] = strval($concentration->{'concentration_banner'}->{'concentration_name'});
             $temp_concentration['cost'] = $concentration->{'concentration_banner'}->{'cost'};
 
@@ -159,13 +157,11 @@ function program_sort_by_school_then_title($a, $b) {
     }
 
     // compare by concentration_name or by title
-    $aName = '';
     if( $a['concentration']['concentration_name'] != '')
         $aName = $a['concentration']['concentration_name'];
     else
         $aName = $a['program']['title'];
 
-    $bName = '';
     if( $b['concentration']['concentration_name'] != '')
         $bName = $b['concentration']['concentration_name'];
     else
@@ -185,7 +181,7 @@ function get_html_for_table($programs, $schools){
     return $html;
 }
 
-// Todo: call the functions for creating grid/grid cells?
+// Todo: call the functions for creating grid/grid cells instead?
 function get_html_for_program_concentration($program, $concentration){
     $twig = makeTwigEnviron('/code/program-search/twig');
     $html = $twig->render('concentration.html', array(
@@ -212,6 +208,7 @@ function search_programs($program_data, $data){
 
     // Get the csv data as single csv file
     $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv');
+//    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'), 'program-search-csv-data');
     $return_values = array();
 
     // Todo: depending on what adds it to the list, should that effect sorting?
@@ -236,13 +233,17 @@ function search_programs($program_data, $data){
             $values_to_push = array('program' => $program, 'concentration' => $concentration);
             $cluster_lower_case = array_map('strtolower', $program['md']['cluster']);
 
-            // 4) If the $search_term matches, then add it
+            // If the $search_term matches, then add it
             // default -- displaying all if no search term is entered
             if( $search_term == '' ) {
                 array_push($return_values, $values_to_push);
             }
-            // program title matches -- if search key is in program title
-            elseif( strpos(strtolower($concentration['concentration_name']), $search_term) !== false ) {
+            // Concentration name matches (contains) -- if search key is in concentration name
+            elseif( $concentration['concentration_name'] != '' && strpos(strtolower($concentration['concentration_name']), $search_term) !== false ) {
+                array_push($return_values, $values_to_push);
+            }
+            // program title matches (contains) -- if search key is in program title
+            elseif( strpos(strtolower($program['title']), $search_term) !== false ) {
                 array_push($return_values, $values_to_push);
             }
             // cluster matches -- if search key is in cluster
@@ -250,14 +251,11 @@ function search_programs($program_data, $data){
                 array_push($return_values, $values_to_push);
             }
             // csv matches
+            // Todo: should this be an exact match or partial match?
             elseif( search_csv_values($csv_data, $concentration['concentration_code'], $search_term) ){
                 array_push($return_values, $values_to_push);
             }
         }
-
-
-
-
     }
     return $return_values;
 }
