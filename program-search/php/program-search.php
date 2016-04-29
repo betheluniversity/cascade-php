@@ -6,8 +6,9 @@
  * Time: 1:54 PM
  */
 
-// General Todos:
-// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
+// Todo: in case this overall needs to be sped up: http://nickology.com/2012/07/03/php-faster-array-lookup-than-using-in_array/
+// This would involve making $concentration['concentration_code']='asdfasdf' become $concentration['concentration_code']['asdfasdf'] = 1
+
 
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
@@ -28,7 +29,7 @@ function route_to_functions(){
 
 
 function call_program_search($input_data){
-    $program_data = get_program_xml();
+    $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_school_then_title');
@@ -46,19 +47,19 @@ function call_program_search($input_data){
     echo get_html_for_table($programs, $school_order);
 }
 
-
+// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
 function call_compare_programs($program_id_list){
-    $programs_to_compare = array();
+    $program_data = autoCache("get_program_xml", array(), 'program-data2', 300);
 
-    // Todo: make this less nasty through cache, and also how it is gathered?
-    $programs = get_program_xml();
-    foreach($programs as $program){
+    $programs_to_compare = array();
+    foreach($program_data as $program){
         foreach($program['concentrations'] as $concentration){
             if( $concentration['concentration_code'] != '' && in_array($concentration['concentration_code'], $program_id_list)){
                 array_push($programs_to_compare, array($program, $concentration));
             }
         }
     }
+
     $twig = makeTwigEnviron('/code/program-search/twig');
     $html = $twig->render('compare-programs.html', array(
         'program_concentrations'=> $programs_to_compare,
