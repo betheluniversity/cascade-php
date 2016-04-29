@@ -217,12 +217,11 @@ function makeTwigEnviron($path){
 
 }
 
-function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
+function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300)
 {
-
     // if $inputs[0] is an array, use the string version of print_r as the cache name, and then append the current path.
     // This is the most likely case because feeds pass an array of an array
-    if( is_array($inputs[0])){
+    if( sizeof($inputs) > 0 && is_array($inputs[0])){
         $cache_name = trim(print_r($inputs, true));
     }
 
@@ -244,8 +243,8 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
-    error_log("\n-----------AutoCache for $URI----------------\n", 3, '/tmp/memcache.log');
-    error_log("$func function being used. Searching for hash - $cache_name\n", 3, '/tmp/memcache.log');
+//    error_log("\n-----------AutoCache for $URI----------------\n", 3, '/tmp/memcache.log');
+//    error_log("$func function being used. Searching for hash - $cache_name\n", 3, '/tmp/memcache.log');
     if (!$data) {
         error_log("Full Data Array Memcache miss", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
@@ -254,9 +253,10 @@ function autoCache($func, $inputs, $cache_name = null, $cache_time = 300)
         } catch (Exception $e) {
             error_log("\nError - " . $e->getMessage(), 3, '/tmp/memcache.log');
         }
-    } else {
-        error_log("Full Data Array Memcache hit", 3, '/tmp/memcache.log');
     }
+//    else {
+//        error_log("Full Data Array Memcache hit", 3, '/tmp/memcache.log');
+//    }
 
     return $data;
 }
