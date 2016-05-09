@@ -7,7 +7,7 @@
  */
 
 // Todo: in case this overall needs to be sped up: http://nickology.com/2012/07/03/php-faster-array-lookup-than-using-in_array/
-// This would involve making $concentration['concentration_code']='asdfasdf' become $concentration['concentration_code']['asdfasdf'] = 1
+// ^^ This would involve making $concentration['concentration_code']='asdfasdf' become $concentration['concentration_code']['asdfasdf'] = 1
 
 
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
@@ -34,17 +34,39 @@ function call_program_search($input_data){
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_school_then_title');
 
-    // get unique schools
-    // only show the schools that match, and order them as follows
-    $uniqueSchools = array_unique(array_map(function ($i) { return $i['program']['md']['school'][0]; }, $programs));
-    $school_order = array('College of Arts & Sciences', 'College of Adult & Professional Studies', 'Graduate School', 'Bethel Seminary');
-    foreach( $school_order as $key => $school){
-        if( !in_array($school, $uniqueSchools))
-            unset($school_order[$key]);
+    // The order of which the degrees are shown
+    // Holds the real name, and the name that will match all of the specific type.
+    //   i.e. 'Master' vs 'Master's'
+    $degrees_array = array(
+        'Associate'     =>  array('name' =>'Associate', 'programs' => array()),
+        'Bachelor'      =>  array('name' =>'Bachelor', 'programs' => array()),
+        'License'       =>  array('name' =>'License', 'programs' => array()),
+        'Certificate'   =>  array('name' =>'Certificate', 'programs' => array()),
+        'Master'        =>  array('name' =>"Master's", 'programs' => array()),
+        'Doctor'        =>  array('name' =>'Doctorate', 'programs' => array())
+    );
+
+    // sort programs into each degree
+    // Todo: this needs to be cleaned up
+    foreach( $programs as $program){
+        foreach( $degrees_array as $key => $degree ){
+            foreach( $program['program']['md']['degree'] as $program_degree) {
+                if (strpos($program_degree, $key) !== false) {
+                    array_push($degrees_array[$key]['programs'], $program);
+                }
+            }
+        }
+    }
+
+    // if none of a degree type exists, don't show it
+    foreach( $degrees_array as $key => $degree ){
+        if( sizeof($degree['programs']) == 0 ){
+            unset($degrees_array[$key]);
+        }
     }
 
     // print the entire table
-    echo get_html_for_table($programs, $school_order);
+    echo get_html_for_table($degrees_array);
 }
 
 // Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available

@@ -83,6 +83,10 @@ function inspect_program($xml){
 
         }
 
+        // a double check to make sure degree is set in metadata
+        if( !array_key_exists('degree', $page_info['md']) )
+            $page_info['md']['degree'] = array();
+
         // gather the program data
         $page_info['program_code'] = $ds->{'program'}->{'program_code'};
         $page_info['program_description'] = $ds->{'program'}->{'program_description'};
@@ -171,11 +175,10 @@ function program_sort_by_school_then_title($a, $b) {
 }
 
 
-function get_html_for_table($programs, $schools){
+function get_html_for_table($degrees_array){
     $twig = makeTwigEnviron('/code/program-search/twig');
     $html = $twig->render('program-search-table.html', array(
-        'programs'=> $programs,
-        'schools' => $schools
+        'degrees_array'=> $degrees_array
     ));
 
     return $html;

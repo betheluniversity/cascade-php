@@ -1,10 +1,10 @@
-{% if programs|length == 0 %}
+{% if degrees_array|length == 0 %}
 <div class="mb4"><h3>No programs match your search.</h3></div>
 {% endif %}
 
-{% for school in schools %}
+{% for degree_display_name,degree_programs in degrees_array %}
     <div class="mb3">
-        <h3>{{school}}</h3>
+        <h3>{{degree_display_name}}</h3>
         <table>
             <thead>
                 <tr>
@@ -15,13 +15,11 @@
                 </tr>
             </thead>
             <tbody>
-                {% for program_concentration_array in programs %}
+                {% for program_concentration_array in degree_programs['programs'] %}
                     {% set real_program = program_concentration_array['program'] %}
                     {% set real_concentration = program_concentration_array['concentration'] %}
 
-                    {% if school in real_program.md.school %}
-                        <tr>{{real_concentration.html|raw}}</tr>
-                    {% endif %}
+                    <tr>{{real_concentration.html|raw}}</tr>
                 {% endfor %}
             </tbody>
         </table>
