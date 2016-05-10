@@ -32,41 +32,43 @@ function call_program_search($input_data){
     $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
 
     $programs = search_programs($program_data, $input_data);
-    usort($programs, 'program_sort_by_school_then_title');
+    usort($programs, 'program_sort_by_titles');
 
     // The order of which the degrees are shown
-    // Holds the real name, and the name that will match all of the specific type.
-    //   i.e. 'Master' vs 'Master's'
-    $degrees_array = array(
-        'Associate'     =>  array('name' =>'Associate', 'programs' => array()),
-        'Bachelor'      =>  array('name' =>'Bachelor', 'programs' => array()),
-        'License'       =>  array('name' =>'License', 'programs' => array()),
-        'Certificate'   =>  array('name' =>'Certificate', 'programs' => array()),
-        'Master'        =>  array('name' =>"Master's", 'programs' => array()),
-        'Doctor'        =>  array('name' =>'Doctorate', 'programs' => array())
+    $final_degrees_array = array(
+        'Associate'     =>  array(),
+        'Bachelor'      =>  array(),
+        'License'       =>  array(),
+        'Certificate'   =>  array(),
+        "Master's"      =>  array(),
+        'Doctorate'     =>  array()
     );
 
     // sort programs into each degree
-    // Todo: this needs to be cleaned up
     foreach( $programs as $program){
-        foreach( $degrees_array as $key => $degree ){
-            foreach( $program['program']['md']['degree'] as $program_degree) {
-                if (strpos($program_degree, $key) !== false) {
-                    array_push($degrees_array[$key]['programs'], $program);
+        foreach( $program['program']['md']['degree'] as $program_degree) { // loop through program degrees
+            foreach( $final_degrees_array as $degree_name => $program_array ){ // loop through degree holder
+                // Find the shortest substring that will still match all degree types
+                // i.e. Master's MATCHES Master Of Arts
+                $degree_check = substr($degree_name, 0, 6);
+
+                // if it matches
+                if (strpos($program_degree, $degree_check) !== false) {
+                    array_push($final_degrees_array[$degree_name], $program);
                 }
             }
         }
     }
 
     // if none of a degree type exists, don't show it
-    foreach( $degrees_array as $key => $degree ){
-        if( sizeof($degree['programs']) == 0 ){
-            unset($degrees_array[$key]);
+    foreach( $final_degrees_array as $degree_name => $program_array ){
+        if( sizeof($program_array) == 0 ){
+            unset($final_degrees_array[$degree_name]);
         }
     }
 
     // print the entire table
-    echo get_html_for_table($degrees_array);
+    echo get_html_for_table($final_degrees_array);
 }
 
 // Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available

@@ -98,7 +98,7 @@ function inspect_program($xml){
 
             $temp_concentration['concentration_code'] = $concentration->{'concentration_code'};
             $temp_concentration['concentration_description'] = recursive_convert_xml_to_string($concentration->{'concentration_description'}->asXML());
-            $temp_concentration['concentration_page'] = $concentration->{'concentration_page'}->{'path'};
+            $temp_concentration['concentration_page'] = $concentration->{'concentration_page'};
             $temp_concentration['total_credits'] = $concentration->{'total_credits'};
             $temp_concentration['program_length'] = $concentration->{'program_length'};
             $temp_concentration['concentration_name'] = strval($concentration->{'concentration_banner'}->{'concentration_name'});
@@ -153,21 +153,15 @@ function recursive_convert_xml_to_string($xml, $string=''){
 }
 
 
-function program_sort_by_school_then_title($a, $b) {
-    // compare by school
-    $c = strcmp($a['program']['md']['school'][0], $b['program']['md']['school'][0]);
-    if($c != 0) {
-        return $c;
-    }
-
-    // compare by concentration_name or by title
-    if( $a['concentration']['concentration_name'] != '')
-        $aName = $a['concentration']['concentration_name'];
+// compare by md.title of concentration pages or by program title
+function program_sort_by_titles($a, $b) {
+    if( $a['concentration']['concentration_page']->{'path'} != '/' )
+        $aName = strval($a['concentration']['concentration_page']->{'title'});
     else
         $aName = $a['program']['title'];
 
-    if( $b['concentration']['concentration_name'] != '')
-        $bName = $b['concentration']['concentration_name'];
+    if( $b['concentration']['concentration_page']->{'path'} != '/' )
+        $bName = strval($b['concentration']['concentration_page']->{'title'});
     else
         $bName = $b['program']['title'];
 
@@ -187,6 +181,7 @@ function get_html_for_table($degrees_array){
 // Todo: call the functions for creating grid/grid cells instead?
 function get_html_for_program_concentration($program, $concentration){
     $twig = makeTwigEnviron('/code/program-search/twig');
+    $twig->addFilter(new Twig_SimpleFilter('convert_degrees_to_shorthand','convert_degrees_to_shorthand'));
     $html = $twig->render('concentration.html', array(
         'concentration_name'    => $concentration['concentration_name'],
         'title'                 => $program['title'],
@@ -313,4 +308,36 @@ function check_degree_types($program, $check_degree){
             return true;
     }
     return false;
+}
+
+
+function convert_degrees_to_shorthand($degrees){
+    foreach($degrees as $degree){
+        if( $degree == "Associate of Arts")
+            return 'A.A.';
+        elseif( $degree == "Bachelor of Arts")
+            return 'B.A.';
+        elseif( $degree == "Bachelor of Music")
+            return 'B.M.';
+        elseif( $degree == "Bachelor of Science")
+            return 'B.S.';
+        elseif( $degree == "Bachelor of Fine Arts")
+            return 'B.F.A';
+        elseif( $degree == "Master of Arts")
+            return 'M.A.';
+        elseif( $degree == "Master of Science")
+            return 'M.S.';
+        elseif( $degree == "Master of Divinity")
+            return 'M.Div';
+        elseif( $degree == "Doctor of Ministry")
+            return 'D.Min';
+        elseif( $degree == "Doctor of Education")
+            return 'Ed.D.';
+        elseif( $degree == "Certificate")
+            return 'Certificate';
+        elseif( $degree == "Post-grad Certificate")
+            return 'Post-graduate Certificate';
+        elseif( $degree == "License")
+            return 'License';
+    }
 }

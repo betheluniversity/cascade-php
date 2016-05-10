@@ -1,39 +1,22 @@
 <td>
-    {% if concentration_page != '/' %}
-        <a href="{{concentration_page}}">
-    {% endif %}
-
-    {% if concentration_name != '' %}
-        {{concentration_name}}
+    {% if concentration_page.path != '/' %}
+        <a href="{{concentration_page.path}}">{{concentration_page.title}}</a>
     {% else %}
         {{title}}
     {% endif %}
 
     {% if "College of Arts & Sciences" in schools %}
         {% for type in program_types %}
-            <br/><span class="btn btn-mini major ml1">{{type}}</span>
+            <span class="ml1">({{type}})</span>
         {% endfor %}
     {% elseif "College of Adult & Professional Studies" in schools %}
-            <br/><span class="btn btn-mini major ml2">Adult Degree Completion</span>
+            <span class="ml1">(Adult Degree Completion)</span>
     {% endif %}
-
-    {% if concentration_page != '/' %}
-        </a>
-    {% endif %}
-
 </td>
 
-<td>
-    {{ schools | sort | join(', ') }}
-</td>
+<td>{{ degrees | convert_degrees_to_shorthand }}</td>
 
-<td>
-    {{ degrees | sort | join(', ') }}
-</td>
-
-<td>
-    {{ deliveries | sort | join(', ') }}
-</td>
+<td>{{ deliveries | sort | join(', ') }}</td>
 
 <td>
     {% if "College of Arts & Sciences" in schools or concentration_code == '' %}

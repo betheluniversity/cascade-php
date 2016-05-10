@@ -9,14 +9,13 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Schools</th>
                     <th>Degree Type</th>
                     <th>Delivery</th>
                     <th>Compare Programs</th>
                 </tr>
             </thead>
             <tbody>
-                {% for program_concentration_array in degree_programs['programs'] %}
+                {% for program_concentration_array in degree_programs %}
                     {% set real_program = program_concentration_array['program'] %}
                     {% set real_concentration = program_concentration_array['concentration'] %}
 
