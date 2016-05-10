@@ -212,6 +212,10 @@ function search_programs($program_data, $data){
     // Todo: depending on what adds it to the list, should that effect sorting?
     // for example, if cluster matches, should that be lower on the search? (or should highlighting do anything?)
     foreach($program_data as $program){
+        // Todo: remove this check when ALL schools need to be added
+        if( in_array('College of Arts & Sciences', $program['md']['school']) || in_array('Bethel Seminary', $program['md']['school']))
+            continue;
+
         // 1) school does not match
         if( !(in_array('All', $schoolArray) || in_array('all', $schoolArray)) && !count(array_intersect($schoolArray, $program['md']['school'])) )
             continue;
