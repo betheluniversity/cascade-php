@@ -207,10 +207,11 @@ function search_programs($program_data, $data){
     // gather the input data
     $search_term = trim(strtolower($data[0]));
     $schoolArray = $data[1];
+    $schoolArray = explode(',',$schoolArray[0]);
     $deliveryArray = $data[2];
     $degreeType = $data[3];
 
-    // Get the csv data as single csv file
+        // Get the csv data as single csv file
     $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv');
 //    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'), 'program-search-csv-data');
     $return_values = array();
@@ -219,7 +220,7 @@ function search_programs($program_data, $data){
     // for example, if cluster matches, should that be lower on the search? (or should highlighting do anything?)
     foreach($program_data as $program){
         // 1) school does not match
-        if( !(in_array('All', $schoolArray) || in_array('all', $schoolArray)) && !count(array_intersect($schoolArray, $program['md']['school'])) )
+        if( !count(array_intersect($schoolArray, $program['md']['school'])) )
             continue;
 
         // 2) delivery does not match -- if F2F is selected and school is CAS, it should be shown
