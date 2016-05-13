@@ -71,7 +71,7 @@ function image_carousel($images){
 }
 
 
-function srcset($end_path, $print=true, $lazy=true){
+function srcset($end_path, $print=true, $lazy=true, $classes=''){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
@@ -79,7 +79,8 @@ function srcset($end_path, $print=true, $lazy=true){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
         'end_path' => $end_path,
-        'lazy' => $lazy)
+        'lazy' => $lazy,
+        'classes'   => $classes)
     );
 
     if($print){
