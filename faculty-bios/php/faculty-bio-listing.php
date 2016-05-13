@@ -15,7 +15,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem){
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
     // Sort bios
-    usort($bios, 'sort_bios_by_last_name');
+    usort($bios, 'sort_bios_by_lead_and_last_name');
 
     // Print bios
     foreach( $bios as $bio)
@@ -52,7 +52,8 @@ function inspect_faculty_bio($xml){
     $page_info = array(
         "path"          =>  strval($xml->path),
         "md"            =>  array(),
-        "job-titles"    =>  array()
+        "job-titles"    =>  array(),
+        "is_lead"       =>  false // this is set in filter_bios
     );
 
     // ignore any bio found within "_testing" in Cascade
@@ -142,8 +143,14 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
             array_push($return_bios, $bio);
         } else {
             foreach ($schools as $school) {
-                $array_of_job_titles = get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem);
-                if( sizeof($array_of_job_titles) ) {
+                $temp_array_of_job_titles = get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem);
+                $array_of_job_titles = array();
+                if( sizeof($temp_array_of_job_titles) ) {
+                    foreach( $temp_array_of_job_titles as $job_title){
+                        if( $job_title['is_lead'] == true)
+                            $bio['is_lead'] = true;
+                        array_push( $array_of_job_titles, $job_title['title']);
+                    }
                     $bio['array_of_job_titles'] = $array_of_job_titles;
                     array_push($return_bios, $bio);
                 }
@@ -196,6 +203,7 @@ function create_bio_html($bio, $schools, $cas, $caps, $gs, $sem){
         $bio_image = '';
 
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
+    $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
     $html = $twig->render('faculty-bio.html', array(
         'bio'                   =>  $bio,
         'bio_image'             =>  $bio_image,
@@ -208,16 +216,30 @@ function create_bio_html($bio, $schools, $cas, $caps, $gs, $sem){
 
 function get_job_title($job_title){
     if( $job_title['department-chair'] == 'Yes' )
-        return 'Department Chair';
+        return array('is_lead' => true, 'title' => 'Department Chair');
     elseif( $job_title['program-director'] == 'Yes' )
-        return 'Program Director';
+        return array('is_lead' => true, 'title' => 'Program Director');
     elseif( $job_title['lead-faculty'] == 'Yes' )
-        return 'Lead Faculty';
+        return array('is_lead' => true, 'title' => 'Lead Faculty');
     else
-        return $job_title['job_title'];
+        return array('is_lead' => false, 'title' => $job_title['job_title']);
 }
 
 
-function sort_bios_by_last_name($a, $b){
+function sort_bios_by_lead_and_last_name($a, $b){
+    // sort by lead
+    if( $a['is_lead'] )
+        return false;
+    elseif( $b['is_lead'] )
+        return true;
+
+    // then sort by last name
     return strcmp($a['last'], $b['last']);
+}
+
+
+// format array to comma separated list with 'and' before the last element
+function format_job_titles($job_titles){
+    // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
+    return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
 }

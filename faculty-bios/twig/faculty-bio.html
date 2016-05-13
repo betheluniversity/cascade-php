@@ -1,4 +1,9 @@
+{% if bio.is_lead %}
+<div class="pa1 mv2" style="background: white;">
+{% else %}
 <div class="pa1 mv2">
+{% endif %}
+
     <div class="grid ">
         <div class="grid-cell u-medium-1-4 ">
             <div class=" grid-pad-1x ">
@@ -9,7 +14,7 @@
             <div class=" grid-pad-1x ">
                 <h3><a href="http://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a></h3>
                 <p class="sans-serif">
-                    {{ array_of_job_titles | join(', ') }}
+                    {{ array_of_job_titles | format_job_titles }}
                     {% if bio.email != '' %}
                         | <a href="mailto:{{ bio.email }}">{{ bio.email }}</a>
                     {% endif %}
