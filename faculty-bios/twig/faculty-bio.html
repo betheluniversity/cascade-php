@@ -1,0 +1,29 @@
+<div class="pa1 mv2">
+    <div class="grid ">
+        <div class="grid-cell u-medium-1-4 ">
+            <div class=" grid-pad-1x ">
+                {{ bio_image|raw }}
+            </div>
+        </div>
+        <div class="grid-cell u-medium-3-4 ">
+            <div class=" grid-pad-1x ">
+                <h3><a href="http://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a></h3>
+                <p class="sans-serif">
+                    {{ array_of_job_titles | join(', ') }}
+                    {% if bio.email != '' %}
+                        | <a href="mailto:{{ bio.email }}">{{ bio.email }}</a>
+                    {% endif %}
+                    {% if bio['started-at-bethel'] != '' %}
+                        | Started at Bethel: {{ bio['started-at-bethel'] }}
+                    {% endif %}
+                </p>
+
+                {% if bio.expertise != '' %}
+                    <h4 class="h5">{{ bio.expertise_heading }}</h4>
+                {% endif %}
+
+                <p>{{ bio.expertise|raw }}</p>
+            </div>
+        </div>
+    </div>
+</div>
