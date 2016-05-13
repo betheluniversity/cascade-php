@@ -9,10 +9,8 @@
         <div class="grid-cell">
             <div class="medium-grid-pad-1x">
                 <h3>
-                {% if concentration.concentration_name %}
-                    {{concentration.concentration_name}}
-                {% else %}
-                    {{program.title}}
+                {% if concentration.title %}
+                    {{concentration.title}}
                 {% endif %}
                 </h3>
 

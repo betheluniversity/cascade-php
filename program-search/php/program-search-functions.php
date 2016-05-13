@@ -47,6 +47,7 @@ function inspect_program($xml){
         "path"          =>  strval($xml->path),
         "md"            =>  array(),
         "deliveries"    =>  array(),
+        "actual-title"  =>  strval($xml->title)
     );
 
     // ignore any program found within "_testing" in Cascade
@@ -126,7 +127,21 @@ function inspect_program($xml){
                 array_push($temp_concentration['cohorts'], $temp_cohort_details);
             }
 
-            // get html for concentration
+            // if concentration page has a title, use that instead, plus extra formatting
+            if( $temp_concentration['concentration_page']->{'path'} != '/' ) {
+                $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'title'});
+                $temp_concentration['title'] = str_replace('Program Details', '', $temp_concentration['title']);
+                $temp_concentration['title'] = str_replace('Concentration', '', $temp_concentration['title']);
+                $temp_concentration['title'] = str_replace('Major', '', $temp_concentration['title']);
+                // can't do these, since they conflict
+//                $temp_concentration['title'] = str_replace('License', '', $temp_concentration['title']);
+//                $temp_concentration['title'] = str_replace('Certificate', '', $temp_concentration['title']);
+            }
+            else {
+                $temp_concentration['title'] = $page_info['title'];
+            }
+
+                    // get html for concentration
             $temp_concentration['html'] = get_html_for_program_concentration($page_info, $temp_concentration);
             // add concentration to program
             array_push($page_info['concentrations'], $temp_concentration);
@@ -155,17 +170,7 @@ function recursive_convert_xml_to_string($xml, $string=''){
 
 // compare by md.title of concentration pages or by program title
 function program_sort_by_titles($a, $b) {
-    if( $a['concentration']['concentration_page']->{'path'} != '/' )
-        $aName = strval($a['concentration']['concentration_page']->{'title'});
-    else
-        $aName = $a['program']['title'];
-
-    if( $b['concentration']['concentration_page']->{'path'} != '/' )
-        $bName = strval($b['concentration']['concentration_page']->{'title'});
-    else
-        $bName = $b['program']['title'];
-
-    return strcmp($aName, $bName);
+    return strcmp($a['concentration']['title'], $b['concentration']['title']);
 }
 
 
@@ -183,6 +188,7 @@ function get_html_for_program_concentration($program, $concentration){
     $twig = makeTwigEnviron('/code/program-search/twig');
     $twig->addFilter(new Twig_SimpleFilter('convert_degrees_to_shorthand','convert_degrees_to_shorthand'));
     $html = $twig->render('concentration.html', array(
+        'concentration'         => $concentration,
         'concentration_name'    => $concentration['concentration_name'],
         'title'                 => $program['title'],
         'program_types'         => $program['md']['program-type'],

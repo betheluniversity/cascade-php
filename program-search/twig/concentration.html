@@ -1,8 +1,8 @@
 <td>
     {% if concentration_page.path != '/' %}
-        <a href="{{concentration_page.path}}">{{concentration_page.title}}</a>
+        <a href="{{concentration_page.path}}">{{concentration.title}}</a>
     {% else %}
-        {{title}}
+        {{concentration.title}}
     {% endif %}
 
     {% if "College of Arts & Sciences" in schools %}
