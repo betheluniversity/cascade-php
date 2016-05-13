@@ -112,23 +112,31 @@ function inspect_faculty_bio($xml){
             array_push($page_info['job-titles'], $temp_job);
         }
 
+        // Get expertise and expertise heading
         $expertise = $ds->{'expertise'};
-        $expertise_heading = strval($expertise->{'heading'});
-        if( strpos(strtolower($expertise_heading), 'areas') !== false )
+        $page_info['expertise_heading'] = strval($expertise->{'heading'});
+
+        // check for keywords, so if these change slightly, these won't break
+        if( strpos(strtolower($page_info['expertise_heading']), 'areas of expertise') !== false )
             $page_info['expertise'] = strval($expertise->{'areas'});
-        elseif( strpos(strtolower($expertise_heading), 'research') !== false )
+        elseif( strpos(strtolower($page_info['expertise_heading']), 'research') !== false )
             $page_info['expertise'] = strval($expertise->{'research-interests'});
-        elseif( strpos(strtolower($expertise_heading), 'teaching') !== false )
+        elseif( strpos(strtolower($page_info['expertise_heading']), 'teaching') !== false )
             $page_info['expertise'] = strval($expertise->{'teaching-specialty'});
         else
             $page_info['expertise'] = '';
 
-        // limit expertise to 300 chars (or less) and append 'read more' anchor tag
-        // Todo: maybe move this to a twig.html file?
-        $page_info['expertise'] = substr($page_info['expertise'], 0, 300 );
+        // if expertise is > 300, than only show 295 plus the 'read more' text
         if( strlen($page_info['expertise']) >= 300 ) {
-            $formatted_string = $page_info['path'];
-            $page_info['expertise'] = $page_info['expertise'] . " . . . <a href=$formatted_string>read more.</a>";
+            $page_info['expertise'] = substr($page_info['expertise'], 0, 295 );
+
+            // add 'read more' html
+            $twig = makeTwigEnviron('/code/faculty-bios/twig');
+            $html = $twig->render('faculty-bio-read-more.html', array(
+                'bio'   =>  $page_info
+            ));
+
+            $page_info['expertise'] = $page_info['expertise'] . $html;
         }
     }
 
