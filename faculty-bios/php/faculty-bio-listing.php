@@ -112,6 +112,7 @@ function inspect_faculty_bio($xml){
             array_push($page_info['job-titles'], $temp_job);
         }
 
+        // Todo: remove these old job titles, once all are moved over.
         if( $page_info['job-titles'][0]['school'] == '' ){
             foreach( $ds->{'job-title'} as $job_title ) {
                 $temp_job = array();
