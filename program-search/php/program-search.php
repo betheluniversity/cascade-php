@@ -37,12 +37,12 @@ function call_program_search($input_data){
 
     // The order of which the degrees are shown
     $final_degrees_array = array(
-        'Associate'     =>  array(),
-        'Bachelor'      =>  array(),
-        'License'       =>  array(),
-        'Certificate'   =>  array(),
+        "Associate's"     =>  array(),
+        "Bachelor's"      =>  array(),
         "Master's"      =>  array(),
-        'Doctorate'     =>  array()
+        'Doctorate'     =>  array(),
+        'License'       =>  array(),
+        'Certificate'   =>  array()
     );
 
     // sort programs into each degree
