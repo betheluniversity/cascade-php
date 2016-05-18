@@ -28,7 +28,7 @@ function traverse_folder($xml, $programs){
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
             if( $dataDefinition == "Blocks/Program")
             {
-                $programs[strval($page_data['name'])] = $page_data;
+                array_push( $programs, $page_data );
             }
         }
     }
