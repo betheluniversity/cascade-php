@@ -27,7 +27,6 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 function create_event_feed($categories, $heading=""){
-
     $feed = autoCache("create_event_feed_logic", array($categories, $heading));
     return $feed;
 
@@ -37,8 +36,7 @@ function create_event_feed($categories, $heading=""){
 // Create the Event Feed events.
 function create_event_feed_logic($categories, $heading){
 
-    //$arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
-    $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
+    $arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
 
     //////////////////////////////////////////
     // Turn all dates into individual events
@@ -55,6 +53,9 @@ function create_event_feed_logic($categories, $heading){
                 $newDate['start-date'] = $date->{'start-date'} / 1000;
                 $newDate['end-date'] = $date->{'end-date'} / 1000;
                 $newDate['all-day'] = $date->{'all-day'}->{'value'};
+                $newDate['outside-of-minnesota'] = $date->{'outside-of-minnesota'}->{'value'};
+                $newDate['time-zone'] = $date->{'time-zone'};
+
                 $isArtOrTheater = check_if_art_or_theatre($event);
                 $threeDaysSinceStart = ($date->{'start-date'}/1000) + (3 * 24 * 60 * 60);
 
@@ -338,6 +339,7 @@ function get_event_html( $event){
     $twig->addFilter(new Twig_SimpleFilter('convert_path_to_link','convert_path_to_link'));
     $twig->addFilter(new Twig_SimpleFilter('format_fancy_event_date','format_fancy_event_date'));
     $twig->addFilter(new Twig_SimpleFilter('get_month_shorthand_name','get_month_shorthand_name'));
+    $twig->addFilter(new Twig_SimpleFilter('get_timezone_shorthand','get_timezone_shorthand'));
     $html = $twig->render('get_event_html.html', array(
         'title' => $title,
         'event' => $event,
@@ -439,6 +441,19 @@ function get_month_shorthand_name( $month){
     else{
         return substr($month, 0, 3);
     }
+}
+
+function get_timezone_shorthand( $date ){
+    if( $date['outside-of-minnesota'] == 'Yes' )
+        if( $date['time-zone'] == 'Pacific Time')
+            return 'PT';
+        elseif( $date['time-zone'] == 'Mountain Time')
+            return 'MT';
+        elseif( $date['time-zone'] == 'Central Time')
+            return 'CT';
+        elseif( $date['time-zone'] == 'Eastern Time')
+            return 'ET';
+    return '';
 }
 
 ?>
