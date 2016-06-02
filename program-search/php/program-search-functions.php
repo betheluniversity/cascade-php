@@ -127,8 +127,11 @@ function inspect_program($xml){
                 array_push($temp_concentration['cohorts'], $temp_cohort_details);
             }
 
-            // if concentration page has a title, use that instead, plus extra formatting
-            if( $temp_concentration['concentration_page']->{'path'} != '/' ) {
+            // if block has a display-name, use that. Then use the concentration page title, then use the title of the block
+            if( $page_info['display-name'] != '' ){
+                $temp_concentration['title'] = $page_info['display-name'];
+            }
+            elseif( $temp_concentration['concentration_page']->{'path'} != '/' ) {
                 $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'title'});
                 $temp_concentration['title'] = str_replace('Program Details', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Concentration', '', $temp_concentration['title']);
