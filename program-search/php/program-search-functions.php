@@ -97,7 +97,7 @@ function inspect_program($xml){
         foreach( $ds->{'concentration'} as $concentration){
             $temp_concentration = array();
 
-            $temp_concentration['concentration_code'] = $concentration->{'concentration_code'};
+            $temp_concentration['concentration_code'] = strval($concentration->{'concentration_code'});
             $temp_concentration['concentration_description'] = recursive_convert_xml_to_string($concentration->{'concentration_description'}->asXML());
             $temp_concentration['concentration_page'] = $concentration->{'concentration_page'};
             $temp_concentration['total_credits'] = $concentration->{'total_credits'};
@@ -136,9 +136,6 @@ function inspect_program($xml){
                 $temp_concentration['title'] = str_replace('Program Details', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Concentration', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Major', '', $temp_concentration['title']);
-                // can't do these, since they conflict
-//                $temp_concentration['title'] = str_replace('License', '', $temp_concentration['title']);
-//                $temp_concentration['title'] = str_replace('Certificate', '', $temp_concentration['title']);
             }
             else {
                 $temp_concentration['title'] = $page_info['title'];
@@ -215,12 +212,16 @@ function search_programs($program_data, $data){
     $degreeType = $data[3];
 
         // Get the csv data as single csv file
-    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv');
+    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/programs-test.csv');
 //    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'), 'program-search-csv-data');
     $return_values = array();
 
+
+    // csv matches
+    $csv_elements_to_add = search_csv_values($csv_data, $search_term );
+
     // Todo: depending on what adds it to the list, should that effect sorting?
-    // for example, if cluster matches, should that be lower on the search? (or should highlighting do anything?)
+    // for example, if cluster matches, should that be lower on the search? (or should we highlight anything?)
     foreach($program_data as $program){
         // 1) school does not match
         if( !count(array_intersect($schoolArray, $program['md']['school'])) )
@@ -260,21 +261,41 @@ function search_programs($program_data, $data){
             }
             // csv matches
             // Todo: should this be an exact match or partial match?
-            elseif( search_csv_values($csv_data, $concentration['concentration_code'], $search_term) ){
+            elseif( in_array($concentration['concentration_code'], $csv_elements_to_add) || in_array($program['name'], $csv_elements_to_add) ) {
                 array_push($return_values, $values_to_push);
             }
         }
     }
+
     return $return_values;
 }
 
 
-function search_csv_values($csv_data, $concentration_code, $search_term){
-    foreach($csv_data as $row){
-        if( $search_term == trim(strtolower($row['Tag'])) && $concentration_code == $row['Concentration Code'] )
-            return true;
+function search_csv_values($csv_data, $search_term ){
+    $unwanted_search_keys = array(
+        'bachelor of art',
+        'bachelor of arts'
+    );
+
+    $return_element = array();
+    foreach ($csv_data as $row) {
+        $has_unwanted_key = false;
+        foreach( $unwanted_search_keys as $unwanted_search_key ){
+            if ( strpos(trim(strtolower($row['tag'])), $unwanted_search_key) !== false ) {
+                $has_unwanted_key = True;
+            }
+        }
+            // Version 1) exact match
+    //        if ($search_term == trim(strtolower($row['tag'])) && !in_array($row['key'], $return_element) )
+    //            array_push($return_element, $row['key']);
+
+            // Version 2) sub match
+            if ( (strpos(trim(strtolower($row['tag'])), $search_term) !== false && !in_array($row['key'], $return_element)) && !$has_unwanted_key )
+                array_push($return_element, $row['key']);
+
+            // Todo: add special cases for the 'types' that it matches?
     }
-    return false;
+    return $return_element;
 }
 
 
