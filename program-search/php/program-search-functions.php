@@ -290,8 +290,16 @@ function search_csv_values($csv_data, $search_term ){
     //            array_push($return_element, $row['key']);
 
             // Version 2) sub match
-            if ( (strpos(trim(strtolower($row['tag'])), $search_term) !== false && !in_array($row['key'], $return_element)) && !$has_unwanted_key )
+//            if ( (strpos(trim(strtolower($row['tag'])), $search_term) !== false && !in_array($row['key'], $return_element)) && !$has_unwanted_key ) {
+//                array_push($return_element, $row['key']);
+//            }
+
+            // Version 3) sub match with extra check for spaces before
+            $does_it_match = array();
+            preg_match("/(.*^ | |^)$search_term/", trim(strtolower($row['tag'])) , $does_it_match);
+            if ( ( sizeof($does_it_match) > 0 && !in_array($row['key'], $return_element)) && !$has_unwanted_key ) {
                 array_push($return_element, $row['key']);
+            }
 
             // Todo: add special cases for the 'types' that it matches?
     }
