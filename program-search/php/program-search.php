@@ -30,9 +30,10 @@ function route_to_functions(){
 
 
 function call_program_search($input_data){
-    $startTime = microtime(true);
+//    $startTime = microtime(true);
 
     $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
+//    $program_data = get_program_xml();
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
@@ -71,7 +72,7 @@ function call_program_search($input_data){
     }
 
 
-    echo "Elapsed time is: ". (microtime(true) - $startTime) ." seconds";
+//    echo "Elapsed time is: ". (microtime(true) - $startTime + 0.2) ." seconds, for search term: '" . $input_data[0] . "'";
 
     // print the entire table
     echo get_html_for_table($final_degrees_array);

@@ -212,7 +212,8 @@ function search_programs($program_data, $data){
     $degreeType = $data[3];
 
         // Get the csv data as single csv file
-    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/programs-test.csv');
+//    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/programs-test.csv');
+    $csv_data = read_csv_file('/var/www/cms.pub/code/program-search/csv/programs.csv');
 //    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'), 'program-search-csv-data');
     $return_values = array();
 
@@ -279,6 +280,7 @@ function search_csv_values($csv_data, $search_term ){
 
     $return_element = array();
     foreach ($csv_data as $row) {
+        // ignore key
         $has_unwanted_key = false;
         foreach( $unwanted_search_keys as $unwanted_search_key ){
             if ( strpos(trim(strtolower($row['tag'])), $unwanted_search_key) !== false ) {
