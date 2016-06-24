@@ -64,6 +64,9 @@ function inspect_faculty_bio($xml){
     $dataDefinition = $ds['definition-path'];
 
     if( $dataDefinition == "Faculty Bio") {
+        if( strval($ds->{'deactivate'}) == 'Yes' )
+            return "";
+
         // Get the metadata
         foreach ($xml->{'dynamic-metadata'} as $md) {
             $name = strval($md->name);
