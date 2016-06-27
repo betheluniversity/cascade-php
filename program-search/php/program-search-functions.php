@@ -274,8 +274,10 @@ function search_programs($program_data, $data){
 
 function search_csv_values($csv_data, $search_term ){
     $unwanted_search_keys = array(
+        'bachelor of science',
         'bachelor of art',
-        'bachelor of arts'
+        'associate of art',
+        'master of art',
     );
     print_r('<table>');
     print_r('<thead><tr><th>Program</th><th>Matching Tag</th></tr></thead>');
@@ -284,7 +286,7 @@ function search_csv_values($csv_data, $search_term ){
         // ignore key
         $has_unwanted_key = false;
         foreach( $unwanted_search_keys as $unwanted_search_key ){
-            if ( strpos(trim(strtolower($row['tag'])), $unwanted_search_key) !== false ) {
+            if ( strpos(trim(strtolower($row['tag'])), $unwanted_search_key) !== false && strpos(trim(strtolower($search_term)), $unwanted_search_key) === false) {
                 $has_unwanted_key = True;
             }
         }
