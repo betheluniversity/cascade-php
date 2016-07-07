@@ -1,29 +1,30 @@
-{% if programs|length == 0 %}
+{% if degrees_array|length == 0 %}
 <div class="mb4"><h3>No programs match your search.</h3></div>
 {% endif %}
 
-{% for school in schools %}
-    <div class="mb3">
-        <h3>{{school}}</h3>
+{% for degree_display_name,degree_programs in degrees_array %}
+    <div class="mt3">
+        <h3>{{degree_display_name}}</h3>
         <table>
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Degree Level</th>
                     <th>Delivery</th>
-                    <th>Degree Type</th>
                     <th>Compare Programs</th>
                 </tr>
             </thead>
             <tbody>
-                {% for program in programs %}
-                    {% if school in program.md.school %}
-                        {% for concentration in program.concentrations %}
-                            <tr>{{concentration.html|raw}}</tr>
-                        {% endfor %}
-                    {% endif %}
+                {% for program_concentration_array in degree_programs %}
+                    {% set real_program = program_concentration_array['program'] %}
+                    {% set real_concentration = program_concentration_array['concentration'] %}
+
+                    <tr>{{real_concentration.html|raw}}</tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <a href='#top' class="btn btn-small" onclick="comparePrograms()">Compare Programs</a>
+    <a class="btn btn-small" onclick="resetCompareSearch()">Reset all</a>
 {% endfor %}
 

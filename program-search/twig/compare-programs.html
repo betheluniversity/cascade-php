@@ -1,4 +1,4 @@
-<a id='close-' class="btn btn-small mb2" onclick="closeCompareSearch()">Close</a>
+<a class="btn btn-small mb2" onclick="closeCompareSearch()">Close</a>
 <hr/>
 
 <div class="grid">
@@ -8,16 +8,17 @@
 
         <div class="grid-cell">
             <div class="medium-grid-pad-1x">
-                {% if concentration.concentration_name %}
-                    <h3>{{concentration.concentration_name}}</h3>
-                    {{program.md.degree | join(', ') }}
-                    {% if program.md.school | length > 0 %}
-                        | {{program.md.school | join(', ')}}{% endif %}
-
-                    <hr/>
+                <h3>
+                {% if concentration.title %}
+                    {{concentration.title}}
                 {% endif %}
+                </h3>
 
+                {{program.md.degree | join(', ') }}
+                {% if program.md.school | length > 0 %}
+                    | {{program.md.school | join(', ')}}{% endif %}
 
+                <hr/>
 
                 {% if concentration.total_credits %}
                     <p><strong>Total Credits</strong></p>

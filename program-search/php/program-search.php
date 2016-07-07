@@ -6,9 +6,9 @@
  * Time: 1:54 PM
  */
 
-// General Todos:
-// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one
-// Todo: how do we compare CAS and post trad programs
+// Todo: in case this overall needs to be sped up: http://nickology.com/2012/07/03/php-faster-array-lookup-than-using-in_array/
+// ^^ This would involve making $concentration['concentration_code']='asdfasdf' become $concentration['concentration_code']['asdfasdf'] = 1
+
 
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
@@ -25,42 +25,71 @@ function route_to_functions(){
         call_program_search($data);
     elseif( $function_name == 'compare-programs')
         call_compare_programs($data);
+
 }
 
 
 function call_program_search($input_data){
-    // TOdo cache this
-    $program_data = integrate_xml_and_csv();
+//    $startTime = microtime(true);
+
+//    $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
+    $program_data = get_program_xml();
 
     $programs = search_programs($program_data, $input_data);
+    usort($programs, 'program_sort_by_titles');
 
-    usort($programs, 'program_sort_by_school_then_title');
+    // The order of which the degrees are shown
+    $final_degrees_array = array(
+        "Associate's Degrees"   =>  array(),
+        "Bachelor's Degrees"    =>  array(),
+        "Master's Degrees"      =>  array(),
+        'Doctoral Degrees'      =>  array(),
+        'License'               =>  array(),
+        'Certificate'           =>  array()
+    );
 
-    // only show the schools that match, and order them as follows
-    $uniqueSchools = array_unique(array_map(function ($i) { return $i['md']['school'][0]; }, $programs));
-    $school_order = array('College of Arts & Sciences', 'College of Adult & Professional Studies', 'Graduate School', 'Bethel Seminary');
-    foreach( $school_order as $key => $school){
-        if( !in_array($school, $uniqueSchools))
-            unset($school_order[$key]);
+    // sort programs into each degree
+    foreach( $programs as $program){
+        foreach( $program['program']['md']['degree'] as $program_degree) { // loop through program degrees
+            foreach( $final_degrees_array as $degree_name => $program_array ){ // loop through degree holder
+                // Find the shortest substring that will still match all degree types
+                // i.e. Master's MATCHES Master Of Arts
+                $degree_check = substr($degree_name, 0, 6);
+                // if it matches
+                if (strpos($program_degree, $degree_check) !== false) {
+                    array_push($final_degrees_array[$degree_name], $program);
+                }
+            }
+        }
     }
 
+    // if none of a degree type exists, don't show it
+    foreach( $final_degrees_array as $degree_name => $program_array ){
+        if( sizeof($program_array) == 0 ){
+            unset($final_degrees_array[$degree_name]);
+        }
+    }
+
+
+//    echo "Elapsed time is: ". (microtime(true) - $startTime + 0.2) ." seconds, for search term: '" . $input_data[0] . "'";
+
     // print the entire table
-    echo get_html_for_table($programs, $school_order);
+    echo get_html_for_table($final_degrees_array);
 }
 
-
+// Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
 function call_compare_programs($program_id_list){
-    $programs_to_compare = array();
+    $program_data = autoCache("get_program_xml", array(), 'program-data2', 300);
 
-    // Todo: make this less nasty through cache, and also how it is gathered?
-    $programs = get_program_xml();
-    foreach($programs as $program){
+    $programs_to_compare = array();
+    foreach($program_data as $program){
         foreach($program['concentrations'] as $concentration){
             if( $concentration['concentration_code'] != '' && in_array($concentration['concentration_code'], $program_id_list)){
                 array_push($programs_to_compare, array($program, $concentration));
             }
         }
     }
+
     $twig = makeTwigEnviron('/code/program-search/twig');
     $html = $twig->render('compare-programs.html', array(
         'program_concentrations'=> $programs_to_compare,
