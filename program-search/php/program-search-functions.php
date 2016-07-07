@@ -207,7 +207,6 @@ function search_programs($program_data, $data){
     // gather the input data
     $search_term = trim(strtolower($data[0]));
     $schoolArray = $data[1];
-    $schoolArray = explode(',',$schoolArray[0]);
     $deliveryArray = $data[2];
     $degreeType = $data[3];
 
