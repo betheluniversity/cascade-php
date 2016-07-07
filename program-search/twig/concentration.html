@@ -4,17 +4,17 @@
     {% else %}
         {{concentration.title}}
     {% endif %}
-
-    {% if "College of Arts & Sciences" in schools %}
-        {% for type in program_types %}
-            <span class="ml1">({{type}})</span>
-        {% endfor %}
-    {% elseif "College of Adult & Professional Studies" in schools %}
-            <span class="ml1">(Adult Degree Completion)</span>
-    {% endif %}
 </td>
 
-<td>{{ degrees | convert_degrees_to_shorthand }}</td>
+<td>
+    {% if "College of Arts & Sciences" in schools %}
+        {% for type in program_types %}
+            <span class="">{{type}}</span>
+        {% endfor %}
+    {% elseif "College of Adult & Professional Studies" in schools %}
+        <span class="">Adult Degree Completion</span>
+    {% endif %}
+</td>
 
 <td>{{ deliveries | sort | join(', ') }}</td>
 
