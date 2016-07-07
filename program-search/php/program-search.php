@@ -32,20 +32,20 @@ function route_to_functions(){
 function call_program_search($input_data){
 //    $startTime = microtime(true);
 
-    $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
-//    $program_data = get_program_xml();
+//    $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
+    $program_data = get_program_xml();
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
 
     // The order of which the degrees are shown
     $final_degrees_array = array(
-        "Associate's"     =>  array(),
-        "Bachelor's"      =>  array(),
-        "Master's"      =>  array(),
-        'Doctorate'     =>  array(),
-        'License'       =>  array(),
-        'Certificate'   =>  array()
+        "Associate's Degrees"   =>  array(),
+        "Bachelor's Degrees"    =>  array(),
+        "Master's Degrees"      =>  array(),
+        'Doctoral Degrees'      =>  array(),
+        'License'               =>  array(),
+        'Certificate'           =>  array()
     );
 
     // sort programs into each degree
@@ -55,7 +55,6 @@ function call_program_search($input_data){
                 // Find the shortest substring that will still match all degree types
                 // i.e. Master's MATCHES Master Of Arts
                 $degree_check = substr($degree_name, 0, 6);
-
                 // if it matches
                 if (strpos($program_degree, $degree_check) !== false) {
                     array_push($final_degrees_array[$degree_name], $program);

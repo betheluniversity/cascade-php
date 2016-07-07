@@ -279,8 +279,8 @@ function search_csv_values($csv_data, $search_term ){
         'associate of art',
         'master of art',
     );
-    print_r('<table>');
-    print_r('<thead><tr><th>Program</th><th>Matching Tag</th></tr></thead>');
+//    print_r('<table>');
+//    print_r('<thead><tr><th>Program</th><th>Matching Tag</th></tr></thead>');
     $return_element = array();
     foreach ($csv_data as $row) {
         // ignore key
@@ -302,21 +302,21 @@ function search_csv_values($csv_data, $search_term ){
         // Version 3) sub match with extra check for spaces before
         $does_it_match = array();
         preg_match("/(.*^ | |^)$search_term/", trim(strtolower($row['tag'])) , $does_it_match);
-        print_r('<tr>');
+//        print_r('<tr>');
         if ( ( sizeof($does_it_match) > 0 && !in_array($row['key'], $return_element)) && !$has_unwanted_key ) {
-            print_r('<td>');
-            print_r($row['key']);
-            print_r('</td>');
-            print_r('<td>');
-            print_r($row['tag']);
-            print_r('</td>');
+//            print_r('<td>');
+//            print_r($row['key']);
+//            print_r('</td>');
+//            print_r('<td>');
+//            print_r($row['tag']);
+//            print_r('</td>');
             array_push($return_element, $row['key']);
         }
-        print_r('</tr>');
+//        print_r('</tr>');
 
         // Todo: add special cases for the 'types' that it matches?
     }
-    print_r('</table>');
+//    print_r('</table>');
     return $return_element;
 }
 
@@ -357,10 +357,12 @@ function check_degree_types($program, $check_degree){
         return true;
 
     foreach( $degrees as $degree ){
-        if( strstr($degree, $check_degree ) == false )
-            return true;
+        $check_degree = substr($check_degree, 0, 6);
+        if (strpos($degree, $check_degree) !== false) {
+            return false;
+        }
     }
-    return false;
+    return true;
 }
 
 

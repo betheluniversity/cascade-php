@@ -21,8 +21,6 @@
 <td>
     {% if "College of Arts & Sciences" not in schools and concentration_code != '' %}
         <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}" onclick="countCheckedBoxes(this)" />
-        <a href='#top' class="btn btn-small ml1" onclick="comparePrograms()">Compare</a>
-        <a class="btn btn-small ml2" onclick="resetCompareSearch()">Reset all</a>
     {% endif %}
 
 </td>
