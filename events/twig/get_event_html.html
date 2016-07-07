@@ -51,7 +51,6 @@
         {% endif %}
         <!--Title + Link-->
                 <p class="events__headline"><a href="{{event|convert_path_to_link}}"><span itemprop="name">{{event.title}}</span></a></p>
-
                     <!--Time + Location-->
                     {% if event.date %}
                         {% set date = event.date|format_fancy_event_date %}
@@ -61,9 +60,9 @@
 
                     {% if date != "" %}
                         {% if event.location != "" %}
-                            <p class="events__location">{{date}} | <span itemprop="location">{{event.location}}</span></p>
+                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}}<span itemprop="location">{{event.location}}</span></p>
                         {% else %}
-                            <p class="events__location">{{date}}</p>
+                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}}</p>
                         {% endif %}
                     {% else %}
                         {% if event.location != "" %}

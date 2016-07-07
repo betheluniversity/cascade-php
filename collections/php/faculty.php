@@ -15,7 +15,6 @@ function create_faculty_carousel($categories){
 
     $carousel_items = "";
     foreach($bios as $bio){
-
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
         $last = $ds->last;
@@ -40,6 +39,12 @@ function create_faculty_carousel($categories){
 function find_matching_bios($xml, $categories){
     $return_bios = array();
     foreach($xml as $bio){
+        $ds = $bio->{'system-data-structure'};
+
+        if( strval($ds->deactivate) == 'Yes' ) {
+            continue;
+        }
+
         $md = $bio->{'dynamic-metadata'};
         foreach($md as $data){
             $name = $data->name;

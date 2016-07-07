@@ -71,6 +71,7 @@ function draw_calendar($month,$year, $day=1){
 
     $calendar = '';
     $xml = autoCache("get_event_xml", array(), 'CALENDAR_XML');
+
     $after_xml_time_start = microtime(true);
     $classes = array(
         1 => 'sun',
@@ -98,9 +99,6 @@ function draw_calendar($month,$year, $day=1){
         $days_in_this_week++;
     }
 
-    // sort events into corresponding days
-    $events = sort_dates_into_days($xml, $year, $month, $days_in_month);
-
     $twig = makeTwigEnviron('/code/events/twig');
     $twig->getExtension('core')->setTimezone('America/Chicago');
     $calendar .= $twig->render('calendar_rest.html',array(
@@ -109,7 +107,7 @@ function draw_calendar($month,$year, $day=1){
         'days_in_this_week' => $days_in_this_week,
         'day_counter' => $day_counter,
         'classes' => $classes,
-        'events' => $events,
+        'xml' => $xml,
         'year' => $year,
         'month' => $month));
 
@@ -123,26 +121,10 @@ function draw_calendar($month,$year, $day=1){
     return $calendar;
 }
 
-// This function allows sorting per day on the calendar
-function sort_dates_into_days($xml, $year, $month, $days_in_month){
-    function specific_date_sort($a, $b){
-        $t1 = $a['specific_start'];
-        $t2 = $b['specific_start'];
-        return $t1 - $t2;
-    }
-
-    $events = $xml;
-    for($day = 1; $day <= $days_in_month; $day++){
-        $date = date('Y-m-d', strtotime("$year-$month-$day"));
-        usort($events[$date], 'specific_date_sort');
-    }
-    return $events;
-}
-
-
-
 function get_event_xml(){
-    // Create a list of categories the calendar uses
+
+    ##Create a list of categories the calendar uses
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
     $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml"), 'get_event_xml');
     $categories = array();
     $xml = $xml->{'system-page'};
@@ -155,8 +137,7 @@ function get_event_xml(){
             }
         }
     }
-
-    // create a list of all events
+//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
     $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/events.xml"), 'get_event_xml_2');
     $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
     $dates = array();
@@ -166,7 +147,6 @@ function get_event_xml(){
             add_event_to_array($dates, $page_data);
         }
     }
-
     return $dates;
 }
 
@@ -181,6 +161,21 @@ function add_event_to_array(&$dates, $page_data){
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
+        $page_data['specific_need_time_zone'] = $date['outside-of-minnesota'];
+        if($page_data['specific_need_time_zone'] == true) {
+            $time_zone = $date['time-zone'];
+            if ($time_zone == "Pacific Time") {
+                $page_data['specific_time_zone'] = "PT";
+            } elseif ($time_zone == "Mountain Time") {
+                $page_data['specific_time_zone'] = "MT";
+            } elseif ($time_zone == "Eastern Time") {
+                $page_data['specific_time_zone'] = "ET";
+            } else {
+                $page_data['specific_time_zone'] = "CT";
+            }
+        } else {
+            $page_data['specific_time_zone'] = "";
+        }
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);

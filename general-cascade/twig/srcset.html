@@ -11,7 +11,7 @@
                         //cdn{{rand}}.bethel.edu/resize/unsafe/400x0/smart/{{end_path}} 400w,
                         //cdn{{rand}}.bethel.edu/resize/unsafe/200x0/smart/{{end_path}} 200w'
         data-sizes="auto"
-        class="lazyload"
+        class="lazyload {{ classes }}"
      />
 {% else %}
 <img
@@ -25,6 +25,7 @@
                         //cdn{{rand}}.bethel.edu/resize/unsafe/400x0/smart/{{end_path}} 400w,
                         //cdn{{rand}}.bethel.edu/resize/unsafe/200x0/smart/{{end_path}} 200w'
         data-sizes="auto"
+        class="{{ classes }}"
         />
 
 {% endif %}
