@@ -203,10 +203,25 @@ function get_html_for_program_concentration($program, $concentration){
 }
 
 
+function convert_school_to_md_names($schools){
+    foreach( $schools as $key => $school ){
+        if( $school == 'Undergrad' )
+            $schools[$key] = 'College of Arts & Sciences';
+        elseif( $school == 'Adult Undergrad' )
+            $schools[$key] = 'College of Adult & Professional Studies';
+        elseif( $school == 'Graduate' )
+            $schools[$key] = 'Graduate School';
+        elseif( $school == 'Seminary' )
+            $schools[$key] = 'Bethel Seminary';
+    }
+    return $schools;
+}
+
+
 function search_programs($program_data, $data){
     // gather the input data
     $search_term = trim(strtolower($data[0]));
-    $schoolArray = $data[1];
+    $schoolArray = convert_school_to_md_names($data[1]);
     $deliveryArray = $data[2];
     $degreeType = $data[3];
 
