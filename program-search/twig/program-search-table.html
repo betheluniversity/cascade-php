@@ -11,14 +11,16 @@
                         <div class="grid-cell">Delivery</div>
                         <div class="grid-cell">Compare Programs</div>
                 </div>
+                
+                {% for program_concentration_array in degree_programs %}
+                {% set real_program = program_concentration_array['program'] %}
+                {% set real_concentration = program_concentration_array['concentration'] %}
+                
                 <div class="grid">
-                    {% for program_concentration_array in degree_programs %}
-                    {% set real_program = program_concentration_array['program'] %}
-                    {% set real_concentration = program_concentration_array['concentration'] %}
-    
                     {{real_concentration.html|raw}}
-                    {% endfor %}
                 </div>
+                {% endfor %}
+                
             </div>
         </div>
     {% endfor %}
