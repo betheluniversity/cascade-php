@@ -2,26 +2,24 @@
     <div class="mb4"><h3>No programs match your search.</h3></div>
 {% else %}
     {% for degree_display_name,degree_programs in degrees_array %}
-        <div class="mt3">
-            <h3>{{degree_display_name}}</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Degree Level</th>
-                    <th>Delivery</th>
-                    <th>Compare Programs</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for program_concentration_array in degree_programs %}
-                {% set real_program = program_concentration_array['program'] %}
-                {% set real_concentration = program_concentration_array['concentration'] %}
-
-                <tr>{{real_concentration.html|raw}}</tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="program-search">
+            <div class="mb4">
+                <h2>{{degree_display_name}}</h2>
+                <div class="grid  program-search__table-head">
+                        <div class="grid-cell">Name</th>
+                        <div class="grid-cell">Degree Level</th>
+                        <div class="grid-cell">Delivery</th>
+                        <div class="grid-cell">Compare Programs</th>
+                </div>
+                <div class="grid">
+                    {% for program_concentration_array in degree_programs %}
+                    {% set real_program = program_concentration_array['program'] %}
+                    {% set real_concentration = program_concentration_array['concentration'] %}
+    
+                    {{real_concentration.html|raw}}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     {% endfor %}
     

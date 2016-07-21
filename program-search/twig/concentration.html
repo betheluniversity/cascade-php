@@ -1,26 +1,28 @@
-<td>
+<div class="grid-cell">
     {% if concentration_page.path != '/' %}
         <a href="{{concentration_page.path}}">{{concentration.title}}</a>
     {% else %}
         {{concentration.title}}
     {% endif %}
-</td>
+</div>
 
-<td>
+<div class="grid-cell">
     {% if "College of Arts & Sciences" in schools %}
         {% for type in program_types %}
-            <span class="">{{type}}</span>
+            <span class="icon  icon--major"></span>
+            <span class="degree-level">{{type}}</span>
         {% endfor %}
     {% elseif "College of Adult & Professional Studies" in schools %}
-        <span class="">Adult Degree Completion</span>
+        <span class="icon  icon--adult"></span>
+        <span class="degree-level">Adult Degree Completion</span>
     {% endif %}
-</td>
+</div>
 
-<td>{{ deliveries | sort | join(', ') }}</td>
+<div class="grid-cell">
+    {{ deliveries | sort | join(', ') }}</div>
 
-<td>
+<div class="grid-cell">
     {% if "College of Arts & Sciences" not in schools and concentration_code != '' %}
         <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}" onclick="countCheckedBoxes(this)" />
     {% endif %}
-
-</td>
+</div>
