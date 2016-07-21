@@ -9,7 +9,7 @@
 <div class="grid-cell">
     {% if "College of Arts & Sciences" in schools %}
         {% for type in program_types %}
-            <span class="icon  icon--major"></span>
+            <span class="icon  icon--{{type|lower}}"></span>
             <span class="degree-level">{{type}}</span>
         {% endfor %}
     {% elseif "College of Adult & Professional Studies" in schools %}
