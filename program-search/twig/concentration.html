@@ -10,11 +10,17 @@
     {% if "College of Arts & Sciences" in schools %}
         {% for type in program_types %}
             <span class="icon  icon--{{type|lower}}"></span>
-            <span class="degree-level">{{type}}</span>
+            <span class="degree-level">Undergrad {{type}}</span>
         {% endfor %}
     {% elseif "College of Adult & Professional Studies" in schools %}
         <span class="icon  icon--adult"></span>
-        <span class="degree-level">Adult Degree Completion</span>
+        <span class="degree-level">Adult Undergrad</span>
+    {% elseif "Graduate School" in schools %}
+        <span class="icon  icon--graduate"></span>
+        <span class="degree-level">Graduate</span>
+    {% elseif "Bethel Seminary" in schools %}
+        <span class="icon  icon--seminary"></span>
+        <span class="degree-level">Seminary</span>
     {% endif %}
 </div>
 
