@@ -22,7 +22,7 @@
 
                 <hr/>
 
-                <dl>
+                <dl class="dl--generic">
                     {% if concentration.total_credits %}
                         <dt>Total Credits</dt>
                         <dd>{{concentration.total_credits}}</dd>
@@ -44,12 +44,12 @@
                     {% endif %}
 
                     {% if concentration.cohorts[0].semester_start %}
-                        <dt>Next Start Date:</dt>
+                        <dt>Next Start Date</dt>
                         <dd>{{concentration.cohorts[0].semester_start}} {{concentration.cohorts[0].year_start}}</dd>
                     {% endif %}
 
                     {% if concentration.cohorts[0].delivery_label %}
-                        <dt>Deliveries:</dt>
+                        <dt>Deliveries</dt>
                         <dd>{{concentration.cohorts[0].delivery_label}}</dd>
                     {% endif %}
                 </dl>
