@@ -79,7 +79,8 @@ function call_program_search($input_data){
 
 // Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
 function call_compare_programs($program_id_list){
-    $program_data = autoCache("get_program_xml", array(), 'program-data2', 300);
+//    $program_data = autoCache("get_program_xml", array(), 'program-data2', 300);
+    $program_data = get_program_xml();
 
     $programs_to_compare = array();
     foreach($program_data as $program){
