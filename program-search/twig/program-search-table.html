@@ -1,10 +1,10 @@
 {% if degrees_array|length == 0 %}
-    <div class="mb4"><h3>No programs match your search.</h3></div>
+    <div class="mb4"><h4>No programs match your search.</h4></div>
 {% else %}
     {% for degree_display_name,degree_programs in degrees_array %}
         <div class="program-search">
             <div class="mb4">
-                <h2>{{degree_display_name}}</h2>
+                <h3>{{degree_display_name}}</h3>
                 <div class="grid  program-search__table-head">
                         <div class="grid-cell">Name</div>
                         <div class="grid-cell">Degree Level</div>
@@ -25,8 +25,10 @@
         </div>
     {% endfor %}
     
-    <a href='#top' class="btn btn-small" onclick="comparePrograms()">Compare Programs</a>
-    <a class="btn btn-small" onclick="resetCompareSearch()">Reset all</a>
+    <div style="float:right">
+        <a href='#top' class="btn btn-small" onclick="comparePrograms()">Compare Programs</a>
+        <!--<a class="btn btn-small" onclick="resetCompareSearch()">Reset all</a>-->
+    </div>
 {% endif %}
 
 
