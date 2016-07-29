@@ -1,4 +1,4 @@
-<div class="grid-cell    results-1">
+<div class="grid-cell results-one">
     {% if concentration_page.path != '/' %}
         <a href="{{concentration_page.path}}">{{concentration.title}}</a>
     {% else %}
@@ -6,7 +6,7 @@
     {% endif %}
 </div>
 
-<div class="grid-cell  results-2">
+<div class="grid-cell results-two">
     {% if "College of Arts & Sciences" in schools %}
         {% for type in program_types %}
             <span class="icon  icon--{{type|lower}}"></span>
@@ -24,10 +24,10 @@
     {% endif %}
 </div>
 
-<div class="grid-cell  results-3">
+<div class="grid-cell results-three">
     {{ deliveries | sort | join(', ') }}</div>
 
-<div class="grid-cell  results-4">
+<div class="grid-cell results-four">
     {% if "College of Arts & Sciences" not in schools and concentration_code != '' %}
         <input type="checkbox" name="program-search-checkbox" id="{{concentration_code}}" onclick="countCheckedBoxes(this)" />
     {% endif %}
