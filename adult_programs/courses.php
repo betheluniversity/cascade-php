@@ -16,13 +16,13 @@ function course_catalog($code, $values){
             'content' => http_build_query($data),
         ),
     );
-    $url = "http://wsapi.bethel.edu/courses/course-catalog/$code";
+    $url = "https://wsapi.bethel.edu/courses/course-catalog/$code";
     $context  = stream_context_create($options);
     return file_get_contents($url, false, $context);
 }
 
 function individual_courses($code){
-    $url = "http://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
+    $url = "https://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
     return file_get_contents($url, false);
 }
 
