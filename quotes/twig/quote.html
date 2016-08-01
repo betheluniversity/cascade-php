@@ -12,16 +12,16 @@
         <p>{{text}}</p>
 
         {% if source != "" %}
-            <p class="quote__source">–{{source}}
+            <cite class="quote__source"><b>{{source}}
 
                 {% if gradYear != "" %}
-                    {{gradYear}}
-                {% endif %}
+                    - {{gradYear}}
+                {% endif %}</b>
 
                 {% if job != "" %}
                     <br />{{job}}
                 {% endif %}
-            </p>
+            </cite>
         {% endif %}
     </div>
 </div>
