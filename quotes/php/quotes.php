@@ -11,29 +11,32 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 //include_once $_SERVER["DOCUMENT_ROOT"] . "/php_helper_for_cascade.php";
 // Todo: remove $School. But you also need to remove it from the format: https://cms.bethel.edu/entity/open.act?id=e255c37e8c586513100ee2a71077c3b4&type=format
 //       Then all pages with quote carousels need to be republished.
-function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
     echo "<!-- new quotes -->";
-    $quotesToDisplay = get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
+    $quotesToDisplay = get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly);
 
-    if( sizeof($quotesToDisplay) > 0) {
+    if( sizeof($quotesToDisplay) > 1) {
         //Output structure
         $html = "";
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
         carousel_create("js-flickity  carousel--quote", $html);
+    }elseif(sizeof($quotesToDisplay) > 0){
+        echo $quotesToDisplay[0];
     }
 }
 
-function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
+function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
     $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/quotes.xml");
     $quotes = $xml->xpath("//system-block");
     $matches = array();
-
     foreach($quotes as $quote_xml){
         $quote_info = inspect_block_quotes($quote_xml, $Topic, $CAS, $CAPS, $GS, $SEM);
         if( $quote_info['match-dept'] || $quote_info['match-topic'] ){
-            array_push($matches, $quote_info['html']);
+            if($picsOnly == "No" || ($quote_info['image_path'] != "/" && $quote_info['image_path'] != "")){
+                array_push($matches, $quote_info['html']);
+            }
         }
     }
 

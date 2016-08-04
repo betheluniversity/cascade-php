@@ -25,6 +25,14 @@ $error_handler->registerShutdownFunction();
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
+$prefix = "https://www.bethel.edu";
+if($staging){
+    $prefix = "https://staging.bethel.edu";
+}
+$url = $prefix . $_SERVER['REQUEST_URI'];
+echo "<link rel='canonical' href='$url'/>";
+
+
 //echo $twig->render('metadata-check.html', array(
 //    'staging' => $staging,
 //    'cms_url' => $cms_url));

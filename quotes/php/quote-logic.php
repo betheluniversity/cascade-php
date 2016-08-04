@@ -13,6 +13,7 @@ function inspect_block_quotes($xml, $Topic, $CAS, $CAPS, $GS, $SEM){
         "published" => $xml->{'last-published-on'},
         "description" => $xml->{'description'},
         "path" => $xml->path,
+        "image_path" => $xml->{'system-data-structure'}->{'image'}->{'path'},
         "html" => "",
         "display" => "No",
         "match-school" => false, // this is deprecated. We do not use this anymore.
