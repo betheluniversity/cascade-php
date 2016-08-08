@@ -15,7 +15,8 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem){
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
     // Sort bios
-    usort($bios, 'sort_bios_by_lead_and_last_name');
+//    usort($bios, 'sort_bios_by_lead_and_last_name');
+    $bios = sort_bios_by_lead_and_last_name($bios);
 
     // Print bios
     foreach( $bios as $bio)
@@ -165,6 +166,7 @@ function inspect_faculty_bio($xml){
     return $page_info;
 }
 
+
 function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
     $return_bios = array();
     foreach( $bios as $bio ){
@@ -197,24 +199,23 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
     $matched_job_titles = array();
 
     foreach( $bio['job-titles'] as $job_title ) {
-
         // if school matches
         if( str_replace('&', 'and', $school) == $job_title['school'] ) {
             // depending on the school, check the associated list for program
             if( $school == 'College of Arts & Sciences' ) {
-                if( in_array($job_title['department'], $cas) ) {
+                if( in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array(None, $cas)) ) {
                     array_push($matched_job_titles,get_job_title($job_title) );
                 }
             } elseif( $school == 'College of Adult & Professional Studies' || (gettype($school) == 'array' && in_array('College of Adult & Professional Studies', $school))) {
-                if( in_array($job_title['adult-undergrad-program'], $caps) ) {
+                if( in_array($job_title['adult-undergrad-program'], $caps) || (sizeof($caps) == 1 && in_array(None, $caps)) ) {
                     array_push($matched_job_titles, get_job_title($job_title));
                 }
-            } elseif( $school == 'Graduate School' || (gettype($school) == 'array' && in_array('Graduate School', $school))){
-                if( in_array($job_title['graduate-program'], $gs) ) {
+            } elseif( $school == 'Graduate School' || (gettype($school) == 'array' && in_array('Graduate School', $school)) ){
+                if( in_array($job_title['graduate-program'], $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ) {
                     array_push($matched_job_titles, get_job_title($job_title));
                 }
-            } elseif( $school == 'Bethel Seminary' || (gettype($school) == 'array' && in_array('Bethel Seminary', $school))){
-                if( in_array($job_title['seminary-program'], $sem) ) {
+            } elseif( $school == 'Bethel Seminary' || (gettype($school) == 'array' && in_array('Bethel Seminary', $school)) ){
+                if( in_array($job_title['seminary-program'], $sem) || (sizeof($sem) == 1 && in_array(None, $sem)) ) {
                     array_push($matched_job_titles, get_job_title($job_title));
                 }
             }
@@ -283,15 +284,19 @@ function get_job_title($job_title){
 }
 
 
-function sort_bios_by_lead_and_last_name($a, $b){
-    // sort by lead
-    if( $a['is_lead'] )
-        return false;
-    elseif( $b['is_lead'] )
-        return true;
+function sort_bios_by_lead_and_last_name($bios){
+    // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
 
-    // then sort by last name
-    return strcmp($a['last'], $b['last']);
+    // Obtain a list of columns
+    foreach ($bios as $key => $row) {
+        $is_lead[$key]  = $row['is_lead'];
+        $last[$key] = $row['last'];
+    }
+
+    // Sort the data with volume descending, edition ascending
+    array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+
+    return $bios;
 }
 
 
