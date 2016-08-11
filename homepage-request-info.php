@@ -8,6 +8,7 @@
 
 $user = $_POST['user'];
 
+$staging = strstr(getcwd(), "staging/public");
 if($staging){
     $to = 'Bethel University Web Development <web-development@bethel.edu>';
 }else{
@@ -15,6 +16,7 @@ if($staging){
 }
 $subject = 'Homepage Request for Information';
 $message = "Name: " . $user['name'] . " \nEmail: " . $user['email'] . "\nDegree Type: " . $_POST['degree-type'];
+
 $headers = 'From: web-development@bethel.edu' .  "\r\n";
 $headers .= 'Bcc: webmaster@bethel.edu' . "\r\n";
 $mail = mail($to , $subject , $message, $headers);
