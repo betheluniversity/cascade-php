@@ -293,8 +293,7 @@ function search_csv_values($csv_data, $search_term ){
         'associate of art',
         'master of art',
     );
-//    print_r('<table>');
-//    print_r('<thead><tr><th>Program</th><th>Matching Tag</th></tr></thead>');
+
     $return_element = array();
     foreach ($csv_data as $row) {
         // ignore key
@@ -304,26 +303,13 @@ function search_csv_values($csv_data, $search_term ){
                 $has_unwanted_key = True;
             }
         }
-        // Version 1) exact match
-//        if ($search_term == trim(strtolower($row['tag'])) && !in_array($row['key'], $return_element) )
-//            array_push($return_element, $row['key']);
 
-        // Version 2) sub match
-//            if ( (strpos(trim(strtolower($row['tag'])), $search_term) !== false && !in_array($row['key'], $return_element)) && !$has_unwanted_key ) {
-//                array_push($return_element, $row['key']);
-//            }
-
-        // Version 3) sub match with extra check for spaces before
+        // sub match with extra check for spaces before
         $does_it_match = array();
         preg_match("/(.*^ | |^)$search_term/", trim(strtolower($row['tag'])) , $does_it_match);
-//        print_r('<tr>');
+
         if ( ( sizeof($does_it_match) > 0 && !in_array($row['key'], $return_element)) && !$has_unwanted_key ) {
-//            print_r('<td>');
-//            print_r($row['key']);
-//            print_r('</td>');
-//            print_r('<td>');
-//            print_r($row['tag']);
-//            print_r('</td>');
+
             array_push($return_element, $row['key']);
         }
 //        print_r('</tr>');
