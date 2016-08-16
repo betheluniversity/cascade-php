@@ -1,5 +1,9 @@
-<ul>
-    {% for name in names_list %}
-    <li>{{name}}</li>
-    {% endfor %}
-</ul>
+{% if names_list|length == 0 %}
+    <p>Currently no one is registered.</p>
+{% else %}
+    <ul>
+        {% for name in names_list %}
+        <li>{{name}}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
