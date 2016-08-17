@@ -14,7 +14,15 @@ function homecoming_guest_list($class_year){
     foreach($list->result as $key => $value){
         foreach($value as $names){
             $names = explode("Name:", $names);
-            array_push($names_list, $names[1]);
+            $names = explode(", ", $names[1]);
+
+            // put into comma-list with "and" before the last item.
+            $last  = array_slice($names, -1);
+            $first = join(', ', array_slice($names, 0, -1));
+            $both  = array_filter(array_merge(array($first), $last), 'strlen');
+            $names = join(', and ', $both);
+
+            array_push($names_list, $names);
         }
     }
     $twig = makeTwigEnviron('/code/banner-blocks/twig/');
