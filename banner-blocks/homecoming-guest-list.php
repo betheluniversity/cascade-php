@@ -20,7 +20,7 @@ function homecoming_guest_list($class_year){
             $last  = array_slice($names, -1);
             $first = join(', ', array_slice($names, 0, -1));
             $both  = array_filter(array_merge(array($first), $last), 'strlen');
-            $names = join(', and ', $both);
+            $names = join(' and ', $both);
 
             array_push($names_list, $names);
         }
