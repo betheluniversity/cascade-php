@@ -25,6 +25,8 @@ $EndDate;
 /////////////////////////////////////////////////////////////////////
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
+require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 function create_event_feed($categories, $heading=""){
     $feed = autoCache("create_event_feed_logic", array($categories, $heading));
@@ -151,7 +153,6 @@ function check_if_art_or_theatre($event){
 
 // Gathers the information of an event page
 function inspect_event_page($xml, $categories){
-    //echo "inspecting page";
     $page_info = array(
         "title" => $xml->title,
         "display-name" => $xml->{'display-name'},
