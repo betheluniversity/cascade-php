@@ -15,7 +15,7 @@ if($staging){
     $to = 'Bethel University Enrollment Data Team <enrollment-data@bethel.edu>';
 }
 $subject = 'Homepage Request for Information';
-$message = "Name: " . $user['name'] . " \nEmail: " . $user['email'] . "\nDegree Type: " . $_POST['degree-type'];
+$message = "First Name: " . $user['firstName'] . "\nLast Name: " . $user['lastName'] . "\nEmail: " . $user['email'] . "\nDegree Type: " . $_POST['degree-type'];
 
 $headers = 'From: web-development@bethel.edu' .  "\r\n";
 $headers .= 'Bcc: webmaster@bethel.edu' . "\r\n";
