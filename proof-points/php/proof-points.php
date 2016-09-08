@@ -19,7 +19,7 @@
         $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
             // Add an if to add/remove animate depending on the PP
-            $toReturn .= createGridCell("medium 1-$numProofPoints animate animate--fadeIn", $finalPP);
+            $toReturn .= createGridCell("medium 1-$numProofPoints", $finalPP);
         }
         echo createGrid("proof-points proof-point-collection test", $toReturn);
 
