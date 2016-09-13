@@ -52,6 +52,7 @@ function traverse_folder($xml, $bios){
 function inspect_faculty_bio($xml){
     $page_info = array(
         "path"          =>  strval($xml->path),
+        "id"            =>  strval($xml['id']),
         "md"            =>  array(),
         "job-titles"    =>  array(),
         "is_lead"       =>  false // this is set in filter_bios
@@ -183,6 +184,8 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                             $bio['is_lead'] = true;
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
+                    if( $bio['id'] == 'aab255628c5865131315e7c4685d543b')
+                        array_push($array_of_job_titles, 'Chief Nursing Administrator');
                     $bio['array_of_job_titles'] = $array_of_job_titles;
                     array_push($return_bios, $bio);
                 }
