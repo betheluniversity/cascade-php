@@ -55,7 +55,8 @@ function inspect_faculty_bio($xml){
         "id"            =>  strval($xml['id']),
         "md"            =>  array(),
         "job-titles"    =>  array(),
-        "is_lead"       =>  false // this is set in filter_bios
+        "is_lead"       =>  false, // this is set in filter_bios
+        "top_lead"      =>  false,
     );
 
     // ignore any bio found within "_testing" in Cascade
@@ -89,9 +90,7 @@ function inspect_faculty_bio($xml){
                     if( strtolower($value) != 'none' && strtolower($value) != 'select' )
                         array_push( $page_info['md'][$name], strval($value) );
                 }
-
             }
-
         }
 
         $page_info['first'] = strval($ds->{'first'});
@@ -134,6 +133,22 @@ function inspect_faculty_bio($xml){
 
                 array_push($page_info['job-titles'], $temp_job);
             }
+        }
+
+        // a hack to give diane dahl the 'Chief Nursing Administrator' title
+        if( $page_info['id'] == 'aab255628c5865131315e7c4685d543b') {
+            array_push($page_info['job-titles'], array(
+                'school' => 'College of Arts and Sciences',
+                'job_title' => 'Chief Nursing Administrator'
+            ));
+            array_push($page_info['job-titles'], array(
+                'school' => 'College of Adult and Professional Studies',
+                'job_title' => 'Chief Nursing Administrator'
+            ));
+            array_push($page_info['job-titles'], array(
+                'school' => 'Graduate School',
+                'job_title' => 'Chief Nursing Administrator'
+            ));
         }
 
         // Get expertise and expertise heading
@@ -180,12 +195,14 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                 $array_of_job_titles = array();
                 if( sizeof($temp_array_of_job_titles) ) {
                     foreach( $temp_array_of_job_titles as $job_title){
+                        // pass the job title 'lead' up to the bio level
                         if( $job_title['is_lead'] == true)
                             $bio['is_lead'] = true;
+                        // pass the job title 'lead' up to the bio level (for diane dahl)
+                        if( $job_title['top_lead'] == true)
+                            $bio['top_lead'] = true;
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
-                    if( $bio['id'] == 'aab255628c5865131315e7c4685d543b')
-                        array_push($array_of_job_titles, 'Chief Nursing Administrator');
                     $bio['array_of_job_titles'] = $array_of_job_titles;
                     array_push($return_bios, $bio);
                 }
@@ -202,24 +219,37 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
     $matched_job_titles = array();
 
     foreach( $bio['job-titles'] as $job_title ) {
+        $display_job_title = get_job_title($job_title, $bio['id']);
         // if school matches
         if( str_replace('&', 'and', $school) == $job_title['school'] ) {
+
             // depending on the school, check the associated list for program
             if( $school == 'College of Arts & Sciences' ) {
-                if( in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array(None, $cas)) ) {
-                    array_push($matched_job_titles,get_job_title($job_title) );
+                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
+                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $cas)) ) {
+                    array_push($matched_job_titles, $display_job_title);
+                }
+                else if( in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array(None, $cas)) ) {
+                    array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'College of Adult & Professional Studies' || (gettype($school) == 'array' && in_array('College of Adult & Professional Studies', $school))) {
-                if( in_array($job_title['adult-undergrad-program'], $caps) || (sizeof($caps) == 1 && in_array(None, $caps)) ) {
-                    array_push($matched_job_titles, get_job_title($job_title));
+                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
+                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $caps)) )
+                    array_push($matched_job_titles, $display_job_title);
+                else if( in_array($job_title['adult-undergrad-program'], $caps) || (sizeof($caps) == 1 && in_array(None, $caps)) ) {
+                    array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'Graduate School' || (gettype($school) == 'array' && in_array('Graduate School', $school)) ){
-                if( in_array($job_title['graduate-program'], $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ) {
-                    array_push($matched_job_titles, get_job_title($job_title));
+                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
+                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $gs)) ) {
+                    array_push($matched_job_titles, $display_job_title);
+                }
+                else if( in_array($job_title['graduate-program'], $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ) {
+                    array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'Bethel Seminary' || (gettype($school) == 'array' && in_array('Bethel Seminary', $school)) ){
                 if( in_array($job_title['seminary-program'], $sem) || (sizeof($sem) == 1 && in_array(None, $sem)) ) {
-                    array_push($matched_job_titles, get_job_title($job_title));
+                    array_push($matched_job_titles, $display_job_title);
                 }
             }
         }
@@ -228,25 +258,25 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
             if( in_array('College of Arts & Sciences', $job_title['school']) ){
                 foreach( $job_title['department'] as $temp_dept ){
                     if( in_array($temp_dept, $cas) ) {
-                        array_push($matched_job_titles,get_job_title($job_title) );
+                        array_push($matched_job_titles, $display_job_title);
                     }
                 }
             } elseif( in_array('College of Adult & Professional Studies', $job_title['school']) ){
                 foreach( $job_title['adult-undergrad-program'] as $temp_dept ){
                     if( in_array($temp_dept, $caps) ) {
-                        array_push($matched_job_titles,get_job_title($job_title) );
+                        array_push($matched_job_titles, $display_job_title);
                     }
                 }
             } elseif( in_array('Graduate School', $job_title['school']) ){
                 foreach( $job_title['graduate-program'] as $temp_dept ){
                     if( in_array($temp_dept, $gs) ) {
-                        array_push($matched_job_titles,get_job_title($job_title) );
+                        array_push($matched_job_titles, $display_job_title);
                     }
                 }
             } elseif( in_array('Bethel Seminary', $job_title['school']) ){
                 foreach( $job_title['seminary-program'] as $temp_dept ){
                     if( in_array($temp_dept, $sem) ) {
-                        array_push($matched_job_titles, get_job_title($job_title) );
+                        array_push($matched_job_titles, $display_job_title);
                     }
                 }
             }
@@ -275,15 +305,21 @@ function create_bio_html($bio, $schools, $cas, $caps, $gs, $sem){
 }
 
 
-function get_job_title($job_title){
-    if( $job_title['department-chair'] == 'Yes' )
-        return array('is_lead' => true, 'title' => 'Department Chair');
-    elseif( $job_title['program-director'] == 'Yes' )
-        return array('is_lead' => true, 'title' => 'Program Director');
-    elseif( $job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty' )
-        return array('is_lead' => true, 'title' => $job_title['lead-faculty']);
+function get_job_title($job_title, $id){
+    // This is a current hack to make sure Diane Dahl appears at the top, whenever she should appear
+    if( $id == 'aab255628c5865131315e7c4685d543b')
+        $top_lead = true;
     else
-        return array('is_lead' => false, 'title' => $job_title['job_title']);
+        $top_lead = false;
+
+    if( $job_title['department-chair'] == 'Yes' )
+        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Department Chair');
+    elseif( $job_title['program-director'] == 'Yes' )
+        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Program Director');
+    elseif( $job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty' )
+        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['lead-faculty']);
+    else
+        return array('top_lead' => $top_lead, 'is_lead' => false, 'title' => $job_title['job_title']);
 }
 
 
@@ -292,12 +328,13 @@ function sort_bios_by_lead_and_last_name($bios){
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
+        $top_lead[$key]  = $row['top_lead'];
         $is_lead[$key]  = $row['is_lead'];
         $last[$key] = $row['last'];
     }
 
-    // Sort the data with volume descending, edition ascending
-    array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+    // Sort the data with leads on top, then alpha sort
+    array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
 
     return $bios;
 }
@@ -307,4 +344,13 @@ function sort_bios_by_lead_and_last_name($bios){
 function format_job_titles($job_titles){
     // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
     return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
+}
+
+function check_substring_in_array($substring, $array){
+    foreach ($array as $element) {
+        if (strpos(strtolower($element), strtolower($substring)) !== FALSE) { // Yoshi version
+            return true;
+        }
+    }
+    return false;
 }
