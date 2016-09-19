@@ -207,13 +207,9 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
         // if school matches
         // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
         if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' ) {
-            print_r($school);
-            print_r($cas);
-            print_r($caps);
-            print_r($gs);
-            if( ($school == 'College of Arts & Sciences' && check_substring_in_array('nurs', $cas))
-                || ($school == 'College of Adult & Professional Studies' && check_substring_in_array('nurs', $caps))
-                || ($school == 'Graduate School' && check_substring_in_array('nurs', $gs) )) {
+            if( ($school == 'College of Arts & Sciences' && (check_substring_in_array('nurs', $cas) || (sizeof($cas) == 1 && in_array(None, $cas))))
+                || ($school == 'College of Adult & Professional Studies' && (check_substring_in_array('nurs', $caps) || (sizeof($caps) == 1 && in_array(None, $caps))))
+                || ($school == 'Graduate School' && (check_substring_in_array('nurs', $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ))) {
                 array_push($matched_job_titles, $display_job_title);
                 break;
             }
