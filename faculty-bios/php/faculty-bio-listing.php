@@ -206,29 +206,27 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
         $display_job_title = get_job_title($job_title, $bio['id']);
         // if school matches
         if( str_replace('&', 'and', $school) == $job_title['school'] ) {
+            // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
+            if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' ) {
+                if( ($school == 'College of Arts & Sciences' && check_substring_in_array('nurs', $cas))
+                        || ($school == 'College of Adult & Professional Studies' && check_substring_in_array('nurs', $caps))
+                        || ($school == 'Graduate School' && check_substring_in_array('nurs', $gs) )) {
+                    array_push($matched_job_titles, $display_job_title);
+                }
+            }
 
             // depending on the school, check the associated list for program
             if( $school == 'College of Arts & Sciences' ) {
-                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
-                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $cas)) ) {
-                    array_push($matched_job_titles, $display_job_title);
-                }
-                else if( in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array(None, $cas)) ) {
+                if( in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array(None, $cas)) ) {
                     array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'College of Adult & Professional Studies' || (gettype($school) == 'array' && in_array('College of Adult & Professional Studies', $school))) {
-                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
-                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $caps)) )
-                    array_push($matched_job_titles, $display_job_title);
-                else if( in_array($job_title['adult-undergrad-program'], $caps) || (sizeof($caps) == 1 && in_array(None, $caps)) ) {
+
+                if( in_array($job_title['adult-undergrad-program'], $caps) || (sizeof($caps) == 1 && in_array(None, $caps)) ) {
                     array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'Graduate School' || (gettype($school) == 'array' && in_array('Graduate School', $school)) ){
-                // A hack for Diane Dahl to appear on any page that includes 'nurs' in the program name
-                if( $bio['id'] == 'aab255628c5865131315e7c4685d543b' && (check_substring_in_array('nurs', $gs)) ) {
-                    array_push($matched_job_titles, $display_job_title);
-                }
-                else if( in_array($job_title['graduate-program'], $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ) {
+                if( in_array($job_title['graduate-program'], $gs) || (sizeof($gs) == 1 && in_array(None, $gs)) ) {
                     array_push($matched_job_titles, $display_job_title);
                 }
             } elseif( $school == 'Bethel Seminary' || (gettype($school) == 'array' && in_array('Bethel Seminary', $school)) ){
