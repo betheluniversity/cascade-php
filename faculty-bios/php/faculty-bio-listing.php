@@ -135,22 +135,6 @@ function inspect_faculty_bio($xml){
             }
         }
 
-        // a hack to give diane dahl the 'Chief Nursing Administrator' title
-        if( $page_info['id'] == 'aab255628c5865131315e7c4685d543b') {
-            array_push($page_info['job-titles'], array(
-                'school' => 'College of Arts and Sciences',
-                'job_title' => 'Chief Nursing Administrator'
-            ));
-            array_push($page_info['job-titles'], array(
-                'school' => 'College of Adult and Professional Studies',
-                'job_title' => 'Chief Nursing Administrator'
-            ));
-            array_push($page_info['job-titles'], array(
-                'school' => 'Graduate School',
-                'job_title' => 'Chief Nursing Administrator'
-            ));
-        }
-
         // Get expertise and expertise heading
         $expertise = $ds->{'expertise'};
         $page_info['expertise_heading'] = strval($expertise->{'heading'});
