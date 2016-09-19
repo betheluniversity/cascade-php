@@ -234,32 +234,31 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     }
                 }
             }
-        }
-
-        // Todo: OLD job titles.... hopefully can be removed in the future
-        elseif( gettype($job_title['school']) == 'array' ) {
-            if( in_array('College of Arts & Sciences', $job_title['school']) ){
-                foreach( $job_title['department'] as $temp_dept ){
-                    if( in_array($temp_dept, $cas) ) {
-                        array_push($matched_job_titles, $display_job_title);
+            // Todo: OLD job titles.... hopefully can be removed in the future
+            elseif( gettype($job_title['school']) == 'array' ) {
+                if( in_array('College of Arts & Sciences', $job_title['school']) ){
+                    foreach( $job_title['department'] as $temp_dept ){
+                        if( in_array($temp_dept, $cas) ) {
+                            array_push($matched_job_titles, $display_job_title);
+                        }
                     }
-                }
-            } elseif( in_array('College of Adult & Professional Studies', $job_title['school']) ){
-                foreach( $job_title['adult-undergrad-program'] as $temp_dept ){
-                    if( in_array($temp_dept, $caps) ) {
-                        array_push($matched_job_titles, $display_job_title);
+                } elseif( in_array('College of Adult & Professional Studies', $job_title['school']) ){
+                    foreach( $job_title['adult-undergrad-program'] as $temp_dept ){
+                        if( in_array($temp_dept, $caps) ) {
+                            array_push($matched_job_titles, $display_job_title);
+                        }
                     }
-                }
-            } elseif( in_array('Graduate School', $job_title['school']) ){
-                foreach( $job_title['graduate-program'] as $temp_dept ){
-                    if( in_array($temp_dept, $gs) ) {
-                        array_push($matched_job_titles, $display_job_title);
+                } elseif( in_array('Graduate School', $job_title['school']) ){
+                    foreach( $job_title['graduate-program'] as $temp_dept ){
+                        if( in_array($temp_dept, $gs) ) {
+                            array_push($matched_job_titles, $display_job_title);
+                        }
                     }
-                }
-            } elseif( in_array('Bethel Seminary', $job_title['school']) ){
-                foreach( $job_title['seminary-program'] as $temp_dept ){
-                    if( in_array($temp_dept, $sem) ) {
-                        array_push($matched_job_titles, $display_job_title);
+                } elseif( in_array('Bethel Seminary', $job_title['school']) ){
+                    foreach( $job_title['seminary-program'] as $temp_dept ){
+                        if( in_array($temp_dept, $sem) ) {
+                            array_push($matched_job_titles, $display_job_title);
+                        }
                     }
                 }
             }
