@@ -13,12 +13,12 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $bios = autoCache('get_faculty_bio_xml', array(), 'get_faculty_bio_xml' );
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
-    // Sort bios
-    if( $displayFaculty == 'Show at top'){
+//    // Sort bios
+//    if( $displayFaculty == 'Show at top'){
         $bios = sort_bios_by_lead_and_last_name($bios);
-    } else {
-        $bios = sort_bios_by_last_name($bios);
-    }
+//    } else {
+//        $bios = sort_bios_by_last_name($bios);
+//    }
 
     // Print bios
     foreach( $bios as $bio)
