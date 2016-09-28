@@ -123,7 +123,7 @@ function update_contact_referer_site($contact_id){
 
 
 $staging = strstr(getcwd(), "staging/public");
-$mail_to = "e-jameson@bethel.edu";
+$mail_to = "web-development@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
 $subject = "salesforce register submission";
 $message = "";
