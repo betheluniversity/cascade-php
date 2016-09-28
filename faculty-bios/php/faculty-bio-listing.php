@@ -10,19 +10,35 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
 function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFaculty){
-    $bios = autoCache('get_faculty_bio_xml', array(), 'get_faculty_bio_xml' );
+//    $bios = autoCache('get_faculty_bio_xml', array(), 'get_faculty_bio_xml' );
+    $bios = get_faculty_bio_xml();
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
-//    // Sort bios
-//    if( $displayFaculty == 'Show at top'){
-        $bios = sort_bios_by_lead_and_last_name($bios);
-//    } else {
-//        $bios = sort_bios_by_last_name($bios);
-//    }
+    // Sort bios
+    if( $displayFaculty == 'All programs'){
+        $bios = sort_bios_by_lead_and_last_name($bios, false);
+    } else {
+        $bios = sort_bios_by_lead_and_last_name($bios, true);
+    }
 
     // Print bios
-    foreach( $bios as $bio)
-        echo create_bio_html($bio, $schools, $cas, $caps, $gs, $sem);
+    $found_lead = false;
+    $found_faculty = false;
+    foreach( $bios as $bio){
+//        if( $bio['is_lead'] && !$found_lead ) {
+//            // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
+//            if( in_array('College of Arts & Sciences', $schools) )
+//                echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
+//            else
+//                echo '<h1 class="uppercase-underlined mt5">Lead Faculty & Program Director</h1>';
+//            $found_lead = true;
+//        }
+//        elseif( !$bio['is_lead'] && !$found_faculty) {
+//            echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
+//            $found_faculty = true;
+//        }
+        echo create_bio_html($bio);
+    }
 }
 
 
@@ -169,6 +185,7 @@ function inspect_faculty_bio($xml){
 }
 
 
+# todo: this should really be done at the bio level...
 function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
     $return_bios = array();
     foreach( $bios as $bio ){
@@ -272,11 +289,11 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
 }
 
 
-function create_bio_html($bio, $schools, $cas, $caps, $gs, $sem){
+function create_bio_html($bio){
     if( $bio['image-path'] != '/')
         $bio_image = srcset($bio['image-path'], false, true, 'image--round');
     else
-        $bio_image = '';
+        $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' />";
 
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
     $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
@@ -292,10 +309,14 @@ function create_bio_html($bio, $schools, $cas, $caps, $gs, $sem){
 
 function get_job_title($job_title, $id){
     // This is a current hack to make sure Diane Dahl appears at the top, whenever she should appear
-    if( $id == 'aab255628c5865131315e7c4685d543b')
+    if( $id == 'aab255628c5865131315e7c4685d543b') {
+        $is_lead = true;
         $top_lead = true;
-    else
+    }
+    else {
+        $is_lead = false;
         $top_lead = false;
+    }
 
     if( $job_title['department-chair'] == 'Yes' )
         return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Department Chair');
@@ -304,11 +325,11 @@ function get_job_title($job_title, $id){
     elseif( $job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty' )
         return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['lead-faculty']);
     else
-        return array('top_lead' => $top_lead, 'is_lead' => false, 'title' => $job_title['job_title']);
+        return array('top_lead' => $top_lead, 'is_lead' => $is_lead, 'title' => $job_title['job_title']);
 }
 
 
-function sort_bios_by_lead_and_last_name($bios){
+function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
 
     // Obtain a list of columns
@@ -319,10 +340,13 @@ function sort_bios_by_lead_and_last_name($bios){
     }
 
     // Sort the data with leads on top, then alpha sort
-    array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
-
+    if( $top_lead_sort )
+        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+    else
+        array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
     return $bios;
 }
+
 
 function sort_bios_by_last_name($bios) {
     foreach ($bios as $key => $bio) {
