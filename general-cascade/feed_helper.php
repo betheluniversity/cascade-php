@@ -46,15 +46,15 @@ function create_featured_array($featuredOptions){
 function match_metadata_articles($xml, $categories, $options, $feedType){
     foreach( $categories as $category) {
         foreach ($xml->{'dynamic-metadata'} as $md) {
-
             $name = $md->name;
 
             foreach ($md->value as $value) {
-                if (strtolower($value) == "none"|| strtolower($value) == "select") {
+                if (strtolower($value) == "none" || strtolower($value) == "select") {
                     continue;
                 }
-                if ($feedType == 'event')
-                    $value = htmlspecialchars($value);
+                // Todo: why was this here?? Removing this causes event feeds to work.
+//                if ($feedType == 'event')
+//                    $value = htmlspecialchars($value);
 
                 if (in_array($name, $options)) {
                     if (in_array($value, $category)) {
