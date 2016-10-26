@@ -104,6 +104,7 @@ function inspect_program($xml){
             $temp_concentration['program_length'] = $concentration->{'program_length'};
             $temp_concentration['concentration_name'] = strval($concentration->{'concentration_banner'}->{'concentration_name'});
             $temp_concentration['cost'] = $concentration->{'concentration_banner'}->{'cost'};
+            $temp_concentration['catalog_url'] = $concentration->{'catalog-table-url'};
 
             $temp_concentration['cohorts'] = array();
             foreach($concentration->{'concentration_banner'}->{'cohort_details'} as $cohort_detail){
