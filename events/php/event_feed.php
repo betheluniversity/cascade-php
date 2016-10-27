@@ -29,17 +29,15 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 function create_event_feed($categories, $heading=""){
-//    $feed = autoCache("create_event_feed_logic", array($categories, $heading));
-    $feed = create_event_feed_logic($categories, $heading);
-    return $feed;
+    // you should only cache the array of html, not the full data.
+    $feed = autoCache("create_event_feed_logic", array($categories, $heading));
 
+    return $feed;
 }
 
 
 // Create the Event Feed events.
 function create_event_feed_logic($categories, $heading){
-
-//    $arrayOfEvents = autoCache(get_xml, array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page"));
     $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
