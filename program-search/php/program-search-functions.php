@@ -10,16 +10,16 @@
 function get_program_xml(){
     $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/programs.xml");
     $programs = array();
-    $programs = traverse_folder($xml, $programs);
+    $programs = traverse_programs_folder($xml, $programs);
     return $programs;
 }
 
 
-function traverse_folder($xml, $programs){
+function traverse_programs_folder($xml, $programs){
     foreach ($xml->children() as $child) {
         $name = $child->getName();
         if ($name == 'system-folder'){
-            $programs = traverse_folder($child, $programs);
+            $programs = traverse_programs_folder($child, $programs);
         }elseif ($name == 'system-block'){
             $page_data = inspect_program($child);
 
