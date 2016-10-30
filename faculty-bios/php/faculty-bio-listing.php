@@ -115,8 +115,16 @@ function inspect_faculty_bio($xml){
         $page_info['last'] = strval($ds->{'last'});
         $page_info['email'] = strval($ds->{'email'});
         $page_info['started-at-bethel'] = strval($ds->{'started-at-bethel'});
-
         $page_info['image-path'] = strval($ds->{'image'}->{'path'});
+
+        $faculty_locations = array();
+        foreach ($xml->{'faculty_location'} as $location) {
+            array_push($faculty_locations, strval($location->value));
+        }
+        if( sizeof($faculty_locations) == 0)
+            array_push($faculty_locations, 'St. Paul');
+        sort($faculty_locations);
+        $page_info['faculty_location'] = $faculty_locations;
 
         $job_titles = $ds->{'job-titles'};
         foreach($job_titles as $job_title){
@@ -153,23 +161,11 @@ function inspect_faculty_bio($xml){
             }
         }
 
-        // Get expertise and expertise heading
-        $expertise = $ds->{'expertise'};
-        $page_info['expertise_heading'] = strval($expertise->{'heading'});
+        $page_info['highlight'] = strval($ds->{'highlight'});
 
-        // check for keywords, so if these change slightly, these won't break
-        if( strpos(strtolower($page_info['expertise_heading']), 'areas of expertise') !== false )
-            $page_info['expertise'] = strval($expertise->{'areas'});
-        elseif( strpos(strtolower($page_info['expertise_heading']), 'research') !== false )
-            $page_info['expertise'] = strval($expertise->{'research-interests'});
-        elseif( strpos(strtolower($page_info['expertise_heading']), 'teaching') !== false )
-            $page_info['expertise'] = strval($expertise->{'teaching-specialty'});
-        else
-            $page_info['expertise'] = '';
-
-        // if expertise is > 300, than only show 295 plus the 'read more' text
-        if( strlen($page_info['expertise']) >= 300 ) {
-            $page_info['expertise'] = substr($page_info['expertise'], 0, 295 );
+        // if highlight is > 300, than only show 295 plus the 'read more' text
+        if( strlen($page_info['highlight']) >= 300 ) {
+            $page_info['highlight'] = substr($page_info['highlight'], 0, 295 );
 
             // add 'read more' html
             $twig = makeTwigEnviron('/code/faculty-bios/twig');
@@ -177,7 +173,7 @@ function inspect_faculty_bio($xml){
                 'bio'   =>  $page_info
             ));
 
-            $page_info['expertise'] = $page_info['expertise'] . $html;
+            $page_info['highlight'] = $page_info['highlight'] . $html;
         }
     }
 
@@ -254,34 +250,6 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     }
                 }
             }
-            // Todo: OLD job titles.... hopefully can be removed in the future
-            elseif( gettype($job_title['school']) == 'array' ) {
-                if( in_array('College of Arts & Sciences', $job_title['school']) ){
-                    foreach( $job_title['department'] as $temp_dept ){
-                        if( in_array($temp_dept, $cas) ) {
-                            array_push($matched_job_titles, $display_job_title);
-                        }
-                    }
-                } elseif( in_array('College of Adult & Professional Studies', $job_title['school']) ){
-                    foreach( $job_title['adult-undergrad-program'] as $temp_dept ){
-                        if( in_array($temp_dept, $caps) ) {
-                            array_push($matched_job_titles, $display_job_title);
-                        }
-                    }
-                } elseif( in_array('Graduate School', $job_title['school']) ){
-                    foreach( $job_title['graduate-program'] as $temp_dept ){
-                        if( in_array($temp_dept, $gs) ) {
-                            array_push($matched_job_titles, $display_job_title);
-                        }
-                    }
-                } elseif( in_array('Bethel Seminary', $job_title['school']) ){
-                    foreach( $job_title['seminary-program'] as $temp_dept ){
-                        if( in_array($temp_dept, $sem) ) {
-                            array_push($matched_job_titles, $display_job_title);
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -294,7 +262,6 @@ function create_bio_html($bio){
         $bio_image = srcset($bio['image-path'], false, true, 'image--round');
     else
         $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' />";
-
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
     $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
     $html = $twig->render('faculty-bio.html', array(
@@ -346,18 +313,6 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
         array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
     return $bios;
 }
-
-
-function sort_bios_by_last_name($bios) {
-    foreach ($bios as $key => $bio) {
-        $last[$key]  = $bio['last'];
-    }
-
-    array_multisort($last, SORT_ASC, $bios);
-
-    return $bios;
-}
-
 
 
 // format array to comma separated list with 'and' before the last element
