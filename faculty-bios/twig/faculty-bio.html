@@ -23,11 +23,12 @@
                     {% if bio['started-at-bethel'] != '' %}
                         | Started at Bethel: {{ bio['started-at-bethel'] }}
                     {% endif %}
-                    {% if bio['faculty_location'] %}
-                        | {% for location in bio['faculty_location'] %}
-                        <span class="btn btn-mini">{{ location }}</span>
-                        {% endfor %}
-                    {% endif %}
+                    <!--Todo: we need to have the seminary bios updated...-->
+                    <!--{% if bio['faculty_location'] %}-->
+                        <!--| {% for location in bio['faculty_location'] %}-->
+                        <!--<span class="btn btn-mini">{{ location }}</span>-->
+                        <!--{% endfor %}-->
+                    <!--{% endif %}-->
                 </p>
 
                 {% if bio.highlight != '' %}
