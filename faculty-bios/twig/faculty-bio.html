@@ -12,7 +12,9 @@
         </div>
         <div class="grid-cell u-medium-3-4 ">
             <div class=" grid-pad-1x ">
-                <h3><a href="http://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a></h3>
+                <h3>
+                    <a href="http://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a>
+                </h3>
                 <p class="sans-serif">
                     {{ array_of_job_titles | format_job_titles }}
                     {% if bio.email != '' %}
@@ -21,13 +23,16 @@
                     {% if bio['started-at-bethel'] != '' %}
                         | Started at Bethel: {{ bio['started-at-bethel'] }}
                     {% endif %}
+                    {% if bio['faculty_location'] %}
+                        | {% for location in bio['faculty_location'] %}
+                        <span class="btn btn-mini">{{ location }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </p>
 
-                {% if bio.expertise != '' %}
-                    <h4 class="h5">{{ bio.expertise_heading }}</h4>
+                {% if bio.highlight != '' %}
+                    <p>{{ bio.highlight|raw }}</p>
                 {% endif %}
-
-                <p>{{ bio.expertise|raw }}</p>
             </div>
         </div>
     </div>
