@@ -32,10 +32,10 @@ if($staging){
 $url = $prefix . $_SERVER['REQUEST_URI'];
 echo "<link rel='canonical' href='$url'/>";
 
-
-//echo $twig->render('metadata-check.html', array(
-//    'staging' => $staging,
-//    'cms_url' => $cms_url));
-
-
-
+$referer = $_SERVER['HTTP_REFERER'];
+$parsed = parse_url($referer);
+$host = $parsed['host'];
+if (!stristr($host, "bethel.edu")){
+    // update the interesting referer in session
+    $_SESSION['interesting_referer'] = $referer;
+}
