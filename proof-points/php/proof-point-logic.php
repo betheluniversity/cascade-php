@@ -137,7 +137,6 @@
         // Now that we are desparate, just get one that has a topic thats the same.
         $block_info['match-topic'] = match_metadata_proof_points($xml, $Topic);
 
-
         // Get html
         $block_info['html'] = get_proof_point_html($xml);
 
@@ -185,6 +184,6 @@
                 }
             }
         }
-        $finalProofPointArrays = array($deptPremium, $dept, $schoolPremium, $school);
+        $finalProofPointArrays = array($deptPremium, $dept, $schoolPremium, $school, $topicPremium, $topic);
         return $finalProofPointArrays;
     }
