@@ -163,9 +163,9 @@ function inspect_faculty_bio($xml){
 
         $page_info['highlight'] = strval($ds->{'highlight'});
 
-        // if highlight is > 300, than only show 295 plus the 'read more' text
-        if( strlen($page_info['highlight']) >= 300 ) {
-            $page_info['highlight'] = substr($page_info['highlight'], 0, 295 );
+        // if highlight is > 450 characters, than only show 495 plus the 'read more' text
+        if( strlen($page_info['highlight']) >= 450 ) {
+            $page_info['highlight'] = substr($page_info['highlight'], 0, 495 );
 
             // add 'read more' html
             $twig = makeTwigEnviron('/code/faculty-bios/twig');
