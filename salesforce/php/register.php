@@ -1,5 +1,8 @@
 <?php
 
+
+session_start();
+
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
@@ -8,7 +11,7 @@ require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
 
-session_start();
+
 if(isset($_SESSION['interesting_referer'])){
     $referer = $_SESSION['interesting_referer'];
 }else{
