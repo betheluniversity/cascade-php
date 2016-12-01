@@ -127,12 +127,13 @@ function update_contact_referer_site($contact_id){
 }
 
 function add_referer_to_contact($contact_id){
-    $sObject = new stdclass();
-    $sObject->Contact__c = $contact_id;
-    $sObject->Referrer_Type__c = "Application";
-    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
+
 
     try {
+        $sObject = new stdclass();
+        $sObject->Contact__c = $contact_id;
+        $sObject->Referrer_Type__c = "Application";
+        $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
         $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
     }catch (Exception $e){
         return "add_referer_to_contact fail";
