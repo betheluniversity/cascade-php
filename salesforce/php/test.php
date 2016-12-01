@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $staging = strstr(getcwd(), "staging/public");
 
 function escapeEmail($email) {
@@ -37,11 +37,24 @@ require_once ('userAuth.php');
     $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
     $email = 'e-jameson%2Btest-referrer@bethel.edu';
-    $email = 'e-jameson+test-staging@bethel.edu';
+    $email = 'ericjamesjameson@gmail.com';
 
     $response = $mySforceConnection->query("SELECT Email, Id, referrer_site__c FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
-    print_r($response);
+    $contact_id = $records[0]->Id;
 
+    $sObject = new stdclass();
+    $sObject->Contact__c = $contact_id;
+    $sObject->Referrer_Type__c = "RFI";
+    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
+
+    try {
+        $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
+    }catch (Exception $e){
+        echo $e;
+    }
+
+$output = print_r($createResponse,1);
+echo $output;
 echo "</pre>";
 ?>

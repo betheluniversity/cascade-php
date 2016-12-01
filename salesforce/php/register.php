@@ -9,10 +9,15 @@ require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
 
 session_start();
-$referer = $_SESSION["HTTP_REFERER"];
-$referer = explode('/', $referer);
-// $referer : Array ( [0] => https: [1] => [2] => staging.bethel.edu [3] => _testing [4] => jmo [5] => basic ) Array
-$referer = $referer[3];
+if(isset($_SESSION['interesting_referer'])){
+    $referer = $_SESSION['interesting_referer'];
+}else{
+    $referer = $_SESSION["HTTP_REFERER"];
+    $referer = explode('/', $referer);
+    // $referer : Array ( [0] => https: [1] => [2] => staging.bethel.edu [3] => _testing [4] => jmo [5] => basic ) Array
+    $referer = $referer[3];
+}
+
 
 
 $mySforceConnection = new SforceEnterpriseClient();
@@ -121,6 +126,20 @@ function update_contact_referer_site($contact_id){
     }
 }
 
+function add_referer_to_contact($contact_id){
+    $sObject = new stdclass();
+    $sObject->Contact__c = $contact_id;
+    $sObject->Referrer_Type__c = "Application";
+    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
+
+    try {
+        $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
+    }catch (Exception $e){
+        return "add_referer_to_contact fail";
+    }
+    return $createResponse;
+}
+
 
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "web-development@bethel.edu";
@@ -197,6 +216,8 @@ try {
         }else{
             log_entry("user id is : " . $user_id);
         }
+
+        add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
