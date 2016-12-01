@@ -35,7 +35,7 @@ echo "<link rel='canonical' href='$url'/>";
 $referer = $_SERVER['HTTP_REFERER'];
 $parsed = parse_url($referer);
 $host = $parsed['host'];
-if (!stristr($host, "bethel.edu")){
+if (!stristr($host, "bethel.edu") && $referer != null){
     // update the interesting referer in session
     $_SESSION['interesting_referer'] = $referer;
 }
