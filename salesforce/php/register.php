@@ -127,13 +127,16 @@ function update_contact_referer_site($contact_id){
 }
 
 function add_referer_to_contact($contact_id){
+    global $mySforceConnection;
 
+    $sObject = new stdclass();
+    $sObject->Contact__c = $contact_id;
+    $sObject->Referrer_Type__c = "Application";
+    // This object should only be interesting_referer. Blank if there isn't one.
+    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
 
     try {
-        $sObject = new stdclass();
-        $sObject->Contact__c = $contact_id;
-        $sObject->Referrer_Type__c = "Application";
-        $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
+
         $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
     }catch (Exception $e){
         return "add_referer_to_contact fail";
@@ -218,7 +221,7 @@ try {
             log_entry("user id is : " . $user_id);
         }
 
-        add_referer_to_contact($contact_id);
+//        add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
