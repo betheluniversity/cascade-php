@@ -221,7 +221,7 @@ try {
             log_entry("user id is : " . $user_id);
         }
 
-//        add_referer_to_contact($contact_id);
+        add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
