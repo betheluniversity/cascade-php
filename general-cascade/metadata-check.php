@@ -30,7 +30,9 @@ if($staging){
     $prefix = "https://staging.bethel.edu";
 }
 $url = $prefix . $_SERVER['REQUEST_URI'];
-echo "<link rel='canonical' href='$url'/>";
+if( $canonical_url[0] != '/')
+    $canonical_url = "/$canonical_url";
+echo "<link rel='canonical' href='https://www.bethel.edu$canonical_url'/>";
 
 $referer = $_SERVER['HTTP_REFERER'];
 $parsed = parse_url($referer);
