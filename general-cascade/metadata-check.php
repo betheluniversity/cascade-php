@@ -31,6 +31,7 @@ if($staging){
 }
 $url = $prefix . $_SERVER['REQUEST_URI'];
 if( $canonical_url) {
+    $canonical_url = str_replace('XXXXX', '--', $canonical_url);
     if ($canonical_url[0] != '/')
         $canonical_url = "/$canonical_url";
     $canonical_url = "https://www.bethel.edu$canonical_url";
