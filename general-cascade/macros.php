@@ -234,6 +234,7 @@ function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300
             $cache_name .= "-" . current($inputs);
         }
     }
+
     $URI = $_SERVER['REQUEST_URI'];
     $cache_name = $cache_name . "-" . $URI;
 
@@ -244,8 +245,6 @@ function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
-//    error_log("\n-----------AutoCache for $URI----------------\n", 3, '/tmp/memcache.log');
-//    error_log("$func function being used. Searching for hash - $cache_name\n", 3, '/tmp/memcache.log');
     if (!$data) {
         error_log("Full Data Array Memcache miss", 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
@@ -255,9 +254,6 @@ function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300
             error_log("\nError - " . $e->getMessage(), 3, '/tmp/memcache.log');
         }
     }
-//    else {
-//        error_log("Full Data Array Memcache hit", 3, '/tmp/memcache.log');
-//    }
 
     return $data;
 }

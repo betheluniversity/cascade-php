@@ -262,12 +262,13 @@ function inspect_page($xml, $categories){
                     if ($value == "Yes"){
                         $page_info["hide-from-calendar"] = true;
                     }
-                }
-                //Is this a calendar category?
-                if (in_array($value, $categories)){
-                    array_push($page_info['md'], $value . '-' . $name);
-                }else{
-                    array_push($page_info['md'], 'other');
+                } else {
+                    //Is this a calendar category?
+                    if (in_array($value, $categories)) {
+                        array_push($page_info['md'], $value . '-' . $name);
+                    } else {
+                        array_push($page_info['md'], 'other');
+                    }
                 }
             }
         }

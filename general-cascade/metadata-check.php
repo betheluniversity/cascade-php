@@ -30,12 +30,22 @@ if($staging){
     $prefix = "https://staging.bethel.edu";
 }
 $url = $prefix . $_SERVER['REQUEST_URI'];
-echo "<link rel='canonical' href='$url'/>";
+if( $canonical_url) {
+    $canonical_url = str_replace('XXXXX', '--', $canonical_url);
+    if ($canonical_url[0] != '/')
+        $canonical_url = "/$canonical_url";
+    $canonical_url = "https://www.bethel.edu$canonical_url";
+} else {
+    $canonical_url = $url;
+}
+echo "<link rel='canonical' href='$canonical_url'/>";
 
+$referer = $_SERVER['HTTP_REFERER'];
+$parsed = parse_url($referer);
+$host = $parsed['host'];
+if (!stristr($host, "bethel.edu") && $referer != null){
+    // update the interesting referer in session
+    $_SESSION['interesting_referer'] = $referer;
+}
 
-//echo $twig->render('metadata-check.html', array(
-//    'staging' => $staging,
-//    'cms_url' => $cms_url));
-
-
-
+echo "<!-- " . $_SESSION['interesting_referer'] . " -->";

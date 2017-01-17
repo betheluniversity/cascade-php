@@ -60,7 +60,7 @@
 
                     {% if date != "" %}
                         {% if event.location != "" %}
-                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}}<span itemprop="location">{{event.location}}</span></p>
+                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}} <span itemprop="location">{{event.location}}</span></p>
                         {% else %}
                             <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}}</p>
                         {% endif %}
