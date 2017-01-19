@@ -13,7 +13,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 //       Then all pages with quote carousels need to be republished.
 function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
     echo "<!-- new quotes -->";
-    $quotesToDisplay = autoCache("get_quotes", array($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly));
+    $quotesToDisplay = get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly);
     if( sizeof($quotesToDisplay) > 1) {
         //Output structure
         $html = "";
@@ -26,9 +26,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
     }
 }
 
-function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
-    $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/quotes.xml");
-    $quotes = $xml->xpath("//system-block");
+function build_quote_matches($quotes, $Topic, $CAS, $CAPS, $GS, $SEM){
     $matches = array();
     foreach($quotes as $quote_xml){
         $quote_info = inspect_block_quotes($quote_xml, $Topic, $CAS, $CAPS, $GS, $SEM);
@@ -38,6 +36,14 @@ function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnl
             }
         }
     }
+    return $matches;
+}
+
+function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
+    $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/quotes.xml");
+    $quotes = $xml->xpath("//system-block");
+
+    $matches = autoCache('build_quote_matches', array($quotes, $Topic, $CAS, $CAPS, $GS, $SEM), $time=86400);
 
     // sort into dept, school, etc...
     $quotesArrays = divide_into_arrays_quotes($matches);
