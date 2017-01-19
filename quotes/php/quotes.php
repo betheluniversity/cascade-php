@@ -13,8 +13,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 //       Then all pages with quote carousels need to be republished.
 function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly="No"){
     echo "<!-- new quotes -->";
-    $quotesToDisplay = get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly);
-
+    $quotesToDisplay = autoCache("get_quotes", array($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly));
     if( sizeof($quotesToDisplay) > 1) {
         //Output structure
         $html = "";

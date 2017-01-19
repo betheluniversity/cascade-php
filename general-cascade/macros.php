@@ -220,25 +220,15 @@ function makeTwigEnviron($path){
 
 function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300)
 {
-    // if $inputs[0] is an array, use the string version of print_r as the cache name, and then append the current path.
-    // This is the most likely case because feeds pass an array of an array
-    if( sizeof($inputs) > 0 && is_array($inputs[0])){
-        $cache_name = trim(print_r($inputs, true));
-    }
 
-    //if no cache_name is passed in it defaults to the function name and all inputs strung together with -
     if (!$cache_name) {
-        $cache_name = $func . "-". $inputs[0];
-        reset($inputs);
-        while (next($inputs) !== FALSE) {
-            $cache_name .= "-" . current($inputs);
-        }
+        // If there is no provided cache name, generate one using the page name and line line number that called the
+        // function that requires caching. $cache_name will be something like:  /var/www/staging/public/index.php780.
+        // use end() to get the original call on the stack trace, which should be the webpage on the server
+        $bt = debug_backtrace();
+        $origin_function = end($bt);
+        $cache_name = $origin_function['file'] . $origin_function['line'];
     }
-
-    $URI = $_SERVER['REQUEST_URI'];
-    $cache_name = $cache_name . "-" . $URI;
-
-    //turns cache name into a md5 hash to reduce characters needed
     $cache_name = md5($cache_name);
 
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
