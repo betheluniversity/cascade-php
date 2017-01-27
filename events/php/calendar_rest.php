@@ -12,7 +12,7 @@ if (is_null($month) || is_null($year)){
     $month = date('n');
     $year = date('Y');
 }
-$data = autoCache("build_calendar_data", array($month, $year));
+$data = autoCache("build_calendar_data", array($month, $year), $month.'-'. $year);
 
 echo $data;
 
