@@ -32,12 +32,12 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 
-    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories));
 
 
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
-    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted_'.$NumArticles);
+    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles));
 
 
 
