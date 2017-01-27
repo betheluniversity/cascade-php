@@ -37,7 +37,7 @@ function create_news_article_feed_logic($categories){
 
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
-    $sortedArticles = autoCache("sort_by_date", array($arrayOfArticles), 'feed_news_sorted_'.$NumArticles);
+    $sortedArticles = sort_by_date($arrayOfArticles);
 
 
 

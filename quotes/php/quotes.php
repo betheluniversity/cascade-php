@@ -43,7 +43,7 @@ function get_quotes($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnl
     $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/quotes.xml");
     $quotes = $xml->xpath("//system-block");
 
-    $matches = autoCache('build_quote_matches', array($quotes, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly), $time=86400);
+    $matches = autoCache('build_quote_matches', array($quotes, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly), $cache_time=86400);
 
     // sort into dept, school, etc...
     $quotesArrays = divide_into_arrays_quotes($matches);

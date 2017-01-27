@@ -28,7 +28,7 @@
 
         //todo Clean up using $_SERVER
 
-        $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", $categories), 'profile_stories_array');
+        $profileStoriesArray = autoCache("get_xml_profile_stories", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/profile-stories.xml", 'profile-stories-xml'));
 
         $html = "";
         foreach( $profileStoriesArray as $profileStory )
