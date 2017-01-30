@@ -247,7 +247,8 @@ function autoCache($func, $inputs=array(), $cache_time=300){
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
 
         } catch (Exception $e) {
-            error_log("\nError - " . $e->getMessage(), 3, '/tmp/memcache.log');
+            $msg = "\nError - " . $e->getMessage() . "at " . $_SERVER[REQUEST_URI] . "\n";
+            error_log($msg, 3, '/tmp/memcache.log');
         }
     }
     return $data;
