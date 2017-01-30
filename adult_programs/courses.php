@@ -27,7 +27,8 @@ function individual_courses($code){
 }
 
 function load_course_catalog ($values, $code) {
-    $content = autoCache('course_catalog', array($code, $values), $cache_time=1);
+//    $content = autoCache('course_catalog', array($code, $values), $cache_time=1);
+    $content = course_catalog($code, $values);
     $content = json_decode($content, true);
 
     if( strpos($content['data'], '<li') !== false ) {
