@@ -241,7 +241,8 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
     if (!$data) {
-        error_log("Full Data Array Memcache miss", 3, '/tmp/memcache.log');
+        $msg = "\nFull Data Array Memcache miss at " . $_SERVER[REQUEST_URI] . "\n";
+        error_log($msg, 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
