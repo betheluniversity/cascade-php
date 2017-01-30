@@ -218,17 +218,17 @@ function makeTwigEnviron($path){
 
 }
 
-function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300)
-{
+function autoCache($func, $inputs=array(), $cache_time=300){
 
-    if (!$cache_name) {
-        // If there is no provided cache name, generate one using the page name and line line number that called the
-        // function that requires caching. $cache_name will be something like:  /var/www/staging/public/index.php780.
-        // use end() to get the original call on the stack trace, which should be the webpage on the server
-        $bt = debug_backtrace();
-        $origin_function = end($bt);
-        $cache_name = $origin_function['file'] . $origin_function['line'];
+    // build a cache string from the stack trace.
+    $bt = debug_backtrace();
+    $cache_name = "";
+    foreach ($bt as $entry_id => $entry) {
+        // append info from each layer in the stack trace to the cache name.
+        // this will result in a unique cache name for each time autoCache is called
+        $cache_name .= $entry['file'] . $entry['function'] . $entry['line'];
     }
+
     $cache_name = md5($cache_name);
 
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
@@ -240,11 +240,11 @@ function autoCache($func, $inputs=array(), $cache_name = null, $cache_time = 300
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
+
         } catch (Exception $e) {
             error_log("\nError - " . $e->getMessage(), 3, '/tmp/memcache.log');
         }
     }
-
     return $data;
 }
 
