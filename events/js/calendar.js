@@ -244,12 +244,12 @@
         if (this.previous_month_link.length > 0) {
             var prevHref = this.previous_month_link.attr('href');
             var qs = extractQueryParameters(prevHref);
-            this.previous_month_link.attr('href', loc + "#" + objectToQuery(qs));
+            this.previous_month_link.attr('href', loc + "?" + objectToQuery(qs));
         }
         if (this.next_month_link.length > 0) {
             var nextHref = this.next_month_link.attr('href');
             var qs = extractQueryParameters(nextHref);
-            this.next_month_link.attr('href', loc + "#" + objectToQuery(qs));
+            this.next_month_link.attr('href', loc + "?" + objectToQuery(qs));
         }
     }
 
