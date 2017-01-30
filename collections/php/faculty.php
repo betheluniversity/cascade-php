@@ -9,7 +9,7 @@
 
 function create_faculty_carousel($categories){
     $faculty_file = $_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/faculty-bios.xml";
-    $xml = autoCache("simplexml_load_file", array($faculty_file), 'faculty_carousel_xml');
+    $xml = autoCache("simplexml_load_file", array($faculty_file));
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
     $bios = find_matching_bios($faculty_pages, $categories);

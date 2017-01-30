@@ -229,7 +229,7 @@ function search_programs($program_data, $data){
         // Get the csv data as single csv file
 //    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/programs-test.csv');
     $csv_data = read_csv_file('/var/www/cms.pub/code/program-search/csv/programs.csv');
-//    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'), 'program-search-csv-data');
+//    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'));
     $return_values = array();
 
 

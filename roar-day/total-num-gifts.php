@@ -18,4 +18,4 @@
         ));
     }
 
-    echo autoCache('get_total_num_gifts', array(), $cache_name='get_total_num_gifts', $cache_time=60);
+    echo autoCache('get_total_num_gifts', array(), $cache_time=60);

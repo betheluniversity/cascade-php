@@ -16,4 +16,4 @@ return $last;
 }
 
 
-echo autoCache('get_last_gift', array(), $cache_name='get_last_gift', $cache_time=60);
+echo autoCache('get_last_gift', array(), $cache_time=60);

@@ -32,7 +32,7 @@ function route_to_functions(){
 function call_program_search($input_data){
 //    $startTime = microtime(true);
 
-//    $program_data = autoCache("get_program_xml", array(), 'program-data1', 4);
+//    $program_data = autoCache("get_program_xml", array(), 4);
     $program_data = get_program_xml();
 
     $programs = search_programs($program_data, $input_data);
@@ -79,7 +79,7 @@ function call_program_search($input_data){
 
 // Todo: On the compare programs, what deliveries do we show? (1) all (2) the next one available
 function call_compare_programs($program_id_list){
-//    $program_data = autoCache("get_program_xml", array(), 'program-data2', 300);
+//    $program_data = autoCache("get_program_xml", array(), 300);
     $program_data = get_program_xml();
 
     $programs_to_compare = array();

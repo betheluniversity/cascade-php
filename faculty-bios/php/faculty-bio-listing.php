@@ -10,7 +10,6 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
 function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFaculty){
-//    $bios = autoCache('get_faculty_bio_xml', array(), 'get_faculty_bio_xml' );
     $bios = get_faculty_bio_xml();
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
