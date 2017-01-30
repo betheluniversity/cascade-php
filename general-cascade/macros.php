@@ -227,7 +227,6 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     // if URL uses a query string (e.g. Calendar) to specify content, add the query string params to the name
     if(isset($_SERVER["QUERY_STRING"])){
         $cache_name .= $_SERVER["QUERY_STRING"];
-        error_log($_SERVER["QUERY_STRING"] . "\n\n", 3, '/tmp/memcache.log');
     }
     foreach ($bt as $entry_id => $entry) {
         // append info from each layer in the stack trace to the cache name.
