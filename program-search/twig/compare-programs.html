@@ -42,10 +42,17 @@
                         <dt>Description</dt>
                         <dd>{{concentration.concentration_description | raw}}</dd>
                     {% endif %}
-
-                    {% if concentration.cohorts[0].semester_start %}
-                        <dt>Next Start Date</dt>
-                        <dd>{{concentration.cohorts[0].semester_start}} {{concentration.cohorts[0].year_start}}</dd>
+                    
+                    {% if concentration.cohorts[0].cohort_start_type == 'Calendar' %}
+                        {% if concentration.cohorts[0].calendar_start and concentration.cohorts[0].calendar_start != '' %}
+                            <dt>Next Start Date</dt>
+                            <dd>{{ concentration.cohorts[0].calendar_start|date("F j, Y") }}</dd>
+                        {% endif %}
+                    {% else %} {# semester #}
+                        {% if concentration.cohorts[0].semester_start %}
+                            <dt>Next Start Date</dt>
+                            <dd>{{concentration.cohorts[0].semester_start}} {{concentration.cohorts[0].year_start}}</dd>
+                        {% endif %}
                     {% endif %}
 
                     {% if concentration.cohorts[0].delivery_label %}
