@@ -23,9 +23,3 @@ function howToApply($code, $option){
         }
     }
 }
-
-
-
-
-
-

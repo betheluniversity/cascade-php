@@ -79,9 +79,7 @@ function inspect_program($xml){
                     if( strtolower($value) != 'none' && strtolower($value) != 'select' )
                         array_push( $page_info['md'][$name], strval($value) );
                 }
-
             }
-
         }
 
         // a double check to make sure degree is set in metadata
@@ -110,8 +108,16 @@ function inspect_program($xml){
             foreach($concentration->{'concentration_banner'}->{'cohort_details'} as $cohort_detail){
                 $temp_cohort_details = array();
 
+                $temp_cohort_details['cohort_start_type'] = $cohort_detail->{'cohort_start_type'};
                 $temp_cohort_details['semester_start'] = $cohort_detail->{'semester_start'};
                 $temp_cohort_details['year_start'] = $cohort_detail->{'year_start'};
+                $temp_cohort_details['calendar_start'] = $cohort_detail->{'calendar_start'};
+                if( $temp_cohort_details['calendar_start'] ) {
+                    $format = "m-d-Y";
+                    $temp_cohort_details['calendar_start'] = DateTime::createFromFormat($format, $temp_cohort_details['calendar_start']);
+                } else {
+                    $temp_cohort_details['calendar_start'] = '';
+                }
                 $temp_cohort_details['delivery_subheading'] = $cohort_detail->{'delivery_subheading'};
                 $temp_cohort_details['delivery_description'] = $cohort_detail->{'delivery_description'};
                 $temp_cohort_details['location'] = $cohort_detail->{'location'};
@@ -131,14 +137,12 @@ function inspect_program($xml){
             // if block has a display-name, use that. Then use the concentration page title, then use the title of the block
             if( $page_info['display-name'] != '' ){
                 $temp_concentration['title'] = $page_info['display-name'];
-            }
-            elseif( $temp_concentration['concentration_page']->{'path'} != '/' ) {
+            } elseif( $temp_concentration['concentration_page']->{'path'} != '/' ) {
                 $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'title'});
                 $temp_concentration['title'] = str_replace('Program Details', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Concentration', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Major', '', $temp_concentration['title']);
-            }
-            else {
+            } else {
                 $temp_concentration['title'] = $page_info['title'];
             }
 
