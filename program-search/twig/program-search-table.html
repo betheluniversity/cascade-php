@@ -13,12 +13,11 @@
                 </div>
                 
                 {% for program_concentration_array in degree_programs %}
-                {% set real_program = program_concentration_array['program'] %}
-                {% set real_concentration = program_concentration_array['concentration'] %}
-                
-                <div class="grid">
-                    {{real_concentration.html|raw}}
-                </div>
+                    <!--{% set real_program = program_concentration_array['program'] %}-->
+                    {% set real_concentration = program_concentration_array['concentration'] %}
+                    <div class="grid">
+                        {{real_concentration.html|raw}}
+                    </div>
                 {% endfor %}
                 
             </div>

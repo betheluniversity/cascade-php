@@ -146,7 +146,7 @@ function inspect_program($xml){
                 $temp_concentration['title'] = $page_info['title'];
             }
 
-                    // get html for concentration
+            // get html for concentration
             $temp_concentration['html'] = get_html_for_program_concentration($page_info, $temp_concentration);
             // add concentration to program
             array_push($page_info['concentrations'], $temp_concentration);
