@@ -9,12 +9,6 @@
 $user = $_POST['user'];
 
 $staging = strstr(getcwd(), "staging/public");
-if($staging){
-    $to = 'Bethel University Web Development <web-development@bethel.edu>';
-}else{
-    $to = 'Bethel University Enrollment Data Team <enrollment-data@bethel.edu>';
-}
-
 
 $hash = md5($user['firstName'] . $user['lastName'] .$user['email'] . $_POST['degree-type']);
 
@@ -23,6 +17,15 @@ $message = "Request Info ID: " . $hash . "\nFirst Name: " . $user['firstName'] .
 
 $headers = 'From: web-development@bethel.edu' .  "\r\n";
 $headers .= 'Bcc: webmaster@bethel.edu' . "\r\n";
+
+$to = 'Bethel University Web Development <web-development@bethel.edu>';
+$mail = mail($to , $subject , $message, $headers);
+
+if(!$staging){
+    $to = 'Bethel University Enrollment Data Team <enrollment-data@bethel.edu>';
+    $mail = mail($to , $subject , $message, $headers);
+}
+
 $mail = mail($to , $subject , $message, $headers);
 
 if(!$mail){
