@@ -70,6 +70,7 @@ function create_new_contact($first, $last, $email){
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
     }catch(Exception $e){
         log_entry("failed to create contact");
+        log_entry($e->getMessage());
         return null;
     }
 
@@ -107,6 +108,7 @@ function create_new_user($first, $last, $email, $contact_id){
         $createResponse = $mySforceConnection->create(array($sObject), 'User');
     }catch(Exception $e){
         log_entry("failed to create user");
+        log_entry($e->getMessage());
         return null;
     }
 
