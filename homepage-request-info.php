@@ -26,8 +26,6 @@ if(!$staging){
     $mail = mail($to , $subject , $message, $headers);
 }
 
-$mail = mail($to , $subject , $message, $headers);
-
 if(!$mail){
     header("HTTP/1.1 500 Internal Server Error");
 }else{
