@@ -327,7 +327,7 @@ function format_featured_date_news_article( $date)
 
     // format 7:00 to 7
     $formattedDate = str_replace(":00", "", $formattedDate);
-    $formattedDate = str_replace("12 p.m.", "noon", $formattedDate);
+    $formattedDate = str_replace("12 p.m.", "Noon", $formattedDate);
     $formattedDate = str_replace("12 a.m", "midnight", $formattedDate);
     return $formattedDate;
 }
