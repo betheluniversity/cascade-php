@@ -26,37 +26,24 @@
                 {% endif %}
             </dt>
             <dd>
-                <!--//Check really specifically because $all_day is an XML object still.-->
-                <!--//So if($all_day) is always true-->
                 {% if all_day == true %}
-                {% set start = '' %}
-                {% set end = '' %}
+                    {% set start = '' %}
+                    {% set end = '' %}
                 {% else %}
-                {% set start = start/1000 %}
-                {% set start = start|date("g:i a") %}
-                {% if start|slice(-6, 3) == ':00' %}
-                {% set start = start|date("g a") %}
+                    {% set start = start/1000 %}
+                    {% set start = start|date("g:i a")|replace({':00': '', 'am': 'a.m.', 'pm': 'p.m.'}) %}
+                    {% set end = end/1000 %}
+                    {% set end = end|date("g:i a")|replace({':00': '', 'am': 'a.m.', 'pm': 'p.m.'}) %}
                 {% endif %}
-                {% set end = end/1000 %}
-                {% set end = end|date("g:i a") %}
-                {% if end|slice(-6, 3) == ':00' %}
-                {% set end = end|date("g a") %}
-                {% endif %}
-                <!--//test-->
-                {% endif %}
-                                <span class="event-description">
-                                    {% if event.description %}
-                                        {{event.description}}</br>
-                                    {% endif %}
-                                    {% if start and end %}
-                                        {% if start == end %}
-                                            {{start}} {{time_zone}}<br>
-                                        {% else %}
-                                            {{start}}-{{end}} {{time_zone}}<br>
-                                        {% endif %}
-                                    {% endif %}
-                                    <span class="location">{{event.location}}</span>
-                                </span>
+                <span class="event-description">
+                    {% if event.description %}
+                        {{event.description}}</br>
+                    {% endif %}
+                    {% if start and end %}
+                        {{start|replace({'12 p.m.': 'Noon'}) }} {% if start != end %}-{{end|replace({'12 p.m.': 'noon'}) }}{% endif %} {{time_zone}}<br>
+                    {% endif %}
+                    <span class="location">{{event.location}}</span>
+                </span>
                 <ul class="categories" style="display:none">
                     {% for md in event.md %}
                     <li class="category" data-category="{{md}}">{{md}}</li>
