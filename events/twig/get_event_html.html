@@ -53,16 +53,11 @@
                 <p class="events__headline"><a href="{{event|convert_path_to_link}}"><span itemprop="name">{{event.title}}</span></a></p>
                     <!--Time + Location-->
                     {% if event.date %}
-                        {% set date = event.date|format_fancy_event_date %}
-                    {% else %}
-                        {% set date = "" %}
-                    {% endif %}
-
-                    {% if date != "" %}
+                        {% set print_date = event.date|format_fancy_event_date %}
                         {% if event.location != "" %}
-                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}} <span itemprop="location">{{event.location}}</span></p>
+                            <p class="events__location">{{print_date}} {{event.date|get_timezone_shorthand}} <span itemprop="location">{{event.location}}</span></p>
                         {% else %}
-                            <p class="events__location">{{date}} {{event.date|get_timezone_shorthand}}</p>
+                            <p class="events__location">{{print_date}} {{event.date|get_timezone_shorthand}}</p>
                         {% endif %}
                     {% else %}
                         {% if event.location != "" %}

@@ -31,7 +31,6 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 function create_event_feed($categories, $heading=""){
     // you should only cache the array of html, not the full data.
     $feed = autoCache("create_event_feed_logic", array($categories, $heading));
-
     return $feed;
 }
 
@@ -273,6 +272,7 @@ function display_on_feed_events($page_info){
 
 // Returns the featured Event html.
 function get_featured_event_html($event, $featuredEventOptions){
+    // todo: this neeeds to be refactored
     // Get the most recent start/enddate pair.
     //  Get it in the form of a date object with start/end/all-day
     $dates = $event['dates'];
@@ -355,6 +355,7 @@ function get_event_html( $event){
 // Returns a Date that is formatted correctly for a Featured Event
 // Both $startdate and $endDate are timestamps
 function format_featured_event_date( $date ){
+    // todo: these look different than the function below.
     $startDate = $date->{'start-date'} / 1000;
     $endDate = $date->{'end-date'} / 1000;
     $allDay = $date->{'all-day'};
@@ -371,8 +372,8 @@ function format_featured_event_date( $date ){
     }
 
     // if it is normal.
-    // if 12 pm, change to noon
-    if( date("g:i", $startDate) == "12:00 pm"){
+    // if 12:00 pm, change to noon
+    if( date("g:i a", $startDate) == "12:00 pm"){
         return date("F j, Y |", $startDate)." noon";
     }
     else{
@@ -406,9 +407,9 @@ function format_fancy_event_date( $date){
             return "";
         }
 
-        // if 12 pm, change to noon
-        elseif( date("g:i", $startDate) == "12:00 pm"){
-            return "noon";
+        // if 12:00 pm, change to noon
+        elseif( $date == "12:00 pm"){
+            return "Noon";
         }
         else{
             // Change am/pm to a.m./p.m.
@@ -419,7 +420,7 @@ function format_fancy_event_date( $date){
             return str_replace(":00", "", $date);
         }
     }
-    // Dummy return.
+    // Dummy return. it should never get here
     return $date;
 }
 
