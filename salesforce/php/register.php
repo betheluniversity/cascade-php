@@ -106,16 +106,35 @@ function create_new_user($first, $last, $email, $contact_id){
     $sObject->ProfileId = $PORTALUSERID; // profile id?
     $sObject->ContactId = $contact_id;
     $sObject->LanguageLocaleKey = "en_US";
-    try{
-        $createResponse = $mySforceConnection->create(array($sObject), 'User');
-    }catch(Exception $e){
+    //Initiating the creation of the Salesforce User
+    $responseGood = false;
+    $exception = null;
+    //Tries to create a user 5 times
+    for($i = 0; $i < 5; $i++) {
+        try {
+            //Attempts to create a new user
+            $createResponse = $mySforceConnection->create(array($sObject), 'User');
+            //If an exception has not occurred the responseGood changes to true
+            $responseGood = true;
+            //Then breaks and does not go through the remaining loops
+            break;
+        } catch (Exception $e) {
+            $exception = $e;
+//            log_entry("failed to create user");
+//            $subject = $e->getMessage();
+//            log_entry($subject);
+//            mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
+//            return null;
+        }
+    }
+    //If the loop goes through and does not pass with at least one good request, then it will throw the exception info
+    if(!$responseGood){
         log_entry("failed to create user");
-        $subject = $e->getMessage();
+        $subject = $exception->getMessage();
         log_entry($subject);
-        mail('web-development@bethel.edu',$subject,$subject,"From: $from\n");
+        mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
         return null;
     }
-
     $output = print_r($createResponse,1);
     log_entry('create user : ' . $output);
     $user_id = $createResponse[0]->id;
@@ -145,7 +164,6 @@ function add_referer_to_contact($contact_id){
     $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
 
     try {
-
         $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
     }catch (Exception $e){
         return "add_referer_to_contact fail";
