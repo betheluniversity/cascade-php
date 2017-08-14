@@ -7,6 +7,7 @@ session_start();
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
+// Importing Remote Based Assets
 require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
@@ -132,7 +133,7 @@ function create_new_user($first, $last, $email, $contact_id){
         log_entry("failed to create user");
         $subject = $exception->getMessage();
         log_entry($subject);
-        mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
+        mail('grant-gapinski@bethel.edu', $subject, $subject, "From: $from\n");
         return null;
     }
     $output = print_r($createResponse,1);
@@ -173,7 +174,7 @@ function add_referer_to_contact($contact_id){
 
 
 $staging = strstr(getcwd(), "staging/public");
-$mail_to = "web-development@bethel.edu";
+$mail_to = "grant-gapinski@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
 $subject = "salesforce register submission";
 $message = "";
