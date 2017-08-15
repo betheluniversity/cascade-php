@@ -34,7 +34,11 @@
                     {% endif %}
 
                     {% if concentration.program_length %}
-                        <dt>Finish in as Few as</dt>
+                        {% if 'Physician Assistant' in concentration.title %}
+                            <dt>Program length</dt>
+                        {% else %}
+                            <dt>Finish in as Few as</dt>
+                        {% endif %}
                         <dd>{{concentration.program_length}}</dd>
                     {% endif %}
 
