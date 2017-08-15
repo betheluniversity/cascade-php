@@ -178,7 +178,7 @@ function add_referer_to_contact($contact_id){
     return $createResponse;
 }
 
-
+//Setting Variables, as well as declaring the enviroment
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "grant-gapinski@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
@@ -207,57 +207,65 @@ try {
     $contact_id = "";
     //Searches for contact with email
     $contact_records = search_for_contact($email);
-
     if (sizeof($contact_records) > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $contact_records[0]->Id;
 
-        // update the referer site
+        // update the referer site with found contact_id
         update_contact_referer_site($contact_id);
 
     }else{
+        //Did not find the Contact ID, thus creates contact
         log_entry('no contact found. Creating...');
         //Create one and save the id
         $contact_id = create_new_contact($first, $last, $email);
     }
 
+    //If contact ID is not created (hit an expection in 'create_new_contact' method, returns null)
     if ($contact_id == ""){
-        // todo why does this case happen?
+        //Sends email, regarding the failing of contact ID Generation
         $url .= "?cid=false";
         $subject = "failed to find or create contact id for email $email";
         log_entry($subject);
         mail($mail_to,$subject,$subject,"From: $from\n");
         header("Location: $url");
         exit;
+    //If contact_id was created, logs the contact_id
     }else{
         log_entry("contact id is : " . $contact_id);
     }
 
+    //Very similar block in comparison with block above
+    //Creates variable to store user_id
     $user_id = "";
+    //Searches for user based upon email
     $user_records = search_for_user($email);
     if (sizeof($user_records) > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
         $user_id = $user_records[0]->Id;
         log_entry('found user_id');
     }
+    //If  user was not found, Create one
     else{
         log_entry('No user found. Creating...');
         $user_id = create_new_user($first, $last, $email, $contact_id);
     }
     log_entry("user_id is " . $user_id);
 
+    //If user is not created, it will return nothing
     if ($user_id == ""){
-        // todo why does this case happen?
+        //Sends an email notating the error
         $url .= "?uid=false";
         $subject = "failed to find or create user id for email $email with cid=$contact_id";
         mail($mail_to,$subject,$subject,"From: $from\n");
         log_entry($subject);
         header("Location: $url");
         exit;
+    //If it created the user ID without error, it logs it.
     }else{
         log_entry("user id is : " . $user_id);
     }
-
+    //Adds the user to the contact_id
     add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
@@ -311,6 +319,7 @@ $options = array(
 );
 $context  = stream_context_create($options);
 
+//Changes the authenticating URL depending on the staging enviroment
 if ($staging){
     $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
 }else{
