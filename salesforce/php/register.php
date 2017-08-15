@@ -137,7 +137,7 @@ function create_new_user($first, $last, $email, $contact_id){
         log_entry("failed to create user");
         $subject = $exception->getMessage();
         log_entry($subject);
-        mail('grant-gapinski@bethel.edu', $subject, $subject, "From: $from\n");
+        mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
         return null;
     }
     $output = print_r($createResponse,1);
@@ -180,7 +180,7 @@ function add_referer_to_contact($contact_id){
 
 //Setting Variables, as well as declaring the enviroment
 $staging = strstr(getcwd(), "staging/public");
-$mail_to = "grant-gapinski@bethel.edu";
+$mail_to = "web-development@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
 $subject = "salesforce register submission";
 $message = "";
