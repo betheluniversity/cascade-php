@@ -23,9 +23,11 @@ if(isset($_SESSION['interesting_referer'])){
 }
 
 
-
+//Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
+//Creates the Connection
 $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
+//Logs in with the connection just created
 $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
 function escapeEmail($email) {
@@ -46,9 +48,9 @@ function log_entry($message){
     error_log($message . "\n");
 }
 
+//Searches for a Contact with this email
 function search_for_contact($email){
     global $mySforceConnection;
-    // search for a Contact with this email?
     $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
     $output = print_r($response,1);
@@ -57,6 +59,7 @@ function search_for_contact($email){
     return $records;
 }
 
+//Creates a new SalesForceContact
 function create_new_contact($first, $last, $email){
     global $mySforceConnection;
     global $referer;
@@ -92,6 +95,7 @@ function search_for_user($email){
     return $records;
 }
 
+//Creates a new SalesForceUser
 function create_new_user($first, $last, $email, $contact_id){
     global $mySforceConnection;
     global $PORTALUSERID;
@@ -142,6 +146,7 @@ function create_new_user($first, $last, $email, $contact_id){
     return $user_id;
 }
 
+//Update contact referer site
 function update_contact_referer_site($contact_id){
     global $mySforceConnection;
     global $referer;
@@ -155,6 +160,7 @@ function update_contact_referer_site($contact_id){
     }
 }
 
+//Add referer to the contact via SforceConnection
 function add_referer_to_contact($contact_id){
     global $mySforceConnection;
 
@@ -197,59 +203,62 @@ $search_email = '{' . $search_email . '}';
 
 
 try {
-        $contact_id = "";
-        $contact_records = search_for_contact($email);
-        if (sizeof($contact_records) > 0){
-            //We found it, get the id of the first (email is unique, so only one result)
-            $contact_id = $contact_records[0]->Id;
+    //Creates variable for contact id
+    $contact_id = "";
+    //Searches for contact with email
+    $contact_records = search_for_contact($email);
 
-            // update the referer site
-            update_contact_referer_site($contact_id);
+    if (sizeof($contact_records) > 0){
+        //We found it, get the id of the first (email is unique, so only one result)
+        $contact_id = $contact_records[0]->Id;
 
-        }else{
-            log_entry('no contact found. Creating...');
-            //Create one and save the id
-            $contact_id = create_new_contact($first, $last, $email);
-        }
+        // update the referer site
+        update_contact_referer_site($contact_id);
 
-        if ($contact_id == ""){
-            // todo why does this case happen?
-            $url .= "?cid=false";
-            $subject = "failed to find or create contact id for email $email";
-            log_entry($subject);
-            mail($mail_to,$subject,$subject,"From: $from\n");
-            header("Location: $url");
-            exit;
-        }else{
-            log_entry("contact id is : " . $contact_id);
-        }
+    }else{
+        log_entry('no contact found. Creating...');
+        //Create one and save the id
+        $contact_id = create_new_contact($first, $last, $email);
+    }
 
-        $user_id = "";
-        $user_records = search_for_user($email);
-        if (sizeof($user_records) > 0){
-            //Contact already has a user, go to account recovery page. (Or login?)
-            $user_id = $user_records[0]->Id;
-            log_entry('found user_id');
-        }
-        else{
-            log_entry('No user found. Creating...');
-            $user_id = create_new_user($first, $last, $email, $contact_id);
-        }
-        log_entry("user_id is " . $user_id);
+    if ($contact_id == ""){
+        // todo why does this case happen?
+        $url .= "?cid=false";
+        $subject = "failed to find or create contact id for email $email";
+        log_entry($subject);
+        mail($mail_to,$subject,$subject,"From: $from\n");
+        header("Location: $url");
+        exit;
+    }else{
+        log_entry("contact id is : " . $contact_id);
+    }
 
-        if ($user_id == ""){
-            // todo why does this case happen?
-            $url .= "?uid=false";
-            $subject = "failed to find or create user id for email $email with cid=$contact_id";
-            mail($mail_to,$subject,$subject,"From: $from\n");
-            log_entry($subject);
-            header("Location: $url");
-            exit;
-        }else{
-            log_entry("user id is : " . $user_id);
-        }
+    $user_id = "";
+    $user_records = search_for_user($email);
+    if (sizeof($user_records) > 0){
+        //Contact already has a user, go to account recovery page. (Or login?)
+        $user_id = $user_records[0]->Id;
+        log_entry('found user_id');
+    }
+    else{
+        log_entry('No user found. Creating...');
+        $user_id = create_new_user($first, $last, $email, $contact_id);
+    }
+    log_entry("user_id is " . $user_id);
 
-        add_referer_to_contact($contact_id);
+    if ($user_id == ""){
+        // todo why does this case happen?
+        $url .= "?uid=false";
+        $subject = "failed to find or create user id for email $email with cid=$contact_id";
+        mail($mail_to,$subject,$subject,"From: $from\n");
+        log_entry($subject);
+        header("Location: $url");
+        exit;
+    }else{
+        log_entry("user id is : " . $user_id);
+    }
+
+    add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
