@@ -250,7 +250,6 @@ try {
         log_entry('No user found. Creating...');
         $user_id = create_new_user($first, $last, $email, $contact_id);
     }
-    log_entry("user_id is " . $user_id);
 
     //If user is not created, it will return nothing
     if ($user_id == ""){
