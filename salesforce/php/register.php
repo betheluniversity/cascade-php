@@ -46,7 +46,7 @@ function escapeEmail($email) {
 
 //Custom error_log call - Takes in a string
 function log_entry($message){
-    // Sets the date and time for the stamp, as well as then inserting the message,
+    // Date format: [Mon Jan 1 12:12:00 2000], as well as then inserting the message,
     // and sets the path to the /code/salesforce/php/register.log
     error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, getcwd()."/register.log");
 }
