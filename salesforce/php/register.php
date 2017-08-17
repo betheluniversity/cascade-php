@@ -7,6 +7,7 @@ session_start();
 // $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
 // $PASSWORD - variable that contains your Salesforce.ocm password
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
+// Importing Remote Based Assets
 require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
@@ -22,9 +23,11 @@ if(isset($_SESSION['interesting_referer'])){
 }
 
 
-
+//Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
+//Creates the Connection
 $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
+//Logs in with the connection just created
 $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
 
 function escapeEmail($email) {
@@ -41,13 +44,16 @@ function escapeEmail($email) {
     return $resp;
 }
 
+//Custom error_log call - Takes in a string
 function log_entry($message){
-    error_log($message . "\n");
+    // Date format: [Mon Jan 1 12:12:00 2000], as well as then inserting the message,
+    // and sets the path to the /code/salesforce/php/register.log
+    error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, getcwd()."/register.log");
 }
 
+//Searches for a Contact with this email
 function search_for_contact($email){
     global $mySforceConnection;
-    // search for a Contact with this email?
     $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
     $records = $response->{'records'};
     $output = print_r($response,1);
@@ -56,10 +62,10 @@ function search_for_contact($email){
     return $records;
 }
 
+//Creates a new SalesForceContact
 function create_new_contact($first, $last, $email){
     global $mySforceConnection;
     global $referer;
-    log_entry('Referrer: '. $referer);
 
     $sObject = new stdclass();
     $sObject->FirstName = $first;
@@ -91,6 +97,7 @@ function search_for_user($email){
     return $records;
 }
 
+//Creates a new SalesForceUser
 function create_new_user($first, $last, $email, $contact_id){
     global $mySforceConnection;
     global $PORTALUSERID;
@@ -106,22 +113,42 @@ function create_new_user($first, $last, $email, $contact_id){
     $sObject->ProfileId = $PORTALUSERID; // profile id?
     $sObject->ContactId = $contact_id;
     $sObject->LanguageLocaleKey = "en_US";
-    try{
-        $createResponse = $mySforceConnection->create(array($sObject), 'User');
-    }catch(Exception $e){
+    //Initiating the creation of the Salesforce User
+    $responseGood = false;
+    $exception = null;
+    //Tries to create a user 5 times
+    for($i = 0; $i < 5; $i++) {
+        try {
+            //Attempts to create a new user
+            $createResponse = $mySforceConnection->create(array($sObject), 'User');
+            //If an exception has not occurred the responseGood changes to true
+            $responseGood = true;
+            //Then breaks and does not go through the remaining loops
+            break;
+        } catch (Exception $e) {
+            $exception = $e;
+//            log_entry("failed to create user");
+//            $subject = $e->getMessage();
+//            log_entry($subject);
+//            mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
+//            return null;
+        }
+    }
+    //If the loop goes through and does not pass with at least one good request, then it will throw the exception info
+    if(!$responseGood){
         log_entry("failed to create user");
-        $subject = $e->getMessage();
+        $subject = $exception->getMessage();
         log_entry($subject);
-        mail('web-development@bethel.edu',$subject,$subject,"From: $from\n");
+        mail('web-development@bethel.edu', $subject, $subject, "From: $from\n");
         return null;
     }
-
     $output = print_r($createResponse,1);
     log_entry('create user : ' . $output);
     $user_id = $createResponse[0]->id;
     return $user_id;
 }
 
+//Update contact referer site
 function update_contact_referer_site($contact_id){
     global $mySforceConnection;
     global $referer;
@@ -135,6 +162,7 @@ function update_contact_referer_site($contact_id){
     }
 }
 
+//Add referer to the contact via SforceConnection
 function add_referer_to_contact($contact_id){
     global $mySforceConnection;
 
@@ -145,7 +173,6 @@ function add_referer_to_contact($contact_id){
     $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
 
     try {
-
         $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
     }catch (Exception $e){
         return "add_referer_to_contact fail";
@@ -153,7 +180,7 @@ function add_referer_to_contact($contact_id){
     return $createResponse;
 }
 
-
+//Setting Variables, as well as declaring the enviroment
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "web-development@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
@@ -178,59 +205,69 @@ $search_email = '{' . $search_email . '}';
 
 
 try {
-        $contact_id = "";
-        $contact_records = search_for_contact($email);
-        if (sizeof($contact_records) > 0){
-            //We found it, get the id of the first (email is unique, so only one result)
-            $contact_id = $contact_records[0]->Id;
+    //Creates variable for contact id
+    $contact_id = "";
+    //Searches for contact with email
+    $contact_records = search_for_contact($email);
+    if (sizeof($contact_records) > 0){
+        //We found it, get the id of the first (email is unique, so only one result)
+        $contact_id = $contact_records[0]->Id;
 
-            // update the referer site
-            update_contact_referer_site($contact_id);
+        // update the referer site with found contact_id
+        update_contact_referer_site($contact_id);
 
-        }else{
-            log_entry('no contact found. Creating...');
-            //Create one and save the id
-            $contact_id = create_new_contact($first, $last, $email);
-        }
+    }else{
+        //Did not find the Contact ID, thus creates contact
+        log_entry('no contact found. Creating...');
+        //Create one and save the id
+        $contact_id = create_new_contact($first, $last, $email);
+    }
 
-        if ($contact_id == ""){
-            // todo why does this case happen?
-            $url .= "?cid=false";
-            $subject = "failed to find or create contact id for email $email";
-            log_entry($subject);
-            mail($mail_to,$subject,$subject,"From: $from\n");
-            header("Location: $url");
-            exit;
-        }else{
-            log_entry("contact id is : " . $contact_id);
-        }
+    //If contact ID is not created (hit an expection in 'create_new_contact' method, returns null)
+    if ($contact_id == ""){
+        //Sends email, regarding the failing of contact ID Generation
+        $url .= "?cid=false";
+        $subject = "failed to find or create contact id for email $email";
+        log_entry($subject);
+        mail($mail_to,$subject,$subject,"From: $from\n");
+        header("Location: $url");
+        exit;
+    //If contact_id was created, logs the contact_id
+    }else{
+        log_entry("contact id is : " . $contact_id);
+    }
 
-        $user_id = "";
-        $user_records = search_for_user($email);
-        if (sizeof($user_records) > 0){
-            //Contact already has a user, go to account recovery page. (Or login?)
-            $user_id = $user_records[0]->Id;
-            log_entry('found user_id');
-        }
-        else{
-            log_entry('No user found. Creating...');
-            $user_id = create_new_user($first, $last, $email, $contact_id);
-        }
-        log_entry("user_id is " . $user_id);
+    //Very similar block in comparison with block above
+    //Creates variable to store user_id
+    $user_id = "";
+    //Searches for user based upon email
+    $user_records = search_for_user($email);
+    if (sizeof($user_records) > 0){
+        //Contact already has a user, go to account recovery page. (Or login?)
+        $user_id = $user_records[0]->Id;
+        log_entry('found user_id');
+    }
+    //If  user was not found, Create one
+    else{
+        log_entry('No user found. Creating...');
+        $user_id = create_new_user($first, $last, $email, $contact_id);
+    }
 
-        if ($user_id == ""){
-            // todo why does this case happen?
-            $url .= "?uid=false";
-            $subject = "failed to find or create user id for email $email with cid=$contact_id";
-            mail($mail_to,$subject,$subject,"From: $from\n");
-            log_entry($subject);
-            header("Location: $url");
-            exit;
-        }else{
-            log_entry("user id is : " . $user_id);
-        }
-
-        add_referer_to_contact($contact_id);
+    //If user is not created, it will return nothing
+    if ($user_id == ""){
+        //Sends an email notating the error
+        $url .= "?uid=false";
+        $subject = "failed to find or create user id for email $email with cid=$contact_id";
+        mail($mail_to,$subject,$subject,"From: $from\n");
+        log_entry($subject);
+        header("Location: $url");
+        exit;
+    //If it created the user ID without error, it logs it.
+    }else{
+        log_entry("user id is : " . $user_id);
+    }
+    //Adds the user to the contact_id
+    add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
@@ -283,6 +320,7 @@ $options = array(
 );
 $context  = stream_context_create($options);
 
+//Changes the authenticating URL depending on the staging enviroment
 if ($staging){
     $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
 }else{
