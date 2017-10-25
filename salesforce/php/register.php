@@ -29,6 +29,8 @@ $mySforceConnection = new SforceEnterpriseClient();
 $mySoapClient = $mySforceConnection->createConnection(SOAP_CLIENT_BASEDIR.'/enterprise.wsdl.xml');
 //Logs in with the connection just created
 $mylogin = $mySforceConnection->login($USERNAME, $PASSWORD);
+// Creates Error Message
+$errorMessage;
 
 function escapeEmail($email) {
     $characters = array('?', '&', '!', '^', '+', '-');
@@ -48,6 +50,7 @@ function escapeEmail($email) {
 function log_entry($message){
     // Date format: [Mon Jan 1 12:12:00 2000], as well as then inserting the message,
     // and sets the path to the /code/salesforce/php/register.log
+    error_log("--------------------------------------------------------------------------------------------------------------------" . "\n", 3, getcwd()."/register.log");
     error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, getcwd()."/register.log");
 }
 
@@ -96,13 +99,12 @@ function search_for_user($email){
     $records = $response->{'records'};
     return $records;
 }
-// Creates Error Message
-$errorMes;
+
 //Creates a new SalesForceUser
 function create_new_user($first, $last, $email, $contact_id){
     global $mySforceConnection;
     global $PORTALUSERID;
-    global $errorMes;
+    global $errorMessage;
     $sObject = new stdclass();
     $sObject->Username = $email;
     $sObject->Email = $email;
@@ -147,7 +149,7 @@ function create_new_user($first, $last, $email, $contact_id){
     $output = print_r($createResponse,1);
     log_entry('create user : ' . $output);
     //Creates response
-    $errorMes = json_decode(json_encode($createResponse[0]), true);
+    $errorMessage = json_decode(json_encode($createResponse[0]), true);
     $user_id = $createResponse[0]->id;
     return $user_id;
 }
@@ -209,7 +211,7 @@ $search_email = '{' . $search_email . '}';
 
 
 try {
-    global $errorMes;
+    global $errorMessage;
     //Creates variable for contact id
     $contact_id = "";
     //Searches for contact with email
@@ -234,7 +236,7 @@ try {
         $url .= "?cid=false";
         $subject = "failed to find or create contact id for email $email";
         log_entry($subject);
-        mail($mail_to,$subject,$errorMes["errors"][0]["message"],"From: $from\n");
+        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $from\n");
         header("Location: $url");
         exit;
     //If contact_id was created, logs the contact_id
@@ -263,7 +265,7 @@ try {
         //Sends an email notating the error
         $url .= "?uid=false";
         $subject = "failed to find or create user id for email $email with cid=$contact_id";
-        mail($mail_to,$subject,$errorMes["errors"][0]["message"],"From: $from\n");
+        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $from\n");
         log_entry($subject);
         header("Location: $url");
         exit;
