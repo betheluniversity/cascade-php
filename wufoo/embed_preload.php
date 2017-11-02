@@ -6,11 +6,18 @@
  * Time: 3:52 PM
  */
 
-function fetchJSONFile($url, $print=true) {
-    // get the global $remote_user from cas.php
-    global $remote_user;
-    $url = "$url/$remote_user";
-    $json = file_get_contents($url);
+// This is a general method, I know it is used for the wufoo cascade format. It could be used elsewhere (11/2/17)
+function fetchJSONFile($url, $data, $print=true) {
+    $opts = array('http' =>
+        array(
+            'method'  => 'POST',
+            'header'  => 'Content-type: application/x-www-form-urlencoded',
+            'content' => http_build_query($data)
+        )
+    );
+
+    $context = stream_context_create($opts);
+    $json = file_get_contents($url, false, $context);
     $json = json_decode($json, true);
 
     if( $print)
