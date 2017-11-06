@@ -5,9 +5,10 @@
  * Date: 4/27/15
  * Time: 8:42 AM
  */
- 
 
-function course_catalog($code, $values){
+
+// this is the cached version
+function course_catalog_call($code, $values){
     $data = array('options' => $values);
     $options = array(
         'http' => array(
@@ -21,13 +22,19 @@ function course_catalog($code, $values){
     return file_get_contents($url, false, $context);
 }
 
-function individual_courses($code){
+// this is the cached version
+function individual_courses_call($code){
     $url = "https://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
     return file_get_contents($url, false);
 }
 
+function individual_courses($code){
+    $content = autoCache('individual_courses_call', array($code, 900));
+    return $content;
+}
+
 function load_course_catalog ($values, $code) {
-    $content = autoCache('course_catalog', array($code, $values, 900));
+    $content = autoCache('course_catalog_call', array($code, $values, 900));
     $content = json_decode($content, true);
 
     if( strpos($content['data'], '<li') !== false ) {
