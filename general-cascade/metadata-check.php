@@ -48,4 +48,15 @@ if (!stristr($host, "bethel.edu") && $referer != null){
     $_SESSION['interesting_referer'] = $referer;
 }
 
+// todo: do we want it to expire?
+// testing ads:
+// https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
+foreach( $_GET as $key => $value){
+    // if the GET key matches utm_, then add it to the session.
+    if( strpos($key, 'utm_') == 0  ){
+        setcookie($key, $value);
+    }
+}
+
 echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
+
