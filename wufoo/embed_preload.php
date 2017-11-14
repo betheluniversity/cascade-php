@@ -15,7 +15,6 @@ function fetchJSONFile($url, $data, $print=true) {
             'content' => http_build_query($data)
         )
     );
-
     $context = stream_context_create($opts);
     $json = file_get_contents($url, false, $context);
     $json = json_decode($json, true);

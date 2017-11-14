@@ -54,7 +54,8 @@ if (!stristr($host, "bethel.edu") && $referer != null){
 foreach( $_GET as $key => $value){
     // if the GET key matches utm_, then add it to the session.
     if( strpos($key, 'utm_') == 0  ){
-        setcookie($key, $value);
+        // save the cookie value for 4 months
+        setcookie($key, $value, time() + (86400 * 30 * 4));
     }
 }
 
