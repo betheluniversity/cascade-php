@@ -47,17 +47,33 @@ if (!stristr($host, "bethel.edu") && $referer != null){
     // update the interesting referer in session
     $_SESSION['interesting_referer'] = $referer;
 }
+echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
 
-// todo: do we want it to expire?
 // testing ads:
 // https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
 foreach( $_GET as $key => $value){
     // if the GET key matches utm_, then add it to the session.
     if( strpos($key, 'utm_') == 0  ){
         // save the cookie value for 4 months
-        setcookie($key, $value, time() + (86400 * 30 * 4));
+        setcookie($key, $value, time() + (86400 * 30 * 4), "/", ".bethel.edu");
     }
 }
 
-echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
-
+// Set cookie for google/yahoo/bing searches
+$url = $_SERVER['HTTP_REFERER'];
+$query = parse_url($url, PHP_URL_QUERY);
+$host = parse_url($url, PHP_URL_HOST);
+if( strstr($query,'q=')){
+    if( strstr($host, 'google.')) {
+        setcookie('utm_source', 'google', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+    }
+    elseif( strstr($host, 'yahoo.')) {
+        setcookie('utm_source', 'yahoo', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+    }
+    elseif( strstr($host, 'bing.')) {
+        setcookie('utm_source', 'bing', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', time() + (86400 * 30 * 4), "/", ".bethel.edu");
+    }
+}
