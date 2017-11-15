@@ -58,7 +58,8 @@ $expire = time() + 31536000;
 $url = $_SERVER['HTTP_REFERER'];
 $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
-if( strstr($query,'google.')){
+// should we check for UTM here instead of q=?
+if( !strstr($query,'q=')){
     if( strstr($host, 'google.')) {
         setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
