@@ -60,7 +60,7 @@ $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
 // should we check for UTM here instead of q=?
 if( !strstr($query,'q=') and !strstr($query,'p=')){
-    $query_values = search_engine_query_string($query);
+    $query_values = search_engine_query_string($url);
     if( strstr($host, 'google.')) {
         setcookie('utm_content', $query_values, -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
