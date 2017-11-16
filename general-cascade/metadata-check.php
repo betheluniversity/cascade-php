@@ -60,7 +60,7 @@ $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
 // should we check for UTM here instead of q=?
 if( !strstr($query,'q=') ){
-    $query_values = get_search_query();
+    $query_values = search_engine_query_string($url);
     if( strstr($host, 'google.')) {
         setcookie('utm_content', $query_values, $expire, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
@@ -81,28 +81,28 @@ if( !strstr($query,'q=') ){
     }
 }
 
-function get_search_query()
-{
-    $ref_keywords = '';
+function search_engine_query_string($url = false) {
 
-    // Get the referrer to the page
-    $referrer = $_SERVER['HTTP_REFERER'];
-    if (!empty($referrer))
-    {
-        //Parse the referrer URL
-        $parts_url = parse_url($referrer);
-
-        // Check if a query string exists
-        $query = isset($parts_url['query']) ? $parts_url['query'] : '';
-        if($query)
-        {
-            // Convert the query string into array
-            parse_str($query, $parts_query);
-            // Check if the parameters 'q' or 'query' exists, and if exists that is our search query terms.
-            $ref_keywords = isset($parts_query['q']) ? $parts_query['q'] : (isset($parts_query['query']) ? $parts_query['query'] : '' );
-        }
+    if(!$url) {
+        $url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : false;
     }
-    return $ref_keywords;
+    if($url == false) {
+        return '';
+    }
+
+    $parts = parse_url($url);
+    parse_str($parts['query'], $query);
+
+    $search_engines = array(
+        'bing' => 'q',
+        'google' => 'q',
+        'yahoo' => 'p'
+    );
+
+    preg_match('/(' . implode('|', array_keys($search_engines)) . ')\./', $parts['host'], $matches);
+
+    return isset($matches[1]) && isset($query[$search_engines[$matches[1]]]) ? $query[$search_engines[$matches[1]]] : '';
+
 }
 
 // testing ads:
