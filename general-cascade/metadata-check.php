@@ -62,19 +62,19 @@ $host = parse_url($url, PHP_URL_HOST);
 if( !strstr($query,'q=') and !strstr($query,'p=')){
     $query_values = search_engine_query_string($url);
     if( strstr($host, 'google.')) {
-        setcookie('utm_content', $_SERVER['HTTP_REFERER'], -1, "/", ".bethel.edu");
+        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
     }
     elseif( strstr($host, 'yahoo.')) {
-        setcookie('utm_content', $_SERVER['HTTP_REFERER'], -1, "/", ".bethel.edu");
+        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'yahoo', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
     }
     elseif( strstr($host, 'bing.')) {
-        setcookie('utm_content', $_SERVER['HTTP_REFERER'], -1, "/", ".bethel.edu");
+        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'bing', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
