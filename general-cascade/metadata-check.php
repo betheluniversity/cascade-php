@@ -50,19 +50,19 @@ if (!stristr($host, "bethel.edu") && $referer != null){
 echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
 
 
-// create cookies from utm_ parameters. expire in a year
-$expire = time() + 31536000;
+
+
 
 // Set cookie for google/yahoo/bing searches. Check these before proper utm_ get params so the ad
 // data doesn't get overwritten.
 $url = $_SERVER['HTTP_REFERER'];
 $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
+$expire = time() + 31536000; // create cookies from utm_ parameters. expire in a year
 // should we check for UTM here instead of q=?
 if( !strstr($query,'q=') ){
-    $query_values = search_engine_query_string($url);
     if( strstr($host, 'google.')) {
-        setcookie('utm_content', $query_values, $expire, "/", ".bethel.edu");
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
@@ -79,37 +79,13 @@ if( !strstr($query,'q=') ){
         setcookie('utm_source', 'bing', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
     }
-}
-
-function search_engine_query_string($url = false) {
-
-    if(!$url) {
-        $url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : false;
-    }
-    if($url == false) {
-        return '';
-    }
-
-    $parts = parse_url($url);
-    parse_str($parts['query'], $query);
-
-    $search_engines = array(
-        'bing' => 'q',
-        'google' => 'q',
-        'yahoo' => 'p'
-    );
-
-    preg_match('/(' . implode('|', array_keys($search_engines)) . ')\./', $parts['host'], $matches);
-
-    return isset($matches[1]) && isset($query[$search_engines[$matches[1]]]) ? $query[$search_engines[$matches[1]]] : '';
-
-}
-
-// testing ads:
-// https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
-foreach( $_GET as $key => $value){
-    // if the GET key matches utm_, then add it to the session.
-    if( strpos($key, 'utm_') == 0  ){
-        setcookie($key, $value, $expire, "/", ".bethel.edu");
+} else {
+    // testing ads:
+    // https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
+    foreach( $_GET as $key => $value){
+        // if the GET key matches utm_, then add it to the session.
+        if( strpos($key, 'utm_') == 0  ){
+            setcookie($key, $value, $expire, "/", ".bethel.edu");
+        }
     }
 }
