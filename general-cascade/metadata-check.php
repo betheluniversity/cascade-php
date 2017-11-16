@@ -62,7 +62,7 @@ $host = parse_url($url, PHP_URL_HOST);
 if( !strstr($query,'q=') ){
     $query_values = get_search_query();
     if( strstr($host, 'google.')) {
-        setcookie('utm_content', $query_values, -1, "/", ".bethel.edu");
+        setcookie('utm_content', $query_values, $expire, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
