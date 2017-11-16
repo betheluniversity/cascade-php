@@ -59,22 +59,22 @@ $url = $_SERVER['HTTP_REFERER'];
 $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
 // should we check for UTM here instead of q=?
-if( !strstr($query,'q=') and !strstr($query,'p=')){
+if( !strstr($query,'q=') ){
     $query_values = search_engine_query_string($url);
     if( strstr($host, 'google.')) {
-        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
     }
     elseif( strstr($host, 'yahoo.')) {
-        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'yahoo', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
     }
     elseif( strstr($host, 'bing.')) {
-        setcookie('utm_content', $query, -1, "/", ".bethel.edu");
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
         setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
         setcookie('utm_source', 'bing', $expire, "/", ".bethel.edu");
         setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
