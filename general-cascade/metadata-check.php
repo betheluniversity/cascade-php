@@ -58,25 +58,26 @@ echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
 $url = $_SERVER['HTTP_REFERER'];
 $query = parse_url($url, PHP_URL_QUERY);
 $host = parse_url($url, PHP_URL_HOST);
-$expire = time() + 31536000; // create cookies from utm_ parameters. expire in a year
+$expire_year = time() + 31536000;
+$expire_month = time() + 2628000;
 // should we check for UTM here instead of q=?
 if( strstr($host, 'google.')) {
     setcookie('utm_content', '', -1, "/", ".bethel.edu");
     setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'google', $expire, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
+    setcookie('utm_source', 'google', $expire_month, "/", ".bethel.edu");
+    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
 }
 elseif( strstr($host, 'yahoo.')) {
     setcookie('utm_content', '', -1, "/", ".bethel.edu");
     setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'yahoo', $expire, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
+    setcookie('utm_source', 'yahoo', $expire_month, "/", ".bethel.edu");
+    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
 }
 elseif( strstr($host, 'bing.')) {
     setcookie('utm_content', '', -1, "/", ".bethel.edu");
     setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'bing', $expire, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire, "/", ".bethel.edu");
+    setcookie('utm_source', 'bing', $expire_month, "/", ".bethel.edu");
+    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
 }
 
 // testing ads:
@@ -84,6 +85,6 @@ elseif( strstr($host, 'bing.')) {
 foreach( $_GET as $key => $value){
     // if the GET key matches utm_, then add it to the session.
     if( strpos($key, 'utm_') == 0  ){
-        setcookie($key, $value, $expire, "/", ".bethel.edu");
+        setcookie($key, $value, $expire_year, "/", ".bethel.edu");
     }
 }
