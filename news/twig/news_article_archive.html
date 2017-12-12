@@ -14,7 +14,7 @@
 
     <ul style="list-style:none outside none;padding-left:15px;">
 
-        {% for article in yearArray[newi] %}
+        {% for article in yearArray[newi]|reverse %}
         {{article['html']|raw}}
         {% endfor %}
 
