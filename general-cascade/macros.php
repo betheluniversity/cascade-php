@@ -60,7 +60,15 @@ function image_carousel($images){
     shuffle($images);
     $final_content = '';
     foreach($images as $img){
-        $content = srcset("https://www.bethel.edu/$img", $print=false,$lazy=true);
+        if( is_array($img) ){
+            $img_path = $img[0];
+            $alt = $img[1];
+        } else {
+            $img_path = $img;
+            $alt = '';
+        }
+
+        $content = srcset("https://www.bethel.edu/$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
         $final_content = $final_content . carousel_item($content, '','',false);
     }
     if( sizeof($images) > 0 ) {
@@ -71,16 +79,17 @@ function image_carousel($images){
 }
 
 
-function srcset($end_path, $print=true, $lazy=true, $classes=''){
+function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
     if( strpos($end_path,"www.bethel.edu") == false ) {
         $end_path = "https://www.bethel.edu/$end_path";
     }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
-        'end_path' => $end_path,
-        'lazy' => $lazy,
-        'classes'   => $classes)
+        'end_path'  => $end_path,
+        'lazy'      => $lazy,
+        'classes'   => $classes,
+        'alt_text'  => $alt_text)
     );
 
     if($print){

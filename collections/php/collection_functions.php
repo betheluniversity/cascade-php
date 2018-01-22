@@ -86,12 +86,9 @@ function get_profile_stories_html( $xml){
     $imagePath = $ds->{'images'}->{'homepage-image'}->path;
     $viewerTeaser = $ds->{'viewer-teaser'};
     $homepageTeaser = $ds->{'homepage-teaser'};
-    if($viewerTeaser == "")
-    {
+    if($viewerTeaser == "") {
         $teaser = $homepageTeaser;
-    }
-    else
-    {
+    } else {
         $teaser = $viewerTeaser;
     }
     $quote = $ds->{'quote'};
