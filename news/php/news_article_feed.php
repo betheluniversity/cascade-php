@@ -173,7 +173,7 @@ function get_news_article_html( $article, $xml ){
     if( $DisplayImages && $DisplayImages === "No")
         $thumborURL = '';
     else
-        $thumborURL = thumborURL($imagePath, 215, $lazy=true, $print=false);
+        $thumborURL = thumborURL($imagePath, 215, $lazy=true, $print=false, $article['title']);
 
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
@@ -261,12 +261,13 @@ function get_featured_article_html($page_info, $xml, $options){
     // Only display it if it has an image.
     if( $imagePath != "" && $imagePath != "/")
     {
+        // todo: this should really be in a template
         $html = '<div class="mt1 mb2 pa1" style="background: #f4f4f4">';
         $html .= '<span itemscope="itemscope" itemtype="https://schema.org/NewsArticle"><div class="grid left false">';
         $html .= '<div class="grid-cell  u-medium-1-2">';
         $html .= '<div class="grid-pad-1x">';
 
-        $html .= thumborURL($imagePath, "400");
+        $html .= thumborURL($imagePath, "400", true, true, $page_info['description']);
 
         $html .= '</div>';
         $html .= '</div>';
@@ -291,23 +292,6 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '</div>';
         $html .= '</div></span>';
         $html .= '</div>';
-
-        //twig version todo test and delete original
-//        global $destinationName;
-//        if( $date != "" && $date != "null" )
-//        {
-//            $formattedDate = format_featured_date_news_article($date);
-//        }
-//        $twig = makeTwigEnviron('/code/events/twig');
-//        $html = $twig->render('feed_news_article.html', array(
-//            'destinationName' => $destinationName,
-//            'date' => $date,
-//            'formattedDate' => $formattedDate,
-//            'page_info' => $page_info,
-//            'path' => $path,
-//            'options' => $options,
-//            'thumborURL' => thumborURL($imagePath, "400")));
-
     }
     else
         return "null";

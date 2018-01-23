@@ -101,13 +101,14 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 }
 
 
-function thumborURL($end_path, $width, $lazy=true, $print=true){
+function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumorURL.html', array(
-        'end_path' => $end_path,
-        'width' => $width,
-        'lazy' => $lazy
+        'end_path'  => $end_path,
+        'width'     => $width,
+        'lazy'      => $lazy,
+        'alt_text'  => $alt_text
     ));
 
     if($print){

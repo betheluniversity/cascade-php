@@ -72,7 +72,7 @@ function get_quote_html($xml){
 function get_twig_html($imagePath, $text, $source, $gradYear, $job){
 
     if( $imagePath != "/" && $imagePath != "") {
-        $thumbURL = thumborURL($imagePath, 200, $lazy=true, $print=false);
+        $thumbURL = thumborURL($imagePath, 200, true, false, $text);
     }else {
         $thumbURL = "";
     }
