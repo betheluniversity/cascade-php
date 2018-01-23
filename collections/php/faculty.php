@@ -69,7 +69,7 @@ function find_matching_bios($xml, $categories){
 function create_twig_html($image, $first, $last, $title, $path){
 
     $twig = makeTwigEnviron('/code/collections/twig');
-    $thumbURL = thumborURL($image, '150', $lazy=true, $print=false);
+    $thumbURL = thumborURL($image, '150', $lazy=true, $print=false, $alt_text=$first . ' ' . $last);
 
     $html = $twig->render('faculty.html', array(
         'first'     => $first,

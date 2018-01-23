@@ -315,7 +315,7 @@ function get_featured_event_html($event, $featuredEventOptions){
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
         $html = $twig->render('get_featured_event_html.html', array(
-            'thumborURL'=> srcset($event['image'], $print=false, $lazy=true),
+            'thumborURL'=> srcset($event['image'], $print=false, $lazy=true, "", $description),
             'path' => $path,
             'title' => $title,
             'date' => $date,
