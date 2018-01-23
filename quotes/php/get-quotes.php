@@ -125,7 +125,7 @@
             //render image here.
             global $destinationName;
             $html = $twig->render('get-quotes.html', array(
-                'thumbURL' => thumborURL($imagePath, 200, true, false),
+                'thumbURL' => thumborURL($imagePath, 200, true, false, $title),
                 'text' => $text,
                 'source' => $source));
         }
