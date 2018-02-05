@@ -76,6 +76,11 @@ function inspect_faculty_bio($xml){
         "top_lead"      =>  false,
     );
 
+    // if the file doesn't exist, skip it.
+    if( !file_exists('/var/www/cms.pub/' . $page_info['path'] . '.php') ) {
+        return "";
+    }
+
     // ignore any bio found within "_testing" in Cascade
     if( strpos($page_info['path'],"_testing") !== false)
         return "";

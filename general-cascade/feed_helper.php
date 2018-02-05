@@ -6,12 +6,12 @@
  * Time: 11:09 AM
  */
 
+// Todo: make this work with blocks and pages
 function traverse_folder($xml, $pages, $categories, $func){
     if(!$xml){
         return;
     }
     foreach ($xml->xpath("//system-page") as $child) {
-
         // Set the page data.=
         $page = $func($child, $categories);
         // Add to an event array.
@@ -22,6 +22,7 @@ function traverse_folder($xml, $pages, $categories, $func){
     return $pages;
 }
 
+// Todo: make this work with blocks and pages
 function get_xml($fileToLoad, $categories, $func){
     $xml = simplexml_load_file($fileToLoad);
     $pages = array();

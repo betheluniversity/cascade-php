@@ -81,6 +81,11 @@ function inspect_news_article($xml, $categories){
         "display-on-feed"   => false,
     );
 
+    // if the file doesn't exist, skip it.
+    if( !file_exists('/var/www/cms.pub/' . $page_info['path'] . '.php') ) {
+        return "";
+    }
+
     if( strpos($page_info['path'],"_testing") !== false)
         return "";
 

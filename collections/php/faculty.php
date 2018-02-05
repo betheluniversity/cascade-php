@@ -45,12 +45,18 @@ function find_matching_bios($xml, $categories){
             continue;
         }
 
+        // if the file doesn't exist, skip it.
+        if( !file_exists('/var/www/cms.pub/' . $bio->{'path'} . '.php') ) {
+            continue;
+        }
+
         $md = $bio->{'dynamic-metadata'};
         foreach($md as $data){
             $name = $data->name;
             if($name == 'school') {
                 $ds = $bio->{'system-data-structure'};
                 $image = $ds->image->path;
+
                 if (in_array($data->value, $categories) && $ds->first && $ds->last && $ds->{'job-titles'}->{'school'}[0] && $image[0] != '/') {
                     array_push($return_bios, $bio);
                     break;
