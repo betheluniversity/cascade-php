@@ -12,17 +12,6 @@ require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
 
-
-if(isset($_SESSION['interesting_referer'])){
-    $referer = $_SESSION['interesting_referer'];
-}else{
-    $referer = $_SESSION["HTTP_REFERER"];
-    $referer = explode('/', $referer);
-    // $referer : Array ( [0] => https: [1] => [2] => staging.bethel.edu [3] => _testing [4] => jmo [5] => basic ) Array
-    $referer = $referer[3];
-}
-
-
 //Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
 //Creates the Connection
@@ -68,13 +57,12 @@ function search_for_contact($email){
 //Creates a new SalesForceContact
 function create_new_contact($first, $last, $email){
     global $mySforceConnection;
-    global $referer;
 
     $sObject = new stdclass();
     $sObject->FirstName = $first;
     $sObject->LastName = $last;
     $sObject->Email = $email;
-    $sObject->referrer_site__c = $referer;
+    
     try{
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
     }catch(Exception $e){
@@ -87,7 +75,6 @@ function create_new_contact($first, $last, $email){
 
     $contact_id = $createResponse[0]->id;
     $output = print_r($createResponse,1);
-    log_entry('Referrer: '. $referer);
     log_entry('contact create : ' . $output);
     return $contact_id;
 }
@@ -154,38 +141,6 @@ function create_new_user($first, $last, $email, $contact_id){
     return $user_id;
 }
 
-//Update contact referer site
-function update_contact_referer_site($contact_id){
-    global $mySforceConnection;
-    global $referer;
-    $records[0] = new stdclass();
-    $records[0]->Id = $contact_id;
-    $records[0]->referrer_site__c = $referer;
-
-    $response = $mySforceConnection->update($records, 'Contact');
-    foreach ($response as $result) {
-        log_entry($result->id . " updated referer site<br/>\n");
-    }
-}
-
-//Add referer to the contact via SforceConnection
-function add_referer_to_contact($contact_id){
-    global $mySforceConnection;
-
-    $sObject = new stdclass();
-    $sObject->Contact__c = $contact_id;
-    $sObject->Referrer_Type__c = "Application";
-    // This object should only be interesting_referer. Blank if there isn't one.
-    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
-
-    try {
-        $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
-    }catch (Exception $e){
-        return "add_referer_to_contact fail";
-    }
-    return $createResponse;
-}
-
 //Setting Variables, as well as declaring the enviroment
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "web-development@bethel.edu";
@@ -219,10 +174,7 @@ try {
     if (sizeof($contact_records) > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $contact_records[0]->Id;
-
-        // update the referer site with found contact_id
-        update_contact_referer_site($contact_id);
-
+        
     }else{
         //Did not find the Contact ID, thus creates contact
         log_entry('no contact found. Creating...');
@@ -273,8 +225,6 @@ try {
     }else{
         log_entry("user id is : " . $user_id);
     }
-    //Adds the user to the contact_id
-    add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
