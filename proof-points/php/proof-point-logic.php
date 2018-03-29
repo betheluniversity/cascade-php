@@ -19,26 +19,17 @@
         $finalProofPoints = array();
         foreach( $proofPointsArrays as $proofPointArray)
         {
-            $sizeOfArray = sizeof($proofPointArray);
-            while( $sizeOfArray > 0)
-            {
+            shuffle($proofPointArray);
+            foreach( $proofPointArray as $proofPoint ){
                 if( $numToFind <= 0){
                     break 2;
                 }
-                $randomIndex = rand(0,$sizeOfArray);
-                if(array_key_exists($randomIndex, $proofPointArray)){
-                    $proofPoint = $proofPointArray[$randomIndex];
-                }else{
-                    $proofPoint = null;
+                if( $proofPoint == null){
+                    continue;
                 }
-                if( $proofPoint != null)
-                {
-                    array_push( $finalProofPoints, $proofPoint['html'] );
-                    $numToFind--;
-                }
-                unset($proofPointArray[$randomIndex]);
-                array_values($proofPointArray);
-                $sizeOfArray = sizeof($proofPointArray);
+
+                array_push( $finalProofPoints, $proofPoint['html'] );
+                $numToFind--;
             }
         }
         return $finalProofPoints;
