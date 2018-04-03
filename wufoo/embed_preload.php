@@ -6,11 +6,12 @@
  * Time: 3:52 PM
  */
 
+// todo: rename and move this to a general method!
 // This is a general method, I know it is used for the wufoo cascade format. It could be used elsewhere (11/2/17)
-function fetchJSONFile($url, $data, $print=true) {
+function fetchJSONFile($url, $data, $print=true, $method='POST') {
     $opts = array('http' =>
         array(
-            'method'  => 'POST',
+            'method'  => $method,
             'header'  => 'Content-type: application/x-www-form-urlencoded',
             'content' => http_build_query($data)
         )
@@ -19,8 +20,15 @@ function fetchJSONFile($url, $data, $print=true) {
     $json = file_get_contents($url, false, $context);
     $json = json_decode($json, true);
 
+    // temporary code in transition
+    // todo: after this code is launched, we can update the wufoo code that calls this. There may be other instances
+    // that we should check for
+    if( array_key_exists('data', $json)){
+        $json = $json['data'];
+    }
+
     if( $print)
-        echo $json['data'];
+        echo $json;
     else
-        return $json['data'];
+        return $json;
 }

@@ -3,7 +3,7 @@ session_start();
 $staging = strstr(getcwd(), "staging/public");
 $soda = strstr(getcwd(), "soda");
 
-if ($require_auth == "Yes" || $check_auth == "Yes"){
+if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
     header("Cache-Control: no-cache, must-revalidate");
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     include_once 'cas.php';
