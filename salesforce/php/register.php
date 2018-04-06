@@ -22,7 +22,6 @@ if(isset($_SESSION['interesting_referer'])){
     $referer = $referer[3];
 }
 
-
 //Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
 //Creates the Connection
@@ -68,13 +67,12 @@ function search_for_contact($email){
 //Creates a new SalesForceContact
 function create_new_contact($first, $last, $email){
     global $mySforceConnection;
-    global $referer;
 
     $sObject = new stdclass();
     $sObject->FirstName = $first;
     $sObject->LastName = $last;
     $sObject->Email = $email;
-    $sObject->referrer_site__c = $referer;
+    
     try{
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
     }catch(Exception $e){
@@ -87,7 +85,6 @@ function create_new_contact($first, $last, $email){
 
     $contact_id = $createResponse[0]->id;
     $output = print_r($createResponse,1);
-    log_entry('Referrer: '. $referer);
     log_entry('contact create : ' . $output);
     return $contact_id;
 }
@@ -279,10 +276,7 @@ try {
     if (sizeof($contact_records) > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $contact_records[0]->Id;
-
-        // update the referer site with found contact_id
-        update_contact_referer_site($contact_id);
-
+        
     }else{
         //Did not find the Contact ID, thus creates contact
         log_entry('no contact found. Creating...');
@@ -333,8 +327,6 @@ try {
     }else{
         log_entry("user id is : " . $user_id);
     }
-    //Adds the user to the contact_id
-    add_referer_to_contact($contact_id);
 
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();

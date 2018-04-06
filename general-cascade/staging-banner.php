@@ -6,7 +6,7 @@
  * Time: 2:19 PM
  */
 
-//$twig = makeTwigEnviron('/code/general-cascade/twig');
+$twig = makeTwigEnviron('/code/general-cascade/twig');
 
 echo $twig->render('staging-banner.html', array(
     'staging' => $staging,
