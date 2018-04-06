@@ -1,6 +1,7 @@
 <?php
 
 
+ini_set("soap.wsdl_cache_enabled", "0");
 session_start();
 
 // SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
@@ -11,6 +12,15 @@ define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
 require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 require_once ('userAuth.php');
+
+if(isset($_SESSION['interesting_referer'])){
+    $referer = $_SESSION['interesting_referer'];
+}else{
+    $referer = $_SESSION["HTTP_REFERER"];
+    $referer = explode('/', $referer);
+    // $referer : Array ( [0] => https: [1] => [2] => staging.bethel.edu [3] => _testing [4] => jmo [5] => basic ) Array
+    $referer = $referer[3];
+}
 
 //Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
@@ -141,6 +151,98 @@ function create_new_user($first, $last, $email, $contact_id){
     return $user_id;
 }
 
+//Update contact referer site
+function update_contact_referer_site($contact_id){
+    global $mySforceConnection;
+    global $referer;
+    $records[0] = new stdclass();
+    $records[0]->Id = $contact_id;
+    $records[0]->referrer_site__c = $referer;
+
+    $response = $mySforceConnection->update($records, 'Contact');
+    foreach ($response as $result) {
+        log_entry($result->id . " updated referer site<br/>\n");
+    }
+}
+
+//Add referer to the contact via SforceConnection
+function add_referer_to_contact($contact_id){
+    global $mySforceConnection;
+
+    $sObject = new stdclass();
+    $sObject->Contact__c = $contact_id;
+    $sObject->Referrer_Type__c = "Application";
+    // This object should only be interesting_referer. Blank if there isn't one.
+    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
+
+    try {
+        $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
+    }catch (Exception $e){
+        return "add_referer_to_contact fail";
+    }
+    return $createResponse;
+}
+
+function create_sf_source($contact_id, $user_email, $mail_to, $mail_from){
+    $utm_source = '';
+    $utm_medium = '';
+    $utm_content = '';
+    $utm_campaign = '';
+
+    if( $_COOKIE['utm_source'] )
+        $utm_source = $_COOKIE['utm_source'];
+    if( $_COOKIE['utm_medium'] )
+        $utm_medium = $_COOKIE['utm_medium'];
+    if( $_COOKIE['utm_content'] )
+        $utm_content = $_COOKIE['utm_content'];
+    if( $_COOKIE['utm_campaign'] )
+        $utm_campaign = $_COOKIE['utm_campaign'];
+    global $mySforceConnection;
+
+    $responseGood = false;
+    $user_app = false;
+    try {
+        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Active_Enrollment_Opportunity__c FROM Contact WHERE Id = '$contact_id'");
+        $user_app = $response->{'records'}[0]->EnrollmentrxRx__Active_Enrollment_Opportunity__c;
+    } catch (Exception $errorMessage) {
+        $subject = "failed to create source for email: $user_email due to not getting active application";
+        log_entry('failed to get active app when creating source');
+        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $mail_from\n");
+    }
+
+    if( $user_app ){
+        $sObject = new stdclass();
+        $sObject->Application_ID__c = $user_app;
+        $sObject->Marketing_Type__c = $utm_campaign;
+        $sObject->Marketing_Detail__c = ucwords(str_replace('_', ' ', $utm_source));
+        $sObject->Medium__c = ucwords(str_replace('_', ' ', $utm_medium));
+        $sObject->Source_Detail__c = 'Application';
+
+        for($i = 0; $i < 1; $i++) {
+            try {
+                // Attempts to create a new user
+                $createResponse = $mySforceConnection->create(array($sObject), 'Source__c');
+                if( $createResponse[0]->{'success'} == 1 ){
+                    // If an exception has not occurred the responseGood changes to true
+                    $responseGood = true;
+                    break;
+                } else {
+                    // make sure the response is set to false
+                    $responseGood = false;
+                }
+            } catch (Exception $errorMessage) {
+                $subject = "failed to create source for email: $user_email";
+                log_entry('failed to create source');
+                mail($mail_to, $subject, $errorMessage["errors"][0]["message"], "From: $mail_from\n");
+                $responseGood = false;
+                break;
+            }
+        }
+    }
+
+    return $responseGood;
+}
+
 //Setting Variables, as well as declaring the enviroment
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "web-development@bethel.edu";
@@ -250,7 +352,13 @@ if ($is_frozen){
     //commit the update
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
-//
+
+
+####################################################################
+## Create Source from cookies
+####################################################################
+create_sf_source($contact_id, $email, $mail_to, $mail_from);
+
 ####################################################################
 ## CAS account creation.
 ####################################################################
