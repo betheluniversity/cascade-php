@@ -233,7 +233,7 @@ function create_sf_source($contact_id, $user_email, $mail_to, $mail_from){
             } catch (Exception $errorMessage) {
                 $subject = "failed to create source for email: $user_email";
                 log_entry('failed to create source');
-                mail('c-schwarze@bethel.edu', $subject, $errorMessage["errors"][0]["message"], "From: $mail_from\n");
+                mail($mail_to, $subject, $errorMessage["errors"][0]["message"], "From: $mail_from\n");
                 $responseGood = false;
                 break;
             }
