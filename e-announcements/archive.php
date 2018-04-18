@@ -39,7 +39,6 @@ function get_e_announcements($date){
     //sort alpha
     // Todo: update sort to be by publish date.
     usort($matches, "alpha_sort");
-    // Get random selection of $numItems proof points
     foreach( $matches as $match){
         echo $match['html'];
     }
@@ -84,8 +83,8 @@ function inspect_block_e_announcements($xml){
     $roles_string = implode(", ", $roles_array);
 
     // Todo: move this to twig.
-    $content = createGridCell('u-large-2-3',"<h3 class='mb1'>$title</h3>$message<div style='color:#777;font-size:10px'>$roles_string</div>" );
-
+    $content = createGridCell('u-large-2-3',"<h3 class='mb1'>$title</h3>" . strip_tags($message, "<div><a><p><b><strong>") . "<div style='color:#777;font-size:10px'>$roles_string</div>" );
+//
     $page_info['html'] = createGrid('grid--center mt4', $content);
 
     return $page_info;
