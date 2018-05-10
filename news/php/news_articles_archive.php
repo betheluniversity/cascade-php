@@ -36,6 +36,7 @@ function create_news_article_archive($categories){
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
 
+// todo: this function should really just use the normal feeds inspect
 function inspect_news_archive_page($xml, $categories){
 
     $page_info = array(
@@ -83,7 +84,7 @@ function inspect_news_archive_page($xml, $categories){
 
         $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
         $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
-        $page_info['html'] = get_news_article_html($page_info, $xml);
+        $page_info['html'] = get_news_article_html($page_info);
     }
     return $page_info;
 }

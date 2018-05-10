@@ -1,8 +1,2 @@
-<!--Needs externalPath, day, title, externalPath-->
-<li>
-    {% if externalPath == "" %}
-    {{day}} - <a href='https://www.bethel.edu{{path}}'>{{title}}</a>
-    {% else %}
-    {{day}} - <a href='{{externalPath}}'>{{title}}</a>
-    {% endif %}
-</li>
+<!--Needs day, path, title-->
+<li> {{day}} - <a href='{{path}}'>{{title}}</a></li>

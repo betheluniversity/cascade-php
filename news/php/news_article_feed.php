@@ -23,7 +23,6 @@ $featuredArticleOptions;
 function create_news_article_feed($categories){
     $feed = autoCache("create_news_article_feed_logic", array($categories));
     return $feed;
-
 }
 
 // returns an array of html elements.
@@ -32,14 +31,16 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 
+    // todo: this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+    // This is the new version of news.
+    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
 
+    $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
 
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
     $sortedArticles = sort_by_date($arrayOfArticles);
-
-
 
     // Only grab the first X number of articles.
     $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
@@ -48,7 +49,6 @@ function create_news_article_feed_logic($categories){
     foreach( $sortedArticles as $article){
         array_push($articleArray, $article['html']);
     }
-
 
     // FEATURED ARTICLES
     global $featuredArticleOptions;
@@ -68,21 +68,22 @@ function create_news_article_feed_logic($categories){
 ////////////////////////////////////////////////////////////////////////////////
 
 function inspect_news_article($xml, $categories){
-
     $page_info = array(
         "title"             => $xml->title,
         "display-name"      => $xml->{'display-name'},
         "published"         => $xml->{'last-published-on'},
         "description"       => $xml->{'description'},
-        "path"              => $xml->path,
-        "date-for-sorting"  => $xml->{'system-data-structure'}->{'publish-date'},       //timestamp.
+        "path"              => "$xml->path",
+        "url"               => "https://www.bethel.edu$xml->path",
+        "date-for-sorting"  => 0,       //timestamp.
         "md"                => array(),
         "html"              => "",
         "display-on-feed"   => false,
     );
 
     // if the file doesn't exist, skip it.
-    if( !file_exists('/var/www/cms.pub/' . $page_info['path'] . '.php') ) {
+    // todo: change this to look in staging vs. prod
+    if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
         return "";
     }
 
@@ -91,106 +92,94 @@ function inspect_news_article($xml, $categories){
 
     $ds = $xml->{'system-data-structure'};
 
-//    $page_info['date-for-sorting'] = time();
-
     // To get the correct definition path.
-    $dataDefinition = $ds['definition-path'];
+    $page_info['ddp'] = $ds['definition-path'];
 
-    if( $dataDefinition == "News Article")
-    {
-        $page_info['teaser'] = $xml->teaser;
-        $page_info['html'] = get_news_article_html($page_info, $xml);
-
+    // exit out early, if necessary
+    if( $page_info['ddp'] == "News Article" || $page_info['ddp'] == "News Article - Flex" ){
         $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-        $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
-        $page_info['display-on-feed'] = display_on_feed_news_articles($page_info, $ds);
+        $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
+        $page_info['is_expired'] = is_expired($page_info, $ds);
 
-        // Featured Articles
-        global $featuredArticleOptions;
-        global $AddFeaturedArticle;
-        // Check if it is a featured Article.
-        // If so, get the featured article html.
-        if ( $AddFeaturedArticle == "Yes"){
-            foreach( $featuredArticleOptions as $key=>$options)
-            {
-                // Check if the url of the article = the url of the desired feature article.
-                if( $page_info['path'] == $options[0]){
-                    $featuredArticleOptions[$key][3] = get_featured_article_html( $page_info, $xml, $options);
+        if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
+            $page_info['display-on-feed'] = true;
+        }
+
+        if( $page_info['ddp'] == "News Article") {
+            $page_info['teaser'] = $xml->teaser;
+            $page_info['image-path'] = $ds->{'media'}->{'image'}->{'path'};
+            // set external path, if available
+            if ($ds->{'external-link'}){
+                $page_info['path'] = $ds->{'external-link'};
+            }
+            $page_info['date-for-sorting'] = $ds->{'publish-date'};
+
+            // Featured Articles
+            global $featuredArticleOptions;
+            global $AddFeaturedArticle;
+            // Check if it is a featured Article.
+            // If so, get the featured article html.
+            if ( $AddFeaturedArticle == "Yes"){
+                foreach( $featuredArticleOptions as $key=>$options)
+                {
+                    // Check if the url of the article = the url of the desired feature article.
+                    if( $page_info['path'] == $options[0]){
+                        $featuredArticleOptions[$key][3] = get_featured_article_html( $page_info, $xml, $options);
+                    }
                 }
             }
+        } else {
+            $page_info['teaser'] = $xml->description;
+            $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
+            $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'datetime'};
         }
     }
+
+    $page_info['display-date'] = format_featured_date_news_article($page_info['date-for-sorting']);
+    $page_info['html'] = get_news_article_html($page_info);
 
     return $page_info;
 }
 
 // Determine if the news article falls within the given range to be displayed
-function display_on_feed_news_articles($page_info, $ds){
+function is_expired($page_info, $ds){
     $publishDate = $ds->{'publish-date'} / 1000;
     $currentDate = time();
     global $ExpireAfterXDays;
     $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
-    if( $page_info['display-on-feed'] == true)
-    {
-        // Check if it falls between the given range.
-        if( $ExpireAfterXDays != "" ){
-            // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
-            if( $publishDate > $currentDate - $ExpiresInSeconds){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        else
-        {
+
+    // Check if it falls between the given range.
+    if( $ExpireAfterXDays != "" ){
+        // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
+        if( $publishDate > $currentDate - $ExpiresInSeconds){
             return true;
+        }else{
+            return false;
         }
     }
-    return false;
+    else {
+        return true;
+    }
 }
 
+// todo: we should only need to pass in article
 // Returns the html of the news article
-function get_news_article_html( $article, $xml ){
-    $ds = $xml->{'system-data-structure'};
-    $imagePath = $ds->{'media'}->{'image'}->{'path'};
-
-    if (array_key_exists('external-path', $article)){
-        $externalPath = $article['external-path'];
-    }else{
-        $externalPath = "";
-    }
-
-    if( $externalPath == "")
-        $path = $article['path'];
-    else
-        $path = $externalPath;
-
-    $date = $ds->{'publish-date'};
-
-    global $DisplayTeaser;
-    if( $date != "" && $date != "null" )
-    {
-        $formattedDate = format_featured_date_news_article($date);
-    }
-
+function get_news_article_html( $article ){
     global $DisplayImages;
     if( $DisplayImages && $DisplayImages === "No")
         $thumborURL = '';
     else
-        $thumborURL = thumborURL($imagePath, 215, $lazy=true, $print=false, $article['title']);
+        $thumborURL = thumborURL($article['image-path'], 215, $lazy=true, $print=false, $article['title']);
 
+    global $DisplayTeaser;
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
-        'DisplayTeaser' => $DisplayTeaser,
-        'date' => $date,
-        'formattedDate' => $formattedDate,
-        'article' => $article,
-        'path' => $path,
-        'thumborURL' => $thumborURL));
-
-
-
+        'DisplayTeaser'     => $DisplayTeaser,
+        'DisplayImages'     => $DisplayImages,
+        'article'           => $article,
+        'thumborURL'        => $thumborURL
+    ));
 
     return $html;
 }
@@ -255,7 +244,7 @@ function match_generic_school_news_articles($xml, $schools){
 // Returns the featured Article html.
 function get_featured_article_html($page_info, $xml, $options){
     $ds = $xml->{'system-data-structure'};
-    $imagePath = $ds->{'media'}->{'image'}->{'path'};
+    $imagePath = $page_info['image-path'];
     $date = $ds->{'publish-date'};
     $externalPath = $page_info['external-path'];
     if( $externalPath == "")
