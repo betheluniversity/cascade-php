@@ -82,7 +82,6 @@ function inspect_news_article($xml, $categories){
     );
 
     // if the file doesn't exist, skip it.
-    // todo: change this to look in staging vs. prod
     if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
         return "";
     }
