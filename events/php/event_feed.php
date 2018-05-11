@@ -66,10 +66,9 @@ function create_event_feed_logic($categories, $heading){
                     continue;
 
                 //hides gallery events three days after they begin.
-                if(($isArtOrTheater == 1 && time() > $threeDaysSinceStart) && !($heading == "Olson Gallery" || $heading == "Johnson Gallery")){
+                if( time() > $threeDaysSinceStart ){
                     continue;
                 }
-
 
                 $newEvent = $event;
                 $newEvent['date'] = $newDate;
