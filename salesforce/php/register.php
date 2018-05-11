@@ -259,6 +259,8 @@ if ($staging){
 
 $email = $_POST["email"];
 $email = strtolower($email);
+$email = trim($email);
+
 log_entry($email);
 $first = $_POST["first"];
 $last = $_POST["last"];
