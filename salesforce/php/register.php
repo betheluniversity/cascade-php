@@ -217,6 +217,7 @@ function create_sf_source($contact_id, $user_email, $mail_to, $mail_from){
         $sObject->Marketing_Detail__c = ucwords(str_replace('_', ' ', $utm_source));
         $sObject->Medium__c = ucwords(str_replace('_', ' ', $utm_medium));
         $sObject->Source_Detail__c = 'Application';
+        $sObject->Source_Type__c = 'Website';
 
         for($i = 0; $i < 1; $i++) {
             try {
