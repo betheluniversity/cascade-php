@@ -244,7 +244,34 @@ function create_sf_source($contact_id, $user_email, $mail_to, $mail_from){
     return $responseGood;
 }
 
-//Setting Variables, as well as declaring the enviroment
+function change_admissions_status($contact_id){
+    global $mySforceConnection;
+    try {
+        // find current application for the current user
+        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Active_Enrollment_Opportunity__c FROM Contact WHERE Id = '$contact_id'");
+        $application_id = $response->{'records'}[0]->EnrollmentrxRx__Active_Enrollment_Opportunity__c;
+
+        // find the OLD-Admissions Status value.
+        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Admissions_Status__c FROM EnrollmentrxRx__Enrollment_Opportunity__c WHERE Id = '$application_id'");
+        $old_admissions_status = $response->{'records'}[0]->EnrollmentrxRx__Admissions_Status__c;
+
+        if( $old_admissions_status == 'Lead'){
+            // Change to Inquired
+            $sObject1 = new stdclass();
+            $sObject1->Id = $application_id;
+            $sObject1->EnrollmentrxRx__Admissions_Status__c = 'Inquired';
+
+            $response = $mySforceConnection->update(array ($sObject1), 'EnrollmentrxRx__Enrollment_Opportunity__c');
+            $success = $response[0]->success;
+            log_entry("Update OLD-Admissions Status for $contact_id. Success=$success");
+        }
+    } catch (Exception $errorMessage) {
+        log_entry("failed to find/set 'OLD-Admissions Status from Lead to Inquired': $errorMessage");
+    }
+    return true;
+}
+
+//Setting Variables, as well as declaring the environment
 $staging = strstr(getcwd(), "staging/public");
 $mail_to = "web-development@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
@@ -356,11 +383,15 @@ if ($is_frozen){
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
 
-
 ####################################################################
 ## Create Source from cookies
 ####################################################################
 create_sf_source($contact_id, $email, $mail_to, $mail_from);
+
+####################################################################
+## Change "OLD-Admissions Status" from Lead to Inquired.
+####################################################################
+change_admissions_status($contact_id);
 
 ####################################################################
 ## CAS account creation.
