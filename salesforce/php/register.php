@@ -255,7 +255,7 @@ function change_admissions_status($contact_id){
         $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Admissions_Status__c FROM EnrollmentrxRx__Enrollment_Opportunity__c WHERE Id = '$application_id'");
         $old_admissions_status = $response->{'records'}[0]->EnrollmentrxRx__Admissions_Status__c;
 
-        if( $old_admissions_status == 'Lead'){
+        if( $old_admissions_status == 'Lead' || $old_admissions_status == 'Staged'){
             // Change to Inquired
             $sObject1 = new stdclass();
             $sObject1->Id = $application_id;
