@@ -14,8 +14,11 @@ $uniqueNews;
 function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
 
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
+    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_archive_page");
+
+    $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
@@ -35,7 +38,6 @@ function create_news_article_archive($categories){
 ////////////////////////////////////////////////////////////////////////////////
 // Gathers the info/html of the news article
 ////////////////////////////////////////////////////////////////////////////////
-
 function inspect_news_archive_page($xml, $categories){
 
     $page_info = array(
@@ -44,13 +46,15 @@ function inspect_news_archive_page($xml, $categories){
         "published" => $xml->{'last-published-on'},
         "description" => $xml->{'description'},
         "path" => $xml->path,
-        "external-path" => $xml->{'system-data-structure'}->{'external-link'},
-        "sort-by-date" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
-        "date-for-sorting" => $xml->{'system-data-structure'}->{'publish-date'} / 1000,       //timestamp.
         "md" => array(),
         "html" => "",
         "display-on-feed" => true,
     );
+    // if the file doesn't exist, skip it.
+    if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
+        return "";
+    }
+    // don't include testing ones
     if( strpos($page_info['path'],"_testing") !== false)
         return "";
 
@@ -59,10 +63,10 @@ function inspect_news_archive_page($xml, $categories){
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
-    global $yearChosen;
+    global $yearChosen;  // todo: not used?
     global $uniqueNews;
 
-    $isInternal = $uniqueNews && in_array("Internal", $uniqueNews);
+    $isInternal = $uniqueNews && in_array("Internal", $uniqueNews);  // todo: not used?
 
     $year_works = false;
     for( $i = 2012; $i <= intval(date("Y")); $i++ ){
@@ -71,41 +75,41 @@ function inspect_news_archive_page($xml, $categories){
             break;
         }
     }
+    if( $year_works ) {
+        if( $dataDefinition == "News Article") {
+            $date_for_sorting = $xml->{'system-data-structure'}->{'publish-date'} / 1000;
 
-    if( $dataDefinition == "News Article" && $year_works )
-    {
-        //check if is internal
-        $date = $page_info['sort-by-date'];
-        $page_info['day'] = date("d", $date);
-        $page_info['year'] = date("Y", $date);
-        $page_info['month'] = date("m", $date);
-        $page_info['month-name'] = date("F", $date);
-
-        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-        $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
-        $page_info['html'] = get_news_article_html($page_info, $xml);
+            if ($ds->{'external-link'}){
+                $page_info['path'] = $ds->{'external-link'};
+            }
+        } else {
+            $date_for_sorting = $ds->{'story-metadata'}->{'datetime'} / 1000;
+        }
+    } else {
+        return $page_info;
     }
+
+    $page_info['date-for-sorting'] = $date_for_sorting;
+    $page_info['day'] = date("d", $date_for_sorting);
+    $page_info['year'] = date("Y", $date_for_sorting);
+    $page_info['month'] = date("m", $date_for_sorting);
+    $page_info['month-name'] = date("F", $date_for_sorting);
+
+    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
+    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+    $page_info['html'] = get_news_article_archive_html($page_info);
+
     return $page_info;
 }
 
 
 // Returns the html of the news article
-function get_news_article_html( $article, $xml ){
-
-    $path = $article['path'];
-    $externalPath = $article['external-path'];
-    $title = $article['title'];
-
-    $day = $article['day'];
+function get_news_article_archive_html( $article ){
     $twig = makeTwigEnviron('/code/news/twig');
 
-    $html = $twig->render('get_news_article_html.html', array(
-        'externalPath' => $externalPath,
-        'path' => $path,
-        'title' => $title,
-        'day' => $day));
-
-    return $html;
+    return $twig->render('get_news_article_archive_html.html', array(
+        'article' => $article
+    ));
 }
 
 // Sort the array of articles, newest first.
