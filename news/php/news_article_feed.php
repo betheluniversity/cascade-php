@@ -37,7 +37,6 @@ function create_news_article_feed_logic($categories){
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
-
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
     $sortedArticles = sort_by_date($arrayOfArticles);
@@ -70,6 +69,7 @@ function create_news_article_feed_logic($categories){
 function inspect_news_article($xml, $categories){
     $page_info = array(
         "title"             => $xml->title,
+        "teaser"            => $xml->teaser,
         "display-name"      => $xml->{'display-name'},
         "published"         => $xml->{'last-published-on'},
         "description"       => $xml->{'description'},
@@ -79,6 +79,7 @@ function inspect_news_article($xml, $categories){
         "md"                => array(),
         "html"              => "",
         "display-on-feed"   => false,
+        "id"                => $xml['id']
     );
 
     // if the file doesn't exist, skip it.
@@ -106,7 +107,6 @@ function inspect_news_article($xml, $categories){
         }
 
         if( $page_info['ddp'] == "News Article") {
-            $page_info['teaser'] = $xml->teaser;
             $page_info['image-path'] = $ds->{'media'}->{'image'}->{'path'};
             // set external path, if available
             if ($ds->{'external-link'}){
@@ -128,10 +128,10 @@ function inspect_news_article($xml, $categories){
                     }
                 }
             }
+
         } else {
-            $page_info['teaser'] = $xml->description;
             $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
-            $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'datetime'};
+            $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
         }
     }
 
@@ -152,13 +152,13 @@ function is_expired($page_info, $ds){
     if( $ExpireAfterXDays != "" ){
         // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
         if( $publishDate > $currentDate - $ExpiresInSeconds){
-            return true;
-        }else{
             return false;
+        }else{
+            return true;
         }
     }
     else {
-        return true;
+        return false;
     }
 }
 
