@@ -49,6 +49,7 @@ function inspect_news_archive_page($xml, $categories){
         "md" => array(),
         "html" => "",
         "display-on-feed" => true,
+        "id"                => $xml['id'],
     );
     // if the file doesn't exist, skip it.
     if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
@@ -79,11 +80,11 @@ function inspect_news_archive_page($xml, $categories){
         if( $dataDefinition == "News Article") {
             $date_for_sorting = $xml->{'system-data-structure'}->{'publish-date'} / 1000;
 
-            if ($ds->{'external-link'}){
+            if ($ds->{'external-link'} != ''){
                 $page_info['path'] = $ds->{'external-link'};
             }
         } else {
-            $date_for_sorting = $ds->{'story-metadata'}->{'datetime'} / 1000;
+            $date_for_sorting = $ds->{'story-metadata'}->{'publish-date'} / 1000;
         }
     } else {
         return $page_info;
@@ -97,6 +98,7 @@ function inspect_news_archive_page($xml, $categories){
 
     $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
     $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+
     $page_info['html'] = get_news_article_archive_html($page_info);
 
     return $page_info;
