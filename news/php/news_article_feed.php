@@ -30,8 +30,7 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-
-    // todo: this is legacy code. It will be used for the archive and for any feed that includes old articles
+    // this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
@@ -79,7 +78,8 @@ function inspect_news_article($xml, $categories){
         "md"                => array(),
         "html"              => "",
         "display-on-feed"   => false,
-        "id"                => $xml['id']
+        "id"                => $xml['id'],
+        "story-metadata"    => 'News'
     );
 
     // if the file doesn't exist, skip it.
@@ -132,6 +132,7 @@ function inspect_news_article($xml, $categories){
         } else {
             $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
             $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
+            $page_info['story-metadata'] = $ds->{'story-metadata'}->{'story-or-news'};
         }
     }
 
