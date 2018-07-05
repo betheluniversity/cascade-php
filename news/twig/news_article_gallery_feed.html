@@ -1,0 +1,17 @@
+THREE STORIES HERE
+{% for story in threeStories %}
+    <div class="news__image">
+        <a href="{{story['url']}}"> <!-- FIX -->
+            {{story['image']|raw}}
+        </a>
+    </div>
+
+    TITLE: {{ story['title'] }}<br>
+    DISPLAY DATE: {{ story['display-date'] }}<br>
+    TEASER: {{ story['teaser'] }}<br>
+    <br>
+{% endfor %}
+
+{% for sortedArticle in sortedArticles %}
+    {{ sortedArticle['html'] | raw }}
+{% endfor %}
