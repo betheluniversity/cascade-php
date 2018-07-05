@@ -32,6 +32,7 @@ function create_news_article_feed_logic($categories){
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
 
@@ -95,45 +96,40 @@ function inspect_news_article($xml, $categories){
     // To get the correct definition path.
     $page_info['ddp'] = $ds['definition-path'];
 
-    // exit out early, if necessary
-    if( $page_info['ddp'] == "News Article" || $page_info['ddp'] == "News Article - Flex" ){
-        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-
-        $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
-        $page_info['is_expired'] = is_expired($page_info, $ds);
-
-        if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
-            $page_info['display-on-feed'] = true;
+    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
+    if( $page_info['ddp'] == "News Article") {
+        $page_info['image-path'] = $ds->{'media'}->{'image'}->{'path'};
+        // set external path, if available
+        if ($ds->{'external-link'}){
+            $page_info['path'] = $ds->{'external-link'};
         }
+        $page_info['date-for-sorting'] = $ds->{'publish-date'};
 
-        if( $page_info['ddp'] == "News Article") {
-            $page_info['image-path'] = $ds->{'media'}->{'image'}->{'path'};
-            // set external path, if available
-            if ($ds->{'external-link'}){
-                $page_info['path'] = $ds->{'external-link'};
-            }
-            $page_info['date-for-sorting'] = $ds->{'publish-date'};
-
-            // Featured Articles
-            global $featuredArticleOptions;
-            global $AddFeaturedArticle;
-            // Check if it is a featured Article.
-            // If so, get the featured article html.
-            if ( $AddFeaturedArticle == "Yes"){
-                foreach( $featuredArticleOptions as $key=>$options)
-                {
-                    // Check if the url of the article = the url of the desired feature article.
-                    if( $page_info['path'] == $options[0]){
-                        $featuredArticleOptions[$key][3] = get_featured_article_html( $page_info, $xml, $options);
-                    }
+        // Featured Articles
+        global $featuredArticleOptions;
+        global $AddFeaturedArticle;
+        // Check if it is a featured Article.
+        // If so, get the featured article html.
+        if ( $AddFeaturedArticle == "Yes"){
+            foreach( $featuredArticleOptions as $key=>$options)
+            {
+                // Check if the url of the article = the url of the desired feature article.
+                if( $page_info['path'] == $options[0]){
+                    $featuredArticleOptions[$key][3] = get_featured_article_html( $page_info, $xml, $options);
                 }
             }
-
-        } else {
-            $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
-            $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
-            $page_info['story-metadata'] = $ds->{'story-metadata'}->{'story-or-news'};
         }
+
+    } else {
+        $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
+        $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
+    }
+
+    $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
+    $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
+
+    if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
+        $page_info['display-on-feed'] = true;
     }
 
     $page_info['display-date'] = format_featured_date_news_article($page_info['date-for-sorting']);
@@ -143,8 +139,8 @@ function inspect_news_article($xml, $categories){
 }
 
 // Determine if the news article falls within the given range to be displayed
-function is_expired($page_info, $ds){
-    $publishDate = $ds->{'publish-date'} / 1000;
+function is_expired($date_for_sorting){
+    $publishDate = $date_for_sorting / 1000;
     $currentDate = time();
     global $ExpireAfterXDays;
     $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
@@ -152,7 +148,7 @@ function is_expired($page_info, $ds){
     // Check if it falls between the given range.
     if( $ExpireAfterXDays != "" ){
         // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
-        if( $publishDate > $currentDate - $ExpiresInSeconds){
+        if( $publishDate > ($currentDate - $ExpiresInSeconds)){
             return false;
         }else{
             return true;
