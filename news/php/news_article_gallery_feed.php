@@ -34,6 +34,7 @@ function create_news_article_gallery_feed($categories){
     $threeStories = array();
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory){
         if( $newsAndStory['article-type'] == 'Story'){
+            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
             array_push($threeStories, $newsAndStory);
             unset($arrayOfNewsAndStories[$index]);
 
