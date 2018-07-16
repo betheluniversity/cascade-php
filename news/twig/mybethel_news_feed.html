@@ -1,0 +1,16 @@
+{% for article in sortedArticles %}
+    <div class="media  media--border-bottom  mb-3  pb-3">
+        <div class="ratio-container" style="padding: 2.5em 4.2em;">
+            <img    class="d-flex  mr-3  lazyload  mb-3"
+                    data-src="https://cdn2.bethel.edu/resize/unsafe/240x0/smart/https://www.bethel.edu/{{ article['image-path'] }}"
+                    alt="{{ article['title'] }}"
+            />
+        </div>
+        <div class="media-body">
+            <h3 class="u-fs16  u-fw500"><a href="https://www.bethel.edu/{{article['path']}}">{{ article['title'] }}</a></h3>
+            {% if article['teaser'] %}
+                <p>{{ article['teaser'] }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
