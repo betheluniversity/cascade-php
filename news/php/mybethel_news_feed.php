@@ -6,11 +6,6 @@
  * Time: 3:55 PM
  */
 
-// todo: probably can remove this
-$School;
-$Department;
-$UniqueNews;
-
 function mybethel_news_feed($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/news/php/news_article_feed.php";
