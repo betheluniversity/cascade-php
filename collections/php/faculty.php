@@ -19,7 +19,7 @@ function create_faculty_carousel($categories){
         $first = $ds->first;
         $last = $ds->last;
         $path = $bio->path;
-        $image = "https://www.bethel.edu" . $ds->image->path[0];
+        $image = "https://thumbor.bethel.edu" . $ds->image->path[0];
         $title = $ds->{'job-title'};
         $titles = $ds->{'job-titles'};
         if($titles[0]->{'school'} != "") {
