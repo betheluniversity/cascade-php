@@ -85,7 +85,7 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
     }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
-    str_replace("www.bethel.edu","thumbor.bethel.edu", $end_path);
+    $end_path = str_replace("www.bethel.edu","thumbor.bethel.edu", $end_path);
     $content = $twig->render('srcset.html', array(
         'end_path'  => $end_path,
         'lazy'      => $lazy,
@@ -105,7 +105,7 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
-    str_replace("www.bethel.edu","thumbor.bethel.edu", $end_path);
+    $end_path = str_replace("www.bethel.edu","thumbor.bethel.edu", $end_path);
     $html = $twig->render('thumborURL.html', array(
         'end_path'  => $end_path,
         'width'     => $width,
