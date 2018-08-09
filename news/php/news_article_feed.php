@@ -173,7 +173,7 @@ function get_news_article_html( $article ){
     $html = $twig->render('news_article_feed.html', array(
         'DisplayTeaser'     => $DisplayTeaser,
         'article'           => $article,
-        'image'        => $article['image']
+        'image'             => $article['image']
     ));
 
     return $html;
