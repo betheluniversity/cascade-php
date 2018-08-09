@@ -30,8 +30,7 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-
-    // todo: this is legacy code. It will be used for the archive and for any feed that includes old articles
+    // this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
 
     // This is the new version of news.
@@ -80,7 +79,8 @@ function inspect_news_article($xml, $categories){
         "md"                => array(),
         "html"              => "",
         "display-on-feed"   => false,
-        "id"                => $xml['id']
+        "id"                => $xml['id'],
+        "article-type"      => 'News'
     );
 
     // if the file doesn't exist, skip it.
@@ -119,11 +119,17 @@ function inspect_news_article($xml, $categories){
                 }
             }
         }
-
     } else {
         $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
         $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
+        $page_info['article-type'] = $ds->{'story-metadata'}->{'story-or-news'};
     }
+
+    global $DisplayImages;
+    if( $DisplayImages && $DisplayImages === "No")
+        $page_info['image'] = '';
+    else
+        $page_info['image'] = thumborURL($page_info['image-path'], 215, $lazy=true, $print=false, $page_info['title']);
 
     $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
     $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
@@ -162,19 +168,12 @@ function is_expired($date_for_sorting){
 // todo: we should only need to pass in article
 // Returns the html of the news article
 function get_news_article_html( $article ){
-    global $DisplayImages;
-    if( $DisplayImages && $DisplayImages === "No")
-        $thumborURL = '';
-    else
-        $thumborURL = thumborURL($article['image-path'], 215, $lazy=true, $print=false, $article['title']);
-
     global $DisplayTeaser;
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
         'DisplayTeaser'     => $DisplayTeaser,
-        'DisplayImages'     => $DisplayImages,
         'article'           => $article,
-        'thumborURL'        => $thumborURL
+        'image'        => $article['image']
     ));
 
     return $html;

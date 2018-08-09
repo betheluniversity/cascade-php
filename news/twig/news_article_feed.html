@@ -1,8 +1,8 @@
 <div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
-    {% if DisplayImages == "Yes" %}
+    {% if image != '' %}
         <div class="news__image">
             <a href="{{article['url']}}"> <!-- FIX -->
-                {{thumborURL|raw}}
+                {{image|raw}}
             </a>
         </div>
     {% endif %}
