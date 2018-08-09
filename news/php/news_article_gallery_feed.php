@@ -17,18 +17,10 @@ function create_news_article_gallery_feed($categories){
     global $DisplayTeaser;
     $DisplayTeaser = 'Yes';
 
-
-    // todo: assume older things are articles
-    // todo: then pull the most recent 3 stories from that list
-    // todo: then output the remaining X items
-
-
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
-    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
     $threeStories = array();
@@ -43,8 +35,6 @@ function create_news_article_gallery_feed($categories){
                 break;
         }
     }
-
-    # todo: grab the most recent 3
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     global $NumArticles;

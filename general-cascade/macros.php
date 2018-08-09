@@ -85,6 +85,7 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
     }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $end_path = str_replace("www.bethel.edu","thumbor.bethel.edu", $end_path);
     $content = $twig->render('srcset.html', array(
         'end_path'  => $end_path,
         'lazy'      => $lazy,
