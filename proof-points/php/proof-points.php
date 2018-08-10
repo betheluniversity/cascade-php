@@ -62,9 +62,7 @@
 function number_pp_html($ds){
     $html = "";
     $number = $ds->{'proof-point'}->{'number-group'}->{'number-field'};
-    if(!$number){
-        $number = $ds->{'proof-point'}->{'number-group'}->{'number'};
-    }
+
     $textBefore = $ds->{'proof-point'}->{'number-group'}->{'text-before'};
     $textAfter = $ds->{'proof-point'}->{'number-group'}->{'text-after'};
     $animate = $ds->{'proof-point'}->{'number-group'}->{'animate'};
