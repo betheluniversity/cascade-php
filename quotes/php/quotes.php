@@ -70,6 +70,9 @@ function get_quote_html($xml){
 }
 
 function get_twig_html($imagePath, $text, $source, $gradYear, $job){
+    # add a slash if there isn't one
+    if( $imagePath[0] != '/')
+        $imagePath = "/$imagePath";
 
     if( $imagePath != "/" && $imagePath != "") {
         $thumbURL = thumborURL($imagePath, 200, true, false, $text);
