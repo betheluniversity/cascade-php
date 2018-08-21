@@ -18,7 +18,6 @@
 
         $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
-            // Add an if to add/remove animate depending on the PP
             $toReturn .= createGridCell("medium 1-$numProofPoints", $finalPP);
         }
         echo createGrid("proof-points proof-point-collection test", $toReturn);
@@ -65,7 +64,6 @@ function number_pp_html($ds){
 
     $textBefore = $ds->{'proof-point'}->{'number-group'}->{'text-before'};
     $textAfter = $ds->{'proof-point'}->{'number-group'}->{'text-after'};
-    $animate = $ds->{'proof-point'}->{'number-group'}->{'animate'};
 
     $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
@@ -76,8 +74,7 @@ function number_pp_html($ds){
         'textAfter' => $textAfter,
         'textBelow' => $textBelow,
         'source' => $source,
-        'number' => $number,
-        'animate'   =>  $animate));
+        'number' => $number));
 
     
     return $html;
