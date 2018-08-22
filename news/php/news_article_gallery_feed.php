@@ -10,7 +10,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/news/php/news_article_feed.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-function create_news_article_gallery_feed($categories){
+function create_news_article_gallery_feed($categories, $galleryStyle){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
@@ -46,8 +46,17 @@ function create_news_article_gallery_feed($categories){
     // Only grab the first X number of articles.
     $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
 
+    echo "<script>console.log( 'Debug Objects: " . $galleryStyle . "' );</script>";
+
+    $renderFile = "no_feature_news_gallery.html";
+    if( $galleryStyle == "Feature Top") {
+        $renderFile = "feature_top_news_gallery.html";
+    } else if( $galleryStyle == "Feature Left") {
+        $renderFile = "feature_left_news_gallery.html";
+    }
+
     $twig = makeTwigEnviron('/code/news/twig');
-    $html = $twig->render('news_article_gallery_feed.html', array(
+    $html = $twig->render($renderFile, array(
         'sortedArticles'     => $sortedArticles,
         'threeStories'     => $threeStories
     ));
