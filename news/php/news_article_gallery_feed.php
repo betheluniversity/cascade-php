@@ -48,7 +48,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle){
 
     echo "<script>console.log( 'Debug Objects: " . $galleryStyle . "' );</script>";
 
-    $renderFile = "no_feature_news_gallery.html";
+    $renderFile = "feature_home_news_gallery.html";
     if( $galleryStyle == "Feature Top") {
         $renderFile = "feature_top_news_gallery.html";
     } else if( $galleryStyle == "Feature Left") {
