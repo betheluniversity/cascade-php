@@ -1,11 +1,11 @@
 <div class="proofPoint">
     <p class="proofPoint__number">
-        {% if textBefore %}{{textBefore|raw}}{% endif %}
-        {{number}}
-        {% if textAfter %}{{textAfter|raw}}{% endif %}
+        {% if main_text_number %}
+            {{main_text_number|raw}}
+        {% endif %}
     </p>
     <p>
-        {{textBelow|raw}}
+        {{text_below|raw}}
     </p>
 
     {% if source != "" %}

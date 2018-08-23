@@ -10,7 +10,6 @@
  * todo: add cacheing where possible
  */
 
-
     // todo:
     // Gets x random proof points from the array of arrays of proof points
     // Not very well constructed.

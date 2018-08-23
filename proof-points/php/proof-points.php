@@ -9,7 +9,6 @@
     include_once 'proof-point-logic.php';
     include_once $_SERVER['DOCUMENT_ROOT'] . "/code/general-cascade/macros.php";
 
-
     function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
 
         $proofPointsToDisplay = get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
@@ -59,22 +58,15 @@
     }
 
 function number_pp_html($ds){
-    $html = "";
-    $number = $ds->{'proof-point'}->{'number-group'}->{'number-field'};
-
-    $textBefore = $ds->{'proof-point'}->{'number-group'}->{'text-before'};
-    $textAfter = $ds->{'proof-point'}->{'number-group'}->{'text-after'};
-
-    $textBelow = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
+    $main_text_number = $ds->{'proof-point'}->{'number-group'}->{'main-text-number'};
+    $text_below = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
 
     $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = $twig->render('number_pp_html.html', array(
-        'textBefore' => $textBefore,
-        'textAfter' => $textAfter,
-        'textBelow' => $textBelow,
-        'source' => $source,
-        'number' => $number));
+        'main_text_number' => $main_text_number,
+        'text_below' => $text_below,
+        'source' => $source));
 
     
     return $html;
