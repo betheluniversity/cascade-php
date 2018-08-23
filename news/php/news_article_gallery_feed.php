@@ -46,7 +46,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle){
     // Only grab the first X number of articles.
     $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
 
-    echo "<script>console.log( 'Debug Objects: " . $galleryStyle . "' );</script>";
+//     echo "<script>console.log( 'Debug Objects: " . $galleryStyle . "' );</script>";
 
     $renderFile = "feature_home_news_gallery.html";
     if( $galleryStyle == "Feature Top") {
