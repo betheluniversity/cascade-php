@@ -45,19 +45,20 @@
 
     // Returns the html of the proof point
     function get_proof_point_html($xml){
+        $id = $xml['id'];
         $ds = $xml->{'system-data-structure'};
         $type = $ds->{'proof-point'}->{'type'};
         $html = "";
         if($type == "Text"){
-            $html = text_pp_html($ds);
+            $html = text_pp_html($ds, $id);
         }
         elseif($type == "Number"){
-            $html = number_pp_html($ds);
+            $html = number_pp_html($ds, $id);
         }
         return $html;
     }
 
-function number_pp_html($ds){
+function number_pp_html($ds, $id){
     $main_text_number = $ds->{'proof-point'}->{'number-group'}->{'main-text-number'};
     $text_below = $ds->{'proof-point'}->{'number-group'}->{'text-below'};
     $source = $ds->{'proof-point'}->{'number-group'}->{'source'};
@@ -66,13 +67,14 @@ function number_pp_html($ds){
     $html = $twig->render('number_pp_html.html', array(
         'main_text_number' => $main_text_number,
         'text_below' => $text_below,
-        'source' => $source));
+        'source' => $source,
+        'id' => $id));
 
     
     return $html;
 }
 
-function text_pp_html($ds){
+function text_pp_html($ds, $id){
     $html = "";
     $mainText = $ds->{'proof-point'}->{'text'}->{'main-text'};
     $source = $ds->{'proof-point'}->{'text'}->{'source'};
@@ -80,7 +82,8 @@ function text_pp_html($ds){
     $twig = makeTwigEnviron('/code/proof-points/twig');
     $html = $twig->render('text_pp_html.html', array(
         'mainText' => $mainText,
-        'source' => $source));
+        'source' => $source,
+        'id' => $id));
 
     return $html;
 }
