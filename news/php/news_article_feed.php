@@ -30,6 +30,11 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
+    // grab the global variable so we don't use stories that have already been used
+    if( !$GLOBALS['stories-already-used'] ){
+        $GLOBALS['stories-already-used'] = array();
+    }
+
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
 
@@ -41,18 +46,26 @@ function create_news_article_feed_logic($categories){
     // echo 'feed_news_sorted_'.$NumArticles;
     $sortedArticles = sort_by_date($arrayOfArticles);
 
-    // Only grab the first X number of articles.
-    $sortedArticles = array_slice($sortedArticles, 0, $NumArticles, true);
-
     $articleArray = array();
-    foreach( $sortedArticles as $article){
-        array_push($articleArray, $article['html']);
+    foreach( $sortedArticles as $article ){
+        $id = $article['id'];
+        if( !in_array($id, $GLOBALS['stories-already-used']) ){
+            array_push($articleArray, $article['html']);
+
+            // don't use this story on this page again
+            array_push($GLOBALS['stories-already-used'], $id);
+        }
+
+        // Only grab the first X number of articles.
+        if( sizeof($articleArray) >= $NumArticles )
+            break;
     }
 
     // FEATURED ARTICLES
     global $featuredArticleOptions;
     $featuredArticles = create_featured_array($featuredArticleOptions);
 
+    // we need to check size, to see if we actually found one
     $numArticles = sizeof($articleArray );
     if( $numArticles == 0){
         $articleArray = array("<p>No news articles available at this time.</p>");
@@ -79,8 +92,9 @@ function inspect_news_article($xml, $categories){
         "md"                => array(),
         "html"              => "",
         "display-on-feed"   => false,
-        "id"                => $xml['id'],
-        "article-type"      => 'News'
+        "id"                => (string)$xml['id'],
+        "article-type"      => 'News',
+        "homepage-article"  => false
     );
 
     // if the file doesn't exist, skip it.
@@ -132,6 +146,7 @@ function inspect_news_article($xml, $categories){
         $page_info['image'] = thumborURL($page_info['image-path'], 215, $lazy=true, $print=false, $page_info['title']);
 
     $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
+    $page_info['homepage-article'] = is_homepage_article($xml);
     $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
 
     if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
