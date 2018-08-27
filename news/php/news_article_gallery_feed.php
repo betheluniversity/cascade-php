@@ -50,11 +50,16 @@ function create_news_article_gallery_feed($categories, $galleryStyle){
 
             array_push($threeStories, $newsAndStory);
             unset($arrayOfNewsAndStories[$index]);
-
-            // exit once there are 3
-            if( sizeof($threeStories) >= 3)
-                break;
         }
+        else if( $newsAndStory['article-type'] == 'News'){
+            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
+
+            array_push($threeStories, $newsAndStory);
+            unset($arrayOfNewsAndStories[$index]);
+        }
+        // exit once there are 3
+        if( sizeof($threeStories) >= 3)
+            break;
     }
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
