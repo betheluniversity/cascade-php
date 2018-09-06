@@ -22,6 +22,7 @@ $featuredArticleOptions;
 
 function create_news_article_feed($categories){
     $feed = autoCache("create_news_article_feed_logic", array($categories));
+//    $feed = create_news_article_feed_logic($categories);
     return $feed;
 }
 
@@ -36,10 +37,14 @@ function create_news_article_feed_logic($categories){
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+//    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     // This is the new version of news.
-    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
+//    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 10);
+    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
+
+
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     global $NumArticles;
@@ -81,12 +86,12 @@ function create_news_article_feed_logic($categories){
 
 function inspect_news_article($xml, $categories){
     $page_info = array(
-        "title"             => $xml->title,
-        "teaser"            => $xml->teaser,
-        "display-name"      => $xml->{'display-name'},
-        "published"         => $xml->{'last-published-on'},
-        "description"       => $xml->{'description'},
-        "path"              => "$xml->path",
+        "title"             => (string)$xml->title,
+        "teaser"            => (string)$xml->teaser,
+        "display-name"      => (string)$xml->{'display-name'},
+        "published"         => (int)$xml->{'last-published-on'},
+        "description"       => (string)$xml->{'description'},
+        "path"              => (string)$xml->path,
         "url"               => "https://www.bethel.edu$xml->path",
         "date-for-sorting"  => 0,       //timestamp.
         "md"                => array(),
@@ -108,16 +113,16 @@ function inspect_news_article($xml, $categories){
     $ds = $xml->{'system-data-structure'};
 
     // To get the correct definition path.
-    $page_info['ddp'] = $ds['definition-path'];
+    $ddp = $ds['definition-path'];
 
     $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-    if( $page_info['ddp'] == "News Article") {
-        $page_info['image-path'] = $ds->{'media'}->{'image'}->{'path'};
+    if( $ddp == "News Article") {
+        $page_info['image-path'] = (string)$ds->{'media'}->{'image'}->{'path'};
         // set external path, if available
         if ($ds->{'external-link'}){
-            $page_info['path'] = $ds->{'external-link'};
+            $page_info['path'] = (string)$ds->{'external-link'};
         }
-        $page_info['date-for-sorting'] = $ds->{'publish-date'};
+        $page_info['date-for-sorting'] = (int)$ds->{'publish-date'};
 
         // Featured Articles
         global $featuredArticleOptions;
@@ -134,9 +139,9 @@ function inspect_news_article($xml, $categories){
             }
         }
     } else {
-        $page_info['image-path'] = $ds->{'story-metadata'}->{'feed-image'}->{'path'};
-        $page_info['date-for-sorting'] = $ds->{'story-metadata'}->{'publish-date'};
-        $page_info['article-type'] = $ds->{'story-metadata'}->{'story-or-news'};
+        $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
+        $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
+        $page_info['article-type'] = (string)$ds->{'story-metadata'}->{'story-or-news'};
     }
 
     global $DisplayImages;
