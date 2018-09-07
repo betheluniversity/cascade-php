@@ -39,6 +39,8 @@ if( $canonical_url) {
 } else {
     $canonical_url = $url;
 }
+
+// replace /index with /, if it is at the end of the $canonical_url
 $canonical_url = preg_replace('/\/index$/', '/', $canonical_url);
 
 echo "<link rel='canonical' href='$canonical_url'/>";
