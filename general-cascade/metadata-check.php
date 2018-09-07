@@ -31,6 +31,7 @@ if($staging){
 }
 $url = $prefix . $_SERVER['REQUEST_URI'];
 if( $canonical_url) {
+    // from velocity, we can't pass "--", as it is rendered weird. Therefore, we do a replace with "XXXXX"
     $canonical_url = str_replace('XXXXX', '--', $canonical_url);
     if ($canonical_url[0] != '/')
         $canonical_url = "/$canonical_url";
@@ -38,6 +39,8 @@ if( $canonical_url) {
 } else {
     $canonical_url = $url;
 }
+$canonical_url = preg_replace('/\/index$/', '/', $canonical_url);
+
 echo "<link rel='canonical' href='$canonical_url'/>";
 
 $referer = $_SERVER['HTTP_REFERER'];
