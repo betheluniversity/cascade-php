@@ -7,7 +7,7 @@
         </div>
     {% endif %}
     <div class="news__content">
-        <p class="news__headline"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></p>
+        <h4 class="mt0"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h4>
 
         {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
             <p>{{article['teaser']}}</p>
