@@ -148,7 +148,7 @@ function inspect_news_article($xml, $categories){
     if( $DisplayImages && $DisplayImages === "No")
         $page_info['image'] = '';
     else
-        $page_info['image'] = thumborURL($page_info['image-path'], 215, $lazy=true, $print=false, $page_info['title']);
+        $page_info['image'] = srcset($page_info['image-path'], $print=false, $lazy=true, $classes='', $page_info['title']);
 
     $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
     $page_info['homepage-article'] = is_homepage_article($xml);
