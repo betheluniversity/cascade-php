@@ -8,11 +8,13 @@
     {% endif %}
     <div class="news__content">
         <p class="news__headline"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></p>
-        {% if article['display-date'] %}
-            <p>{{article['display-date']}}</p>
-        {% endif %}
+
         {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
             <p>{{article['teaser']}}</p>
+        {% endif %}
+        
+        {% if article['display-date'] %}
+            <p class="news__date>{{article['display-date']}}</p>
         {% endif %}
     </div>
 </div>
