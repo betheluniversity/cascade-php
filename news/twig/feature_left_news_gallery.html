@@ -1,43 +1,84 @@
 {% set story1 = threeStories[0] %}
 {% set story2 = threeStories[1] %}
 {% set story3 = threeStories[2] %}
+{% set story4 = threeStories[3] %}
 
-<div class="grid" id="news">
-    <div class="grid-cell  mr4--large  mb2">
-            <a href="{{story1['url']}}">{{story1['gallery-image']|raw}}</a>
-            <h3 class="mt1"><a href="{{story1['url']}}">{{ story1['title'] }}</a></h3>
-            <p>{{ story1['teaser'] }}</p>
-            <p><small>{{ story1['display-date'] }}</small></p>
-    </div>
-    
-    <div class="grid-cell">
-            
-            <div class="grid  mb2">
-                <div class="grid-cell  mr1">
-                    <a class="mb1" href="{{story2['url']}}"> {{story2['gallery-image']|raw}}</a>
-                </div>
-                
-                <div class="grid-cell">
-                        <h3 class="h4 mt0--large"><a href="{{story2['url']}}">{{ story2['title'] }}</a></h3>
-                        <p>{{ story2['teaser'] }}</p>
-                        <p><small>{{ story2['display-date'] }}</small></p>
-                </div>
+{% if myBethel == "Yes" %}
+    <div class="col-md-4 dashboard__channel">
+        <h2 class="u-fs24 mb-4 mb-2">Bethel News</h2>
+        <div class="mb-3">
+            {{story1['gallery-image']|raw}}
+            <div class="media-body">
+                <h3 class="u-fs16 u-fw500"><a href="{{story1['url']}}" target="_blank" rel="noopener">{{ story1['title'] }}</a></h3>
+                <p class="staff-news-teaser">{{ story1['teaser'] }}</p>
             </div>
-
-            <div class="grid  mb2">
-                <div class="grid-cell  mr1">
-                    <a href="{{story3['url']}}"> {{story3['gallery-image']|raw}}</a>
-                </div>
-
-                <div class="grid-cell">
-                        <h3 class="h4 mt0--large"><a href="{{story3['url']}}">{{ story3['title'] }}</a></h3>
-                        <p>{{ story3['teaser'] }}</p>
-                        <p><small>{{ story3['display-date'] }}</small></p>
-                </div>
-            </div>
-            
+        </div>
     </div>
-</div>
+    <div class="col-md-4 dashboard__channel">
+        <div class="media mb-2">
+            {{story2['gallery-image']|raw}}
+            <div class="media-body">
+                <h3 class="u-fs16 u-fw500"><a href="{{story2['url']}}" target="_blank" rel="noopener">{{ story2['title'] }}</a></h3>
+                <p class="staff-news-teaser">{{ story2['teaser'] }}</p>
+            </div>
+        </div>
+        <div class="media mb-2">
+            {{story3['gallery-image']|raw}}
+            <div class="media-body">
+                <h3 class="u-fs16 u-fw500"><a href="{{story3['url']}}" target="_blank" rel="noopener">{{ story3['title'] }}</a></h3>
+                <p class="staff-news-teaser">{{ story3['teaser'] }}</p>
+            </div>
+        </div>
+        <div class="media mb-2">
+            {{story4['gallery-image']|raw}}
+            <div class="media-body">
+                <h3 class="u-fs16 u-fw500"><a href="{{story4['url']}}" target="_blank" rel="noopener">{{ story4['title'] }}</a></h3>
+                <p class="staff-news-teaser">{{ story4['teaser'] }}</p>
+            </div>
+        </div>
+    </div>
+    <p class="mb-0 mt-0">
+        <a href="/news/media-relations">Submit News</a> | <a href="https://tinker.bethel.edu/e-announcements/" target="_blank" rel="noopener">Submit E-Announcement</a> | <a href="/news/news-archive">Archive</a>
+    </p>
+{% else %}
+    <div class="grid" id="news">
+        <div class="grid-cell  mr4--large  mb2">
+                <a href="{{story1['url']}}">{{story1['gallery-image']|raw}}</a>
+                <h3 class="mt1"><a href="{{story1['url']}}">{{ story1['title'] }}</a></h3>
+                <p>{{ story1['teaser'] }}</p>
+                <p><small>{{ story1['display-date'] }}</small></p>
+        </div>
+
+        <div class="grid-cell">
+
+                <div class="grid  mb2">
+                    <div class="grid-cell  mr1">
+                        <a class="mb1" href="{{story2['url']}}"> {{story2['gallery-image']|raw}}</a>
+                    </div>
+
+                    <div class="grid-cell">
+                            <h3 class="h4 mt0--large"><a href="{{story2['url']}}">{{ story2['title'] }}</a></h3>
+                            <p>{{ story2['teaser'] }}</p>
+                            <p><small>{{ story2['display-date'] }}</small></p>
+                    </div>
+                </div>
+
+                <div class="grid  mb2">
+                    <div class="grid-cell  mr1">
+                        <a href="{{story3['url']}}"> {{story3['gallery-image']|raw}}</a>
+                    </div>
+
+                    <div class="grid-cell">
+                            <h3 class="h4 mt0--large"><a href="{{story3['url']}}">{{ story3['title'] }}</a></h3>
+                            <p>{{ story3['teaser'] }}</p>
+                            <p><small>{{ story3['display-date'] }}</small></p>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+{% endif %}
+
 
 {% for sortedArticle in sortedArticles %}
 {{ sortedArticle['html'] | raw }}

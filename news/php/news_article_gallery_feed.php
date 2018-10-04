@@ -11,7 +11,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
 
-function create_news_article_gallery_feed($categories, $galleryStyle){
+function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
@@ -51,8 +51,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle){
             array_push($threeStories, $newsAndStory);
             unset($arrayOfNewsAndStories[$index]);
 
-            // exit once there are 3
-            if( sizeof($threeStories) >= 3)
+            // exit once there are 4
+            if( sizeof($threeStories) >= 4)
                 break;
         }
     }
