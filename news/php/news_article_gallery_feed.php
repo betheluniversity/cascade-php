@@ -9,6 +9,8 @@
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/news/php/news_article_feed.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
+require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
 function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel){
@@ -17,7 +19,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
     $DisplayImages = 'Yes';
     global $DisplayTeaser;
     $DisplayTeaser = 'Yes';
-
+    
     // grab the global variable so we don't use stories that have already been used
     if( !$GLOBALS['stories-already-used'] ){
         $GLOBALS['stories-already-used'] = array();
