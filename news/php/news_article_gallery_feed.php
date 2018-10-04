@@ -78,7 +78,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render($renderFile, array(
         'sortedArticles'     => $sortedArticles,
-        'threeStories'     => $threeStories
+        'threeStories'     => $threeStories,
+        'myBethel'         => $myBethel
     ));
 
     return $html;
