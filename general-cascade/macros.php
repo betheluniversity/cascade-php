@@ -256,14 +256,14 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     $cache->connect('localhost', 11211);
     $data = $cache->get($cache_name);
     if (!$data) {
-        $msg = "\nFull Data Array Memcache miss at " . $_SERVER[REQUEST_URI] . "\n";
+        $msg = "\nFull Data Array Memcache miss at " . $_SERVER['REQUEST_URI'] . "\n";
         error_log($msg, 3, '/tmp/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
 
         } catch (Exception $e) {
-            $msg = "\nError - " . $e->getMessage() . "at " . $_SERVER[REQUEST_URI] . "\n";
+            $msg = "\nError - " . $e->getMessage() . "at " . $_SERVER['REQUEST_URI'] . "\n";
             error_log($msg, 3, '/tmp/memcache.log');
         }
     }
