@@ -6,6 +6,7 @@
  * Time: 11:57 AM
  */
 
-
+if( !is_array($config) )
+     $config = array();
 
 $config['RAVEN_URL'] = '';
