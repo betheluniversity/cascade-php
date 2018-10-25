@@ -15,7 +15,7 @@ function traverse_folder($xml, $pages, $categories, $func){
         // Set the page data.=
         $page = $func($child, $categories);
         // Add to an event array.
-        if( $page['display-on-feed'] ) {
+        if( is_array($page) && isset($page['display-on-feed'])) {
             array_push($pages, $page);
         }
     }
