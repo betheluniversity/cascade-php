@@ -83,11 +83,11 @@ function divide_into_arrays_quotes($quotesArrays){
     $dept = array();
     $topic = array();
     foreach( $quotesArrays as $quote){
-        if( $quote['match-dept'])
+        if( in_array('match-dept', $quote) && $quote['match-dept'])
         {
             array_push($dept, $quote);
         }
-        elseif( $quote['match-topic'])
+        elseif(in_array('match-topice', $quote) &&  $quote['match-topic'])
         {
             array_push($topic, $quote);
         }
