@@ -52,7 +52,8 @@ if (!stristr($host, "bethel.edu") && $referer != null){
     // update the interesting referer in session
     $_SESSION['interesting_referer'] = $referer;
 }
-echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
+if( in_array('interesting_referer', $_SESSION))
+    echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
 
 
 
