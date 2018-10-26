@@ -124,7 +124,7 @@ function create_new_job_titles($titles){
         $currentSchool = $school_array[$i];
         $currentProgram = $program_array[$i];
         $currentJob = $job_title_array[$i];
-        if( is_string($currentSchool) )
+        if( is_string($currentSchool) ) {
             if(!array_key_exists($currentSchool, $job_map)){
                 $job_map["$currentSchool"] = array();
             }
