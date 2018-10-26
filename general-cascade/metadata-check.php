@@ -48,14 +48,15 @@ echo "<link rel='canonical' href='$canonical_url'/>";
 if( in_array('HTTP_REFERER', $_SERVER) ) {
     $referer = $_SERVER['HTTP_REFERER'];
     $parsed = parse_url($referer);
-    $host = $parsed['host'];
-    if (!stristr($host, "bethel.edu") && $referer != null){
-        // update the interesting referer in session
-        $_SESSION['interesting_referer'] = $referer;
+    if( in_array('host', $parsed) ){
+        $host = $parsed['host'];
+        if (!stristr($host, "bethel.edu") && $referer != null){
+            // update the interesting referer in session
+            $_SESSION['interesting_referer'] = $referer;
+        }
+        if( in_array('interesting_referer', $_SESSION))
+            echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
     }
-    if( in_array('interesting_referer', $_SESSION))
-        echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
-
 
     // Set cookie for google/yahoo/bing searches. Check these before proper utm_ get params so the ad
     // data doesn't get overwritten.
