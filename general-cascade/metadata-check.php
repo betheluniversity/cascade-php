@@ -45,45 +45,44 @@ $canonical_url = preg_replace('/\/index$/', '/', $canonical_url);
 
 echo "<link rel='canonical' href='$canonical_url'/>";
 
-$referer = $_SERVER['HTTP_REFERER'];
-$parsed = parse_url($referer);
-$host = $parsed['host'];
-if (!stristr($host, "bethel.edu") && $referer != null){
-    // update the interesting referer in session
-    $_SESSION['interesting_referer'] = $referer;
-}
-if( in_array('interesting_referer', $_SESSION))
-    echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
+if( in_array('HTTP_REFERER', $_SERVER) ) {
+    $referer = $_SERVER['HTTP_REFERER'];
+    $parsed = parse_url($referer);
+    $host = $parsed['host'];
+    if (!stristr($host, "bethel.edu") && $referer != null){
+        // update the interesting referer in session
+        $_SESSION['interesting_referer'] = $referer;
+    }
+    if( in_array('interesting_referer', $_SESSION))
+        echo "<!-- " . $_SESSION['interesting_referer'] . " -->";
 
 
-
-
-
-// Set cookie for google/yahoo/bing searches. Check these before proper utm_ get params so the ad
-// data doesn't get overwritten.
-$url = $_SERVER['HTTP_REFERER'];
-$query = parse_url($url, PHP_URL_QUERY);
-$host = parse_url($url, PHP_URL_HOST);
-$expire_year = time() + 31536000;
-$expire_month = time() + 2628000;
-// should we check for UTM here instead of q=?
-if( strstr($host, 'google.')) {
-    setcookie('utm_content', '', -1, "/", ".bethel.edu");
-    setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'google', $expire_month, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
-}
-elseif( strstr($host, 'yahoo.')) {
-    setcookie('utm_content', '', -1, "/", ".bethel.edu");
-    setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'yahoo', $expire_month, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
-}
-elseif( strstr($host, 'bing.')) {
-    setcookie('utm_content', '', -1, "/", ".bethel.edu");
-    setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
-    setcookie('utm_source', 'bing', $expire_month, "/", ".bethel.edu");
-    setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
+    // Set cookie for google/yahoo/bing searches. Check these before proper utm_ get params so the ad
+    // data doesn't get overwritten.
+    $url = $_SERVER['HTTP_REFERER'];
+    $query = parse_url($url, PHP_URL_QUERY);
+    $host = parse_url($url, PHP_URL_HOST);
+    $expire_year = time() + 31536000;
+    $expire_month = time() + 2628000;
+    // should we check for UTM here instead of q=?
+    if( strstr($host, 'google.')) {
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
+        setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
+        setcookie('utm_source', 'google', $expire_month, "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
+    }
+    elseif( strstr($host, 'yahoo.')) {
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
+        setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
+        setcookie('utm_source', 'yahoo', $expire_month, "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
+    }
+    elseif( strstr($host, 'bing.')) {
+        setcookie('utm_content', '', -1, "/", ".bethel.edu");
+        setcookie('utm_campaign', '', -1, "/", ".bethel.edu");
+        setcookie('utm_source', 'bing', $expire_month, "/", ".bethel.edu");
+        setcookie('utm_medium', 'organic', $expire_month, "/", ".bethel.edu");
+    }
 }
 
 // testing ads:
