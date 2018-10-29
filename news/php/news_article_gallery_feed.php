@@ -21,7 +21,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
     $DisplayTeaser = 'Yes';
     
     // grab the global variable so we don't use stories that have already been used
-    if( in_array('stories-already-used', $GLOBALS) && !$GLOBALS['stories-already-used'] ){
+    if( !in_array('stories-already-used', $GLOBALS) && !$GLOBALS['stories-already-used'] ){
         $GLOBALS['stories-already-used'] = array();
     }
 
