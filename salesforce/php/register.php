@@ -49,8 +49,8 @@ function escapeEmail($email) {
 function log_entry($message){
     // Date format: [Mon Jan 1 12:12:00 2000], as well as then inserting the message,
     // and sets the path to the /code/salesforce/php/register.log
-    error_log("--------------------------------------------------------------------------------------------------------------------" . "\n", 3, getcwd()."/register.log");
-    error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, getcwd()."/register.log");
+    error_log("--------------------------------------------------------------------------------------------------------------------" . "\n", 3, "/opt/php_logs/register.log");
+    error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, "/opt/php_logs/register.log");
 }
 
 //Searches for a Contact with this email
