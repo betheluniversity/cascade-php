@@ -32,7 +32,7 @@ function create_news_article_feed_logic($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
     // grab the global variable so we don't use stories that have already been used
-    if( in_array('stories-already-used', $GLOBALS) && !$GLOBALS['stories-already-used'] ){
+    if( !array_key_exists('stories-already-used', $GLOBALS) ){
         $GLOBALS['stories-already-used'] = array();
     }
 
