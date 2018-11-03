@@ -74,6 +74,9 @@ function get_twig_html($imagePath, $text, $source, $gradYear, $job){
     if( $imagePath[0] != '/')
         $imagePath = "/$imagePath";
 
+    if( strpos($imagePath, 'bethel.edu') !== false[0] )
+        $imagePath = "https://www.bethel.edu$imagePath";
+
     if( $imagePath != "/" && $imagePath != "") {
         $thumbURL = thumborURL($imagePath, 200, true, false, $text);
     }else {
