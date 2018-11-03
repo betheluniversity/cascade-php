@@ -104,7 +104,8 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
-
+    if( strpos($end_path, 'bethel.edu') !== false )
+        $end_path = "https://www.bethel.edu/$end_path";
     $html = $twig->render('thumborURL.html', array(
         'end_path'  => $end_path,
         'width'     => $width,
