@@ -86,6 +86,7 @@ if( in_array('HTTP_REFERER', $_SERVER) ) {
     }
 }
 
+$expire_year = time() + 31536000;
 // testing ads:
 // https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
 foreach( $_GET as $key => $value){
