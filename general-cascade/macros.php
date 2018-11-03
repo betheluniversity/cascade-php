@@ -257,14 +257,14 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     $data = $cache->get($cache_name);
     if (!$data) {
         $msg = "\nFull Data Array Memcache miss at " . $_SERVER['REQUEST_URI'] . "\n";
-        error_log($msg, 3, '/tmp/memcache.log');
+        error_log($msg, 3, '/opt/php_logs/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
 
         } catch (Exception $e) {
             $msg = "\nError - " . $e->getMessage() . "at " . $_SERVER['REQUEST_URI'] . "\n";
-            error_log($msg, 3, '/tmp/memcache.log');
+            error_log($msg, 3, '/opt/php_logs/memcache.log');
         }
     }
     return $data;
