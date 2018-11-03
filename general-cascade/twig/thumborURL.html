@@ -1,6 +1,3 @@
-{% if "thumbor.bethel.edu" not in end_path %}
-    {% set end_path = 'https://thumbor.bethel.edu' ~ end_path %}
-{% endif %}
 {%if lazy %}
     <img class="lazyload"  data-src="//cdn{{random(3) + 1}}.bethel.edu/resize/unsafe/{{width}}x0/smart/{{end_path}}" alt="{{alt_text}}"/>
 {% else %}
