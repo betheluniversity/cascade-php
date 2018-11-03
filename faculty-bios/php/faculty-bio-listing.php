@@ -221,7 +221,7 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
 function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
     $matched_job_titles = array();
 
-    if( array_key_exists('job-titles', $bio) && is_array($bio['job-titles']) ) {
+    if( is_array($bio) && array_key_exists('job-titles', $bio) && is_array($bio['job-titles']) ) {
         foreach ($bio['job-titles'] as $job_title) {
             $display_job_title = get_job_title($job_title, $bio['id']);
             // if school matches
