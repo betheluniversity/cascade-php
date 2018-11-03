@@ -39,7 +39,7 @@ if (isset($request_uri[1]) && $request_uri[1]) {
 }
 //Set the service URL and CA cert
 phpCAS::setFixedServiceURL($final_url);
-phpCAS::setCasServerCACert("/etc/pki/tls/certs/gd_bundle.crt");
+phpCAS::setCasServerCACert("https://www.bethel.edu/its/banner-service-resources/banner-request");
 
 if( strpos($require_auth,"Yes") !== false ){
     phpCAS::forceAuthentication();
