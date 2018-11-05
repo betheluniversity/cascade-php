@@ -20,7 +20,7 @@ Sending them to the SSB SSO handler will decode them a second time and show the 
 
 
 */
-$staging = strstr(getcwd(), "staging/");
+$staging = strstr(getcwd(), "/staging");
 if($staging){
     $url = "https://banner.xp.bethel.edu/ssomanager/c/SSB?pkg=" . $_GET['url'];
 }else{

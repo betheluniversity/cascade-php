@@ -8,7 +8,7 @@
 
 $user = $_POST['user'];
 
-$staging = strstr(getcwd(), "staging/");
+$staging = strstr(getcwd(), "/staging");
 
 $hash = md5($user['firstName'] . $user['lastName'] .$user['email'] . $_POST['degree-type']);
 

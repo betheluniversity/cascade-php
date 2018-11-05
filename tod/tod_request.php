@@ -6,7 +6,7 @@
  * Time: 2:01 PM
  */
 
-$staging = strstr(getcwd(), "staging/");
+$staging = strstr(getcwd(), "/staging");
 $soda = strstr(getcwd(), "soda");
 $require_auth = "Yes";
 

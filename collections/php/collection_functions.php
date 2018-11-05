@@ -9,7 +9,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
 //todo Do we need Destination name?
 global $destinationName;
 // Destination name makes it easier to modify the url from "www.bethel.edu" and "staging.bethel.edu"
-if( strstr(getcwd(), "staging/") ){
+if( strstr(getcwd(), "/staging") ){
     $destinationName = "staging";
 }
 else{ // Live site.
