@@ -278,7 +278,7 @@
             //using query params instead of hash
             h = window.location.search.replace(/^\#/, '?') || '?';
         }
-        loc = '/events/calendar/code/calendar_rest' + h;
+        loc = '/code/events/php/calendar_rest' + h;
         changeCalendarLocation(loc);
     }
 
@@ -318,7 +318,7 @@
         if (mode == "LIST"){
             h += "&mode=list"
         }
-        loc = '/events/calendar/code/calendar_rest' + h;
+        loc = '/code/events/php/calendar_rest' + h;
 
         changeCalendarLocation(loc);
 
