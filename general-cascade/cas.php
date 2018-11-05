@@ -64,7 +64,7 @@ if( strpos($require_auth,"Yes") !== false ){
         if( !$has_faculty_or_staff_role){
             header("HTTP/1.0 403 Permission Denied", true, 403);
             require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
-            include('/var/www/staging/public/_error/403.php');
+            include('/var/www/staging/_error/403.php');
             exit(403);
         }
     }

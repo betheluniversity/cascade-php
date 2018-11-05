@@ -16,7 +16,7 @@
     $DefaultQuote;
 
     // Staging Site
-    if( strstr(getcwd(), "staging/public") ){
+    if( strstr(getcwd(), "staging/") ){
 
         $destinationName = "staging";
     }

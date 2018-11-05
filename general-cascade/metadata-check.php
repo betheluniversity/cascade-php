@@ -1,6 +1,6 @@
 <?php
 session_start();
-$staging = strstr(getcwd(), "staging/public");
+$staging = strstr(getcwd(), "staging/");
 $soda = strstr(getcwd(), "soda");
 
 if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
