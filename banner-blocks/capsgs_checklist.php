@@ -13,13 +13,15 @@ function howToApply($code, $option){
         return;
     }else{
         $call_program_code = str_replace("%", "%25", $code);
-        $url = "https://wsapi.bethel.edu/capsgs-checklist/$call_program_code/$option";
-        echo "<!-- $url -->";
-        $results = json_decode(file_get_contents($url));
-        $results = explode("\n", $results->data);
-        if($results[0]){
-            echo $twig->render('capsgs_checklist.html', array(
-                'results' => $results));
+        if( $call_program_code && $option ) {
+            $url = "https://wsapi.bethel.edu/capsgs-checklist/$call_program_code/$option";
+            echo "<!-- $url -->";
+            $results = json_decode(file_get_contents($url));
+            $results = explode("\n", $results->data);
+            if ($results[0]) {
+                echo $twig->render('capsgs_checklist.html', array(
+                    'results' => $results));
+            }
         }
     }
 }
