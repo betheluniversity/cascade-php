@@ -28,8 +28,8 @@
             $this->Type = $type;
             if( $type == "Proof points")
             {
-                if( strstr(getcwd(), "staging/public") ){
-                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging/public/_shared-content/xml/proof-points.xml", $schoolMetadata, $deptMetadata);
+                if( strstr(getcwd(), "staging/") ){
+                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging//_shared-content/xml/proof-points.xml", $schoolMetadata, $deptMetadata);
                 }
                 else{ //if( strstr(getcwd(), "cms.pub") )
                     $this->CarouselItems = get_xml_carousel_items("/var/www/cms.pub/_shared-content/xml/proof-points.xml", $schoolMetadata, $deptMetadata);
@@ -37,8 +37,8 @@
             }
             elseif( $type == "Quotes")
             {
-                if( strstr(getcwd(), "staging/public") ){
-                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging/public/_shared-content/xml/quotes.xml", $schoolMetadata, $deptMetadata);
+                if( strstr(getcwd(), "staging/") ){
+                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging//_shared-content/xml/quotes.xml", $schoolMetadata, $deptMetadata);
                 }
                 else{ //if( strstr(getcwd(), "cms.pub") )
                     $this->CarouselItems = get_xml_carousel_items("/var/www/cms.pub/_shared-content/xml/quotes.xml", $schoolMetadata, $deptMetadata);
@@ -46,8 +46,8 @@
             }
             elseif( $type == "Profile Stories")
             {
-                if( strstr(getcwd(), "staging/public") ){
-                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging/public/_shared-content/xml/profile-stories.xml", $schoolMetadata, $deptMetadata);
+                if( strstr(getcwd(), "staging/") ){
+                    $this->CarouselItems = get_xml_carousel_items("/var/www/staging//_shared-content/xml/profile-stories.xml", $schoolMetadata, $deptMetadata);
                 }
                 else{ //if( strstr(getcwd(), "cms.pub") )
                     $this->CarouselItems = get_xml_carousel_items("/var/www/cms.pub/_shared-content/xml/profile-stories.xml", $schoolMetadata, $deptMetadata);

@@ -272,7 +272,7 @@ function change_admissions_status($contact_id){
 }
 
 //Setting Variables, as well as declaring the environment
-$staging = strstr(getcwd(), "staging/public");
+$staging = strstr(getcwd(), "staging/");
 $mail_to = "web-development@bethel.edu";
 $mail_from = "salesforce-register@bethel.edu";
 $subject = "salesforce register submission";
