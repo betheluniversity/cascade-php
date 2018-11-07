@@ -229,6 +229,8 @@ function makeTwigEnviron($path){
 }
 
 function autoCache($func, $inputs=array(), $cache_time=300){
+    if( !is_int($cache_time) )
+        $cache_time = 300;
 
     // build a cache string from the stack trace.
     $bt = debug_backtrace();
@@ -241,7 +243,12 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     foreach ($bt as $entry_id => $entry) {
         // append info from each layer in the stack trace to the cache name.
         // this will result in a unique cache name for each time autoCache is called
-        $cache_name .= $entry['file'] . $entry['function'] . $entry['line'];
+        if( array_key_exists('file', $entry))
+            $cache_name .= $entry['file'];
+        if( array_key_exists('function', $entry))
+            $cache_name .= $entry['function'];
+        if( array_key_exists('line', $entry))
+            $cache_name .= $entry['line'];
     }
 
     $cache_name = md5($cache_name);
