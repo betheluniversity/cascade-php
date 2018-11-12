@@ -44,47 +44,48 @@ function create_event_feed_logic($categories, $heading){
     /////////////////////////////////////////
     $eventArrayWithMultipleEvents = array();
     global $PriorToToday;
-    // foreach event.
-    foreach( $arrayOfEvents as $event)
-    {
-        $dates = $event['dates'];
-        // foreach date
-        if($dates) {
-            foreach ($dates as $date) {
-                $newDate['start-date'] = $date->{'start-date'} / 1000;
-                $newDate['end-date'] = $date->{'end-date'} / 1000;
-                $newDate['all-day'] = $date->{'all-day'}->{'value'};
-                $newDate['outside-of-minnesota'] = $date->{'outside-of-minnesota'}->{'value'};
-                $newDate['time-zone'] = $date->{'time-zone'};
 
-                $isArtOrTheater = check_if_art_or_theatre($event);
-                $threeDaysSinceStart = ($date->{'start-date'}/1000) + (3 * 24 * 60 * 60);
+    if( is_array($arrayOfEvents) ) {
+        foreach ($arrayOfEvents as $event) {
+            $dates = $event['dates'];
+            // foreach date
+            if ($dates) {
+                foreach ($dates as $date) {
+                    $newDate['start-date'] = $date->{'start-date'} / 1000;
+                    $newDate['end-date'] = $date->{'end-date'} / 1000;
+                    $newDate['all-day'] = $date->{'all-day'}->{'value'};
+                    $newDate['outside-of-minnesota'] = $date->{'outside-of-minnesota'}->{'value'};
+                    $newDate['time-zone'] = $date->{'time-zone'};
 
-
-                // This will hide all events prior to today.
-                if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
-                    continue;
-
-                //hides gallery events three days after they begin.
-                if( time() > $threeDaysSinceStart ){
-                    continue;
-                }
-
-                $newEvent = $event;
-                $newEvent['date'] = $newDate;
-                $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
+                    $isArtOrTheater = check_if_art_or_theatre($event);
+                    $threeDaysSinceStart = ($date->{'start-date'} / 1000) + (3 * 24 * 60 * 60);
 
 
-                $newEvent['html'] = get_event_html($newEvent);
+                    // This will hide all events prior to today.
+                    if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
+                        continue;
 
-                if (display_on_feed_events($newEvent)) {
-                    array_push($eventArrayWithMultipleEvents, $newEvent);
-                }
+                    //hides gallery events three days after they begin.
+                    if (time() > $threeDaysSinceStart) {
+                        continue;
+                    }
+
+                    $newEvent = $event;
+                    $newEvent['date'] = $newDate;
+                    $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
 
-                // art exhibits and theatre productions only add 1 date.
-                if ($isArtOrTheater != 0) {
-                    break;
+                    $newEvent['html'] = get_event_html($newEvent);
+
+                    if (display_on_feed_events($newEvent)) {
+                        array_push($eventArrayWithMultipleEvents, $newEvent);
+                    }
+
+
+                    // art exhibits and theatre productions only add 1 date.
+                    if ($isArtOrTheater != 0) {
+                        break;
+                    }
                 }
             }
         }
