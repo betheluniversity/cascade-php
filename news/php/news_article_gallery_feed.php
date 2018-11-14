@@ -36,6 +36,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
 //    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
+    // This needs to be refactored once we decide how we are going to use the news article gallery feed in the future
     $threeStories = array();
     if( $myBethel == 'No' ) {
         foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
@@ -60,6 +61,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
             }
         }
     }
+    // I kept this as duplicated code so that it would be easier to refactor later
     else {
         foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
             $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
