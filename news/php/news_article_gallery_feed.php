@@ -37,18 +37,32 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
     $threeStories = array();
-    foreach( $arrayOfNewsAndStories as $index => $newsAndStory){
-        $id = $newsAndStory['id'];
+    if( $myBethel == 'No' ) {
+        foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
+            $id = $newsAndStory['id'];
 
-        // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-        if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
-            continue;
+            // if its the Homepage Top Feature, skip any that aren't tagged as homepage
+            if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
+                continue;
 
-        if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
+            if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
+                $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
+
+                // don't use this story on this page again
+                array_push($GLOBALS['stories-already-used'], $id);
+
+                array_push($threeStories, $newsAndStory);
+                unset($arrayOfNewsAndStories[$index]);
+
+                // exit once there are 4
+                if( sizeof($threeStories) >= 4)
+                    break;
+            }
+        }
+    }
+    else {
+        foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
             $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
-
-            // don't use this story on this page again
-            array_push($GLOBALS['stories-already-used'], $id);
 
             array_push($threeStories, $newsAndStory);
             unset($arrayOfNewsAndStories[$index]);
