@@ -236,10 +236,6 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     $bt = debug_backtrace();
     $cache_name = "";
 
-    // if URL uses a query string (e.g. Calendar) to specify content, add the query string params to the name
-    if(isset($_SERVER["QUERY_STRING"])){
-        $cache_name .= $_SERVER["QUERY_STRING"];
-    }
     foreach ($bt as $entry_id => $entry) {
         // append info from each layer in the stack trace to the cache name.
         // this will result in a unique cache name for each time autoCache is called
