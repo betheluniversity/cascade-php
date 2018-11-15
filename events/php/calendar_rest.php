@@ -68,7 +68,7 @@ function draw_calendar($month,$year, $day=1){
     /* draw table */
     $draw_calendar_time_start = microtime(true);
     $get_xml_start_time = microtime(true);
-
+    
     $calendar = '';
     $xml = autoCache("get_event_xml", array());
 
