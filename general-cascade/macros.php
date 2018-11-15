@@ -236,9 +236,10 @@ function autoCache($func, $inputs=array(), $cache_time=300){
     $bt = debug_backtrace();
     $cache_name = "";
 
-    // if URL uses a query string (e.g. Calendar) to specify content, add the query string params to the name
+    // if URL uses a query string (e.g. Calendar, Program Search) to specify content, add the query string params to the cache name
     if(isset($_SERVER["QUERY_STRING"])){
         $array_of_query_strings = array();
+        // $array_of_query_strings becomes a key=>value array, based on the QUERY_STRING
         parse_str($_SERVER["QUERY_STRING"], $array_of_query_strings);
         $keys_we_care_about = [
             'year', # calendar
@@ -251,7 +252,9 @@ function autoCache($func, $inputs=array(), $cache_time=300){
         ];
 
         foreach($array_of_query_strings as $key => $value){
+            // each key we want to use, we append it with the value to the cache name.
             if( in_array($key, $keys_we_care_about) ) {
+                // as long as we are consistent with how they get added, it doesn't matter on the style of adding it
                 $cache_name .= "$key=$value&";
             }
         }
