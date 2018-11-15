@@ -238,7 +238,23 @@ function autoCache($func, $inputs=array(), $cache_time=300){
 
     // if URL uses a query string (e.g. Calendar) to specify content, add the query string params to the name
     if(isset($_SERVER["QUERY_STRING"])){
-        $cache_name .= $_SERVER["QUERY_STRING"];
+        $array_of_query_strings = array();
+        parse_str($_SERVER["QUERY_STRING"], $array_of_query_strings);
+        $keys_we_care_about = [
+            'year', # calendar
+            'month', # calendar
+            'day', # calendar
+            'search', # Program Search
+            'degree', # Program Search
+            'school', # Program Search
+            'delivery' # Program Search
+        ];
+
+        foreach($array_of_query_strings as $key => $value){
+            if( in_array($key, $keys_we_care_about) ) {
+                $cache_name .= "$key=$value&";
+            }
+        }
     }
 
     foreach ($bt as $entry_id => $entry) {
