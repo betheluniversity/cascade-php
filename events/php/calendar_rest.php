@@ -124,8 +124,8 @@ function draw_calendar($month,$year, $day=1){
 function get_event_xml(){
 
     ##Create a list of categories the calendar uses
-//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml");
-    $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/calendar-categories.xml"));
+//        $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/calendar-categories.xml");
+    $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/calendar-categories.xml"));
     $categories = array();
     $xml = $xml->{'system-page'};
     foreach ($xml->children() as $child) {
@@ -137,8 +137,8 @@ function get_event_xml(){
             }
         }
     }
-//        $xml = simplexml_load_file("/var/www/cms.pub/_shared-content/xml/events.xml");
-    $xml = autoCache("simplexml_load_file", array("/var/www/cms.pub/_shared-content/xml/events.xml"));
+//        $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml");
+    $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml"));
     $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
     $dates = array();
     foreach($event_pages as $child ){

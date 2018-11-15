@@ -46,7 +46,7 @@ function find_matching_bios($xml, $categories){
         }
 
         // if the file doesn't exist, skip it.
-        if( !file_exists('/var/www/cms.pub/' . $bio->{'path'} . '.php') ) {
+        if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $bio->{'path'} . '.php') ) {
             continue;
         }
 
