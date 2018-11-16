@@ -251,6 +251,8 @@ function autoCache($func, $inputs=array(), $cache_time=300){
             'delivery' # Program Search
         ];
 
+        // sort the associative array, so the keys are always in the same order
+        ksort($array_of_query_strings);
         foreach($array_of_query_strings as $key => $value){
             // each key we want to use, we append it with the value to the cache name.
             if( in_array($key, $keys_we_care_about) ) {
