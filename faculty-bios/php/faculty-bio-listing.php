@@ -77,7 +77,7 @@ function inspect_faculty_bio($xml){
     );
 
     // if the file doesn't exist, skip it.
-    if( !file_exists('/var/www/cms.pub/' . $page_info['path'] . '.php') ) {
+    if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
         return "";
     }
 

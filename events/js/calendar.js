@@ -237,7 +237,7 @@
             replaceQueryString($(button), '?' + data['current_month_qs']);
         });
         this.month_grid.html(data['grid']);
-    }
+    };
 
     CalendarController.prototype.init = function() {
         var loc = window.location.toString().replace(/#.*/, '');
@@ -251,10 +251,11 @@
             var qs = extractQueryParameters(nextHref);
             this.next_month_link.attr('href', loc + "?" + objectToQuery(qs));
         }
-    }
+    };
 
     function changeCalendarLocation(loc){
         var controller = new CalendarController('#main');
+
         $.getJSON(loc, function(data){
             controller.update(data);
             getRemoteUser();
@@ -273,7 +274,7 @@
             //using query params instead of hash
             h = window.location.search.replace(/^\#/, '?') || '?';
         }
-        loc = '/events/calendar/code/calendar_rest' + h;
+        loc = '/code/events/php/calendar_rest' + h;
         changeCalendarLocation(loc);
     }
 
@@ -333,7 +334,7 @@
         if (mode == "LIST"){
             h += "&mode=list";
         }
-        loc = '/events/calendar/code/calendar_rest' + h;
+        loc = '/code/events/php/calendar_rest' + h;
 
         changeCalendarLocation(loc);
 
@@ -408,7 +409,7 @@
         });
 
         $('.filter-content').bind('submit', function(){
-            var loc = window.location.toString()
+            var loc = window.location.toString();
             var hashParams = extractHashParameters(loc);
             var queryParams = extractQueryParameters(loc);
             delete queryParams['subjects'];
