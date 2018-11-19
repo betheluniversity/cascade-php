@@ -21,8 +21,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     $DisplayTeaser = 'Yes';
     
     // grab the global variable so we don't use stories that have already been used
-    if( !array_key_exists('news-stories-already-used', $GLOBALS) ){
-        $GLOBALS['news-stories-already-used'] = array();
+    if( !array_key_exists('stories-already-used', $GLOBALS) ){
+        $GLOBALS['stories-already-used'] = array();
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
@@ -56,11 +56,11 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
                 continue;
 
-            if( $newsAndStory['article-type'] == 'News' and !in_array($id, $GLOBALS['news-stories-already-used'])) {
+            if( $newsAndStory['article-type'] == 'News' and !in_array($id, $GLOBALS['stories-already-used'])) {
                 $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
                 // don't use this story on this page again
-                array_push($GLOBALS['news-stories-already-used'], $id);
+                array_push($GLOBALS['stories-already-used'], $id);
 
                 array_push($threeStories, $newsAndStory);
                 unset($arrayOfNewsAndStories[$index]);
@@ -71,11 +71,11 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
                 continue;
 
-            if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['news-stories-already-used'])){
+            if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
                 $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
                 // don't use this story on this page again
-                array_push($GLOBALS['news-stories-already-used'], $id);
+                array_push($GLOBALS['stories-already-used'], $id);
 
                 array_push($threeStories, $newsAndStory);
                 unset($arrayOfNewsAndStories[$index]);
