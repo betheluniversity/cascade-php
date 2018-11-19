@@ -13,7 +13,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
-function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel){
+function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
@@ -21,8 +21,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
     $DisplayTeaser = 'Yes';
     
     // grab the global variable so we don't use stories that have already been used
-    if( !array_key_exists('stories-already-used', $GLOBALS) ){
-        $GLOBALS['stories-already-used'] = array();
+    if( !array_key_exists('news-stories-already-used', $GLOBALS) ){
+        $GLOBALS['news-stories-already-used'] = array();
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
@@ -36,43 +36,54 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel)
 //    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
-    // This needs to be refactored once we decide how we are going to use the news article gallery feed in the future
-    $threeStories = array();
-    if( $myBethel == 'No' ) {
-        foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
-            $id = $newsAndStory['id'];
+    $includeStories = false;
+    $includeNews = false;
 
+    if( $newsOrStories == "Both" ) {
+        $includeStories = true;
+        $includeNews = true;
+    } elseif ( $newsOrStories == "News" ) {
+        $includeNews = true;
+    } else {
+        $includeStories = true;
+    }
+
+    $threeStories = array();
+    foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
+        $id = $newsAndStory['id'];
+        if( $includeNews ) {
             // if its the Homepage Top Feature, skip any that aren't tagged as homepage
             if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
                 continue;
 
-            if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
+            if( $newsAndStory['article-type'] == 'News' and !in_array($id, $GLOBALS['news-stories-already-used'])) {
                 $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
                 // don't use this story on this page again
-                array_push($GLOBALS['stories-already-used'], $id);
+                array_push($GLOBALS['news-stories-already-used'], $id);
 
                 array_push($threeStories, $newsAndStory);
                 unset($arrayOfNewsAndStories[$index]);
-
-                // exit once there are 4
-                if( sizeof($threeStories) >= 4)
-                    break;
             }
         }
-    }
-    // I kept this as duplicated code so that it would be easier to refactor later
-    else {
-        foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
-            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
+        if( $includeStories ) {
+            // if its the Homepage Top Feature, skip any that aren't tagged as homepage
+            if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
+                continue;
 
-            array_push($threeStories, $newsAndStory);
-            unset($arrayOfNewsAndStories[$index]);
+            if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['news-stories-already-used'])){
+                $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
-            // exit once there are 4
-            if( sizeof($threeStories) >= 4)
-                break;
+                // don't use this story on this page again
+                array_push($GLOBALS['news-stories-already-used'], $id);
+
+                array_push($threeStories, $newsAndStory);
+                unset($arrayOfNewsAndStories[$index]);
+            }
         }
+        // exit once there are 4
+        if( sizeof($threeStories) >= 4)
+            break;
     }
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
