@@ -49,13 +49,12 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     }
 
     $threeStories = array();
-    foreach ($arrayOfNewsAndStories as $index => $newsAndStory) {
+    foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
+        // if its the Homepage Top Feature, skip any that aren't tagged as homepage
+        if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
+            continue;
         if( $includeNews ) {
-            // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-            if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
-                continue;
-
             if( $newsAndStory['article-type'] == 'News' and !in_array($id, $GLOBALS['stories-already-used'])) {
                 $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
@@ -67,10 +66,6 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             }
         }
         if( $includeStories ) {
-            // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-            if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
-                continue;
-
             if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
                 $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
