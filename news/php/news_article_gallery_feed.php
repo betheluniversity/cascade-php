@@ -51,32 +51,33 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     $threeStories = array();
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
+        $addArticle = false;
+
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article']) )
             continue;
-        if( $includeNews ) {
-            if( $newsAndStory['article-type'] == 'News' ) {
-                $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
-                // don't use this story on this page again
-                array_push($GLOBALS['stories-already-used'], $id);
-
-                array_push($threeStories, $newsAndStory);
-                unset($arrayOfNewsAndStories[$index]);
-            }
+        // Check if the what the feed type is the same as the article type
+        if( $includeNews && $newsAndStory['article-type'] == 'News' ) {
+            $addArticle = true;
         }
-        if( $includeStories ) {
-            if( $newsAndStory['article-type'] == 'Story' ) {
-                $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
-
-                // don't use this story on this page again
-                array_push($GLOBALS['stories-already-used'], $id);
-
-                array_push($threeStories, $newsAndStory);
-                unset($arrayOfNewsAndStories[$index]);
-            }
+        if( $includeStories && $newsAndStory['article-type'] == 'Story' ) {
+            $addArticle = true;
         }
+
+        // Add the article to the list of three stories
+        if( $addArticle ) {
+            // Add the srcset to the gallery-image to be passed along to the html twig file
+            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
+
+            // don't use this story on this page again
+            array_push($GLOBALS['stories-already-used'], $id);
+
+            array_push($threeStories, $newsAndStory);
+            unset($arrayOfNewsAndStories[$index]);
+        }
+
         // exit once there are 4
         if( sizeof($threeStories) >= 4)
             break;
