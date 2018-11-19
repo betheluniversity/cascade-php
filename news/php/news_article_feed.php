@@ -145,7 +145,7 @@ function inspect_news_article($xml, $categories){
     }
 
     global $DisplayImages;
-    if( $DisplayImages && $DisplayImages === "No")
+    if( ($DisplayImages && $DisplayImages === "No") || $page_info['image-path'] == '/')
         $page_info['image'] = '';
     else
         $page_info['image'] = srcset($page_info['image-path'], $print=false, $lazy=true, $classes='', $page_info['title']);
