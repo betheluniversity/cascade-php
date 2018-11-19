@@ -59,15 +59,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             continue;
 
         // Check if the what the feed type is the same as the article type
-        if( $includeNews && $newsAndStory['article-type'] == 'News' ) {
-            $addArticle = true;
-        }
-        if( $includeStories && $newsAndStory['article-type'] == 'Story' ) {
-            $addArticle = true;
-        }
-
-        // Add the article to the list of three stories
-        if( $addArticle ) {
+        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story') ) {
             // Add the srcset to the gallery-image to be passed along to the html twig file
             $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
