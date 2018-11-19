@@ -13,13 +13,13 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
-function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories){
+function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories = "Stories"){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
     global $DisplayTeaser;
     $DisplayTeaser = 'Yes';
-    
+
     // grab the global variable so we don't use stories that have already been used
     if( !array_key_exists('stories-already-used', $GLOBALS) ){
         $GLOBALS['stories-already-used'] = array();
@@ -36,15 +36,31 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 //    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
-    $threeStories = array();
-    foreach( $arrayOfNewsAndStories as $index => $newsAndStory){
-        $id = $newsAndStory['id'];
+    $includeStories = false;
+    $includeNews = false;
 
+    if( $newsOrStories == "Both" ) {
+        $includeStories = true;
+        $includeNews = true;
+    } elseif ( $newsOrStories == "News" ) {
+        $includeNews = true;
+    } else {
+        $includeStories = true;
+    }
+
+    $threeStories = array();
+    foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
+        $id = $newsAndStory['id'];
+        $addArticle = false;
+
+        // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-        if( $galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article'] )
+        if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article']) )
             continue;
 
-        if( $newsAndStory['article-type'] == 'Story' and !in_array($id, $GLOBALS['stories-already-used'])){
+        // Check if the what the feed type is the same as the article type
+        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story') ) {
+            // Add the srcset to the gallery-image to be passed along to the html twig file
             $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
 
             // don't use this story on this page again
@@ -52,11 +68,11 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
             array_push($threeStories, $newsAndStory);
             unset($arrayOfNewsAndStories[$index]);
-
-            // exit once there are 4
-            if( sizeof($threeStories) >= 4)
-                break;
         }
+
+        // exit once there are 4
+        if( sizeof($threeStories) >= 4)
+            break;
     }
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
