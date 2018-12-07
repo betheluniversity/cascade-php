@@ -273,8 +273,7 @@ function create_bio_html($bio){
     $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
     $html = $twig->render('faculty-bio.html', array(
         'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image,
-        'array_of_job_titles'   =>  $bio['array_of_job_titles']
+        'bio_image'             =>  $bio_image
     ));
 
     return $html;
@@ -324,7 +323,8 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
 
 // format array to comma separated list with 'and' before the last element
 function format_job_titles($job_titles){
-    return 'TEST';
+    if(!is_array($job_titles))
+        return '';
 
     // remove duplicates
     $job_titles = array_unique($job_titles);
