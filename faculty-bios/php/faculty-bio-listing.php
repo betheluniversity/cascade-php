@@ -327,6 +327,8 @@ function format_job_titles($job_titles){
     // remove duplicates
     $job_titles = array_unique($job_titles);
 
+    return 'TEST';
+
     // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
     return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
 }
