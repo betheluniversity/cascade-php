@@ -24,6 +24,9 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $found_lead = false;
     $found_faculty = false;
     foreach( $bios as $bio){
+        if( !is_array($bio))
+            continue;
+
         if( $bio['is_lead'] && !$found_lead ) {
             // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
             if( in_array('College of Arts & Sciences', $schools) )
@@ -263,20 +266,24 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
 
 
 function create_bio_html($bio){
-    if( $bio['image-path'] != '/') {
-        $alt_text = $bio['first'] . ' ' . $bio['last'];
-        $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
-    }
-    else
-        $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
-    $twig = makeTwigEnviron('/code/faculty-bios/twig');
-    $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
-    $html = $twig->render('faculty-bio.html', array(
-        'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image
-    ));
+    if( !is_array($bio)){
+        if( $bio['image-path'] != '/') {
+            $alt_text = $bio['first'] . ' ' . $bio['last'];
+            $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
+        }
+        else
+            $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
+        $twig = makeTwigEnviron('/code/faculty-bios/twig');
+        $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
+        $html = $twig->render('faculty-bio.html', array(
+            'bio'                   =>  $bio,
+            'bio_image'             =>  $bio_image
+        ));
 
-    return $html;
+        return $html;
+    } else {
+        return '';
+    }
 }
 
 
