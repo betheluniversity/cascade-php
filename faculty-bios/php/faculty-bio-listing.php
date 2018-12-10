@@ -384,8 +384,11 @@ function array_orderby()
     foreach ($args as $n => $field) {
         if (is_string($field)) {
             $tmp = array();
-            foreach ($data as $key => $row)
-                $tmp[$key] = $row[$field];
+            foreach ($data as $key => $row) {
+                if (is_array($row)) {
+                    $tmp[$key] = $row[$field];
+                }
+            }
             $args[$n] = $tmp;
         }
     }
