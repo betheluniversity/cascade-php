@@ -271,23 +271,19 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
 
 
 function create_bio_html($bio){
-    if( is_array($bio)){
-        if( $bio['image-path'] != '/') {
-            $alt_text = $bio['first'] . ' ' . $bio['last'];
-            $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
-        } else
-            $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
-        $twig = makeTwigEnviron('/code/faculty-bios/twig');
-        $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
-        $html = $twig->render('faculty-bio.html', array(
-            'bio'                   =>  $bio,
-            'bio_image'             =>  $bio_image
-        ));
+    if( $bio['image-path'] != '/') {
+        $alt_text = $bio['first'] . ' ' . $bio['last'];
+        $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
+    } else
+        $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
+    $twig = makeTwigEnviron('/code/faculty-bios/twig');
+    $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
+    $html = $twig->render('faculty-bio.html', array(
+        'bio'                   =>  $bio,
+        'bio_image'             =>  $bio_image
+    ));
 
-        return $html;
-    } else {
-        return '';
-    }
+    return $html;
 }
 
 
