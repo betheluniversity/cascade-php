@@ -79,6 +79,7 @@ function inspect_faculty_bio($xml){
         "job-titles"    =>  array(),
         "is_lead"       =>  false, // this is set in filter_bios
         "top_lead"      =>  false,
+        "top_lead"      =>  false,
         "first"         =>  '',
         "last"          =>  ''
     );
@@ -321,14 +322,23 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
-        if( array_key_exists('top_lead', $row))
-            $top_lead[$key]  = $row['top_lead'];
+        print_r(gettype($row));
+        if( is_array($row)){
+            if( array_key_exists('top_lead', $row))
+                $top_lead[$key]  = $row['top_lead'];
+            else
+                $top_lead[$key] = false;
 
-        if( array_key_exists('is_lead', $row))
-            $is_lead[$key]  = $row['is_lead'];
+            if( array_key_exists('is_lead', $row))
+                $is_lead[$key]  = $row['is_lead'];
+            else
+                $is_lead[$key] = false;
 
-        if( array_key_exists('last', $row))
-            $last[$key]  = $row['last'];
+            if( array_key_exists('last', $row))
+                $last[$key]  = $row['last'];
+            else
+                $last[$key] = '';
+        }
     }
 
     // Sort the data with leads on top, then alpha sort
