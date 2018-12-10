@@ -61,7 +61,7 @@ function traverse_folder($xml, $bios){
         if ($name == 'system-page'){
             $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            if( $dataDefinition == "Faculty Bio" && $page_data != '')
+            if( $dataDefinition == "Faculty Bio" && is_array($page_data))
             {
                 array_push($return_bios, $page_data);
             }
@@ -321,22 +321,20 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
-        if( is_array($row)){
-            if( array_key_exists('top_lead', $row))
-                $top_lead[$key]  = $row['top_lead'];
-            else
-                $top_lead[$key] = false;
+        if( array_key_exists('top_lead', $row))
+            $top_lead[$key]  = $row['top_lead'];
+        else
+            $top_lead[$key] = false;
 
-            if( array_key_exists('is_lead', $row))
-                $is_lead[$key]  = $row['is_lead'];
-            else
-                $is_lead[$key] = false;
+        if( array_key_exists('is_lead', $row))
+            $is_lead[$key]  = $row['is_lead'];
+        else
+            $is_lead[$key] = false;
 
-            if( array_key_exists('last', $row))
-                $last[$key]  = $row['last'];
-            else
-                $last[$key] = '';
-        }
+        if( array_key_exists('last', $row))
+            $last[$key]  = $row['last'];
+        else
+            $last[$key] = '';
     }
 
     // Sort the data with leads on top, then alpha sort
