@@ -59,10 +59,11 @@ function traverse_folder($xml, $bios){
     foreach ($xml->children() as $child) {
         $name = $child->getName();
         if ($name == 'system-page'){
-            $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            if( $dataDefinition == "Faculty Bio" && $page_data) {
-                array_push($return_bios, $page_data);
+            if( $dataDefinition == "Faculty Bio" ) {
+                $page_data = inspect_faculty_bio($child);
+                if( $page_data )
+                    array_push($return_bios, $page_data);
             }
         }
     }
