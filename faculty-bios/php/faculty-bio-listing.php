@@ -320,12 +320,19 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     foreach ($bios as $key => $row) {
         if (array_key_exists('top_lead', $row))
             $top_lead[$key] = $row['top_lead'];
+        else
+            $top_lead[$key] = false;
+
 
         if (array_key_exists('is_lead', $row))
             $is_lead[$key] = $row['is_lead'];
+        else
+            $is_lead[$key] = false;
 
         if (array_key_exists('last', $row))
             $last[$key] = $row['last'];
+        else
+            $last[$key] = 'z';
     }
 
     // Sort the data with leads on top, then alpha sort
