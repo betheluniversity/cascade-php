@@ -61,6 +61,7 @@ function traverse_folder($xml, $bios){
         if ($name == 'system-page'){
             $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
+            print_r(is_array($page_data));
             if( $dataDefinition == "Faculty Bio" && is_array($page_data))
             {
                 array_push($return_bios, $page_data);
@@ -320,7 +321,6 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
-        print_r(gettype($row));
         if (array_key_exists('top_lead', $row))
             $top_lead[$key] = $row['top_lead'];
         else
