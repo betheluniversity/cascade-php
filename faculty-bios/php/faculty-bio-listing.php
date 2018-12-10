@@ -61,7 +61,6 @@ function traverse_folder($xml, $bios){
         if ($name == 'system-page'){
             $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            print_r(is_array($page_data));
             if( $dataDefinition == "Faculty Bio" && is_array($page_data))
             {
                 array_push($return_bios, $page_data);
@@ -275,8 +274,7 @@ function create_bio_html($bio){
         if( $bio['image-path'] != '/') {
             $alt_text = $bio['first'] . ' ' . $bio['last'];
             $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
-        }
-        else
+        } else
             $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
         $twig = makeTwigEnviron('/code/faculty-bios/twig');
         $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
@@ -323,18 +321,12 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     foreach ($bios as $key => $row) {
         if (array_key_exists('top_lead', $row))
             $top_lead[$key] = $row['top_lead'];
-        else
-            $top_lead[$key] = false;
 
         if (array_key_exists('is_lead', $row))
             $is_lead[$key] = $row['is_lead'];
-        else
-            $is_lead[$key] = false;
 
         if (array_key_exists('last', $row))
             $last[$key] = $row['last'];
-        else
-            $last[$key] = '';
     }
 
     // Sort the data with leads on top, then alpha sort
