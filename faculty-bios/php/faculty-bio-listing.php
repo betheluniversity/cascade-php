@@ -271,7 +271,7 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
 
 
 function create_bio_html($bio){
-    if( !is_array($bio)){
+    if( is_array($bio)){
         if( $bio['image-path'] != '/') {
             $alt_text = $bio['first'] . ' ' . $bio['last'];
             $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
