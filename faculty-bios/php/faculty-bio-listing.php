@@ -315,6 +315,9 @@ function get_job_title($job_title, $id){
 
 function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
+    $top_lead = array();
+    $is_lead = array();
+    $last = array();
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
