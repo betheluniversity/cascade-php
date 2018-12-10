@@ -61,7 +61,7 @@ function traverse_folder($xml, $bios){
         if ($name == 'system-page'){
             $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            if( $dataDefinition == "Faculty Bio" && is_array($page_data) == 1)
+            if( $dataDefinition == "Faculty Bio" )
             {
                 array_push($return_bios, $page_data);
             }
