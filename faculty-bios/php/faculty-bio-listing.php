@@ -343,7 +343,7 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     } else {
         array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
     }
-    print_r($bios);
+
     return $bios;
 }
 
