@@ -314,42 +314,35 @@ function get_job_title($job_title, $id){
 
 
 function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
-//    $top_lead = array();
-//    $is_lead = array();
-//    $last = array();
-//
-//    // Obtain a list of columns
-//    foreach ($bios as $key => $row) {
-//        if( is_array($row) ) {
-//            if (array_key_exists('top_lead', $row))
-//                $top_lead[$key] = $row['top_lead'];
-//            else
-//                $top_lead[$key] = false;
-//
-//            if (array_key_exists('is_lead', $row))
-//                $is_lead[$key] = $row['is_lead'];
-//            else
-//                $is_lead[$key] = false;
-//
-//            if (array_key_exists('last', $row))
-//                $last[$key] = $row['last'];
-//            else
-//                $last[$key] = '';
-//        } else{
-//            $top_lead[$key] = false;
-//            $is_lead[$key] = false;
-//            $last[$key] = '';
-//        }
-//    }
+    $top_lead = array();
+    $is_lead = array();
+    $last = array();
+
+    // Obtain a list of columns
+    foreach ($bios as $key => $row) {
+        print_r(gettype($row));
+        if (array_key_exists('top_lead', $row))
+            $top_lead[$key] = $row['top_lead'];
+        else
+            $top_lead[$key] = false;
+
+        if (array_key_exists('is_lead', $row))
+            $is_lead[$key] = $row['is_lead'];
+        else
+            $is_lead[$key] = false;
+
+        if (array_key_exists('last', $row))
+            $last[$key] = $row['last'];
+        else
+            $last[$key] = '';
+    }
 
     // Sort the data with leads on top, then alpha sort
     // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
     if( $top_lead_sort ) {
-//        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
-        $bios = array_orderby($bios, 'top_lead', SORT_DESC, 'is_lead', SORT_DESC, 'last', SORT_ASC);
+        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
     } else {
-//        array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
-        $bios = array_orderby($bios, 'is_lead', SORT_DESC, 'last', SORT_ASC);
+        array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
     }
     return $bios;
 }
@@ -374,25 +367,4 @@ function check_substring_in_array($substring, $array){
         }
     }
     return false;
-}
-
-// code from http://www.php.net/manual/en/function.array-multisort.php#100534
-function array_orderby()
-{
-    $args = func_get_args();
-    $data = array_shift($args);
-    foreach ($args as $n => $field) {
-        if (is_string($field)) {
-            $tmp = array();
-            foreach ($data as $key => $row) {
-                if (is_array($row)) {
-                    $tmp[$key] = $row[$field];
-                }
-            }
-            $args[$n] = $tmp;
-        }
-    }
-    $args[] = &$data;
-    call_user_func_array('array_multisort', $args);
-    return array_pop($args);
 }
