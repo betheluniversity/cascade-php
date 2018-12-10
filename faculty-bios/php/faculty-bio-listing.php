@@ -61,8 +61,7 @@ function traverse_folder($xml, $bios){
         if ($name == 'system-page'){
             $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            if( $dataDefinition == "Faculty Bio" )
-            {
+            if( $dataDefinition == "Faculty Bio" && $page_data ) {
                 array_push($return_bios, $page_data);
             }
         }
@@ -85,19 +84,19 @@ function inspect_faculty_bio($xml){
 
     // if the file doesn't exist, skip it.
     if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
-        return "";
+        return false;
     }
 
     // ignore any bio found within "_testing" in Cascade
     if( strpos($page_info['path'],"_testing") !== false)
-        return "";
+        return false;
 
     $ds = $xml->{'system-data-structure'};
     $dataDefinition = $ds['definition-path'];
 
     if( $dataDefinition == "Faculty Bio") {
         if( strval($ds->{'deactivate'}) == 'Yes' )
-            return "";
+            return false;
 
         // Get the metadata
         foreach ($xml->{'dynamic-metadata'} as $md) {
