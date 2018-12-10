@@ -26,19 +26,21 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     foreach( $bios as $bio){
         if( !is_array($bio))
             continue;
+        if( array_key_exists('is_lead', $bio) ){
+            if( $bio['is_lead'] && !$found_lead ) {
+                // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
+                if( in_array('College of Arts & Sciences', $schools) )
+                    echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
+                else
+                    echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
+                $found_lead = true;
+            }
+            elseif( !$bio['is_lead'] && !$found_faculty) {
+                echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
+                $found_faculty = true;
+            }
+        }
 
-        if( $bio['is_lead'] && !$found_lead ) {
-            // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
-            if( in_array('College of Arts & Sciences', $schools) )
-                echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
-            else
-                echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
-            $found_lead = true;
-        }
-        elseif( !$bio['is_lead'] && !$found_faculty) {
-            echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
-            $found_faculty = true;
-        }
         echo create_bio_html($bio);
     }
 }
@@ -77,6 +79,8 @@ function inspect_faculty_bio($xml){
         "job-titles"    =>  array(),
         "is_lead"       =>  false, // this is set in filter_bios
         "top_lead"      =>  false,
+        "first"         =>  '',
+        "last"          =>  ''
     );
 
     // if the file doesn't exist, skip it.
