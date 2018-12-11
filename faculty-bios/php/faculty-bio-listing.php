@@ -26,6 +26,8 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     foreach( $bios as $bio){
         if( !is_array($bio))
             continue;
+
+        // output the corresponding headers, depending on who should be shown
         if( array_key_exists('is_lead', $bio) ){
             if( $bio['is_lead'] && !$found_lead ) {
                 // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
@@ -41,6 +43,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             }
         }
 
+        // output faculty bio html
         echo create_bio_html($bio);
     }
 }
