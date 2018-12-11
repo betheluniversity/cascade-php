@@ -24,18 +24,26 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $found_lead = false;
     $found_faculty = false;
     foreach( $bios as $bio){
-        if( $bio['is_lead'] && !$found_lead ) {
-            // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
-            if( in_array('College of Arts & Sciences', $schools) )
-                echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
-            else
-                echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
-            $found_lead = true;
+        if( !is_array($bio))
+            continue;
+
+        // output the corresponding headers, depending on who should be shown
+        if( array_key_exists('is_lead', $bio) ){
+            if( $bio['is_lead'] && !$found_lead ) {
+                // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
+                if( in_array('College of Arts & Sciences', $schools) )
+                    echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
+                else
+                    echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
+                $found_lead = true;
+            }
+            elseif( !$bio['is_lead'] && !$found_faculty) {
+                echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
+                $found_faculty = true;
+            }
         }
-        elseif( !$bio['is_lead'] && !$found_faculty) {
-            echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
-            $found_faculty = true;
-        }
+
+        // output faculty bio html
         echo create_bio_html($bio);
     }
 }
@@ -54,11 +62,12 @@ function traverse_folder($xml, $bios){
     foreach ($xml->children() as $child) {
         $name = $child->getName();
         if ($name == 'system-page'){
-            $page_data = inspect_faculty_bio($child);
             $dataDefinition = $child->{'system-data-structure'}['definition-path'];
-            if( $dataDefinition == "Faculty Bio")
-            {
-                array_push($return_bios, $page_data);
+            if( $dataDefinition == "Faculty Bio" ) {
+                $page_data = inspect_faculty_bio($child);
+                if( $page_data ){
+                    array_push($return_bios, $page_data);
+                }
             }
         }
     }
@@ -74,23 +83,25 @@ function inspect_faculty_bio($xml){
         "job-titles"    =>  array(),
         "is_lead"       =>  false, // this is set in filter_bios
         "top_lead"      =>  false,
+        "first"         =>  '',
+        "last"          =>  ''
     );
 
     // if the file doesn't exist, skip it.
     if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
-        return "";
+        return false;
     }
 
     // ignore any bio found within "_testing" in Cascade
     if( strpos($page_info['path'],"_testing") !== false)
-        return "";
+        return false;
 
     $ds = $xml->{'system-data-structure'};
     $dataDefinition = $ds['definition-path'];
 
     if( $dataDefinition == "Faculty Bio") {
         if( strval($ds->{'deactivate'}) == 'Yes' )
-            return "";
+            return false;
 
         // Get the metadata
         foreach ($xml->{'dynamic-metadata'} as $md) {
@@ -266,15 +277,13 @@ function create_bio_html($bio){
     if( $bio['image-path'] != '/') {
         $alt_text = $bio['first'] . ' ' . $bio['last'];
         $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
-    }
-    else
+    } else
         $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
     $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
     $html = $twig->render('faculty-bio.html', array(
         'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image,
-        'array_of_job_titles'   =>  $bio['array_of_job_titles']
+        'bio_image'             =>  $bio_image
     ));
 
     return $html;
@@ -304,26 +313,45 @@ function get_job_title($job_title, $id){
 
 
 function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
-    // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
+    $top_lead = array();
+    $is_lead = array();
+    $last = array();
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
-        $top_lead[$key]  = $row['top_lead'];
-        $is_lead[$key]  = $row['is_lead'];
-        $last[$key] = $row['last'];
+        if (array_key_exists('top_lead', $row))
+            $top_lead[$key] = $row['top_lead'];
+        else
+            $top_lead[$key] = false;
+
+        if (array_key_exists('is_lead', $row))
+            $is_lead[$key] = $row['is_lead'];
+        else
+            $is_lead[$key] = false;
+
+        if (array_key_exists('last', $row))
+            $last[$key] = $row['last'];
+        else
+            $last[$key] = 'z';
     }
 
     // Sort the data with leads on top, then alpha sort
-    if( $top_lead_sort )
+    // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
+    if( $top_lead_sort ) {
         array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
-    else
+    } else {
         array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+    }
+
     return $bios;
 }
 
 
 // format array to comma separated list with 'and' before the last element
 function format_job_titles($job_titles){
+    if(!is_array($job_titles))
+        return '';
+
     // remove duplicates
     $job_titles = array_unique($job_titles);
 
