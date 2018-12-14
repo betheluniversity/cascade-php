@@ -24,7 +24,7 @@ $phpcas_path = $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/PHPCas/';
 ///////////////////////////////////////
 
 // Full Hostname of your CAS Server
-$cas_host = 'auth.bethel.edu';
+$cas_host = 'auth-sand.bethel.edu';
 
 // Context of the CAS Server
 $cas_context = '/cas';

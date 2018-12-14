@@ -13,7 +13,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/wufoo/embed_preload.php";
 //phpCAS::setDebug();
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
-phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
+phpCAS::setServerServiceValidateURL("https://auth-sand.bethel.edu/cas/serviceValidate");
 
 // We need to set the service URL ourselves because of Varnish. The request is technically port 80 here,
 // so phpCAS sents it to auth.bethel.edu/cas with a service url of https://www.bethel.edu:80, which is not
