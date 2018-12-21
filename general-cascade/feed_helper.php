@@ -84,6 +84,9 @@ function is_homepage_article($xml){
 
 //Sort an array
 function sort_by_date( $array, $reverse = true){
+    // if $array is not an array, return an empty array
+    if( !is_array($array) )
+        return array();
 
     if( sizeof($array) != 0)
     {
