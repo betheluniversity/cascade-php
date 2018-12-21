@@ -91,7 +91,7 @@ $expire_year = time() + 31536000;
 // https://www.bethel.edu/graduate/academics/mba/?utm_source=adroll&utm_medium=retargeting&utm_content=mba&utm_campaign=f18_bethel_capsgs_haworth
 foreach( $_GET as $key => $value){
     // if the GET key matches utm_, then add it to the session.
-    if( strpos($key, 'utm_') == 0  ){
+    if( strpos($key, 'utm_') !== false  ){
         if( is_array($value) )
             $value = implode("|",$value);
         setcookie($key, $value, $expire_year, "/", ".bethel.edu");
