@@ -196,7 +196,7 @@
             $(".bu-topbar-welcome").html("Welcome " + remote_user);
         }else{
             var append = document.URL.replace("#", "?");
-            var url = "https://auth.bethel.edu/cas/login?service=" + append;
+            var url = "https://auth-prod.bethel.edu/cas/login?service=" + append;
             //url = url.replace("https", "http");
             $(".bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
