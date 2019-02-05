@@ -38,7 +38,7 @@ function individual_courses_call($code){
 
 function individual_courses($code){
     try {
-        $content = autoCache('individual_courses_call', array($code, 900));
+        $content = autoCache('individual_courses_call', array($code, 86400));
         return $content;
     } catch(Exception $e) {
         return '';
@@ -47,7 +47,7 @@ function individual_courses($code){
 
 function load_course_catalog ($values, $code) {
     try {
-        $content = autoCache('course_catalog_call', array($code, $values, 900));
+        $content = autoCache('course_catalog_call', array($code, $values, 86400));
         $content = json_decode($content, true);
 
         if( strpos($content['data'], '<li') !== false ) {
