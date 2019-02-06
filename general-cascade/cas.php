@@ -25,6 +25,9 @@ if($staging){
     $final_url = 'https://www.bethel.edu';
 }
 
+
+$final_url = 'https://staging.xp.bethel.edu';
+
 $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
 $final_url		.= $request_uri[0];
 
