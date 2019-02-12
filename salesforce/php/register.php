@@ -1,5 +1,7 @@
 <?php
 
+//test
+
 
 ini_set("soap.wsdl_cache_enabled", "0");
 session_start();
@@ -135,6 +137,7 @@ function create_new_user($first, $last, $email, $contact_id){
 //            return null;
         }
     }
+
     //If the loop goes through and does not pass with at least one good request, then it will throw the exception info
     if(!$responseGood){
         log_entry("failed to create user");
@@ -148,7 +151,19 @@ function create_new_user($first, $last, $email, $contact_id){
     //Creates response
     $errorMessage = json_decode(json_encode($createResponse[0]), true);
     $user_id = $createResponse[0]->id;
+    add_permission_set($user_id);
     return $user_id;
+
+}
+
+function add_permission_set($user_id){
+    global $mySforceConnection;
+    global $PERMISSIONSETID;
+    // give permission set
+    $sObject = new stdclass();
+    $sObject->AssigneeId = $user_id;
+    $sObject->PermissionSetId = $PERMISSIONSETID;
+    return $mySforceConnection->create(array($sObject), 'PermissionSetAssignment');
 }
 
 //Update contact referer site
@@ -296,47 +311,59 @@ $last = $_POST["last"];
 $search_email = escapeEmail($email);
 $search_email = '{' . $search_email . '}';
 
+function print_array($a){
+    echo '<pre>';
+    print_r($a);
+    echo '</pre>';
+}
+
+function create_interaction($first, $last, $email){
+    global $mySforceConnection;
+
+    $sObject = new stdclass();
+    $sObject->First_Name__c = $first;
+    $sObject->Last_Name__c = $last;
+    $sObject->Email__c = $email;
+    $sObject->Interaction_Source__c = 'Account Register';
+//    $sObject->Lead_Source__c = 'Webform';
+    $sObject->Lead_Source__c = 'Website';
+
+    try{
+        $createResponse = $mySforceConnection->create(array($sObject), 'Interaction__c');
+    }catch(Exception $e){
+        log_entry("failed to create interaction");
+        $subject = $e->getMessage();
+        log_entry($subject);
+        // todo update before golive
+        mail('e-jameson@bethel.edu',$subject,$subject,"From: $from\n");
+        return null;
+    }
+
+    $interaction_id = $createResponse[0]->id;
+    $output = print_r($createResponse,1);
+    log_entry('interaction create : ' . $output);
+    return $interaction_id;
+}
+
+function get_contact_id($interaction_id){
+    global $mySforceConnection;
+    // test for existing user
+    $response = $mySforceConnection->query("SELECT Contact__c, Id FROM Interaction__c WHERE Id = '$interaction_id'");
+    return $response->{'records'}[0]->Contact__c;
+}
 
 try {
     global $errorMessage;
-    //Creates variable for contact id
-    $contact_id = "";
-    //Searches for contact with email
-    $contact_records = search_for_contact($email);
-    if (sizeof($contact_records) > 0){
-        //We found it, get the id of the first (email is unique, so only one result)
-        $contact_id = $contact_records[0]->Id;
-        
-    }else{
-        //Did not find the Contact ID, thus creates contact
-        log_entry('no contact found. Creating...');
-        //Create one and save the id
-        $contact_id = create_new_contact($first, $last, $email);
-    }
-
-    //If contact ID is not created (hit an expection in 'create_new_contact' method, returns null)
-    if ($contact_id == ""){
-        //Sends email, regarding the failing of contact ID Generation
-        $url .= "?cid=false";
-        $subject = "failed to find or create contact id for email $email";
-        log_entry($subject);
-        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $from\n");
-        header("Location: $url");
-        exit;
-    //If contact_id was created, logs the contact_id
-    }else{
-        log_entry("contact id is : " . $contact_id);
-    }
-
-    //Very similar block in comparison with block above
-    //Creates variable to store user_id
-    $user_id = "";
-    //Searches for user based upon email
+    $interaction_id = create_interaction($first, $last, $email);
+    $contact_id = get_contact_id($interaction_id);
     $user_records = search_for_user($email);
+//    print_array($user_record_
     if (sizeof($user_records) > 0){
         //Contact already has a user, go to account recovery page. (Or login?)
         $user_id = $user_records[0]->Id;
-        log_entry('found user_id');
+        log_entry('found user_id: ' . $user_id);
+        add_permission_set($user_id);
+        log_entry('gave user permission set: ' . $user_id);
     }
     //If  user was not found, Create one
     else{
@@ -344,24 +371,13 @@ try {
         $user_id = create_new_user($first, $last, $email, $contact_id);
     }
 
-    //If user is not created, it will return nothing
-    if ($user_id == ""){
-        //Sends an email notating the error
-        $url .= "?uid=false";
-        $subject = "failed to find or create user id for email $email with cid=$contact_id";
-        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $from\n");
-        log_entry($subject);
-        header("Location: $url");
-        exit;
-    //If it created the user ID without error, it logs it.
-    }else{
-        log_entry("user id is : " . $user_id);
-    }
-
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
+
+// Find the Conact from the Interaction object and then active the Customer User
+
 
 // Check for frozen account.
 try{
@@ -382,17 +398,17 @@ if ($is_frozen){
     //commit the update
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
-
-####################################################################
-## Create Source from cookies
-####################################################################
-create_sf_source($contact_id, $email, $mail_to, $mail_from);
-
-####################################################################
-## Change "OLD-Admissions Status" from Lead to Inquired.
-####################################################################
-change_admissions_status($contact_id);
-
+//
+//####################################################################
+//## Create Source from cookies
+//####################################################################
+//create_sf_source($contact_id, $email, $mail_to, $mail_from);
+//
+//####################################################################
+//## Change "OLD-Admissions Status" from Lead to Inquired.
+//####################################################################
+//change_admissions_status($contact_id);
+//
 ####################################################################
 ## CAS account creation.
 ####################################################################
