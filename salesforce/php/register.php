@@ -320,6 +320,21 @@ function print_array($a){
 function create_interaction($first, $last, $email){
     global $mySforceConnection;
 
+    $utm_source = '';
+    $utm_medium = '';
+    $utm_content = '';
+    $utm_campaign = '';
+
+    if( $_COOKIE['utm_source'] )
+        $utm_source = $_COOKIE['utm_source'];
+    if( $_COOKIE['utm_medium'] )
+        $utm_medium = $_COOKIE['utm_medium'];
+    if( $_COOKIE['utm_content'] )
+        $utm_content = $_COOKIE['utm_content'];
+    if( $_COOKIE['utm_campaign'] )
+        $utm_campaign = $_COOKIE['utm_campaign'];
+
+
     $sObject = new stdclass();
     $sObject->First_Name__c = $first;
     $sObject->Last_Name__c = $last;
@@ -327,6 +342,10 @@ function create_interaction($first, $last, $email){
     $sObject->Interaction_Source__c = 'Account Register';
 //    $sObject->Lead_Source__c = 'Webform';
     $sObject->Lead_Source__c = 'Website';
+    $sObject->Source_Detail__c = 'Application';
+    $sObject->Marketing_Campaign__c = $utm_campaign;
+    $sObject->Marketing_Source__c = ucwords(str_replace('_', ' ', $utm_source));
+    $sObject->Marketing_Medium__c = ucwords(str_replace('_', ' ', $utm_medium));
 
     try{
         $createResponse = $mySforceConnection->create(array($sObject), 'Interaction__c');
@@ -458,6 +477,7 @@ if($json['status'] == "success"){
     $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
     mail($mail_to,$subject,$subject,"From: $from\n");
     log_entry($subject);
+    log_entry($json);
     $url .= "?email=false";
     header("Location: $url");
 }
