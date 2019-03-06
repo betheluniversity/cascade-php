@@ -66,7 +66,7 @@ function create_event_feed_logic($categories, $heading){
                         continue;
 
                     //hides gallery events three days after they begin.
-                    if (time() > $threeDaysSinceStart) {
+                    if ($isArtOrTheater && time() > $threeDaysSinceStart) {
                         continue;
                     }
 

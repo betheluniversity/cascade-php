@@ -13,17 +13,13 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/wufoo/embed_preload.php";
 //phpCAS::setDebug();
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_3_0, $cas_host, $cas_port, $cas_context);
-phpCAS::setServerServiceValidateURL("https://auth.bethel.edu/cas/serviceValidate");
+phpCAS::setServerServiceValidateURL("https://auth-prod.bethel.edu/cas/serviceValidate");
 
 // We need to set the service URL ourselves because of Varnish. The request is technically port 80 here,
-// so phpCAS sents it to auth.bethel.edu/cas with a service url of https://www.bethel.edu:80, which is not
+// so phpCAS sents it to auth-prod.bethel.edu/cas with a service url of https://www.bethel.edu:80, which is not
 //authorized to use CAS. Build the URL ourselves without a port and call setFixedServiceURL
 
-if($staging){
-    $final_url = 'https://staging.bethel.edu';
-}else{
-    $final_url = 'https://www.bethel.edu';
-}
+$final_url = 'https://' . $_SERVER['SERVER_NAME'];
 
 $request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
 $final_url		.= $request_uri[0];
@@ -39,7 +35,7 @@ if (isset($request_uri[1]) && $request_uri[1]) {
 }
 //Set the service URL and CA cert
 phpCAS::setFixedServiceURL($final_url);
-phpCAS::setCasServerCACert("/opt/webapps_certificates/gd_bundle.crt");
+phpCAS::setCasServerCACert("/opt/webapps_certificates/" . $_SERVER['SERVER_NAME'] . "/DigiCertCA.crt");
 
 if( strpos($require_auth,"Yes") !== false ){
     phpCAS::forceAuthentication();

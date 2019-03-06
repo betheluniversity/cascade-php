@@ -456,7 +456,7 @@ $context  = stream_context_create($options);
 
 //Changes the authenticating URL depending on the staging enviroment
 if ($staging){
-    $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+    $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
 }else{
     $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
 }
