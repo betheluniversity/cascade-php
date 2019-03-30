@@ -1,28 +1,15 @@
 <?php
 
-//test
-
-
 ini_set("soap.wsdl_cache_enabled", "0");
 session_start();
 
-// SOAP_CLIENT_BASEDIR - folder that contains the PHP Toolkit and your WSDL
-// $USERNAME - variable that contains your Salesforce.com username (must be in the form of an email)
-// $PASSWORD - variable that contains your Salesforce.ocm password
 define("SOAP_CLIENT_BASEDIR", "toolkit/soapclient");
 // Importing Remote Based Assets
 require_once (SOAP_CLIENT_BASEDIR.'/SforceEnterpriseClient.php');
 require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
-require_once ('userAuth.php');
 
-if(isset($_SESSION['interesting_referer'])){
-    $referer = $_SESSION['interesting_referer'];
-}else{
-    $referer = $_SESSION["HTTP_REFERER"];
-    $referer = explode('/', $referer);
-    // $referer : Array ( [0] => https: [1] => [2] => staging.bethel.edu [3] => _testing [4] => jmo [5] => basic ) Array
-    $referer = $referer[3];
-}
+// load usernames and passwords, config variables
+require_once ('userAuth.php');
 
 //Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
@@ -53,42 +40,6 @@ function log_entry($message){
     // and sets the path to the /code/salesforce/php/register.log
     error_log("--------------------------------------------------------------------------------------------------------------------" . "\n", 3, "/opt/php_logs/register.log");
     error_log('[' . date("D M j H:i:s Y",time()) . '] ' . $message . "\n", 3, "/opt/php_logs/register.log");
-}
-
-//Searches for a Contact with this email
-function search_for_contact($email){
-    global $mySforceConnection;
-    $response = $mySforceConnection->query("SELECT Email, Id FROM Contact WHERE Email = '$email'");
-    $records = $response->{'records'};
-    $output = print_r($response,1);
-    log_entry('contact search : ' . $output);
-    $has_contact = sizeof($records);
-    return $records;
-}
-
-//Creates a new SalesForceContact
-function create_new_contact($first, $last, $email){
-    global $mySforceConnection;
-
-    $sObject = new stdclass();
-    $sObject->FirstName = $first;
-    $sObject->LastName = $last;
-    $sObject->Email = $email;
-    
-    try{
-        $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
-    }catch(Exception $e){
-        log_entry("failed to create contact");
-        $subject = $e->getMessage();
-        log_entry($subject);
-        mail('web-development@bethel.edu',$subject,$subject,"From: $from\n");
-        return null;
-    }
-
-    $contact_id = $createResponse[0]->id;
-    $output = print_r($createResponse,1);
-    log_entry('contact create : ' . $output);
-    return $contact_id;
 }
 
 function search_for_user($email){
@@ -166,126 +117,6 @@ function add_permission_set($user_id){
     return $mySforceConnection->create(array($sObject), 'PermissionSetAssignment');
 }
 
-//Update contact referer site
-function update_contact_referer_site($contact_id){
-    global $mySforceConnection;
-    global $referer;
-    $records[0] = new stdclass();
-    $records[0]->Id = $contact_id;
-    $records[0]->referrer_site__c = $referer;
-
-    $response = $mySforceConnection->update($records, 'Contact');
-    foreach ($response as $result) {
-        log_entry($result->id . " updated referer site<br/>\n");
-    }
-}
-
-//Add referer to the contact via SforceConnection
-function add_referer_to_contact($contact_id){
-    global $mySforceConnection;
-
-    $sObject = new stdclass();
-    $sObject->Contact__c = $contact_id;
-    $sObject->Referrer_Type__c = "Application";
-    // This object should only be interesting_referer. Blank if there isn't one.
-    $sObject->Referer_URL__c = $_SESSION['interesting_referer'];
-
-    try {
-        $createResponse = $mySforceConnection->create(array($sObject), 'Referrer__c');
-    }catch (Exception $e){
-        return "add_referer_to_contact fail";
-    }
-    return $createResponse;
-}
-
-function create_sf_source($contact_id, $user_email, $mail_to, $mail_from){
-    $utm_source = '';
-    $utm_medium = '';
-    $utm_content = '';
-    $utm_campaign = '';
-
-    if( $_COOKIE['utm_source'] )
-        $utm_source = $_COOKIE['utm_source'];
-    if( $_COOKIE['utm_medium'] )
-        $utm_medium = $_COOKIE['utm_medium'];
-    if( $_COOKIE['utm_content'] )
-        $utm_content = $_COOKIE['utm_content'];
-    if( $_COOKIE['utm_campaign'] )
-        $utm_campaign = $_COOKIE['utm_campaign'];
-    global $mySforceConnection;
-
-    $responseGood = false;
-    $user_app = false;
-    try {
-        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Active_Enrollment_Opportunity__c FROM Contact WHERE Id = '$contact_id'");
-        $user_app = $response->{'records'}[0]->EnrollmentrxRx__Active_Enrollment_Opportunity__c;
-    } catch (Exception $errorMessage) {
-        $subject = "failed to create source for email: $user_email due to not getting active application";
-        log_entry('failed to get active app when creating source');
-        mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $mail_from\n");
-    }
-
-    if( $user_app ){
-        $sObject = new stdclass();
-        $sObject->Application_ID__c = $user_app;
-        $sObject->Marketing_Type__c = $utm_campaign;
-        $sObject->Marketing_Detail__c = ucwords(str_replace('_', ' ', $utm_source));
-        $sObject->Medium__c = ucwords(str_replace('_', ' ', $utm_medium));
-        $sObject->Source_Detail__c = 'Application';
-        $sObject->Source_Type__c = 'Website';
-
-        for($i = 0; $i < 1; $i++) {
-            try {
-                // Attempts to create a new user
-                $createResponse = $mySforceConnection->create(array($sObject), 'Source__c');
-                if( $createResponse[0]->{'success'} == 1 ){
-                    // If an exception has not occurred the responseGood changes to true
-                    $responseGood = true;
-                    break;
-                } else {
-                    // make sure the response is set to false
-                    $responseGood = false;
-                }
-            } catch (Exception $errorMessage) {
-                $subject = "failed to create source for email: $user_email";
-                log_entry('failed to create source');
-                mail($mail_to, $subject, $errorMessage["errors"][0]["message"], "From: $mail_from\n");
-                $responseGood = false;
-                break;
-            }
-        }
-    }
-
-    return $responseGood;
-}
-
-function change_admissions_status($contact_id){
-    global $mySforceConnection;
-    try {
-        // find current application for the current user
-        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Active_Enrollment_Opportunity__c FROM Contact WHERE Id = '$contact_id'");
-        $application_id = $response->{'records'}[0]->EnrollmentrxRx__Active_Enrollment_Opportunity__c;
-
-        // find the OLD-Admissions Status value.
-        $response = $mySforceConnection->query("SELECT EnrollmentrxRx__Admissions_Status__c FROM EnrollmentrxRx__Enrollment_Opportunity__c WHERE Id = '$application_id'");
-        $old_admissions_status = $response->{'records'}[0]->EnrollmentrxRx__Admissions_Status__c;
-
-        if( $old_admissions_status == 'Lead' || $old_admissions_status == 'Staged'){
-            // Change to Inquired
-            $sObject1 = new stdclass();
-            $sObject1->Id = $application_id;
-            $sObject1->EnrollmentrxRx__Admissions_Status__c = 'Inquired';
-
-            $response = $mySforceConnection->update(array ($sObject1), 'EnrollmentrxRx__Enrollment_Opportunity__c');
-            $success = $response[0]->success;
-            log_entry("Update OLD-Admissions Status for $contact_id. Success=$success");
-        }
-    } catch (Exception $errorMessage) {
-        log_entry("failed to find/set 'OLD-Admissions Status from Lead to Inquired': $errorMessage");
-    }
-    return true;
-}
-
 //Setting Variables, as well as declaring the environment
 $staging = strstr(getcwd(), "/staging");
 $mail_to = "web-development@bethel.edu";
@@ -295,7 +126,7 @@ $message = "";
 
 //prepare a URL for returing
 if ($staging){
-    $url = 'http://staging.bethel.edu/admissions/apply/';
+    $url = 'https://staging.bethel.edu/admissions/apply/';
 }else{
     $url = 'https://www.bethel.edu/admissions/apply';
 }
@@ -310,12 +141,6 @@ $last = $_POST["last"];
 
 $search_email = escapeEmail($email);
 $search_email = '{' . $search_email . '}';
-
-function print_array($a){
-    echo '<pre>';
-    print_r($a);
-    echo '</pre>';
-}
 
 function create_interaction($first, $last, $email){
     global $mySforceConnection;
@@ -340,7 +165,6 @@ function create_interaction($first, $last, $email){
     $sObject->Last_Name__c = $last;
     $sObject->Email__c = $email;
     $sObject->Interaction_Source__c = 'Account Register';
-//    $sObject->Lead_Source__c = 'Webform';
     $sObject->Lead_Source__c = 'Website';
     $sObject->Source_Detail__c = 'Application';
     $sObject->Marketing_Campaign__c = $utm_campaign;
@@ -371,14 +195,20 @@ function get_contact_id($interaction_id){
     return $response->{'records'}[0]->Contact__c;
 }
 
+####################################################################
+// START MAIN LOGIC
+####################################################################
+
 try {
     global $errorMessage;
     $interaction_id = create_interaction($first, $last, $email);
     $contact_id = get_contact_id($interaction_id);
     $user_records = search_for_user($email);
-//    print_array($user_record_
+
+    // if user was found, make sure it has the right permission set
+    // todo add query or check to see if user has this permission set yet
     if (sizeof($user_records) > 0){
-        //Contact already has a user, go to account recovery page. (Or login?)
+        // todo Contact already has a user, send different email from auth system, or show an error?
         $user_id = $user_records[0]->Id;
         log_entry('found user_id: ' . $user_id);
         add_permission_set($user_id);
@@ -387,6 +217,7 @@ try {
     //If  user was not found, Create one
     else{
         log_entry('No user found. Creating...');
+        // this also adds the permission set
         $user_id = create_new_user($first, $last, $email, $contact_id);
     }
 
@@ -394,8 +225,6 @@ try {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
-
-// Find the Conact from the Interaction object and then active the Customer User
 
 
 // Check for frozen account.
@@ -417,19 +246,9 @@ if ($is_frozen){
     //commit the update
     $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
 }
-//
-//####################################################################
-//## Create Source from cookies
-//####################################################################
-//create_sf_source($contact_id, $email, $mail_to, $mail_from);
-//
-//####################################################################
-//## Change "OLD-Admissions Status" from Lead to Inquired.
-//####################################################################
-//change_admissions_status($contact_id);
-//
+
 ####################################################################
-## CAS account creation.
+// SF Prep Done, start Auth work
 ####################################################################
 $credentials = array(
                     "auth" => array(
