@@ -70,8 +70,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             unset($arrayOfNewsAndStories[$index]);
         }
 
-        // exit once there are 4
-        if( sizeof($threeStories) >= 4)
+        // exit once there are 3
+        if( sizeof($threeStories) >= 3)
             break;
     }
 
