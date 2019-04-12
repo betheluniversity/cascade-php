@@ -101,7 +101,7 @@ foreach( $_GET as $key => $value){
             }
         }
         # Please remove any spaces, carriage returns, and non-printing characters, as well as any equal sign, comma, or semi-colon.
-        $key = str_replace(array('/r', '/n', ' ', '=', ',', ';'), '',$key);
+        $key = str_replace(array("\r", "\n", ' ', '=', ',', ';'), '',$key);
         setcookie($key, $value, $expire_year, "/", ".bethel.edu");
     }
 }
