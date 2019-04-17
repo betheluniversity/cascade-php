@@ -124,6 +124,11 @@ function inspect_page($xml, $categories){
         "md" => array(),
     );
 
+    // if the file doesn't exist, skip it.
+    if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
+        return "";
+    }
+
     $ds = $xml->{'system-data-structure'};
 
 
