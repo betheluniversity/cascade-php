@@ -19,7 +19,8 @@ function create_news_article_archive($categories){
     $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_archive_page");
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
-    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
+//    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
+    $arrayOfArticles = sort_news_articles($arrayOfArticles);
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
     $twig = makeTwigEnviron('/code/news/twig');
@@ -96,8 +97,8 @@ function inspect_news_archive_page($xml, $categories){
     $page_info['month'] = date("m", $date_for_sorting);
     $page_info['month-name'] = date("F", $date_for_sorting);
 
-    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+//    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
+//    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
 
     $page_info['html'] = get_news_article_archive_html($page_info);
 
