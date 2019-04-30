@@ -94,7 +94,7 @@ function create_new_job_titles($titles){
     $program_array = array();
 
     foreach($titles as $title){
-        array_push($school_array, $title->{'school'});
+        array_push($school_array, strval($title->{'school'}));
 
         if($title->{'department'}){
             array_push($program_array, $title->{'department'});
@@ -124,16 +124,14 @@ function create_new_job_titles($titles){
         $currentSchool = $school_array[$i];
         $currentProgram = $program_array[$i];
         $currentJob = $job_title_array[$i];
-        if( is_string($currentSchool) ) {
-            if(!array_key_exists($currentSchool, $job_map)){
-                $job_map["$currentSchool"] = array();
-            }
-            if(!array_key_exists($currentSchool, $job_map["$currentSchool"])){
-                $job_map["$currentSchool"]["$currentProgram"] = array();
-            }
-            if(!array_key_exists($currentSchool, $job_map["$currentSchool"]["$currentProgram"])){
-                array_push($job_map["$currentSchool"]["$currentProgram"], $currentJob);
-            }
+        if(!array_key_exists($currentSchool, $job_map)){
+            $job_map["$currentSchool"] = array();
+        }
+        if(!array_key_exists($currentSchool, $job_map["$currentSchool"])){
+            $job_map["$currentSchool"]["$currentProgram"] = array();
+        }
+        if(!array_key_exists($currentSchool, $job_map["$currentSchool"]["$currentProgram"])){
+            array_push($job_map["$currentSchool"]["$currentProgram"], $currentJob);
         }
     }
     $jobsAsString = "";
