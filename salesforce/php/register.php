@@ -195,6 +195,19 @@ function get_contact_id($interaction_id){
     return $response->{'records'}[0]->Contact__c;
 }
 
+// Check if email exists under another user in system
+function check_email_duplication($email, $first, $last){
+    global $mySforceConnection;
+    $response = $mySforceConnection->query("SELECT Id, FirstName, LastName, Email from CONTACT where Email = $email");
+    if($response->{'records'}[0]->{'FirstName'} !== $first or  $response->{'records'}[0]->{'LastName'} !== $last){
+        $to = 'joj28267@bethel.edu';
+        $subject = 'Duplicate Entry for Email';
+        $message = $first . ' ' . $last . 'is attempting to register with existing email ' . $email;
+        $from = 'salesforce-register@bethel.edu';
+        mail($to, $subject, $message, "From: $from\n");
+    }
+}
+
 ####################################################################
 // START MAIN LOGIC
 ####################################################################
@@ -204,6 +217,7 @@ try {
     $interaction_id = create_interaction($first, $last, $email);
     $contact_id = get_contact_id($interaction_id);
     $user_records = search_for_user($email);
+    check_email_duplication($email, $first, $last);
 
     // if user was found, make sure it has the right permission set
     // todo add query or check to see if user has this permission set yet
