@@ -221,101 +221,105 @@ try {
     $user_records = search_for_user($email);
     print_r("Call email check");
     check_email_duplication($email, $first, $last);
-
-    // if user was found, make sure it has the right permission set
-    // todo add query or check to see if user has this permission set yet
-    if (sizeof($user_records) > 0){
-        // todo Contact already has a user, send different email from auth system, or show an error?
-        $user_id = $user_records[0]->Id;
-        log_entry('found user_id: ' . $user_id);
-        add_permission_set($user_id);
-        log_entry('gave user permission set: ' . $user_id);
-    }
-    //If  user was not found, Create one
-    else{
-        log_entry('No user found. Creating...');
-        // this also adds the permission set
-        $user_id = create_new_user($first, $last, $email, $contact_id);
-    }
-
 } catch (Exception $e) {
     echo $mySforceConnection->getLastRequest();
     echo $e->faultstring;
 }
 
-
-// Check for frozen account.
-try{
-    $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
-    $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
-    $frozen_id = $response->{'records'}[0]->Id;
-}catch (Exception $e){
-    //It fails if there is no record (never frozen)
-    $is_frozen = false;
-    $frozen_id = null;
-}
-
-//unfreeze if needed
-if ($is_frozen){
-    $sObject1 = new stdclass();
-    $sObject1->Id = $frozen_id;
-    $sObject1->IsFrozen = 0;
-    //commit the update
-    $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
-}
-
-####################################################################
-// SF Prep Done, start Auth work
-####################################################################
-$credentials = array(
-                    "auth" => array(
-                        "username" => $BETHELAUTHUSERNAME,
-                        "passwd" => $BETHELAUTHPASSWD,
-                    ),
-                    "user" => array(
-                        "email" => $email,
-                        "first_name" => $first,
-                        "last_name" => $last,
-                        "activate_email" => "true"
-                    )
-                );
-
-$credentials = json_encode($credentials);
-$options = array(
-    'http' => array(
-        'header'  => "Content-type: application/json",
-        'method'  => 'POST',
-        'content' => $credentials,
-    ),
-);
-$context  = stream_context_create($options);
-
-//Changes the authenticating URL depending on the staging enviroment
-if ($staging){
-    $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
-}else{
-    $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
-}
-
-// Here is the returned value
-$result = file_get_contents($auth_url, false, $context);
-$json = json_decode($result, true);
-
-if($json['status'] == "success"){
-    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
-
-    $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
-    mail($mail_to,$subject,$subject,"From: $from\n");
-    log_entry($subject);
-
-    header("Location: $url");
-}else{
-    $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
-    mail($mail_to,$subject,$subject,"From: $from\n");
-    log_entry($subject);
-    log_entry($json);
-    $url .= "?email=false";
-    header("Location: $url");
-}
+//    // if user was found, make sure it has the right permission set
+//    // todo add query or check to see if user has this permission set yet
+//    if (sizeof($user_records) > 0){
+//        // todo Contact already has a user, send different email from auth system, or show an error?
+//        $user_id = $user_records[0]->Id;
+//        log_entry('found user_id: ' . $user_id);
+//        add_permission_set($user_id);
+//        log_entry('gave user permission set: ' . $user_id);
+//    }
+//    //If  user was not found, Create one
+//    else{
+//        log_entry('No user found. Creating...');
+//        // this also adds the permission set
+//        $user_id = create_new_user($first, $last, $email, $contact_id);
+//    }
+//
+//} catch (Exception $e) {
+//    echo $mySforceConnection->getLastRequest();
+//    echo $e->faultstring;
+//}
+//
+//
+//// Check for frozen account.
+//try{
+//    $response = $mySforceConnection->query("SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = '$user_id'");
+//    $is_frozen = $response->{'records'}[0]->{'IsFrozen'};
+//    $frozen_id = $response->{'records'}[0]->Id;
+//}catch (Exception $e){
+//    //It fails if there is no record (never frozen)
+//    $is_frozen = false;
+//    $frozen_id = null;
+//}
+//
+////unfreeze if needed
+//if ($is_frozen){
+//    $sObject1 = new stdclass();
+//    $sObject1->Id = $frozen_id;
+//    $sObject1->IsFrozen = 0;
+//    //commit the update
+//    $response = $mySforceConnection->update(array ($sObject1), 'UserLogin');
+//}
+//
+//####################################################################
+//// SF Prep Done, start Auth work
+//####################################################################
+//$credentials = array(
+//                    "auth" => array(
+//                        "username" => $BETHELAUTHUSERNAME,
+//                        "passwd" => $BETHELAUTHPASSWD,
+//                    ),
+//                    "user" => array(
+//                        "email" => $email,
+//                        "first_name" => $first,
+//                        "last_name" => $last,
+//                        "activate_email" => "true"
+//                    )
+//                );
+//
+//$credentials = json_encode($credentials);
+//$options = array(
+//    'http' => array(
+//        'header'  => "Content-type: application/json",
+//        'method'  => 'POST',
+//        'content' => $credentials,
+//    ),
+//);
+//$context  = stream_context_create($options);
+//
+////Changes the authenticating URL depending on the staging enviroment
+//if ($staging){
+//    $auth_url = 'https://auth.xp.bethel.edu/auth/email-account-management.cgi';
+//}else{
+//    $auth_url = 'https://auth.bethel.edu/auth/email-account-management.cgi';
+//}
+//
+//// Here is the returned value
+//$result = file_get_contents($auth_url, false, $context);
+//$json = json_decode($result, true);
+//
+//if($json['status'] == "success"){
+//    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
+//
+//    $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
+//    mail($mail_to,$subject,$subject,"From: $from\n");
+//    log_entry($subject);
+//
+//    header("Location: $url");
+//}else{
+//    $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
+//    mail($mail_to,$subject,$subject,"From: $from\n");
+//    log_entry($subject);
+//    log_entry($json);
+//    $url .= "?email=false";
+//    header("Location: $url");
+//}
 
 ?>
