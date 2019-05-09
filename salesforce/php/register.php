@@ -11,6 +11,8 @@ require_once (SOAP_CLIENT_BASEDIR.'/SforceHeaderOptions.php');
 // load usernames and passwords, config variables
 require_once ('userAuth.php');
 
+print_r("THIS IS A TEST");
+
 //Creates a new salesForceConnection
 $mySforceConnection = new SforceEnterpriseClient();
 //Creates the Connection
@@ -125,11 +127,8 @@ $subject = "salesforce register submission";
 $message = "";
 
 //prepare a URL for returing
-if ($staging){
-    $url = 'https://staging.bethel.edu/admissions/apply/';
-}else{
-    $url = 'https://www.bethel.edu/admissions/apply';
-}
+$url = 'https://' . $_SERVER["HTTP_HOST"] . '/admissions/apply/';
+
 
 $email = $_POST["email"];
 $email = strtolower($email);
