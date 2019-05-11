@@ -72,7 +72,7 @@ function create_new_contact($first, $last, $email){
     $sObject->FirstName = $first;
     $sObject->LastName = $last;
     $sObject->Email = $email;
-    
+
     try{
         $createResponse = $mySforceConnection->create(array($sObject), 'Contact');
     }catch(Exception $e){
@@ -306,7 +306,7 @@ try {
     if (sizeof($contact_records) > 0){
         //We found it, get the id of the first (email is unique, so only one result)
         $contact_id = $contact_records[0]->Id;
-        
+
     }else{
         //Did not find the Contact ID, thus creates contact
         log_entry('no contact found. Creating...');
@@ -323,7 +323,7 @@ try {
         mail($mail_to,$subject,$errorMessage["errors"][0]["message"],"From: $from\n");
         header("Location: $url");
         exit;
-    //If contact_id was created, logs the contact_id
+        //If contact_id was created, logs the contact_id
     }else{
         log_entry("contact id is : " . $contact_id);
     }
@@ -353,7 +353,7 @@ try {
         log_entry($subject);
         header("Location: $url");
         exit;
-    //If it created the user ID without error, it logs it.
+        //If it created the user ID without error, it logs it.
     }else{
         log_entry("user id is : " . $user_id);
     }
@@ -397,17 +397,17 @@ change_admissions_status($contact_id);
 ## CAS account creation.
 ####################################################################
 $credentials = array(
-                    "auth" => array(
-                        "username" => $BETHELAUTHUSERNAME,
-                        "passwd" => $BETHELAUTHPASSWD,
-                    ),
-                    "user" => array(
-                        "email" => $email,
-                        "first_name" => $first,
-                        "last_name" => $last,
-                        "activate_email" => "true"
-                    )
-                );
+    "auth" => array(
+        "username" => $BETHELAUTHUSERNAME,
+        "passwd" => $BETHELAUTHPASSWD,
+    ),
+    "user" => array(
+        "email" => $email,
+        "first_name" => $first,
+        "last_name" => $last,
+        "activate_email" => "true"
+    )
+);
 
 $credentials = json_encode($credentials);
 $options = array(
