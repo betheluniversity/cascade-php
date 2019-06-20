@@ -295,9 +295,6 @@ function get_job_title($job_title, $id){
     if( $id == 'aab255628c5865131315e7c4685d543b') {
         $is_lead = true;
         $top_lead = true;
-    } elseif( $id == '5b109e078c5865137c9c2c89dec00b8d') { // This is a current hack to make sure Jeannine Brown appears in the program directors
-        $is_lead = true;
-        $top_lead = false;
     } else {
         $is_lead = false;
         $top_lead = false;
@@ -309,6 +306,8 @@ function get_job_title($job_title, $id){
         return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Program Director');
     elseif( $job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty' )
         return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['lead-faculty']);
+    elseif( $job_title['job_title'] == 'Director of Online Programs' )
+        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['job_title']);
     else
         return array('top_lead' => $top_lead, 'is_lead' => $is_lead, 'title' => $job_title['job_title']);
 }
