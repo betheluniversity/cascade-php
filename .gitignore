@@ -25,8 +25,7 @@ collections/twig/get_profile_stories_html.html
 blink/php-error.log
 
 composer.lock
-
-composer.lock
+.composer/
 
 config.php
 program-search/csv
