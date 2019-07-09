@@ -447,7 +447,11 @@ function get_month_shorthand_name( $month){
 
 function get_timezone_shorthand( $date ){
     if( $date['outside-of-minnesota'] == 'Yes' )
-        if( $date['time-zone'] == 'Pacific Time')
+        if( $date['time-zone'] == 'Hawaii-Aleutian Time')
+            return 'HT';
+        elseif( $date['time-zone'] == 'Alaska Time')
+            return 'AT';
+        elseif( $date['time-zone'] == 'Pacific Time')
             return 'PT';
         elseif( $date['time-zone'] == 'Mountain Time')
             return 'MT';

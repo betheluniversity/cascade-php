@@ -164,7 +164,11 @@ function add_event_to_array(&$dates, $page_data){
         $page_data['specific_need_time_zone'] = $date['outside-of-minnesota'];
         if($page_data['specific_need_time_zone'] == true) {
             $time_zone = $date['time-zone'];
-            if ($time_zone == "Pacific Time") {
+            if ($time_zone == "Hawaii-Aleutian Time") {
+                $page_data['specific_time_zone'] = "HT";
+            } elseif ($time_zone == "Alaska Time") {
+                $page_data['specific_time_zone'] = "AT";
+            } elseif ($time_zone == "Pacific Time") {
                 $page_data['specific_time_zone'] = "PT";
             } elseif ($time_zone == "Mountain Time") {
                 $page_data['specific_time_zone'] = "MT";
