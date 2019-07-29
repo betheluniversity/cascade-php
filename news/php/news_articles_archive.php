@@ -96,7 +96,7 @@ function inspect_news_archive_page($xml, $categories){
     $page_info['month'] = date("m", $date_for_sorting);
     $page_info['month-name'] = date("F", $date_for_sorting);
 
-    if( in_array('president/announcements', $_SERVER['REQUEST_URI']) ) {
+    if( strpos($_SERVER['REQUEST_URI'], 'president/announcements') !== false ) {
         $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
         $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
     }
