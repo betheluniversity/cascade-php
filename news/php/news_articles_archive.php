@@ -15,10 +15,16 @@ function create_news_article_archive($categories){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
-    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_archive_page");
+    if( strpos($_SERVER['REQUEST_URI'], 'president/announcements') !== false ) {
+        // president archive
+        $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-president.xml", $categories, "inspect_news_archive_page");
+    } else {
+        // news archive
+        $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_archive_page");
+        $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_archive_page");
+        $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
+    }
 
-    $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
@@ -64,11 +70,6 @@ function inspect_news_archive_page($xml, $categories){
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
-    global $yearChosen;  // todo: not used?
-    global $uniqueNews;
-
-    $isInternal = $uniqueNews && in_array("Internal", $uniqueNews);  // todo: not used?
-
     $year_works = false;
     for( $i = 2012; $i <= intval(date("Y")); $i++ ){
         if( strstr($xml->path, "/$i/") ){
@@ -83,7 +84,12 @@ function inspect_news_archive_page($xml, $categories){
             if ($ds->{'external-link'} != ''){
                 $page_info['path'] = $ds->{'external-link'};
             }
+        } elseif( $dataDefinition == "News Article - Flex" ) {
+            $date_for_sorting = $ds->{'story-metadata'}->{'publish-date'} / 1000;
+        } elseif( $dataDefinition == "News Article - President" ){
+            $date_for_sorting = $ds->{'publish-date'} / 1000;
         } else {
+            // todo: this probably isn't needed, but we should have some default value
             $date_for_sorting = $ds->{'story-metadata'}->{'publish-date'} / 1000;
         }
     } else {
@@ -97,8 +103,12 @@ function inspect_news_archive_page($xml, $categories){
     $page_info['month-name'] = date("F", $date_for_sorting);
 
     if( strpos($_SERVER['REQUEST_URI'], 'president/announcements') !== false ) {
-        $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-        $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+        if( $dataDefinition == "News Article - President" ){
+            $page_info['display-on-feed'] = true;
+        } elseif( $dataDefinition == "News Article") {
+            $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
+            $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+        }
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
