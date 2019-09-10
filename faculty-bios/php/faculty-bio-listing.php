@@ -192,8 +192,6 @@ function inspect_faculty_bio($xml){
         }
     }
 
-
-    print_r($page_info['job-titles']);
     return $page_info;
 }
 
@@ -208,6 +206,7 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
         } else {
             foreach ($schools as $school) {
                 $temp_array_of_job_titles = get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem);
+                print_r($temp_array_of_job_titles);
                 $array_of_job_titles = array();
                 if( sizeof($temp_array_of_job_titles) ) {
                     foreach( $temp_array_of_job_titles as $job_title){
