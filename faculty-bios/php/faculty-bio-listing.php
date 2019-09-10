@@ -192,6 +192,8 @@ function inspect_faculty_bio($xml){
         }
     }
 
+
+    print_r($page_info['job-titles']);
     return $page_info;
 }
 
