@@ -242,6 +242,7 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     || ($school == 'College of Adult & Professional Studies' && (check_substring_in_array('nurs', $caps) || (sizeof($caps) == 1 && in_array('None', $caps))))
                     || ($school == 'Graduate School' && (check_substring_in_array('nurs', $gs) || (sizeof($gs) == 1 && in_array('None', $gs))))) {
                     array_push($matched_job_titles, $display_job_title);
+                    print_r($display_job_title);
                     break;
                 }
             } else {
