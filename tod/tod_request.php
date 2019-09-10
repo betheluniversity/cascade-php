@@ -11,4 +11,4 @@ $soda = strstr(getcwd(), "soda");
 $require_auth = "Yes";
 
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/cas.php";
-header("Location: http://wsapi.bethel.edu/tod/");
+header("Location: https://wsapi.bethel.edu/tod/");

@@ -12,7 +12,7 @@ function get_individual_courses($php_program){
         $php_program = "COPN";
     else
         $php_program = "GOPN";
-    $url = "http://wsapi.bethel.edu/open-enrollment-courses/$php_program";
+    $url = "https://wsapi.bethel.edu/open-enrollment-courses/$php_program";
     $results = json_decode(file_get_contents($url));
     echo $results->data;
 
