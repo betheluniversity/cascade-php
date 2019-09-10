@@ -215,7 +215,6 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                         // pass the job title 'lead' up to the bio level (for diane dahl)
                         if( $job_title['top_lead'] == true)
                             $bio['top_lead'] = true;
-                        print_r($job_title['title']);
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
                     $bio['array_of_job_titles'] = $array_of_job_titles;
@@ -356,7 +355,7 @@ function format_job_titles($job_titles){
 
     // remove duplicates
     $job_titles = array_unique($job_titles);
-
+    print_r($job_titles);
     // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
     return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
 }
