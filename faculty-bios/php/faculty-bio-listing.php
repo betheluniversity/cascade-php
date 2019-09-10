@@ -280,10 +280,12 @@ function create_bio_html($bio){
     } else
         $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
-    $twig->addFilter(new Twig_SimpleFilter('format_job_titles','format_job_titles'));
+
+    $job_titles = format_job_titles($bio['array_of_job_titles']);
     $html = $twig->render('faculty-bio.html', array(
         'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image
+        'bio_image'             =>  $bio_image,
+        'job_titles'            =>  $job_titles
     ));
 
     return $html;
@@ -355,7 +357,6 @@ function format_job_titles($job_titles){
 
     // remove duplicates
     $job_titles = array_unique($job_titles);
-
     // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
     return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
 }
