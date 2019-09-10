@@ -11,8 +11,8 @@
                     <a href="https://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a>
                 </h3>
                 <p class="sans-serif">
-                    {% if 'array_of_job_titles' in bio %}
-                    {{ bio['array_of_job_titles'] | format_job_titles }}
+                    {% if job_titles %}
+                    {{ job_titles }}
                     {% endif %}
                     {% if bio.email != '' %}
                         | <a href="mailto:{{ bio.email }}">{{ bio.email }}</a>
