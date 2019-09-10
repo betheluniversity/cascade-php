@@ -217,7 +217,7 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                             $bio['top_lead'] = true;
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
-                    $bio['array_of_job_titles'] = $array_of_job_titles;
+                    $bio['array_of_job_titles'] = format_job_titles($array_of_job_titles);
                     array_push($return_bios, $bio);
                 }
             }
@@ -281,11 +281,9 @@ function create_bio_html($bio){
         $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
 
-    $job_titles = format_job_titles($bio['array_of_job_titles']);
     $html = $twig->render('faculty-bio.html', array(
         'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image,
-        'job_titles'            =>  $job_titles
+        'bio_image'             =>  $bio_image
     ));
 
     return $html;
