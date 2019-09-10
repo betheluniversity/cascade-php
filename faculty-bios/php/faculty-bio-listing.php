@@ -206,7 +206,6 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
         } else {
             foreach ($schools as $school) {
                 $temp_array_of_job_titles = get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem);
-                print_r($temp_array_of_job_titles);
                 $array_of_job_titles = array();
                 if( sizeof($temp_array_of_job_titles) ) {
                     foreach( $temp_array_of_job_titles as $job_title){
@@ -246,6 +245,7 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     break;
                 }
             } else {
+                print_r($school);
                 if (str_replace('&', 'and', $school) == $job_title['school']) {
                     // depending on the school, check the associated list for program
                     if ($school == 'College of Arts & Sciences') {
