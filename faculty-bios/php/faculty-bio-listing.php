@@ -245,7 +245,7 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     break;
                 }
             } else {
-                print_r($school);
+                print_r($job_title['school']);
                 if (str_replace('&', 'and', $school) == $job_title['school']) {
                     // depending on the school, check the associated list for program
                     if ($school == 'College of Arts & Sciences') {
