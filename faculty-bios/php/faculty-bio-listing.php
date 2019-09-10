@@ -215,6 +215,7 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                         // pass the job title 'lead' up to the bio level (for diane dahl)
                         if( $job_title['top_lead'] == true)
                             $bio['top_lead'] = true;
+                        print_r($job_title['title']);
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
                     $bio['array_of_job_titles'] = $array_of_job_titles;
@@ -249,7 +250,6 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     // depending on the school, check the associated list for program
                     if ($school == 'College of Arts & Sciences') {
                         if (in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array('None', $cas))) {
-                            print_r($display_job_title);
                             array_push($matched_job_titles, $display_job_title);
                         }
                     } elseif ($school == 'College of Adult & Professional Studies' || (gettype($school) == 'array' && in_array('College of Adult & Professional Studies', $school))) {
