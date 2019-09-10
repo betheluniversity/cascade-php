@@ -242,15 +242,14 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
                     || ($school == 'College of Adult & Professional Studies' && (check_substring_in_array('nurs', $caps) || (sizeof($caps) == 1 && in_array('None', $caps))))
                     || ($school == 'Graduate School' && (check_substring_in_array('nurs', $gs) || (sizeof($gs) == 1 && in_array('None', $gs))))) {
                     array_push($matched_job_titles, $display_job_title);
-                    print_r($display_job_title);
                     break;
                 }
             } else {
                 if (str_replace('&', 'and', $school) == $job_title['school']) {
                     // depending on the school, check the associated list for program
                     if ($school == 'College of Arts & Sciences') {
-                        print_r($job_title['department']);
                         if (in_array($job_title['department'], $cas) || (sizeof($cas) == 1 && in_array('None', $cas))) {
+                            print_r($display_job_title);
                             array_push($matched_job_titles, $display_job_title);
                         }
                     } elseif ($school == 'College of Adult & Professional Studies' || (gettype($school) == 'array' && in_array('College of Adult & Professional Studies', $school))) {
