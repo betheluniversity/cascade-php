@@ -350,12 +350,12 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
 
 // format array to comma separated list with 'and' before the last element
 function format_job_titles($job_titles){
+    print_r($job_titles);
     if(!is_array($job_titles))
         return '';
 
     // remove duplicates
     $job_titles = array_unique($job_titles);
-    print_r($job_titles);
     // code from -- http://stackoverflow.com/questions/8586141/implode-array-with-and-add-and-before-last-item
     return join(' and ', array_filter(array_merge(array(join(', ', array_slice($job_titles, 0, -1))), array_slice($job_titles, -1)), 'strlen'));
 }
