@@ -70,6 +70,7 @@ function inspect_news_archive_page($xml, $categories){
     // To get the correct definition path.
     $dataDefinition = $ds['definition-path'];
 
+
     $year_works = false;
     for( $i = 2012; $i <= intval(date("Y")); $i++ ){
         if( strstr($xml->path, "/$i/") ){
@@ -77,6 +78,7 @@ function inspect_news_archive_page($xml, $categories){
             break;
         }
     }
+    // Get the correct date, depending on which Data Definition you are dealing with.
     if( $year_works ) {
         if( $dataDefinition == "News Article") {
             $date_for_sorting = $xml->{'system-data-structure'}->{'publish-date'} / 1000;
@@ -109,6 +111,18 @@ function inspect_news_archive_page($xml, $categories){
             $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
             $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
         }
+    } else {
+        # if its not the president announcements page, we want to make sure that the prez announcements are NOT shown.
+        foreach ($xml->{'dynamic-metadata'} as $md) {
+            $name = $md->name;
+ß
+            foreach ($md->value as $value) {
+                if ( $name == 'unique-news' && in_array($value, ['President Announcements', 'President Announcements - Strategic plan', 'Internal']) ) {
+                    return "";
+                }
+            }
+        }
+
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
