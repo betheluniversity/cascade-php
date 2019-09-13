@@ -115,11 +115,8 @@ function inspect_news_archive_page($xml, $categories){
         # if its not the president announcements page, we want to make sure that the prez announcements are NOT shown.
         foreach ($xml->{'dynamic-metadata'} as $md) {
             $name = $md->name;
-
+ß
             foreach ($md->value as $value) {
-                if (strtolower($value) == "none" || strtolower($value) == "select") {
-                    continue;
-                }
                 if ( $name == 'unique-news' && in_array($value, ['President Announcements', 'President Announcements - Strategic plan', 'Internal']) ) {
                     return "";
                 }
