@@ -33,8 +33,15 @@ $url = $prefix . $_SERVER['REQUEST_URI'];
 if( $canonical_url) {
     // from velocity, we can't pass "--", as it is rendered weird. Therefore, we do a replace with "XXXXX"
     $canonical_url = str_replace('XXXXX', '--', $canonical_url);
+
+    // add a fix to handle https://www.bethel.edu as the starting string, so we can do absolute and relative urls
+    $canonical_url = str_replace("https://www.bethel.edu","",$canonical_url);
+
+    // make sure that its a relative url with a leading slash
     if ($canonical_url[0] != '/')
         $canonical_url = "/$canonical_url";
+
+    // generate the absolute url
     $canonical_url = "https://www.bethel.edu$canonical_url";
 } else {
     $canonical_url = $url;
