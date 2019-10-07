@@ -9,4 +9,4 @@
 if( isset($config) && !is_array($config) )
      $config = array();
 
-$config['RAVEN_URL'] = '';
+$config['SENTRY_URL'] = '';
