@@ -45,7 +45,7 @@ function log_entry($message){
 function search_for_user($email){
     global $mySforceConnection;
     // test for existing user
-    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Email = '$email'");
+    $response = $mySforceConnection->query("SELECT Email, Id FROM User WHERE Username = '$email'");
     $records = $response->{'records'};
     return $records;
 }
