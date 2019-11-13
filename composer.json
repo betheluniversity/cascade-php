@@ -1,7 +1,7 @@
 {
     "require": {
         "twig/twig": "~1.0",
-        "sentry/sentry": "^1.9"
+        "sentry/sdk" : "2.0.3"
     }
 }
 
