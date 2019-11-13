@@ -1,15 +1,16 @@
 {% set rand = random(3) + 1 %}
 {% if lazy %}
 <img 
-        src='https://cdn{{rand}}.bethel.edu/resize/unsafe/320x0/smart/{{end_path}}'
-        srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        data-srcset='   https://cdn{{rand}}.bethel.edu/resize/unsafe/1400x0/smart/{{end_path}} 1400w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/1200x0/smart/{{end_path}} 1200w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/1000x0/smart/{{end_path}} 1000w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/800x0/smart/{{end_path}} 800w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/600x0/smart/{{end_path}} 600w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/400x0/smart/{{end_path}} 400w,
-                        https://cdn{{rand}}.bethel.edu/resize/unsafe/200x0/smart/{{end_path}} 200w'
+
+        data-flickity-lazyload-srcset='https://cdn{{rand}}.bethel.edu/resize/unsafe/1600x0/smart/{{end_path}} 1600w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/1400x0/smart/{{end_path}} 1400w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/1200x0/smart/{{end_path}} 1200w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/1000x0/smart/{{end_path}} 1000w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/800x0/smart/{{end_path}} 800w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/600x0/smart/{{end_path}} 600w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/400x0/smart/{{end_path}} 400w,
+                https://cdn{{rand}}.bethel.edu/resize/unsafe/200x0/smart/{{end_path}} 200w'
+        data-flickity-lazyload-src='https://cdn{{rand}}.bethel.edu/resize/unsafe/320x0/smart/{{end_path}}'
         data-sizes="auto"
         class="lazyload {{ classes }}"
         alt="{{alt_text}}"
@@ -18,7 +19,8 @@
 <img
         src='https://cdn{{rand}}.bethel.edu/resize/unsafe/320x0/smart/{{end_path}}'
         srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        data-srcset='   https://cdn{{rand}}.bethel.edu/resize/unsafe/1400x0/smart/{{end_path}} 1400w,
+        data-srcset='   https://cdn{{rand}}.bethel.edu/resize/unsafe/1600x0/smart/{{end_path}} 1600w,
+                        https://cdn{{rand}}.bethel.edu/resize/unsafe/1400x0/smart/{{end_path}} 1400w,
                         https://cdn{{rand}}.bethel.edu/resize/unsafe/1200x0/smart/{{end_path}} 1200w,
                         https://cdn{{rand}}.bethel.edu/resize/unsafe/1000x0/smart/{{end_path}} 1000w,
                         https://cdn{{rand}}.bethel.edu/resize/unsafe/800x0/smart/{{end_path}} 800w,

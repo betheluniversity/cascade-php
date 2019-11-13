@@ -72,9 +72,7 @@ function image_carousel($images){
         $final_content = $final_content . carousel_item($content, '','',false);
     }
     if( sizeof($images) > 0 ) {
-        echo '<div class="site__image-bank">';
-        carousel_create('flickity  carousel--image-bank', $final_content);
-        echo '</div>';
+        carousel_create('flickity', $final_content);
     }
 }
 
