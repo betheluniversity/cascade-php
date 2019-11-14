@@ -25,7 +25,7 @@ function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
         $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     }
 
-    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), $clear_cache_bethel_alert=$clearCacheBethelAlert);
+    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), 300, $clearCacheBethelAlert);
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
     $twig = makeTwigEnviron('/code/news/twig');

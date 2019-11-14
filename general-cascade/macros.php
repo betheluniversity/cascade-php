@@ -296,6 +296,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
 
     $data = $cache->get($cache_name);
     if (!$data) {
+        echo "NO CACHE";
         $msg = "\nFull Data Array Memcache miss at " . $_SERVER['REQUEST_URI'] . "\n";
         error_log($msg, 3, '/opt/php_logs/memcache.log');
         $data = call_user_func_array($func, $inputs);
