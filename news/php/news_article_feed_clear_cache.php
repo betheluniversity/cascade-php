@@ -19,7 +19,7 @@ $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
 
 $cache_keys = $cache->get($bethel_alert_cache_name);
 $cache_keys_array = explode(':', $cache_keys);
-echo "Cache Keys: $cache_keys";
+print_r("Cache Keys: $cache_keys");
 
 if( $cache_keys ){
     echo 'HERE WE GO';
@@ -28,8 +28,8 @@ if( $cache_keys ){
         $cache->delete($cache_key);
     }
     $cache->delete($bethel_alert_cache_name);
+    echo 'Cleared Cache!';
 }
-echo 'Cleared Cache!';
 
 
 ?>
