@@ -20,9 +20,8 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
-function create_news_article_feed($categories){
-    $feed = autoCache("create_news_article_feed_logic", array($categories));
-//    $feed = create_news_article_feed_logic($categories);
+function create_news_article_feed($categories, $clearCacheBethelAlert="No"){
+    $feed = autoCache("create_news_article_feed_logic", array($categories, $clear_cache_bethel_alert=$clearCacheBethelAlert));
     return $feed;
 }
 
@@ -37,11 +36,9 @@ function create_news_article_feed_logic($categories){
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-//    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
     $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     // This is the new version of news.
-//    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 10);
     $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
 
 
