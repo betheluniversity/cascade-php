@@ -285,7 +285,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_this_sometime
         echo 'DID IT GET HERE';
         $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
         $cache_keys = cache.get($bethel_alert_cache_name);
-        if( $cache_keys ){
+        if( $cache_keys ) {
             $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time);
         } else {
             // cache this for 5x the normal cache time. This will help us maintain this list for a longer period of time.
