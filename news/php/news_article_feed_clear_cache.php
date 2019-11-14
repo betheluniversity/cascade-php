@@ -17,11 +17,13 @@ $cache->connect('localhost', 11211);
 
 $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
 
+$cache->set($bethel_alert_cache_name, 'BLAH', MEMCACHE_COMPRESSED, 300);
+
 $cache_keys = $cache->get($bethel_alert_cache_name);
 echo "Cache Keys: $cache_keys";
 
 if( $cache_keys ){
-    echo 'TEST';
+    echo 'HERE WE GO';
     foreach($cache_keys.explode(':') as $cache_key){
         echo "Cache Key: $cache_key";
         $cache->delete($cache_key);
