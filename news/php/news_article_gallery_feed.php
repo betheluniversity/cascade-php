@@ -13,7 +13,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
-function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories = "Stories"){
+function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories = "Stories", $clearCacheBethelAlert='No'){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
@@ -32,7 +32,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     // This is the new version of news.
     // TODO: currently the cached version is broken. It caches a BAD value.
-    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"));
+    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), $clear_cache_bethel_alert=$clearCacheBethelAlert);
 //    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 

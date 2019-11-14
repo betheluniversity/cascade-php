@@ -21,7 +21,7 @@ $DisplayImages;
 $featuredArticleOptions;
 
 function create_news_article_feed($categories, $clearCacheBethelAlert="No"){
-    $feed = autoCache("create_news_article_feed_logic", array($categories, $clear_cache_bethel_alert=$clearCacheBethelAlert));
+    $feed = autoCache("create_news_article_feed_logic", array($categories), $clear_cache_bethel_alert=$clearCacheBethelAlert);
     return $feed;
 }
 

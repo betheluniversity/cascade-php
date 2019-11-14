@@ -11,7 +11,7 @@
 $yearChosen;
 $uniqueNews;
 // returns an array of html elements.
-function create_news_article_archive($categories){
+function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -25,7 +25,7 @@ function create_news_article_archive($categories){
         $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     }
 
-    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
+    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles), $clear_cache_bethel_alert=$clearCacheBethelAlert);
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
     $twig = makeTwigEnviron('/code/news/twig');
