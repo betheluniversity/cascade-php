@@ -17,8 +17,6 @@ $cache->connect('localhost', 11211);
 
 $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
 
-$cache->set($bethel_alert_cache_name, 'BLAH', MEMCACHE_COMPRESSED, 300);
-
 $cache_keys = $cache->get($bethel_alert_cache_name);
 $cache_keys_array = explode(':', $cache_keys);
 echo "Cache Keys: $cache_keys";
