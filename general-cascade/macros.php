@@ -284,7 +284,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
     // store bethel alert cache clearing
     if( $clear_cache_bethel_alert == 'Yes' ) {
         $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
-        $cache_keys = $cache.get($bethel_alert_cache_name);
+        $cache_keys = $cache->get($bethel_alert_cache_name);
         echo $cache_keys;
         if( $cache_keys ) {
             $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time*5);
