@@ -12,6 +12,7 @@ $yearChosen;
 $uniqueNews;
 // returns an array of html elements.
 function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
+    echo $clearCacheBethelAlert;
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
