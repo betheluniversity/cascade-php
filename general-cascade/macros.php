@@ -279,13 +279,13 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_this_sometime
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
     $cache = new Memcache;
     $cache->connect('localhost', 11211);
-
+    echo "TEST";
     // store bethel alert cache clearing
     if( $clear_cache_bethel_alert == 'Yes' ) {
         $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
         $cache_keys = $cache.get($bethel_alert_cache_name);
         if( $cache_keys ) {
-            $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time);
+            $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time*5);
         } else {
             // cache this for 5x the normal cache time. This will help us maintain this list for a longer period of time.
             $cache->set($bethel_alert_cache_name, $cache_name, MEMCACHE_COMPRESSED, $cache_time*5);
