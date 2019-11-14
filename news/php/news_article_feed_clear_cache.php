@@ -19,19 +19,16 @@ $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
 
 $cache_keys = $cache->get($bethel_alert_cache_name);
 echo "Cache Keys: $cache_keys";
-$cache->set($bethel_alert_cache_name,'TEST',MEMCACHE_COMPRESSED, 300);
-$cache_keys = $cache->get($bethel_alert_cache_name);
-echo "Cache Keys: $cache_keys";
 
-
-//if( $cache_keys ){
-//    foreach($cache_keys.explode(':') as $cache_key){
-//        echo "Cache Key: $cache_key";
-//        $cache->delete($cache_key);
-//    }
-//    $cache->delete($bethel_alert_cache_name);
-//}
-//echo 'Cleared Cache!';
+if( $cache_keys ){
+    echo 'TEST';
+    foreach($cache_keys.explode(':') as $cache_key){
+        echo "Cache Key: $cache_key";
+        $cache->delete($cache_key);
+    }
+    $cache->delete($bethel_alert_cache_name);
+}
+echo 'Cleared Cache!';
 
 
 ?>
