@@ -21,7 +21,7 @@ $cache_keys = $cache->get($bethel_alert_cache_name);
 $cache_keys_array = explode(':', $cache_keys);
 echo "Cache Keys: $cache_keys";
 
-if( sizeof($cache_keys) > 0 ){
+if( $cache_keys ){
     echo 'HERE WE GO';
     foreach($cache_keys_array as $cache_key){
         echo "Cache Key: $cache_key";
