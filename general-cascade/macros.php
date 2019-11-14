@@ -229,7 +229,6 @@ function makeTwigEnviron($path){
 }
 
 function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_alert="No"){
-    echo $clear_cache_bethel_alert;
     if( !is_int($cache_time) )
         $cache_time = 300;
 
@@ -294,7 +293,6 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
     }
 
     $data = $cache->get($cache_name);
-    echo $cache_name;
     if (!$data) {
         echo "NO CACHE";
         $msg = "\nFull Data Array Memcache miss at " . $_SERVER['REQUEST_URI'] . "\n";
@@ -302,9 +300,8 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         $data = call_user_func_array($func, $inputs);
         try {
             $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
-
         } catch (Exception $e) {
-            $msg = "\nError - " . $e->getMessage() . "at " . $_SERVER['REQUEST_URI'] . "\n";
+            $msg = "\nError - " . $e->getMessage() . " at " . $_SERVER['REQUEST_URI'] . "\n";
             error_log($msg, 3, '/opt/php_logs/memcache.log');
         }
     }
