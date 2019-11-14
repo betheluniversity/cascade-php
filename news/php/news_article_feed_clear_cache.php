@@ -1,11 +1,10 @@
 <?php
-$valid_passwords = array ("mario" => "carbonell");
-$valid_users = array_keys($valid_passwords);
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
 
 $user = $_SERVER['PHP_AUTH_USER'];
 $pass = $_SERVER['PHP_AUTH_PW'];
 
-$validated = (in_array($user, $valid_users)) && ($pass == $valid_passwords[$user]);
+$validated = ($user == $config['RAVEN_URL']) && ($pass == $config['RAVEN_URL']);
 
 if (!$validated) {
     header('WWW-Authenticate: Basic realm="My Realm"');
@@ -13,21 +12,20 @@ if (!$validated) {
     die ("Not authorized");
 }
 
-// If arrives here, is a valid user.
-echo "<p>Welcome $user.</p>";
-echo "<p>Congratulation, you are into the system.</p>";
+$cache = new Memcache;
+$cache->connect('localhost', 11211);
 
-
-//$cache = new Memcache;
-//$cache->connect('localhost', 11211);
-//
-//$bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
-//$cache_keys = cache.get($bethel_alert_cache_name);
-//if( $cache_keys ){
-//    foreach($cache_keys.explode(':') as $cache_key){
-//        $cache->delete($cache_key);
-//    }
-//}
+$bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
+$cache_keys = $cache->get($bethel_alert_cache_name);
+echo "Cache Keys: $cache_keys";
+if( $cache_keys ){
+    foreach($cache_keys.explode(':') as $cache_key){
+        echo "Cache Key: $cache_key";
+        $cache->delete($cache_key);
+    }
+    $cache->delete($bethel_alert_cache_name);
+}
+echo 'Cleared Cache!';
 
 
 ?>
