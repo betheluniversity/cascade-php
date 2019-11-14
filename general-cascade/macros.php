@@ -284,7 +284,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         $cache_keys = $cache->get($bethel_alert_cache_name);
         if( $cache_keys ) {
             // if the cache name isn't in it.
-            if( strpos(strval($cache_keys), strval($cache_name)) == false )
+            if( strpos($cache_keys, $cache_name) === false )
                 $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time*5);
         } else {
             // cache this for 5x the normal cache time. This will help us maintain this list for a longer period of time.
