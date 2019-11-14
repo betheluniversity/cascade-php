@@ -4,7 +4,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
 $user = $_SERVER['PHP_AUTH_USER'];
 $pass = $_SERVER['PHP_AUTH_PW'];
 
-$validated = ($user == $config['RAVEN_URL']) && ($pass == $config['RAVEN_URL']);
+$validated = ($user == $config['CACHE_CLEAR_USER']) && ($pass == $config['CACHE_CLEAR_PASS']);
 
 if (!$validated) {
     header('WWW-Authenticate: Basic realm="My Realm"');
