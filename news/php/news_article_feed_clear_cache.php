@@ -19,7 +19,7 @@ $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
 
 $cache_keys = $cache->get($bethel_alert_cache_name);
 echo "Cache Keys: $cache_keys";
-$cache->set($bethel_alert_cache_name,MEMCACHE_COMPRESSED, 300);
+$cache->set($bethel_alert_cache_name,'TEST',MEMCACHE_COMPRESSED, 300);
 $cache_keys = $cache->get($bethel_alert_cache_name);
 echo "Cache Keys: $cache_keys";
 
