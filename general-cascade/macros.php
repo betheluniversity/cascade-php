@@ -229,7 +229,8 @@ function makeTwigEnviron($path){
 }
 
 function autoCache($func, $inputs=array(), $cache_time=300, $clear_this_sometime_later=false, $clear_cache_bethel_alert="No"){
-
+    echo $clear_cache_bethel_alert;
+    echo '____';
     if( !is_int($cache_time) )
         $cache_time = 300;
 
