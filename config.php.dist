@@ -10,3 +10,6 @@ if( isset($config) && !is_array($config) )
      $config = array();
 
 $config['RAVEN_URL'] = '';
+
+$config['CACHE_CLEAR_USER'] = '';
+$config['CACHE_CLEAR_PASS'] = '';

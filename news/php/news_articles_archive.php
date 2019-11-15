@@ -11,7 +11,7 @@
 $yearChosen;
 $uniqueNews;
 // returns an array of html elements.
-function create_news_article_archive($categories){
+function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -25,20 +25,26 @@ function create_news_article_archive($categories){
         $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     }
 
-    $arrayOfArticles = autoCache("sort_news_articles", array($arrayOfArticles));
+    $arrayOfArticles = sort_news_articles($arrayOfArticles);
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
-    $twig = makeTwigEnviron('/code/news/twig');
+    echo autoCache("echo_articles", array($arrayOfArticles), 300, $clearCacheBethelAlert);
 
+    return;
+}
+
+function echo_articles($arrayOfArticles) {
+    $twig = makeTwigEnviron('/code/news/twig');
+    $return_str = '';
     foreach( $arrayOfArticles as $yearArray )
     {
         // This should return an array of 5 items. Each of those includes a full years worth of articles, pre-sorted, and including the headers.
         //twig version
-        echo $twig->render('news_article_archive.html',array(
+        $return_str .= $twig->render('news_article_archive.html',array(
             'yearArray' => $yearArray
         ));
     }
-    return;
+    return $return_str;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
