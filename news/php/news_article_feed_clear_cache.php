@@ -25,6 +25,9 @@ if( $cache_keys ){
         $cache->delete($cache_key);
     }
     $cache->delete($bethel_alert_cache_name);
+    echo "Cleared cached News Feeds.";
+} else {
+    echo "No cached News Feeds to clear.";
 }
 
 ?>
