@@ -241,7 +241,7 @@ function search_programs($program_data, $data){
         // Get the csv data as single csv file
     // Todo, make this read the file locally for prod, and either sftp the file for staging from tinker, or cURL the prod file
 //    $csv_data = read_csv_file($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/programs-test.csv');
-    $csv_data = read_csv_file('/var/www/cms.pub/code/program-search/csv/programs.csv');
+    $csv_data = read_csv_file('/var/www/cms.pub/programs.csv');
 //    $csv_data = autoCache("read_csv_file", array($_SERVER['DOCUMENT_ROOT'] . '/code/program-search/csv/test.csv'));
     $return_values = array();
 
