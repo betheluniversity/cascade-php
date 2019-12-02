@@ -145,6 +145,7 @@ function inspect_news_article($xml, $categories){
     if( ($DisplayImages && $DisplayImages === "No") || $page_info['image-path'] == '/')
         $page_info['image'] = '';
     else {
+        // We add the mybethel class for the community dashboard
         $add_mybethel_class = '';
         if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
             $add_mybethel_class = 'img-fluid';
