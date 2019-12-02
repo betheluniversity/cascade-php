@@ -30,6 +30,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $clearCacheBethelAlert);
+    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
+
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
     $includeStories = false;
