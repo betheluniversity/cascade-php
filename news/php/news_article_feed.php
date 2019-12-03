@@ -144,8 +144,13 @@ function inspect_news_article($xml, $categories){
     global $DisplayImages;
     if( ($DisplayImages && $DisplayImages === "No") || $page_info['image-path'] == '/')
         $page_info['image'] = '';
-    else
-        $page_info['image'] = srcset($page_info['image-path'], $print=false, $lazy=true, $classes='', $page_info['title']);
+    else {
+        // We add the mybethel class for the community dashboard
+        $add_mybethel_class = '';
+        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
+            $add_mybethel_class = 'img-fluid';
+        $page_info['image'] = srcset($page_info['image-path'], $print = false, $lazy = true, $classes = $add_mybethel_class, $page_info['title']);
+    }
 
     $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
     $page_info['homepage-article'] = is_homepage_article($xml);

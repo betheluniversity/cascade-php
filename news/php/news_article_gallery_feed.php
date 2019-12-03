@@ -30,6 +30,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $clearCacheBethelAlert);
+
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
     $includeStories = false;
@@ -56,8 +57,12 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
         // Check if the what the feed type is the same as the article type
         if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story') ) {
+            // We add the mybethel class for the community dashboard
+            $add_mybethel_class = '';
+            if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
+                $add_mybethel_class = 'img-fluid';
             // Add the srcset to the gallery-image to be passed along to the html twig file
-            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, '', $newsAndStory['title']);
+            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, $classes = $add_mybethel_class, $newsAndStory['title']);
 
             // don't use this story on this page again
             array_push($GLOBALS['stories-already-used'], $id);
