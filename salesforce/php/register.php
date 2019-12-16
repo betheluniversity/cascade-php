@@ -48,12 +48,13 @@ $result = file_get_contents($wsapi_url, false, $context);
 
 $json = json_decode($result, true);
 
-echo $json;
 
 if($json['success'] == true){
-    echo 'api returned true';
-//    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
-//
+    $contact_id = $json['contact_id'];
+    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
+    echo $url;
+
+///
 //    $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
 //    mail($mail_to,$subject,$subject,"From: $from\n");
 //    log_entry($subject);
