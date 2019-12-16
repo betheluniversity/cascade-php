@@ -43,7 +43,7 @@ if ($staging){
 }
 
 // Here is the returned value
-$result = file_get_contents($url, false, $context);
+$result = file_get_contents($wsapi_url, false, $context);
 $json = json_decode($result, true);
 
 echo $json;
