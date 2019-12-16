@@ -25,14 +25,15 @@ $payload = array(
     "last_name" => $last
 );
 
-$credentials = json_encode($payload);
+$json_payload = json_encode($payload);
 $options = array(
     'http' => array(
         'header'  => "Content-type: application/json",
         'method'  => 'POST',
-        'content' => $payload,
+        'content' => $json_payload,
     ),
 );
+
 $context  = stream_context_create($options);
 
 //Changes the authenticating URL depending on the staging enviroment
@@ -44,9 +45,12 @@ if ($staging){
 
 // Here is the returned value
 $result = file_get_contents($wsapi_url, false, $context);
-$json = json_decode($result, true);
 
-echo $json;
+echo $result;
+//
+//$json = json_decode($result, true);
+//
+//echo $json;
 
 //if($json['success'] == "success"){
 //    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
