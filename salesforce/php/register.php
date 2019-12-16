@@ -2,6 +2,8 @@
 
 session_start();
 
+$staging = strstr(getcwd(), "/staging");
+
 //prepare a URL for returing
 if ($staging){
     $url = 'https://staging.bethel.edu/admissions/apply/';
