@@ -13,7 +13,7 @@ $email = $_POST["email"];
 $email = strtolower($email);
 $email = trim($email);
 
-log_entry($email);
+//log_entry($email);
 $first = $_POST["first"];
 $last = $_POST["last"];
 
@@ -35,9 +35,9 @@ $context  = stream_context_create($options);
 
 //Changes the authenticating URL depending on the staging enviroment
 if ($staging){
-    $url = 'http://wsapi.xp.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
 }else{
-    $url = 'http://wsapi.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
 }
 
 // Here is the returned value
