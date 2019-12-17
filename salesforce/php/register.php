@@ -52,22 +52,10 @@ $json = json_decode($result, true);
 if($json['success'] == true){
     $contact_id = $json['contact_id'];
     $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
-    echo $url;
-
-///
-//    $subject = "Created account for email $email with cid=$contact_id and uid=$user_id";
-//    mail($mail_to,$subject,$subject,"From: $from\n");
-//    log_entry($subject);
-//
-//    header("Location: $url");
+    header("Location: $url");
 }else{
-    echo 'api returned false';
-//    $subject = "Failed to create account for email $email with cid=$contact_id and uid=$user_id";
-//    mail($mail_to,$subject,$subject,"From: $from\n");
-//    log_entry($subject);
-//    log_entry($json);
-//    $url .= "?email=false";
-//    header("Location: $url");
+    $url = "https://www.bethel.edu/admissions/apply/confirm?email=false";
+    header("Location: $url");
 }
 
 ?>
