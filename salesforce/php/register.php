@@ -54,7 +54,7 @@ if($json['success'] == true){
     $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
     header("Location: $url");
 }else{
-    $url = "https://www.bethel.edu/admissions/apply/confirm?email=false";
+    $url .= "?email=false";
     header("Location: $url");
 }
 
