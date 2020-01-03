@@ -276,7 +276,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
     $cache_name = md5($cache_name);
 
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
-    $cache = new Memcache;
+    $cache = new Memcached;
     $cache->connect('localhost', 11211);
     // store bethel alert cache clearing
     if( $clear_cache_bethel_alert == 'Yes' ) {

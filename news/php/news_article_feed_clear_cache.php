@@ -12,7 +12,7 @@ if (!$validated) {
     die ("Not authorized");
 }
 
-$cache = new Memcache;
+$cache = new Memcached;
 $cache->connect('localhost', 11211);
 
 $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
