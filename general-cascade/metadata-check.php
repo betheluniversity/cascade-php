@@ -16,12 +16,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
-$client = new Raven_Client($config['RAVEN_URL']);
-$error_handler = new Raven_ErrorHandler($client);
-$error_handler->registerExceptionHandler();
-$error_handler->registerErrorHandler();
-$error_handler->registerShutdownFunction();
-
+$client = Sentry\init(['dsn' => $config['RAVEN_URL']]);
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
