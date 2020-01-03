@@ -17,6 +17,9 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 $client = Sentry\init(['dsn' => $config['RAVEN_URL']]);
+Sentry\configureScope(function (Sentry\State\Scope $scope): void {
+    $scope->setLevel(Sentry\Severity::error());
+});
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
