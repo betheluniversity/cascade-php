@@ -80,9 +80,10 @@ function image_carousel($images){
 
 
 function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
-    if( strpos($end_path,"www.bethel.edu") == false ) {
-        $end_path = "https://www.bethel.edu/$end_path";
-    }
+    // todo: in the move to imgix, we don't want this anymore
+//    if( strpos($end_path,"www.bethel.edu") == false ) {
+//        $end_path = "https://www.bethel.edu/$end_path";
+//    }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
@@ -102,6 +103,13 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 
 
 function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
+
+    // todo: this is gross, but its a way to clean up the end_path
+    $end_path = str_replace('http://', '', $end_path);
+    $end_path = str_replace('https://', '', $end_path);
+    $end_path = str_replace('www.bethel.edu'/, '', $end_path);
+    $end_path = str_replace('staging.bethel.edu/', '', $end_path);
+    $end_path = str_replace('staging.xp.bethel.edu/', '', $end_path);
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumborURL.html', array(
