@@ -285,10 +285,10 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         if( $cache_keys ) {
             // if the cache name isn't in it.
             if( strpos($cache_keys, $cache_name) === false )
-                $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time*5);
+                $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", $cache_time*5);
         } else {
             // cache this for 5x the normal cache time. This will help us maintain this list for a longer period of time.
-            $cache->set($bethel_alert_cache_name, $cache_name, MEMCACHE_COMPRESSED, $cache_time*5);
+            $cache->set($bethel_alert_cache_name, $cache_name, $cache_time*5);
         }
     }
 
@@ -298,7 +298,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         error_log($msg, 3, '/opt/php_logs/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
-            $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
+            $cache->set($cache_name, $data, $cache_time);
         } catch (Exception $e) {
             $msg = "\nError - " . $e->getMessage() . " at " . $_SERVER['REQUEST_URI'] . "\n";
             error_log($msg, 3, '/opt/php_logs/memcache.log');
