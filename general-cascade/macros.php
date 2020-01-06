@@ -107,7 +107,7 @@ function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
     // todo: this is gross, but its a way to clean up the end_path
     $end_path = str_replace('http://', '', $end_path);
     $end_path = str_replace('https://', '', $end_path);
-    $end_path = str_replace('www.bethel.edu'/, '', $end_path);
+    $end_path = str_replace('www.bethel.edu', '', $end_path);
     $end_path = str_replace('staging.bethel.edu/', '', $end_path);
     $end_path = str_replace('staging.xp.bethel.edu/', '', $end_path);
 
