@@ -68,7 +68,7 @@ function image_carousel($images){
             $alt = '';
         }
 
-        $content = srcset("https://www.bethel.edu/$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
+        $content = srcset("$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
         $final_content = $final_content . carousel_item($content, '','',false);
     }
     if( sizeof($images) > 0 ) {
