@@ -10,28 +10,40 @@ $user = $_POST['user'];
 
 $staging = strstr(getcwd(), "/staging");
 
-$hash = md5($user['firstName'] . $user['lastName'] .$user['email'] . $_POST['degree-type']);
+$payload = array(
+    "email" => $user['email'],
+    "first_name" => $user['firstName'],
+    "last_name" => $user['lastName'],
+    "school" => $_POST['degree-type']
+);
 
-$subject = 'Homepage Request for Information';
-$message = "Request Info ID: " . $hash . "\nFirst Name: " . $user['firstName'] . "\nLast Name: " . $user['lastName'] . "\nEmail: " . $user['email'] . "\nDegree Type: " . $_POST['degree-type'];
+$json_payload = json_encode($payload);
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json",
+        'method'  => 'POST',
+        'content' => $json_payload,
+    ),
+);
 
-$headers = 'From: web-development@bethel.edu' .  "\r\n";
-$headers .= 'Bcc: webmaster@bethel.edu' . "\r\n";
+$context  = stream_context_create($options);
 
-$to = 'Bethel University Web Development <web-development@bethel.edu>';
-$mail = mail($to , $subject , $message, $headers);
-
-if(!$staging){
-    $to = 'Bethel University Enrollment Data Team <enrollment-data@bethel.edu>';
-    $mail = mail($to , $subject , $message, $headers);
+//Changes the authenticating URL depending on the staging enviroment
+if ($staging){
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/homepagerfi';
+}else{
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/homepagerfi';
 }
 
-if(!$mail){
-    header("HTTP/1.1 500 Internal Server Error");
+
+// Here is the returned value
+$result = file_get_contents($wsapi_url, false, $context);
+
+$json = json_decode($result, true);
+
+
+if($json['success'] == true){
+    // do something
 }else{
-    $json = array(
-        'mail' => $mail,
-        'md5hash' => $hash
-    );
-    echo json_encode($json);
+    // do something else
 }
