@@ -19,10 +19,25 @@ $email = trim($email);
 $first = $_POST["first"];
 $last = $_POST["last"];
 
+// prep UTM data
+$utm_source = '';
+$utm_medium = '';
+$utm_campaign = '';
+
+if( $_COOKIE['utm_source'] )
+    $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
+if( $_COOKIE['utm_medium'] )
+    $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
+if( $_COOKIE['utm_campaign'] )
+    $utm_campaign = $_COOKIE['utm_campaign'];
+
 $payload = array(
     "email" => $email,
     "first_name" => $first,
-    "last_name" => $last
+    "last_name" => $last,
+    'utm_source' => $utm_source,
+    'utm_medium' => $utm_medium,
+    'utm_campaign' => $utm_campaign
 );
 
 $json_payload = json_encode($payload);
@@ -36,7 +51,7 @@ $options = array(
 
 $context  = stream_context_create($options);
 
-//Changes the authenticating URL depending on the staging enviroment
+//Changes the authenticating URL depending on the staging environment
 if ($staging){
     $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
 }else{
@@ -57,5 +72,3 @@ if($json['success'] == true){
     $url .= "?email=false";
     header("Location: $url");
 }
-
-?>
