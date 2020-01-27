@@ -4,7 +4,7 @@ session_start();
 
 $staging = strstr(getcwd(), "/staging");
 
-//prepare a URL for returing
+//prepare a URL for returning
 if ($staging){
     $url = 'https://staging.bethel.edu/admissions/apply/';
 }else{
@@ -15,7 +15,7 @@ $email = $_POST["email"];
 $email = strtolower($email);
 $email = trim($email);
 
-//log_entry($email);
+
 $first = $_POST["first"];
 $last = $_POST["last"];
 
