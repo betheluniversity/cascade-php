@@ -40,10 +40,3 @@ if ($staging){
 $result = file_get_contents($wsapi_url, false, $context);
 
 $json = json_decode($result, true);
-
-
-if($json['success'] == true){
-    // do something
-}else{
-    // do something else
-}
