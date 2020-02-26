@@ -95,7 +95,6 @@ function inspect_news_article($xml, $categories){
         "html"              => "",
         "display-on-feed"   => false,
         "id"                => (string)$xml['id'],
-        "article-type"      => 'News',
         "homepage-article"  => false
     );
 
@@ -138,7 +137,6 @@ function inspect_news_article($xml, $categories){
     } else {
         $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
         $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
-        $page_info['article-type'] = (string)$ds->{'story-metadata'}->{'story-or-news'};
     }
 
     global $DisplayImages;

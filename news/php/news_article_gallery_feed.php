@@ -13,6 +13,7 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
+// todo - remove unused variable here later
 function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories = "Stories", $clearCacheBethelAlert='No'){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
@@ -33,18 +34,6 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
-    $includeStories = false;
-    $includeNews = false;
-
-    if( $newsOrStories == "Both" ) {
-        $includeStories = true;
-        $includeNews = true;
-    } elseif ( $newsOrStories == "News" ) {
-        $includeNews = true;
-    } else {
-        $includeStories = true;
-    }
-
     $threeStories = array();
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
@@ -55,21 +44,18 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article']) )
             continue;
 
-        // Check if the what the feed type is the same as the article type
-        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story') ) {
-            // We add the mybethel class for the community dashboard
-            $add_mybethel_class = '';
-            if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
-                $add_mybethel_class = 'img-fluid';
-            // Add the srcset to the gallery-image to be passed along to the html twig file
-            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, $classes = $add_mybethel_class, $newsAndStory['title']);
+        // We add the mybethel class for the community dashboard
+        $add_mybethel_class = '';
+        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
+            $add_mybethel_class = 'img-fluid';
+        // Add the srcset to the gallery-image to be passed along to the html twig file
+        $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, $classes = $add_mybethel_class, $newsAndStory['title']);
 
-            // don't use this story on this page again
-            array_push($GLOBALS['stories-already-used'], $id);
+        // don't use this story on this page again
+        array_push($GLOBALS['stories-already-used'], $id);
 
-            array_push($threeStories, $newsAndStory);
-            unset($arrayOfNewsAndStories[$index]);
-        }
+        array_push($threeStories, $newsAndStory);
+        unset($arrayOfNewsAndStories[$index]);
 
         // exit once there are 3
         if( sizeof($threeStories) >= 3)
