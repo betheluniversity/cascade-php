@@ -14,7 +14,7 @@ $year = null;
 if( array_key_exists('month',$_GET) )
     $month = $_GET['month'];
 if( array_key_exists('year',$_GET) )
-    $month = $_GET['year'];
+    $year = $_GET['year'];
 if (is_null($month) || is_null($year)){
     $month = date('n');
     $year = date('Y');
@@ -41,7 +41,12 @@ function build_calendar_data($month, $year){
     $data['grid'] = draw_calendar($month, $year);
     $data['month_title'] = get_month_name($month) . ' ' . $year;
     $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+
+    if( array_key_exists('REMOTE_USER', $_SERVER['REMOTE_USER']))
+        $data['remote_user'] = $_SERVER['REMOTE_USER'];
+    else {
+        $data['remote_user'] = null;
+    }
 
 //    $total_time_end = microtime(true);
 //    $time = $total_time_end - $total_time_start;
