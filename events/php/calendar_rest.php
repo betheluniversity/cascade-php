@@ -1,6 +1,8 @@
 <?php
 
 
+use Twig\Extension\CoreExtension;
+
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
@@ -105,6 +107,7 @@ function draw_calendar($month,$year, $day=1){
     }
 
     $twig = makeTwigEnviron('/code/events/twig');
+    $twig->addExtension(new CoreExtension());
     $twig->getExtension('core')->setTimezone('America/Chicago');
     $calendar .= $twig->render('calendar_rest.html',array(
         'running_day' => $running_day,
