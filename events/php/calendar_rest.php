@@ -6,8 +6,13 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
 $total_time_start = microtime(true);
-$month = $_GET['month'];
-$year = $_GET['year'];
+
+$month = null;
+$year = null;
+if( array_key_exists('month',$_GET) )
+    $month = $_GET['month'];
+if( array_key_exists('year',$_GET) )
+    $month = $_GET['year'];
 if (is_null($month) || is_null($year)){
     $month = date('n');
     $year = date('Y');
@@ -150,7 +155,7 @@ function get_event_xml(){
     return $dates;
 }
 
-function add_event_to_array(&$dates, $page_data){
+function add_event_to_array($dates, $page_data){
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
         $start_date = $date['start-date'] / 1000;
