@@ -158,8 +158,8 @@ function get_event_xml(){
 function add_event_to_array($dates, $page_data){
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
-        $start_date = $date['start-date'] / 1000;
-        $end_date = $date['end-date'] / 1000;
+        $start_date = (int)($date['start-date']) / 1000;
+        $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
 
