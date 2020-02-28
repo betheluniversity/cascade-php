@@ -68,7 +68,7 @@ function image_carousel($images){
             $alt = '';
         }
 
-        $content = srcset("https://www.bethel.edu/$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
+        $content = srcset("$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
         $final_content = $final_content . carousel_item($content, '','',false);
     }
     if( sizeof($images) > 0 ) {
@@ -80,9 +80,10 @@ function image_carousel($images){
 
 
 function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
-    if( strpos($end_path,"www.bethel.edu") == false ) {
-        $end_path = "https://www.bethel.edu/$end_path";
-    }
+    // todo: in the move to imgix, we don't want this anymore
+//    if( strpos($end_path,"www.bethel.edu") == false ) {
+//        $end_path = "https://www.bethel.edu/$end_path";
+//    }
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $content = $twig->render('srcset.html', array(
@@ -102,6 +103,13 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 
 
 function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
+
+    // todo: this is gross, but its a way to clean up the end_path
+    $end_path = str_replace('http://', '', $end_path);
+    $end_path = str_replace('https://', '', $end_path);
+    $end_path = str_replace('www.bethel.edu', '', $end_path);
+    $end_path = str_replace('staging.bethel.edu/', '', $end_path);
+    $end_path = str_replace('staging.xp.bethel.edu/', '', $end_path);
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
     $html = $twig->render('thumborURL.html', array(
@@ -276,8 +284,8 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
     $cache_name = md5($cache_name);
 
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name
-    $cache = new Memcache;
-    $cache->connect('localhost', 11211);
+    $cache = new Memcached;
+    $cache->addServer("localhost", 11211);
     // store bethel alert cache clearing
     if( $clear_cache_bethel_alert == 'Yes' ) {
         $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
@@ -285,10 +293,10 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         if( $cache_keys ) {
             // if the cache name isn't in it.
             if( strpos($cache_keys, $cache_name) === false )
-                $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", MEMCACHE_COMPRESSED, $cache_time*5);
+                $cache->set($bethel_alert_cache_name, "$cache_keys:$cache_name", $cache_time*5);
         } else {
             // cache this for 5x the normal cache time. This will help us maintain this list for a longer period of time.
-            $cache->set($bethel_alert_cache_name, $cache_name, MEMCACHE_COMPRESSED, $cache_time*5);
+            $cache->set($bethel_alert_cache_name, $cache_name, $cache_time*5);
         }
     }
 
@@ -298,7 +306,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
         error_log($msg, 3, '/opt/php_logs/memcache.log');
         $data = call_user_func_array($func, $inputs);
         try {
-            $cache->set($cache_name, $data, MEMCACHE_COMPRESSED, $cache_time);
+            $cache->set($cache_name, $data, $cache_time);
         } catch (Exception $e) {
             $msg = "\nError - " . $e->getMessage() . " at " . $_SERVER['REQUEST_URI'] . "\n";
             error_log($msg, 3, '/opt/php_logs/memcache.log');

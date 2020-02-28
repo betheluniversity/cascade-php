@@ -171,10 +171,10 @@ function is_expired($date_for_sorting){
     $publishDate = $date_for_sorting / 1000;
     $currentDate = time();
     global $ExpireAfterXDays;
-    $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
 
     // Check if it falls between the given range.
     if( $ExpireAfterXDays != "" ){
+        $ExpiresInSeconds = $ExpireAfterXDays*86400; //converts days to seconds.
         // if $publishDate is greater than $ExpiresInSeconds away from $currentDate, stop displaying it.
         if( $publishDate > ($currentDate - $ExpiresInSeconds)){
             return false;
