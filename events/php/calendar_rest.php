@@ -107,8 +107,7 @@ function draw_calendar($month,$year, $day=1){
     }
 
     $twig = makeTwigEnviron('/code/events/twig');
-    $twig->addExtension(new CoreExtension());
-    $twig->getExtension('core')->setTimezone('America/Chicago');
+    $twig->getExtension('Twig_Extension_Core')->setTimezone('America/Chicago');
     $calendar .= $twig->render('calendar_rest.html',array(
         'running_day' => $running_day,
         'days_in_month' => $days_in_month,
