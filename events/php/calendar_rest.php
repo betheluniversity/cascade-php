@@ -42,7 +42,7 @@ function build_calendar_data($month, $year){
     $data['month_title'] = get_month_name($month) . ' ' . $year;
     $data['next_title'] = "Next Month";
 
-    if( array_key_exists('REMOTE_USER', $_SERVER['REMOTE_USER']))
+    if( array_key_exists('REMOTE_USER', $_SERVER))
         $data['remote_user'] = $_SERVER['REMOTE_USER'];
     else {
         $data['remote_user'] = null;
