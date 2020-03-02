@@ -156,7 +156,7 @@ function get_event_xml(){
     foreach($event_pages as $child ){
         $page_data = inspect_page($child, $categories);
         if (!$page_data["hide-from-calendar"]){
-            add_event_to_array($dates, $page_data);
+            $dates = add_event_to_array($dates, $page_data);
         }
     }
     return $dates;
@@ -297,7 +297,14 @@ function inspect_page($xml, $categories){
         }else if($k == "dates"){
             $dates = array();
             foreach($v as $date_k => $date_v){
-                $dates[$date_k] = xml2array($date_v);
+                $date_v = array(
+                    "start-date" => (string)$date_v->{'start-date'},
+                    "end-date" => (string)$date_v->{'end-date'},
+                    "all-day" => (string)$date_v->{'all-day'},
+                    "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
+                    "timezone" => (string)$date_v->{'timezone'}
+                );
+                $dates[$date_k] = $date_v;
             }
             $final_page_info[$k] = $dates;
         }else{
