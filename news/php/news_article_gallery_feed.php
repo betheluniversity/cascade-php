@@ -29,8 +29,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
 
     // This is the new version of news.
-//    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $clearCacheBethelAlert);
-    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
+    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $clearCacheBethelAlert);
 
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
@@ -48,7 +47,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     $threeStories = array();
     $onlyLookForCoronavirus = False;
-    $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89';
+    $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
 
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
@@ -59,7 +58,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
         // Check if the what the feed type is the same as the article type
         if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story')) {
-            // TODO: THIS CHECK CAN BE REMOVED
+            // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
             if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
                 continue;
             }
@@ -82,7 +81,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 //        // exit once there are 3
 //        if( sizeof($threeStories) >= 3)
 //            break;
-        // If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
+        // TODO: If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
         if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories) == 2 && !in_array($coronavirusArticleId, $GLOBALS['stories-already-used'])) {
             $onlyLookForCoronavirus = True;
         }
