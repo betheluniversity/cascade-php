@@ -82,10 +82,10 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 //        if( sizeof($threeStories) >= 3)
 //            break;
         // If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
-        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories == 2 ) && !in_array($coronavirusArticleId, $threeStories)) {
+        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories) == 2 && !in_array($coronavirusArticleId, $threeStories)) {
             $onlyLookForCoronavirus = True;
         }
-        elseif( sizeof($threeStories == 3) ) {
+        elseif( sizeof($threeStories) == 3) {
             break;
         }
     }
