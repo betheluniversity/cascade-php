@@ -47,10 +47,10 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     $threeStories = array();
     $onlyLookForCoronavirus = False;
+    $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89';
+
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
-        $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89';
-
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article']) )
@@ -81,8 +81,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 //        // exit once there are 3
 //        if( sizeof($threeStories) >= 3)
 //            break;
-        // If its the homepage top feature and we have 2, we only need to look for the cornavirus article.
-        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories == 2 )) {
+        // If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
+        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories == 2 ) && !in_array($coronavirusArticleId, $threeStories)) {
             $onlyLookForCoronavirus = True;
         }
         elseif( sizeof($threeStories == 3) ) {
