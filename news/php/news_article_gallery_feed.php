@@ -46,9 +46,9 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     }
 
     $threeStories = array();
+    $onlyLookForCoronavirus = False;
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
-        $addArticle = false;
         $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89';
 
         // if it's already been used, skip this article
@@ -57,8 +57,12 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             continue;
 
         // Check if the what the feed type is the same as the article type
-        // The last check is the coronavirus check
-        if( (($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story')) || ( $galleryStyle == 'Homepage Top Feature' && $id == $coronavirusArticleId)) {
+        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story')) {
+            // TODO: THIS CHECK CAN BE REMOVED
+            if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
+                continue;
+            }
+
             // We add the mybethel class for the community dashboard
             $add_mybethel_class = '';
             if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
@@ -73,9 +77,17 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             unset($arrayOfNewsAndStories[$index]);
         }
 
-        // exit once there are 3
-        if( sizeof($threeStories) >= 3)
+        // TODO: THIS IS THE DEFAULT CODE, but we don't want to do this while we have the cornavirus locked in position 3
+//        // exit once there are 3
+//        if( sizeof($threeStories) >= 3)
+//            break;
+        // If its the homepage top feature and we have 2, we only need to look for the cornavirus article.
+        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories == 2 )) {
+            $onlyLookForCoronavirus = True;
+        }
+        elseif( sizeof($threeStories == 3) ) {
             break;
+        }
     }
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
