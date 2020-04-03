@@ -49,6 +49,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
         $id = $newsAndStory['id'];
         $addArticle = false;
+        $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89';
 
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
@@ -56,7 +57,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             continue;
 
         // Check if the what the feed type is the same as the article type
-        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story') ) {
+        // The last check is the coronavirus check
+        if( (($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story')) || ( $galleryStyle == 'Homepage Top Feature' && $id == $coronavirusArticleId)) {
             // We add the mybethel class for the community dashboard
             $add_mybethel_class = '';
             if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
