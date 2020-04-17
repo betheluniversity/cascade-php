@@ -278,7 +278,7 @@ function create_bio_html($bio){
         $alt_text = $bio['first'] . ' ' . $bio['last'];
         $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
     } else
-        $bio_image = "<img src='https://www.bethel.edu/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
+        $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
 
     $job_titles = format_job_titles($bio['array_of_job_titles']);

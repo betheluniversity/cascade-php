@@ -242,22 +242,24 @@ function inspect_event_page($xml, $categories){
 function display_on_feed_events($page_info){
     global $StartDate;
     global $EndDate;
-    $modifiedStartDate = $StartDate / 1000;
-    $modifiedEndDate = $EndDate / 1000;
 
     //Check if the event falls between the given range.
     if( $StartDate != "" && $EndDate != "" ){
+        $modifiedStartDate = $StartDate / 1000;
+        $modifiedEndDate = $EndDate / 1000;
         // If the end date of the page comes after the start
         if( $modifiedStartDate < $page_info['date']['end-date'] && $page_info['date']['start-date'] < $modifiedEndDate ){
             return true;
         }
     }
     elseif( $StartDate != ""){
+        $modifiedStartDate = $StartDate / 1000;
         if( $modifiedStartDate < $page_info['date']['end-date']){
             return true;
         }
     }
     elseif( $EndDate != ""){
+        $modifiedEndDate = $EndDate / 1000;
         if( $page_info['date']['start-date'] < $modifiedEndDate ){
             return true;
         }

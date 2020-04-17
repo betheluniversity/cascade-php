@@ -18,6 +18,8 @@ Delete any of these you don't use.
 - Venv update needed
 - Config update needed
 - Puppet update needed
+- Cache clear needed
+- Contact ______________
 
 ## How Has This Been Tested?
 

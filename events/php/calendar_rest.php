@@ -1,13 +1,20 @@
 <?php
 
 
+use Twig\Extension\CoreExtension;
+
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
 $total_time_start = microtime(true);
-$month = $_GET['month'];
-$year = $_GET['year'];
+
+$month = null;
+$year = null;
+if( array_key_exists('month',$_GET) )
+    $month = $_GET['month'];
+if( array_key_exists('year',$_GET) )
+    $year = $_GET['year'];
 if (is_null($month) || is_null($year)){
     $month = date('n');
     $year = date('Y');
@@ -34,7 +41,12 @@ function build_calendar_data($month, $year){
     $data['grid'] = draw_calendar($month, $year);
     $data['month_title'] = get_month_name($month) . ' ' . $year;
     $data['next_title'] = "Next Month";
-    $data['remote_user'] = $_SERVER['REMOTE_USER'];
+
+    if( array_key_exists('REMOTE_USER', $_SERVER))
+        $data['remote_user'] = $_SERVER['REMOTE_USER'];
+    else {
+        $data['remote_user'] = null;
+    }
 
 //    $total_time_end = microtime(true);
 //    $time = $total_time_end - $total_time_start;
@@ -100,7 +112,7 @@ function draw_calendar($month,$year, $day=1){
     }
 
     $twig = makeTwigEnviron('/code/events/twig');
-    $twig->getExtension('core')->setTimezone('America/Chicago');
+    $twig->getExtension('Twig_Extension_Core')->setTimezone('America/Chicago');
     $calendar .= $twig->render('calendar_rest.html',array(
         'running_day' => $running_day,
         'days_in_month' => $days_in_month,
@@ -144,17 +156,17 @@ function get_event_xml(){
     foreach($event_pages as $child ){
         $page_data = inspect_page($child, $categories);
         if (!$page_data["hide-from-calendar"]){
-            add_event_to_array($dates, $page_data);
+            $dates = add_event_to_array($dates, $page_data);
         }
     }
     return $dates;
 }
 
-function add_event_to_array(&$dates, $page_data){
+function add_event_to_array($dates, $page_data){
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
-        $start_date = $date['start-date'] / 1000;
-        $end_date = $date['end-date'] / 1000;
+        $start_date = (int)($date['start-date']) / 1000;
+        $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
 
@@ -285,7 +297,14 @@ function inspect_page($xml, $categories){
         }else if($k == "dates"){
             $dates = array();
             foreach($v as $date_k => $date_v){
-                $dates[$date_k] = xml2array($date_v);
+                $date_v = array(
+                    "start-date" => (string)$date_v->{'start-date'},
+                    "end-date" => (string)$date_v->{'end-date'},
+                    "all-day" => (string)$date_v->{'all-day'},
+                    "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
+                    "timezone" => (string)$date_v->{'timezone'}
+                );
+                $dates[$date_k] = $date_v;
             }
             $final_page_info[$k] = $dates;
         }else{
