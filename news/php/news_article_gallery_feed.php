@@ -47,6 +47,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
             continue;
+        print_r('GOT THROUGH!');
 
         // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
         if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
@@ -61,7 +62,6 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
             continue;
         }
-        print_r('GOT THROUGH!');
 
         // We add the mybethel class for the community dashboard
         $add_mybethel_class = '';
