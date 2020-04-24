@@ -47,12 +47,12 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
             continue;
-        print_r('GOT THROUGH!');
 
         // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
         if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
             continue;
         }
+        print_r('GOT THROUGH!');
 
         // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
         // if we include public alerts, then we only want to skip internal ones
