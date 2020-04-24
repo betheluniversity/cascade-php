@@ -42,6 +42,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     foreach( $arrayOfNewsAndStories as $index => $article) {
         $id = $article['id'];
+        print_r($id);
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
@@ -60,7 +61,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
             continue;
         }
-        print_r('TEST');
+        print_r('GOT THROUGH!');
 
         // We add the mybethel class for the community dashboard
         $add_mybethel_class = '';
