@@ -27,10 +27,12 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+//    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"), 300, $blerts);
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
 
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $blerts);
+    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
 
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
@@ -58,6 +60,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
             continue;
         }
+        print_r('TEST');
 
         // We add the mybethel class for the community dashboard
         $add_mybethel_class = '';
