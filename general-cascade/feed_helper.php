@@ -69,19 +69,6 @@ function match_metadata_articles($xml, $categories, $options, $feedType){
     return false;
 }
 
-function is_homepage_article($xml){
-    foreach ($xml->{'dynamic-metadata'} as $md) {
-        $name = $md->name;
-
-        foreach ($md->value as $value) {
-            if ($value == 'Homepage') {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 //Sort an array
 function sort_by_date( $array, $reverse = true){
     // if $array is not an array, return an empty array

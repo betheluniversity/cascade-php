@@ -11,7 +11,7 @@
 $yearChosen;
 $uniqueNews;
 // returns an array of html elements.
-function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
+function create_news_article_archive($categories, $blerts="No"){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -28,7 +28,21 @@ function create_news_article_archive($categories, $clearCacheBethelAlert="No"){
     $arrayOfArticles = sort_news_articles($arrayOfArticles);
     $arrayOfArticles = array_reverse($arrayOfArticles);
 
-    echo autoCache("echo_articles", array($arrayOfArticles), 300, $clearCacheBethelAlert);
+    // Blert logic
+    $finalArticleArray = [];
+    foreach ($arrayOfArticles as $article) {
+        // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
+        // if we include public alerts, then we only want to skip internal ones
+        // if we don't want blerts, then we skip all blerts
+        // if we want to include internal, then we don't skip any
+        if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+            continue;
+        }
+        array_push($finalArticleArray, $article);
+    }
+
+    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
 
     return;
 }

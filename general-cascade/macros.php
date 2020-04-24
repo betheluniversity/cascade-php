@@ -236,7 +236,7 @@ function makeTwigEnviron($path){
 
 }
 
-function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_alert="No"){
+function autoCache($func, $inputs=array(), $cache_time=300, $blerts="No"){
     if( !is_int($cache_time) )
         $cache_time = 300;
 
@@ -287,7 +287,7 @@ function autoCache($func, $inputs=array(), $cache_time=300, $clear_cache_bethel_
     $cache = new Memcached;
     $cache->addServer("localhost", 11211);
     // store bethel alert cache clearing
-    if( $clear_cache_bethel_alert == 'Yes' ) {
+    if( $blerts != 'No' ) {
         $bethel_alert_cache_name = 'clear_cache_bethel_alert_keys';
         $cache_keys = $cache->get($bethel_alert_cache_name);
         if( $cache_keys ) {
