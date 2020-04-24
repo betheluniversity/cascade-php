@@ -27,12 +27,10 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-//    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"), 300, $blerts);
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
+    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"), 300, $blerts);
 
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $blerts);
-    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
 
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
 
@@ -40,7 +38,6 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     $onlyLookForCoronavirus = False;
     $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
 
-    print_r($galleryStyle);
     foreach( $arrayOfNewsAndStories as $index => $article) {
         $id = $article['id'];
         // if it's already been used, skip this article
