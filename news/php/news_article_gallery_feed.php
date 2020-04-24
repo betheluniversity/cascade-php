@@ -40,9 +40,10 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     $onlyLookForCoronavirus = False;
     $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
 
+    print_r($galleryStyle);
     foreach( $arrayOfNewsAndStories as $index => $article) {
         $id = $article['id'];
-//        print_r($id);
+        print_r($article['featured-homepage-article']);
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
         if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
