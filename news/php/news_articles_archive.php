@@ -76,6 +76,7 @@ function inspect_news_archive_page($xml, $categories){
         "html" => "",
         "display-on-feed" => true,
         "id"                => $xml['id'],
+        "bethel-alert"      => 'No'
     );
     // if the file doesn't exist, skip it.
     if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $page_info['path'] . '.php') ) {
@@ -130,6 +131,8 @@ function inspect_news_archive_page($xml, $categories){
         } elseif( $dataDefinition == "News Article") {
             $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
             $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+        } elseif( $dataDefinition == "News Article - Flex") {
+            $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         }
     } else {
         # if its not the president announcements page, we want to make sure that the prez announcements are NOT shown.
