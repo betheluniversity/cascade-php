@@ -145,7 +145,7 @@ function inspect_news_article($xml, $categories){
     } else {
         $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
         $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
-        $page_info['bethel-alert'] = $ds->{'bethel-alert'};
+        $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         $page_info['featured-homepage-article'] = $ds->{'story-metadata'}->{'featured'};
     }
 
