@@ -146,7 +146,8 @@ function inspect_news_article($xml, $categories){
         $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
         $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
         $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
-        $page_info['featured-homepage-article'] = $ds->{'story-metadata'}->{'featured'};
+        if( $ds->{'story-metadata'}->{'featured'} == 'Yes' )
+            $page_info['featured-homepage-article'] = true;  // this defaults to false above, if it doesn't hit this
     }
 
     global $DisplayImages;
