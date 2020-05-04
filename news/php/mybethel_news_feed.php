@@ -6,7 +6,8 @@
  * Time: 3:55 PM
  */
 
-function mybethel_news_feed($categories){
+// blerts is bethel alerts.
+function mybethel_news_feed($categories, $blerts='No'){
     include_once $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/news/php/news_article_feed.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
@@ -29,6 +30,15 @@ function mybethel_news_feed($categories){
     while( $count < $NumArticles ){
         $article = $arrayOfNewsAndStories[$count];
         if( !in_array( 'president/', $article['path']) ) {
+            // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
+            // if we include public alerts, then we only want to skip internal ones
+            // if we don't want blerts, then we skip all blerts
+            // if we want to include internal, then we don't skip any
+            if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+                    or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+                continue;
+            }
+
             array_push($sortedArticles, $article);
             $count++;
         }

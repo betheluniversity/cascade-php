@@ -13,7 +13,8 @@ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 
-function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $newsOrStories = "Stories", $clearCacheBethelAlert='No'){
+// todo - remove unused variable here later
+function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel, $blerts='No'){
     // set $DisplayImages and $DisplayTeaser to Yes, as it is used for the normal feeds - so we need to still set those
     global $DisplayImages;
     $DisplayImages = 'Yes';
@@ -26,56 +27,50 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"));
+    $arrayOfArticles = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article"), 300, $blerts);
 
     // This is the new version of news.
-    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $clearCacheBethelAlert);
+    $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $blerts);
 
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
-
-    $includeStories = false;
-    $includeNews = false;
-
-    if( $newsOrStories == "Both" ) {
-        $includeStories = true;
-        $includeNews = true;
-    } elseif ( $newsOrStories == "News" ) {
-        $includeNews = true;
-    } else {
-        $includeStories = true;
-    }
 
     $threeStories = array();
     $onlyLookForCoronavirus = False;
     $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
 
-    foreach( $arrayOfNewsAndStories as $index => $newsAndStory) {
-        $id = $newsAndStory['id'];
+    foreach( $arrayOfNewsAndStories as $index => $article) {
+        $id = $article['id'];
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-        if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$newsAndStory['homepage-article']) )
+        if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
             continue;
 
-        // Check if the what the feed type is the same as the article type
-        if( ($includeNews && $newsAndStory['article-type'] == 'News') || ($includeStories && $newsAndStory['article-type'] == 'Story')) {
-            // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
-            if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
-                continue;
-            }
-
-            // We add the mybethel class for the community dashboard
-            $add_mybethel_class = '';
-            if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
-                $add_mybethel_class = 'img-fluid';
-            // Add the srcset to the gallery-image to be passed along to the html twig file
-            $newsAndStory['gallery-image'] = srcset($newsAndStory['image-path'], false, true, $classes = $add_mybethel_class, $newsAndStory['title']);
-
-            // don't use this story on this page again
-            array_push($GLOBALS['stories-already-used'], $id);
-
-            array_push($threeStories, $newsAndStory);
-            unset($arrayOfNewsAndStories[$index]);
+        // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
+        if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
+            continue;
         }
+
+        // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
+        // if we include public alerts, then we only want to skip internal ones
+        // if we don't want blerts, then we skip all blerts
+        // if we want to include internal, then we don't skip any
+        if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+            continue;
+        }
+
+        // We add the mybethel class for the community dashboard
+        $add_mybethel_class = '';
+        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
+            $add_mybethel_class = 'img-fluid';
+        // Add the srcset to the gallery-image to be passed along to the html twig file
+        $article['gallery-image'] = srcset($article['image-path'], false, true, $classes = $add_mybethel_class, $article['title']);
+
+        // don't use this story on this page again
+        array_push($GLOBALS['stories-already-used'], $id);
+
+        array_push($threeStories, $article);
+        unset($arrayOfNewsAndStories[$index]);
 
         // TODO: THIS IS THE DEFAULT CODE, but we don't want to do this while we have the cornavirus locked in position 3
 //        // exit once there are 3

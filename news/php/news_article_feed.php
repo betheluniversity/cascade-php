@@ -20,13 +20,13 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
-function create_news_article_feed($categories, $clearCacheBethelAlert="No"){
-    $feed = autoCache("create_news_article_feed_logic", array($categories), 300, $clearCacheBethelAlert);
+function create_news_article_feed($categories, $blerts="No"){
+    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
     return $feed;
 }
 
 // returns an array of html elements.
-function create_news_article_feed_logic($categories){
+function create_news_article_feed_logic($categories, $blerts){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -41,8 +41,6 @@ function create_news_article_feed_logic($categories){
     // This is the new version of news.
     $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
 
-
-
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
@@ -52,6 +50,15 @@ function create_news_article_feed_logic($categories){
     foreach( $sortedArticles as $article ){
         $id = $article['id'];
         if( !in_array($id, $GLOBALS['stories-already-used']) ){
+            // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
+            // if we include public alerts, then we only want to skip internal ones
+            // if we don't want blerts, then we skip all blerts
+            // if we want to include internal, then we don't skip any
+            if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+                or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+                continue;
+            }
+
             array_push($articleArray, $article['html']);
 
             // don't use this story on this page again
@@ -83,20 +90,20 @@ function create_news_article_feed_logic($categories){
 
 function inspect_news_article($xml, $categories){
     $page_info = array(
-        "title"             => (string)$xml->title,
-        "teaser"            => (string)$xml->teaser,
-        "display-name"      => (string)$xml->{'display-name'},
-        "published"         => (int)$xml->{'last-published-on'},
-        "description"       => (string)$xml->{'description'},
-        "path"              => (string)$xml->path,
-        "url"               => "https://www.bethel.edu$xml->path",
-        "date-for-sorting"  => 0,       //timestamp.
-        "md"                => array(),
-        "html"              => "",
-        "display-on-feed"   => false,
-        "id"                => (string)$xml['id'],
-        "article-type"      => 'News',
-        "homepage-article"  => false
+        "title"                     => (string)$xml->title,
+        "teaser"                    => (string)$xml->teaser,
+        "display-name"              => (string)$xml->{'display-name'},
+        "published"                 => (int)$xml->{'last-published-on'},
+        "description"               => (string)$xml->{'description'},
+        "path"                      => (string)$xml->path,
+        "url"                       => "https://www.bethel.edu$xml->path",
+        "date-for-sorting"          => 0,       //timestamp.
+        "md"                        => array(),
+        "html"                      => "",
+        "display-on-feed"           => false,
+        "id"                        => (string)$xml['id'],
+        "featured-homepage-article" => false,
+        "bethel-alert"              => 'No'
     );
 
     // if the file doesn't exist, skip it.
@@ -138,7 +145,9 @@ function inspect_news_article($xml, $categories){
     } else {
         $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
         $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
-        $page_info['article-type'] = (string)$ds->{'story-metadata'}->{'story-or-news'};
+        $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
+        if( $ds->{'story-metadata'}->{'featured'} == 'Yes' )
+            $page_info['featured-homepage-article'] = true;  // this defaults to false above, if it doesn't hit this
     }
 
     global $DisplayImages;
@@ -153,7 +162,6 @@ function inspect_news_article($xml, $categories){
     }
 
     $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
-    $page_info['homepage-article'] = is_homepage_article($xml);
     $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
 
     if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
