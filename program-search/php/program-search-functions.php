@@ -285,7 +285,7 @@ function search_programs($program_data, $data){
                 array_push($return_values, $values_to_push);
             }
             // cluster matches -- if search key is in cluster
-            elseif( sizeof($program['md']['cluster'] > 0) && in_array($search_term, $cluster_lower_case) ){
+            elseif( sizeof($program['md']['cluster']) > 0 && in_array($search_term, $cluster_lower_case) ){
                 array_push($return_values, $values_to_push);
             }
             // csv matches
