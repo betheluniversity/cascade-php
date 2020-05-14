@@ -25,9 +25,6 @@ function create_news_article_archive($categories, $blerts="No"){
         $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     }
 
-    $arrayOfArticles = sort_news_articles($arrayOfArticles);
-    $arrayOfArticles = array_reverse($arrayOfArticles);
-
     // Blert logic
     $finalArticleArray = [];
     foreach ($arrayOfArticles as $article) {
@@ -35,15 +32,15 @@ function create_news_article_archive($categories, $blerts="No"){
         // if we include public alerts, then we only want to skip internal ones
         // if we don't want blerts, then we skip all blerts
         // if we want to include internal, then we don't skip any
-        print_r('NEXT');
-        print_r($article);
-        print_r($article['bethel-alert']);
         if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')) {
             continue;
         }
         array_push($finalArticleArray, $article);
     }
+
+    $finalArticleArray = sort_news_articles($finalArticleArray);
+    $finalArticleArray = array_reverse($finalArticleArray);
 
 //    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
     echo echo_articles($finalArticleArray);
