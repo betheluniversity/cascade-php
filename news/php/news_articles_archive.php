@@ -39,15 +39,18 @@ function create_news_article_archive($categories, $blerts="No"){
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
             continue;
         }
+        print_r('got here!');
         array_push($finalArticleArray, $article);
     }
 
-    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
+//    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
+    echo echo_articles($finalArticleArray);
 
     return;
 }
 
 function echo_articles($arrayOfArticles) {
+    print_r('echo_articles');
     $twig = makeTwigEnviron('/code/news/twig');
     $return_str = '';
     foreach( $arrayOfArticles as $yearArray )
@@ -149,7 +152,6 @@ function inspect_news_archive_page($xml, $categories){
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
-    print_r($page_info['html']);
     return $page_info;
 }
 
