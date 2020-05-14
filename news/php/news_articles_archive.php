@@ -149,7 +149,7 @@ function inspect_news_archive_page($xml, $categories){
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
-    print_r('got here!');
+    print_r($page_info['html']);
     return $page_info;
 }
 
