@@ -48,7 +48,6 @@ function create_news_article_archive($categories, $blerts="No"){
 }
 
 function echo_articles($arrayOfArticles) {
-    print_r('echo_articles');
     $twig = makeTwigEnviron('/code/news/twig');
     $return_str = '';
     foreach( $arrayOfArticles as $yearArray )
