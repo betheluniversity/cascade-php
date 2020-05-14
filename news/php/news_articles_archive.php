@@ -67,14 +67,14 @@ function echo_articles($arrayOfArticles) {
 function inspect_news_archive_page($xml, $categories){
 
     $page_info = array(
-        "title" => $xml->title,
-        "display-name" => $xml->{'display-name'},
-        "published" => $xml->{'last-published-on'},
-        "description" => $xml->{'description'},
-        "path" => $xml->path,
-        "md" => array(),
-        "html" => "",
-        "display-on-feed" => true,
+        "title"             => $xml->title,
+        "display-name"      => $xml->{'display-name'},
+        "published"         => $xml->{'last-published-on'},
+        "description"       => $xml->{'description'},
+        "path"              => $xml->path,
+        "md"                => array(),
+        "html"              => "",
+        "display-on-feed"   => true,
         "id"                => $xml['id'],
         "bethel-alert"      => 'No'
     );
@@ -149,7 +149,7 @@ function inspect_news_archive_page($xml, $categories){
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
-
+    print_r('got here!');
     return $page_info;
 }
 
