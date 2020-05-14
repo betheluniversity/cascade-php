@@ -42,8 +42,7 @@ function create_news_article_archive($categories, $blerts="No"){
     $finalArticleArray = sort_news_articles($finalArticleArray);
     $finalArticleArray = array_reverse($finalArticleArray);
 
-//    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
-    echo echo_articles($finalArticleArray);
+    echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
 
     return;
 }
