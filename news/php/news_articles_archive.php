@@ -139,6 +139,7 @@ function inspect_news_archive_page($xml, $categories){
             $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         }
     } else {
+        print_r('got here, its a problem!');
         # if its not the president announcements page, we want to make sure that the prez announcements are NOT shown.
         foreach ($xml->{'dynamic-metadata'} as $md) {
             $name = $md->name;
