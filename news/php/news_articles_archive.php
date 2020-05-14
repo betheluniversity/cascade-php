@@ -35,10 +35,8 @@ function create_news_article_archive($categories, $blerts="No"){
         // if we include public alerts, then we only want to skip internal ones
         // if we don't want blerts, then we skip all blerts
         // if we want to include internal, then we don't skip any
-
-        print('|');
+        print($article);
         print($article['bethel-alert']);
-        print($article->{'bethel-alert'});
         if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
             or ($blerts == 'No' and $article['bethel-alert'] != 'No')) {
             continue;
