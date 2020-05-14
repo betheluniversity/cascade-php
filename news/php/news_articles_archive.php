@@ -36,11 +36,12 @@ function create_news_article_archive($categories, $blerts="No"){
         // if we don't want blerts, then we skip all blerts
         // if we want to include internal, then we don't skip any
 
-        if( $article['bethel-alert'] ) {
-            if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
-                or ($blerts == 'No' and $article['bethel-alert'] != 'No')) {
-                continue;
-            }
+        print('|');
+        print($article['bethel-alert']);
+        print($article->{'bethel-alert'});
+        if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            or ($blerts == 'No' and $article['bethel-alert'] != 'No')) {
+            continue;
         }
         array_push($finalArticleArray, $article);
     }
@@ -140,7 +141,6 @@ function inspect_news_archive_page($xml, $categories){
             $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         }
     } else {
-        print_r('got here, its a problem!');
         # if its not the president announcements page, we want to make sure that the prez announcements are NOT shown.
         foreach ($xml->{'dynamic-metadata'} as $md) {
             $name = $md->name;
