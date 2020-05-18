@@ -25,9 +25,6 @@ function create_news_article_archive($categories, $blerts="No"){
         $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     }
 
-    $arrayOfArticles = sort_news_articles($arrayOfArticles);
-    $arrayOfArticles = array_reverse($arrayOfArticles);
-
     // Blert logic
     $finalArticleArray = [];
     foreach ($arrayOfArticles as $article) {
@@ -35,12 +32,15 @@ function create_news_article_archive($categories, $blerts="No"){
         // if we include public alerts, then we only want to skip internal ones
         // if we don't want blerts, then we skip all blerts
         // if we want to include internal, then we don't skip any
-        if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
-            or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+        if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            or ($blerts == 'No' and $article['bethel-alert'] != 'No')) {
             continue;
         }
         array_push($finalArticleArray, $article);
     }
+
+    $finalArticleArray = sort_news_articles($finalArticleArray);
+    $finalArticleArray = array_reverse($finalArticleArray);
 
     echo autoCache("echo_articles", array($finalArticleArray), 300, $blerts);
 
@@ -67,14 +67,14 @@ function echo_articles($arrayOfArticles) {
 function inspect_news_archive_page($xml, $categories){
 
     $page_info = array(
-        "title" => $xml->title,
-        "display-name" => $xml->{'display-name'},
-        "published" => $xml->{'last-published-on'},
-        "description" => $xml->{'description'},
-        "path" => $xml->path,
-        "md" => array(),
-        "html" => "",
-        "display-on-feed" => true,
+        "title"             => $xml->title,
+        "display-name"      => $xml->{'display-name'},
+        "published"         => $xml->{'last-published-on'},
+        "description"       => $xml->{'description'},
+        "path"              => $xml->path,
+        "md"                => array(),
+        "html"              => "",
+        "display-on-feed"   => true,
         "id"                => $xml['id'],
         "bethel-alert"      => 'No'
     );
@@ -149,7 +149,6 @@ function inspect_news_archive_page($xml, $categories){
     }
 
     $page_info['html'] = get_news_article_archive_html($page_info);
-
     return $page_info;
 }
 
