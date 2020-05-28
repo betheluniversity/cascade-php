@@ -49,6 +49,12 @@ function create_news_article_feed_logic($categories, $blerts){
     $articleArray = array();
     foreach( $sortedArticles as $article ){
         $id = $article['id'];
+        
+        // ejc84332 temporarily(?) skip any articles that are not alerts if this feed is set to show alerts.
+        if( $blerts != "No" and $article['bethel-alert'] == "No"){
+            continue;
+        }
+        
         if( !in_array($id, $GLOBALS['stories-already-used']) ){
             // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
             // if we include public alerts, then we only want to skip internal ones
