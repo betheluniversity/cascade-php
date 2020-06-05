@@ -21,7 +21,8 @@ $DisplayImages;
 $featuredArticleOptions;
 
 function create_news_article_feed($categories, $blerts="No"){
-    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
+//    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
+    $feed = create_news_article_feed_logic($categories, $blerts);
     return $feed;
 }
 
