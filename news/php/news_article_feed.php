@@ -168,7 +168,10 @@ function inspect_news_article($xml, $categories){
         $page_info['image'] = srcset($page_info['image-path'], $print = false, $lazy = true, $classes = $add_mybethel_class, $page_info['title']);
     }
 
-    $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options);
+    // if its a bethel alert, always pass it on to be checked by the feed code!
+    if($page_info['bethel-alert'] == 'No') {
+        $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options);
+    }
     $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
 
     if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
