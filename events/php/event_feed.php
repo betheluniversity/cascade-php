@@ -174,7 +174,7 @@ function inspect_event_page($xml, $categories){
     $ds = $xml->{'system-data-structure'};
 
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
-    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "event");
+    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
 
     $dataDefinition = $ds['definition-path'];
 

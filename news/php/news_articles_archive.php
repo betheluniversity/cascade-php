@@ -130,7 +130,7 @@ function inspect_news_archive_page($xml, $categories){
             $page_info['display-on-feed'] = true;
         } elseif( $dataDefinition == "News Article") {
             $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
-            $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options, "news");
+            $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
         } elseif( $dataDefinition == "News Article - Flex") {
             $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         }

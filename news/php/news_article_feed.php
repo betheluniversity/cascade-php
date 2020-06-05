@@ -50,17 +50,12 @@ function create_news_article_feed_logic($categories, $blerts){
     foreach( $sortedArticles as $article ){
         $id = $article['id'];
         
-        // ejc84332 temporarily(?) skip any articles that are not alerts if this feed is set to show alerts.
-        if( $blerts != "No" and $article['bethel-alert'] == "No"){
-            continue;
-        }
-        
         if( !in_array($id, $GLOBALS['stories-already-used']) ){
             // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
             // if we include public alerts, then we only want to skip internal ones
             // if we don't want blerts, then we skip all blerts
             // if we want to include internal, then we don't skip any
-            if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            if( ($blerts != 'Yes - Internal Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
                 or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
                 continue;
             }
@@ -167,7 +162,12 @@ function inspect_news_article($xml, $categories){
         $page_info['image'] = srcset($page_info['image-path'], $print = false, $lazy = true, $classes = $add_mybethel_class, $page_info['title']);
     }
 
-    $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options, "news");
+    // if its a bethel alert, always pass it on to be checked by the feed code!
+    if($page_info['bethel-alert'] == 'No') {
+        $page_info['metadata_articles'] = match_metadata_articles($xml, $categories, $options);
+    } else {
+        $page_info['metadata_articles'] = true;
+    }
     $page_info['is_expired'] = is_expired($page_info['date-for-sorting']);
 
     if( $page_info['metadata_articles'] && !$page_info['is_expired'] ) {
