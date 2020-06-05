@@ -51,16 +51,16 @@ function create_news_article_feed_logic($categories, $blerts){
         $id = $article['id'];
         
         // ejc84332 temporarily(?) skip any articles that are not alerts if this feed is set to show alerts.
-        if( $blerts != "No" and $article['bethel-alert'] == "No"){
-            continue;
-        }
+//        if( $blerts != "No" and $article['bethel-alert'] == "No"){
+//            continue;
+//        }
         
         if( !in_array($id, $GLOBALS['stories-already-used']) ){
             // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
             // if we include public alerts, then we only want to skip internal ones
             // if we don't want blerts, then we skip all blerts
             // if we want to include internal, then we don't skip any
-            if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            if( ($blerts != 'Yes - Internal Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
                 or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
                 continue;
             }
