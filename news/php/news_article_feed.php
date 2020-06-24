@@ -178,9 +178,6 @@ function inspect_news_article($xml, $categories){
     $page_info['display-date'] = format_featured_date_news_article($page_info['date-for-sorting']);
     $page_info['html'] = get_news_article_html($page_info);
 
-    if( $page_info['display-on-feed'] == true )
-        print_r($page_info['html']);
-
     return $page_info;
 }
 
