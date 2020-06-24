@@ -21,14 +21,12 @@ $DisplayImages;
 $featuredArticleOptions;
 
 function create_news_article_feed($categories, $blerts="No"){
-//    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
-    $feed = create_news_article_feed_logic($categories, $blerts);
+    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
     return $feed;
 }
 
 // returns an array of html elements.
 function create_news_article_feed_logic($categories, $blerts){
-    print_r($categories);
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -63,8 +61,6 @@ function create_news_article_feed_logic($categories, $blerts){
             }
 
             array_push($articleArray, $article['html']);
-
-            print_r($article['xml']);
 
             // don't use this story on this page again
             array_push($GLOBALS['stories-already-used'], $id);
@@ -108,8 +104,7 @@ function inspect_news_article($xml, $categories){
         "display-on-feed"           => false,
         "id"                        => (string)$xml['id'],
         "featured-homepage-article" => false,
-        "bethel-alert"              => 'No',
-        "xml"                       => $xml
+        "bethel-alert"              => 'No'
     );
 
     // if the file doesn't exist, skip it.
