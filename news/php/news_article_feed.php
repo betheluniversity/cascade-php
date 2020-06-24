@@ -120,7 +120,7 @@ function inspect_news_article($xml, $categories){
     // To get the correct definition path.
     $ddp = $ds['definition-path'];
 
-    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'unique-news');
+    $options = array('school', 'topic', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'office', 'unique-news');
     if( $ddp == "News Article") {
         $page_info['image-path'] = (string)$ds->{'media'}->{'image'}->{'path'};
         // set external path, if available
