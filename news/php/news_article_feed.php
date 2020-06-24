@@ -28,6 +28,7 @@ function create_news_article_feed($categories, $blerts="No"){
 
 // returns an array of html elements.
 function create_news_article_feed_logic($categories, $blerts){
+    print_r($categories);
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -63,7 +64,7 @@ function create_news_article_feed_logic($categories, $blerts){
 
             array_push($articleArray, $article['html']);
 
-            print_r($article);
+            print_r($article['xml']);
 
             // don't use this story on this page again
             array_push($GLOBALS['stories-already-used'], $id);
