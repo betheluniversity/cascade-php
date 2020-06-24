@@ -63,6 +63,8 @@ function create_news_article_feed_logic($categories, $blerts){
 
             array_push($articleArray, $article['html']);
 
+            print_r($article['html']);
+
             // don't use this story on this page again
             array_push($GLOBALS['stories-already-used'], $id);
         }
