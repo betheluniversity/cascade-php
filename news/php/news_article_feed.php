@@ -108,7 +108,8 @@ function inspect_news_article($xml, $categories){
         "display-on-feed"           => false,
         "id"                        => (string)$xml['id'],
         "featured-homepage-article" => false,
-        "bethel-alert"              => 'No'
+        "bethel-alert"              => 'No',
+        "xml"                       => $xml
     );
 
     // if the file doesn't exist, skip it.
