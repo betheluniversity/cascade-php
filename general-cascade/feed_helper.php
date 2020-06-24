@@ -56,6 +56,8 @@ function match_metadata_articles($xml, $categories, $options){
 
                 if (in_array($name, $options)) {
                     if (in_array($value, $category)) {
+                        print_r($value);
+                        print_r($category);
                         return true;
                     }
                 }
