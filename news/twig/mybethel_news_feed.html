@@ -7,7 +7,7 @@
             />
         </div>
         <div class="media-body">
-            <h3 class="u-fs16  u-fw500"><a href="https://bethel.edu/{{ article['path'] }}">{{ article['title'] }}</a></h3>
+            <h3 class="u-fs16  u-fw500"><a href="https://bethel.edu{{ article['path'] }}">{{ article['title'] }}</a></h3>
             {% if article['teaser'] %}
                 <p>{{ article['teaser'] }}</p>
             {% endif %}
