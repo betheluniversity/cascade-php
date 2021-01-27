@@ -73,6 +73,7 @@ function create_event_feed_logic($categories, $heading){
                     $newEvent = $event;
                     $newEvent['date'] = $newDate;
                     $newEvent['start-date'] = $newDate['start-date'];
+                    $newEvent['end-date'] = $newDate['end-date'];
                     $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
 
