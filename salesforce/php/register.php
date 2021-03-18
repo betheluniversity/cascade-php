@@ -64,7 +64,7 @@ $result = file_get_contents($wsapi_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['success'] == true && $json['account_recovery'] == true){
-    $url .= "?account-recovery=true";
+    $url .= "?existing-account=true";
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
