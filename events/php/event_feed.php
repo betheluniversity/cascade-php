@@ -72,6 +72,8 @@ function create_event_feed_logic($categories, $heading){
 
                     $newEvent = $event;
                     $newEvent['date'] = $newDate;
+                    $newEvent['start-date'] = $newDate['start-date'];
+                    $newEvent['end-date'] = $newDate['end-date'];
                     $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
 
@@ -83,9 +85,10 @@ function create_event_feed_logic($categories, $heading){
 
 
                     // art exhibits and theatre productions only add 1 date.
-                    if ($isArtOrTheater != 0) {
+                    // UPDATE: ITS-219128 removed this feature
+                    /*if ($isArtOrTheater != 0) {
                         break;
-                    }
+                    }*/
                 }
             }
         }
@@ -102,6 +105,19 @@ function create_event_feed_logic($categories, $heading){
     foreach( $sortedEvents as $event)
     {
         array_push( $eventArray, $event['html']);
+
+        // Checks for events that are more than a day long
+        $lengthOfEvent = $event['end-date'] - $event['start-date'];
+        // Convert timestamp to add a day. It is converted back later
+        $date = date("Y-m-d H:i:s", $event['start-date']);
+        // While the event is longer than a day (86400 seconds), post event to screen
+        while ($lengthOfEvent >= 86400) {
+            $date = date('Y-m-d H:i:s', strtotime($date . ' +1 day'));
+            $event['date']['start-date'] = strtotime($date);
+            $event['html'] = get_event_html($event);
+            $lengthOfEvent -= 86400;
+            array_push( $eventArray, $event['html']);
+        }
     }
 
     $eventArray = array_slice($eventArray, 0, $numEventsToFind, true);
