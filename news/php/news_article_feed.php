@@ -55,7 +55,7 @@ function create_news_article_feed_logic($categories, $blerts){
             // if we include public alerts, then we only want to skip internal ones
             // if we don't want blerts, then we skip all blerts
             // if we want to include internal, then we don't skip any
-            if(( $article['bethel-alert'] == 'Internal Bethel Alert' and $blerts != 'Yes - Internal Bethel Alert' )
+            if(( $article['bethel-alert'] == 'Internal Bethel Alert' and $blerts != 'Yes- Internal Bethel Alert' )
                 or ( $article['bethel-alert'] == 'Public Bethel Alert' and $blerts == 'No' )) {
                 continue;
             }
