@@ -25,22 +25,22 @@ function mybethel_news_feed($categories, $blerts='No'){
 
     // Only grab the first X number of articles.
     global $NumArticles;
-    $count = 0;
     $sortedArticles = array();
-    while( $count < $NumArticles ){
-        $article = $arrayOfNewsAndStories[$count];
-        if (strpos($article['path'], 'president/') === false) {
+    
+    foreach ($arrayOfNewsAndStories as $article){
+        if (count($sortedArticles) == $NumArticles){
+            break;
+        }
+        if (strpos($article['path'], 'president/') === false){
             // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
             // if we include public alerts, then we only want to skip internal ones
             // if we don't want blerts, then we skip all blerts
             // if we want to include internal, then we don't skip any
-            if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            if (($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
                     or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
-                continue;
+                    continue;
             }
-
             array_push($sortedArticles, $article);
-            $count++;
         }
     }
 
