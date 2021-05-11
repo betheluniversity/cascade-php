@@ -95,16 +95,11 @@ function create_event_feed_logic($categories, $heading){
     }
 
     /////////////////////////////////////////
-    $sortedEvents = array_reverse(sort_by_date($eventArrayWithMultipleEvents));
-    // Only grab the first X number of events.
-    global $NumEvents;
 
-    $numEventsToFind = $NumEvents;
-
-    $eventArray = array();
-    foreach( $sortedEvents as $event)
+    $allEventArray = array();
+    foreach( $eventArrayWithMultipleEvents as $event)
     {
-        array_push( $eventArray, $event['html']);
+        array_push( $allEventArray, $event);
 
         // Checks for events that are more than a day long
         $lengthOfEvent = $event['end-date'] - $event['start-date'];
@@ -115,9 +110,23 @@ function create_event_feed_logic($categories, $heading){
             $date = date('Y-m-d H:i:s', strtotime($date . ' +1 day'));
             $event['date']['start-date'] = strtotime($date);
             $event['html'] = get_event_html($event);
+            $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
-            array_push( $eventArray, $event['html']);
+            array_push( $allEventArray, $event);
         }
+    }
+
+    $sortedEvents = array_reverse(sort_by_date($allEventArray));
+    // Only grab the first X number of events.
+    global $NumEvents;
+
+    $numEventsToFind = $NumEvents;
+
+    $eventArray = array();
+
+    foreach( $sortedEvents as $event)
+    {
+        array_push( $eventArray, $event['html']);
     }
 
     $eventArray = array_slice($eventArray, 0, $numEventsToFind, true);
