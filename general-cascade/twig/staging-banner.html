@@ -10,6 +10,14 @@
     {% endif %}
 {% endif %}
 
+{% if 'events/commencement' in page_path %}
+    <div style="z-index:50;width:100%;text-align:center; background:#ffc600;padding:.7em;" id="construction_warning">
+        <div class="inner--content">
+            <b>New I-35W northbound detour to campus:</b> If you're coming north on 35W, the ramp to County Rd E2 is closed. Continue on 35W and make a U turn at I-694: Take the ramp to 694 west, then the immediate ramp to 35W south, then the E2 exit. Turn left onto E2, then right onto S.T.H. 10 (Old Snelling).
+        </div>
+    </div>
+{% endif %}
+
 <!--{% if cms_url %}-->
 <!--<meta name="cms_url"  content="{{cms_url|raw}}">-->
 <!--{% endif %}-->
