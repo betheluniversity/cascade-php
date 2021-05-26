@@ -112,6 +112,8 @@ function create_event_feed_logic($categories, $heading){
             $event['html'] = get_event_html($event);
             $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
+            echo "<p>" + $event['date-for-sorting'] + "</p>";
+            echo "<p>" + time() + "</p>";
             if($event['date-for-sorting'] < time()) {
                 array_push( $allEventArray, $event);
             }
