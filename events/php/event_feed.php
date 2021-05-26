@@ -99,7 +99,9 @@ function create_event_feed_logic($categories, $heading){
     $allEventArray = array();
     foreach( $eventArrayWithMultipleEvents as $event)
     {
-        array_push( $allEventArray, $event);
+        if($event['date']['start-date'] >= time()) {
+            array_push( $allEventArray, $event);
+        }
 
         // Checks for events that are more than a day long
         $lengthOfEvent = $event['end-date'] - $event['start-date'];
