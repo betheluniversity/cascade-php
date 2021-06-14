@@ -99,11 +99,13 @@ function create_event_feed_logic($categories, $heading){
     $allEventArray = array();
     foreach( $eventArrayWithMultipleEvents as $event)
     {
-        array_push( $allEventArray, $event);
+        if($event['date']['start-date'] >= time()) {
+            array_push( $allEventArray, $event);
+        }
 
         // Checks for events that are more than a day long
         $lengthOfEvent = $event['end-date'] - $event['start-date'];
-        // Convert timestamp to add a day. It is converted back later
+        // Convert timestamp so it can add a day per day of the event. It is converted back later
         $date = date("Y-m-d H:i:s", $event['start-date']);
         // While the event is longer than a day (86400 seconds), post event to screen
         while ($lengthOfEvent >= 86400) {
@@ -112,7 +114,10 @@ function create_event_feed_logic($categories, $heading){
             $event['html'] = get_event_html($event);
             $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
-            array_push( $allEventArray, $event);
+            
+            if($event['date']['start-date'] >= time()) {
+                array_push( $allEventArray, $event);
+            }
         }
     }
 
