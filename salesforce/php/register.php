@@ -41,7 +41,7 @@ $payload = array(
     'utm_medium' => $utm_medium,
     'utm_campaign' => $utm_campaign,
     'program_code' => $programCode,
-    'quick_apply' => $quickApply,
+    'quick_create' => $quickCreate,
 );
 
 $json_payload = json_encode($payload);
