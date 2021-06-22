@@ -19,7 +19,7 @@ $email = trim($email);
 $first = $_POST["first"];
 $last = $_POST["last"];
 $programCode = isset($_POST["programCode"]) ? $_POST["programCode"] : '';
-$quickApply = isset($_POST["quickApply"]) ? $_POST["quickApply"] : '';
+$quickCreate = isset($_POST["quickCreate"]) ? $_POST["quickCreate"] : '';
 
 // prep UTM data
 $utm_source = '';
