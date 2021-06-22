@@ -18,6 +18,8 @@ $email = trim($email);
 
 $first = $_POST["first"];
 $last = $_POST["last"];
+$programCode = isset($_POST["programCode"]) ? $_POST["programCode"] : '';
+$quickApply = isset($_POST["quickApply"]) ? $_POST["quickApply"] : '';
 
 // prep UTM data
 $utm_source = '';
@@ -37,7 +39,9 @@ $payload = array(
     "last_name" => $last,
     'utm_source' => $utm_source,
     'utm_medium' => $utm_medium,
-    'utm_campaign' => $utm_campaign
+    'utm_campaign' => $utm_campaign,
+    'program_code' => $programCode,
+    'quick_apply' => $quickApply,
 );
 
 $json_payload = json_encode($payload);
