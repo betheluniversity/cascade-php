@@ -68,13 +68,13 @@ $result = file_get_contents($wsapi_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['success'] == true && $json['account_recovery'] == true){
-    $url .= "?existing-account=true";
+    $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
     $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
     header("Location: $url");
 }else{
-    $url .= "?email=false";
+    $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=false';
     header("Location: $url");
 }
