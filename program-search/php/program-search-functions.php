@@ -146,13 +146,13 @@ function inspect_program($xml){
                 $temp_concentration['title'] = $page_info['title'];
             }
 
-            // Some hotfix code. There were some issues between our martital and marriage therapy programs where
-            // accreditors were having issues between them. We are adding extra stuff to help fix this.
-            if( trim($temp_concentration['title']) == 'M.A. in Marriage and Family Therapy' ){
-                $temp_concentration['title'] .= '(St. Paul)';
-            } elseif( trim($temp_concentration['title']) == 'M.A. in Marital and Family Therapy' ) {
-                $temp_concentration['title'] .= '(San Diego)';
-            }
+//             // Some hotfix code. There were some issues between our martital and marriage therapy programs where
+//             // accreditors were having issues between them. We are adding extra stuff to help fix this.
+//             if( trim($temp_concentration['title']) == 'M.A. in Marriage and Family Therapy' ){
+//                 $temp_concentration['title'] .= '(St. Paul)';
+//             } elseif( trim($temp_concentration['title']) == 'M.A. in Marital and Family Therapy' ) {
+//                 $temp_concentration['title'] .= '(San Diego)';
+//             }
 
             // get html for concentration
             $temp_concentration['html'] = get_html_for_program_concentration($page_info, $temp_concentration);
