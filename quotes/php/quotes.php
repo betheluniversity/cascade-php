@@ -32,7 +32,7 @@ function build_quote_matches($quotes, $Topic, $CAS, $CAPS, $GS, $SEM, $picsOnly=
         $quote_info = inspect_block_quotes($quote_xml, $Topic, $CAS, $CAPS, $GS, $SEM);
         if( $quote_info['match-dept'] || $quote_info['match-topic'] ){
             if($picsOnly == "No" || ($quote_info['image_path'] != "/" && $quote_info['image_path'] != "")){
-                array_push($matches, $quote_info['html']);
+                array_push($matches, $quote_info);
             }
         }
     }
