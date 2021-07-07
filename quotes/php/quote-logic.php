@@ -65,7 +65,7 @@ function get_x_quotes($quotesArrays, $numToFind){
         shuffle($quoteArray);
         // grab quotes
         foreach($quoteArray as $quote){
-            array_push($finalQuotes, $quote);
+            array_push($finalQuotes, $quote['html']);
             $numToFind--;
             // if X quotes are already grabbed, break out
             if( $numToFind == 0)
