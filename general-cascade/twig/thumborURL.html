@@ -1,5 +1,7 @@
-{%if lazy %}
-    <img class="lazyload"  data-src="https://bethel-university.imgix.net/{{end_path}}?w={{width}}" alt="{{alt_text}}"/>
-{% else %}
-    <img data-src="https://bethel-university.imgix.net/{{end_path}}?w={{width}}" alt="{{alt_text}}"/>
+{% if end_path and end_path != '/' %}
+  {%if lazy %}
+      <img class="lazyload"  data-src="https://bethel-university.imgix.net/{{end_path}}?w={{width}}" alt="{{alt_text}}"/>
+  {% else %}
+      <img data-src="https://bethel-university.imgix.net/{{end_path}}?w={{width}}" alt="{{alt_text}}"/>
+  {% endif %}
 {% endif %}
