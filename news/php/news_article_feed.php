@@ -78,7 +78,7 @@ function create_news_article_feed_logic($categories, $blerts){
     // we need to check size, to see if we actually found one
     $numArticles = sizeof($articleArray );
     if( $numArticles == 0){
-        $articleArray = array("<p><img class='d-flex mr-3 lazyload mb-3' src='https://www.bethel.edu/news/images/news-feed-fallback.jpg' alt='news-feed' />We believe everyone has a story to tell. Envision how Bethel could become part of yours.<br/><br/><a class='btn center btn-primary' href='https://www.bethel.edu/news/'>Latest News and Stories</a></p>");
+        $articleArray = array("<img class='d-flex mr-3 lazyload mb-3' src='https://www.bethel.edu/news/images/news-feed-fallback.jpg' alt='news-feed' /><p>We believe everyone has a story to tell. Envision how Bethel could become part of yours.<br/><br/><a class='btn center btn-primary' href='https://www.bethel.edu/news/'>Latest News and Stories</a></p>");
     }
 
     $combinedArray = array($featuredArticles, $articleArray, $numArticles );
