@@ -144,7 +144,7 @@ function create_event_feed_logic($categories, $heading){
 
     // Print No upcoming events if there are no events.
     if( sizeOf( $eventArray) == 0){
-        $eventsArray = array("<p>No upcoming events.</p>");
+        $eventsArray = array("<img class='d-flex mr-3 lazyload mb-3' src='https://www.bethel.edu/events/images/event-feed-fallback.jpg' alt='events-feed' /><p>See yourself at Bethel—join us for one of our in-person or virtual events!</p>");
     }
     $combinedArray = array($featuredEvents, $eventArray, $numEvents );
     return $combinedArray;
