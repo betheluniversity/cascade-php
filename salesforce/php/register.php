@@ -20,6 +20,7 @@ $first = $_POST["first"];
 $last = $_POST["last"];
 $programCode = isset($_POST["programCode"]) ? $_POST["programCode"] : '';
 $quickCreate = isset($_POST["quickCreate"]) ? $_POST["quickCreate"] : '';
+$redir = isset($_POST["$redir"]) ? $_POST["$redir"] : '';
 
 // prep UTM data
 $utm_source = '';
@@ -42,6 +43,7 @@ $payload = array(
     'utm_campaign' => $utm_campaign,
     'program_code' => $programCode,
     'quick_create' => $quickCreate,
+    'redir' => $redir
 );
 
 $json_payload = json_encode($payload);
