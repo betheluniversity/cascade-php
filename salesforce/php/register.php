@@ -20,7 +20,7 @@ $first = $_POST["first"];
 $last = $_POST["last"];
 $programCode = isset($_POST["programCode"]) ? $_POST["programCode"] : '';
 $quickCreate = isset($_POST["quickCreate"]) ? $_POST["quickCreate"] : '';
-$redir = isset($_POST["$redir"]) ? $_POST["$redir"] : '';
+$redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
 
 // prep UTM data
 $utm_source = '';
