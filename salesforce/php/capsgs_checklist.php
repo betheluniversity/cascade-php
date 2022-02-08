@@ -11,9 +11,9 @@ function howToApply($code, $option){
     $call_program_code = str_replace("%", "%25", $code);
 
     if ($option == 1) {
-        $url = "https://wsapi.xp.bethel.edu/salesforce/program-prerequisites/$call_program_code";
+        $url = "https://wsapi.bethel.edu/salesforce/program-prerequisites/$call_program_code";
     } elseif ($option == 3) {
-        $url = "https://wsapi.xp.bethel.edu/salesforce/program-requirements/$call_program_code";
+        $url = "https://wsapi.bethel.edu/salesforce/program-requirements/$call_program_code";
     } else {
         return;
     }
