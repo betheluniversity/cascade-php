@@ -22,7 +22,7 @@ $featuredArticleOptions;
 
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad, $categories){
-    echo "in get_blog_rss_xml";
+    echo "in get_blog_rss_xml\n";
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
     if(!$xml){
@@ -33,7 +33,7 @@ function get_blog_rss_xml($fileToLoad, $categories){
     $func = "inspect_news_article";
 
     $pages = traverse_folder($xml, $pages, $categories, $func);
-    echo "survived traverse_folder";
+    echo "survived traverse_folder\n";
     return $pages;
 }
 
@@ -60,6 +60,7 @@ function create_news_article_feed_logic($categories, $blerts){
 
     $articleArray = array();
     foreach( $sortedArticles as $article ){
+        echo "  in foreach\n";
         $id = $article['id'];
         
 //        if( !in_array($id, $GLOBALS['stories-already-used']) ){
@@ -72,7 +73,7 @@ function create_news_article_feed_logic($categories, $blerts){
 //                continue;
 //            }
 //
-            echo "pushing article (aka particle)";
+            echo "  pushing article (aka particle)\n";
             array_push($articleArray, $article['html']);
 //
 //            // don't use this story on this page again
