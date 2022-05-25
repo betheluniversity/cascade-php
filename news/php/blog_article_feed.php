@@ -22,7 +22,7 @@ $featuredArticleOptions;
 
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad, $categories){
-    echo "in get_blog_rss_xml\n";
+    echo "in get_blog_rss_xml</br>";
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
     if(!$xml){
@@ -38,6 +38,7 @@ function get_blog_rss_xml($fileToLoad, $categories){
 }
 
 function create_news_article_feed($categories, $blerts="No"){
+    echo "Called create news article feed</br>";
     $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
     return $feed;
 }
@@ -60,7 +61,7 @@ function create_news_article_feed_logic($categories, $blerts){
 
     $articleArray = array();
     foreach( $sortedArticles as $article ){
-        echo "  in foreach\n";
+        echo "  in foreach</br>";
         $id = $article['id'];
         
 //        if( !in_array($id, $GLOBALS['stories-already-used']) ){
@@ -73,7 +74,7 @@ function create_news_article_feed_logic($categories, $blerts){
 //                continue;
 //            }
 //
-            echo "  pushing article (aka particle)\n";
+            echo "  pushing article (aka particle)</br>";
             array_push($articleArray, $article['html']);
 //
 //            // don't use this story on this page again
@@ -104,6 +105,7 @@ function create_news_article_feed_logic($categories, $blerts){
 ////////////////////////////////////////////////////////////////////////////////
 
 function inspect_news_article($xml, $categories){
+    echo "Inspecting an article</br>";
     $page_info = array(
         "title"                     => (string)$xml->title,
         "teaser"                    => (string)$xml->teaser,
@@ -218,6 +220,7 @@ function is_expired($date_for_sorting){
 // todo: we should only need to pass in article
 // Returns the html of the news article
 function get_news_article_html( $article ){
+    echo "getting article html</br>";
     global $DisplayTeaser;
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render('news_article_feed.html', array(
@@ -288,6 +291,7 @@ function match_generic_school_news_articles($xml, $schools){
 
 // Returns the featured Article html.
 function get_featured_article_html($page_info, $xml, $options){
+    echo "trying to get a featured article</br>";
     $ds = $xml->{'system-data-structure'};
     $imagePath = $page_info['image-path'];
     $date = $ds->{'publish-date'};
