@@ -33,6 +33,7 @@ function get_blog_rss_xml($fileToLoad, $categories){
     $func = "inspect_news_article";
 
     $pages = traverse_folder($xml, $pages, $categories, $func);
+    echo "survived traverse_folder";
     return $pages;
 }
 
@@ -61,22 +62,23 @@ function create_news_article_feed_logic($categories, $blerts){
     foreach( $sortedArticles as $article ){
         $id = $article['id'];
         
-        if( !in_array($id, $GLOBALS['stories-already-used']) ){
-            // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
-            // if we include public alerts, then we only want to skip internal ones
-            // if we don't want blerts, then we skip all blerts
-            // if we want to include internal, then we don't skip any
-            if(( $article['bethel-alert'] == 'Internal Bethel Alert' and $blerts != 'Yes- Internal Bethel Alert' )
-                or ( $article['bethel-alert'] == 'Public Bethel Alert' and $blerts == 'No' )) {
-                continue;
-            }
-
+//        if( !in_array($id, $GLOBALS['stories-already-used']) ){
+//            // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
+//            // if we include public alerts, then we only want to skip internal ones
+//            // if we don't want blerts, then we skip all blerts
+//            // if we want to include internal, then we don't skip any
+//            if(( $article['bethel-alert'] == 'Internal Bethel Alert' and $blerts != 'Yes- Internal Bethel Alert' )
+//                or ( $article['bethel-alert'] == 'Public Bethel Alert' and $blerts == 'No' )) {
+//                continue;
+//            }
+//
+            echo "pushing article (aka particle)";
             array_push($articleArray, $article['html']);
-
-            // don't use this story on this page again
-            array_push($GLOBALS['stories-already-used'], $id);
-        }
-
+//
+//            // don't use this story on this page again
+//            array_push($GLOBALS['stories-already-used'], $id);
+//        }
+//
         // Only grab the first X number of articles.
         if( sizeof($articleArray) >= $NumArticles )
             break;
