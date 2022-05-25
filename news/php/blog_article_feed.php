@@ -36,12 +36,8 @@ function create_news_article_feed_logic($categories, $blerts){
     }
 
     // this is legacy code. It will be used for the archive and for any feed that includes old articles
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/articles.xml", $categories, "inspect_news_article");
+    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/testing/anna-h/blog/_feeds/blog-articles-xml", $categories, "inspect_news_article");
 
-    // This is the new version of news.
-    $arrayOfNewsAndStories = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article");
-
-    $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
     $sortedArticles = sort_by_date($arrayOfArticles);
