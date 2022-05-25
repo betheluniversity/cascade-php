@@ -22,6 +22,7 @@ $featuredArticleOptions;
 
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad, $categories){
+    echo "in get_blog_rss_xml";
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
     if(!$xml){
