@@ -20,6 +20,14 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
+//TODO Move to feed_helper later (ACH)
+function get_blog_rss_xml($fileToLoad, $categories, $func){
+    $xml = simplexml_load_file($fileToLoad);
+    $pages = array();
+    //$pages = traverse_folder($xml, $pages, $categories, $func);
+    return $pages;
+}
+
 function create_news_article_feed($categories, $blerts="No"){
     $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
     return $feed;
@@ -35,8 +43,7 @@ function create_news_article_feed_logic($categories, $blerts){
         $GLOBALS['stories-already-used'] = array();
     }
 
-    // this is legacy code. It will be used for the archive and for any feed that includes old articles
-    $arrayOfArticles = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml", $categories, "inspect_news_article");
+    $arrayOfArticles = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml", $categories, "inspect_news_article");
 
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
