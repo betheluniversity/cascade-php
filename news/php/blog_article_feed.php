@@ -24,6 +24,10 @@ $featuredArticleOptions;
 function get_blog_rss_xml($fileToLoad, $categories){
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
+    if(!$xml){
+        echo "returning due to !xml";
+        return;
+    }
     $pages = array();
     $func = "inspect_news_article";
 
