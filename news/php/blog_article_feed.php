@@ -21,11 +21,13 @@ $DisplayImages;
 $featuredArticleOptions;
 
 //TODO Move to feed_helper later (ACH)
-function get_blog_rss_xml($fileToLoad){
+function get_blog_rss_xml($fileToLoad, $categories){
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
     $pages = array();
-    //$pages = traverse_folder($xml, $pages, $categories, $func);
+    $func = "inspect_news_article";
+
+    $pages = traverse_folder($xml, $pages, $categories, $func);
     return $pages;
 }
 
@@ -44,7 +46,7 @@ function create_news_article_feed_logic($categories, $blerts){
         $GLOBALS['stories-already-used'] = array();
     }
 
-    $arrayOfArticles = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+    $arrayOfArticles = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml", $categories);
 
     global $NumArticles;
     // echo 'feed_news_sorted_'.$NumArticles;
