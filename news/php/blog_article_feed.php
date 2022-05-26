@@ -43,11 +43,11 @@ function traverse_blog_rss($xml){
         return;
     }
     echo "inside tbr</br>";
-    echo $xml . "</br>";
+    echo $xml->getName() . "</br>";
     foreach ($xml->children() as $child)
     {
+        echo $child->getName() . "</br>";
         if($child == "channel"){
-            echo $child->getName() . "</br>";
             echo "channel</br>";
         }
 
