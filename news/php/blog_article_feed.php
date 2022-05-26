@@ -26,23 +26,28 @@ function get_blog_rss_xml($fileToLoad, $categories){
     $feed = file_get_contents($fileToLoad);
     $xml = simplexml_load_string($feed);
     if(!$xml){
-        echo "returning due to !xml";
+        echo "returning due to !xml</br>";
         return;
     }
     $pages = array();
     $func = "inspect_news_article";
 
     $pages = traverse_blog_rss($xml);
-    echo "survived traverse_blog_rss\n";
+    echo "survived traverse_blog_rss</br>";
     return $pages;
 }
 
 function traverse_blog_rss($xml){
-    if(!$xml){
+    if (!$xml) {
         echo "Cannot parse invalid xml</br>";
         return;
     }
-    echo recursive_convert_xml_to_string($xml);
+    echo "inside tbr</br>";
+    echo $xml->getName() . "</br>";
+    foreach ($xml->children() as $child)
+    {
+        echo $child->getName() . "\n";
+    }
 }
 
 function create_news_article_feed($categories, $blerts="No"){
