@@ -52,14 +52,14 @@ function traverse_blog_rss($xml){
     echo $xml->channel->link;
 }
 
-function create_news_article_feed($categories, $blerts="No"){
+function create_news_article_feed(){
     echo "Called create news article feed</br>";
-    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
+    $feed = autoCache("create_news_article_feed_logic");
     return $feed;
 }
 
 // returns an array of html elements.
-function create_news_article_feed_logic($categories, $blerts){
+function create_news_article_feed_logic(){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -68,7 +68,7 @@ function create_news_article_feed_logic($categories, $blerts){
 //        $GLOBALS['stories-already-used'] = array();
 //    }
 
-    $arrayOfArticles = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml", $categories);
+    $arrayOfArticles = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
 
 //    global $NumArticles;
 //    // echo 'feed_news_sorted_'.$NumArticles;
