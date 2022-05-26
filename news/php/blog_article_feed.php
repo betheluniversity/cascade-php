@@ -42,21 +42,22 @@ function traverse_blog_rss($xml){
         echo "Cannot parse invalid xml</br>";
         return;
     }
-    echo "inside tbr</br>";
-    echo $xml->getName() . "</br>";
-    foreach ($xml->children() as $child)
-    {
-        echo $child->getName() . "</br>";
-        if($child->getName() == "channel"){
-            foreach($child->children() as $item){
-                echo $item->getName() . "</br>";
-                foreach($item->attributes() as $aa => $bb){
-                    echo $aa , "=", $bb, "</b>";
-                }
-            }
-        }
-
-    }
+//    echo "inside tbr</br>";
+//    echo $xml->getName() . "</br>";
+//    foreach ($xml->children() as $child)
+//    {
+//        echo $child->getName() . "</br>";
+//        if($child->getName() == "channel"){
+//            foreach($child->children() as $item){
+//                echo $item->getName() . "</br>";
+//                foreach($item->attributes() as $aa => $bb){
+//                    echo $aa , "=", $bb, "</b>";
+//                }
+//            }
+//        }
+//
+//    }
+    echo $xml->channel->link;
 }
 
 function create_news_article_feed($categories, $blerts="No"){
