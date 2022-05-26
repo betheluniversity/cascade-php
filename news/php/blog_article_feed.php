@@ -20,6 +20,10 @@ $DisplayImages;
 
 $featuredArticleOptions;
 
+//MINE
+$numPosts;
+$includeTitle;
+
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad, $categories){
     echo "in get_blog_rss_xml</br>";
