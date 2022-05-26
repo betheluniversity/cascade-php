@@ -47,12 +47,8 @@ function traverse_blog_rss($xml){
     foreach ($xml->children() as $child)
     {
         if($child == "channel"){
-            echo $child . "</br>";
-            foreach($child->children() as $item){
-                foreach($item->children() as $property){
-                    echo "......." . $item . " has property " . $property . "</br>";
-                }
-            }
+            echo $child->getName() . "</br>";
+            echo "channel</br>";
         }
 
     }
