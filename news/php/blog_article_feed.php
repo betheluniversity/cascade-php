@@ -19,7 +19,7 @@ function create_more_posts_button(){
         if(strlen($customLinkText == 0)){
             $customLinkText = "See More Posts";
         }
-        echo '<a class="btn center" href="$linkToMore">$customLinkText</a>';
+        echo '<a class="btn center" href="$linkToMore">"$customLinkText"</a>';
     } else {
         echo '';
     }
