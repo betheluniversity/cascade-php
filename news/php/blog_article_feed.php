@@ -12,17 +12,13 @@ $includeBlogLink;
 $customLinkText;
 
 // Value is assigned after xml document is read
-$linkToMore;
+$linkToMore = '';
 
-function create_more_posts_button(){
-    if($includeBlogLink != 'woLink'){
-        if(strlen($customLinkText == 0)){
-            $customLinkText = "See More Posts";
-        }
-        echo '<a class="btn center" href="$linkToMore">"$customLinkText"</a>';
-    } else {
-        echo '';
+function getMoreArticlesLink(){
+    if(strlen($linkToMore) == 0){
+        $linkToMore = "https://www.bethel.edu/blog";
     }
+    echo $linkToMore;
 }
 
 //TODO Move to feed_helper later (ACH)
