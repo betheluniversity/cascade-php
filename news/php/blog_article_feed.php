@@ -32,8 +32,8 @@ function get_blog_rss_xml($fileToLoad, $categories){
     $pages = array();
     $func = "inspect_news_article";
 
-    $pages = traverse_folder($xml, $pages, $categories, $func);
-    echo "survived traverse_folder\n";
+    $pages = traverse_blog_rss($xml);
+    echo "survived traverse_blog_rss\n";
     return $pages;
 }
 
