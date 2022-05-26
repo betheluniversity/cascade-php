@@ -1,7 +1,6 @@
 <?php
 
-
-//MINE
+// Values are passed in from Cascade
 $numPosts;
 $includeTitle;
 $feedTitle;
@@ -11,6 +10,20 @@ $linkType;
 $linkTest;
 $includeBlogLink;
 $customLinkText;
+
+// Value is assigned after xml document is read
+$linkToMore;
+
+function create_more_posts_button(){
+    if($includeBlogLink != 'woLink'){
+        if(strlen($customLinkText == 0)){
+            $customLinkText = "See More Posts";
+        }
+        echo '<a class="btn center" href="$linkToMore">$customLinkText</a>';
+    } else {
+        echo '';
+    }
+}
 
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad){
@@ -49,7 +62,8 @@ function traverse_blog_rss($xml){
 //        }
 //
 //    }
-    echo $xml->channel->link;
+    $linkToMore = $xml->channel->link;
+    echo $linkToMore;
 }
 
 function create_news_article_feed(){
