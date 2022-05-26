@@ -43,14 +43,14 @@ function traverse_blog_rss($xml){
         return;
     }
     echo "inside tbr</br>";
-    echo $xml->getName() . "</br>";
+    echo $xml . "</br>";
     foreach ($xml->children() as $child)
     {
-        if($child->getName() == "channel"){
-            echo $child->getName() . "</br>";
+        if($child == "channel"){
+            echo $child . "</br>";
             foreach($child->children() as $item){
                 foreach($item->children() as $property){
-                    echo "......." . $item.getName() . " has property " . $property.getName() . "</br>";
+                    echo "......." . $item . " has property " . $property . "</br>";
                 }
             }
         }
