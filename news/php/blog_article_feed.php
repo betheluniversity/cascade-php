@@ -13,18 +13,18 @@ $includeBlogLink;
 $customLinkText;
 
 //TODO Move to feed_helper later (ACH)
-function get_blog_rss_xml($fileToLoad, $categories){
+function get_blog_rss_xml($fileToLoad){
     echo "in get_blog_rss_xml</br>";
-//    $feed = file_get_contents($fileToLoad);
-//    $xml = simplexml_load_string($feed);
-//    if(!$xml){
-//        echo "returning due to !xml</br>";
-//        return;
-//    }
+    $feed = file_get_contents($fileToLoad);
+    $xml = simplexml_load_string($feed);
+    if(!$xml){
+        echo "returning due to !xml</br>";
+        return;
+    }
 //    $pages = array();
 //    $func = "inspect_news_article";
 //
-//    $pages = traverse_blog_rss($xml);
+    $pages = traverse_blog_rss($xml);
     echo "survived traverse_blog_rss</br>";
 //    return $pages;
 }
