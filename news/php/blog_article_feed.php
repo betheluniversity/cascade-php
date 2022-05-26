@@ -37,6 +37,14 @@ function get_blog_rss_xml($fileToLoad, $categories){
     return $pages;
 }
 
+function traverse_blog_rss($xml){
+    if(!$xml){
+        echo "Cannot parse invalid xml</br>";
+        return;
+    }
+    echo recursive_convert_xml_to_string($xml);
+}
+
 function create_news_article_feed($categories, $blerts="No"){
     echo "Called create news article feed</br>";
     $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
