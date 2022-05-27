@@ -38,7 +38,7 @@ function traverse_blog_rss($xml){
     echo $xml->channel->item[0]->title . "</br>";
     echo $xml->channel->item[1]->title . "</br>";
 
-    foreach ($xml->channel->item as $item){
+    foreach ($xml->channel->xpath("/item") as $item){
         echo $item->title;
         echo "</br>!!@_</br>";
     }
