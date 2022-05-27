@@ -34,9 +34,12 @@ function traverse_blog_rss($xml){
         echo "Cannot parse invalid xml</br>";
         return;
     }
+    foreach ($xml->channel as $item){
+        echo $item;
+    }
 
-    $linkToMore = $xml->channel->link;
-    echo $linkToMore;
+    //$linkToMore = $xml->channel->link;
+    echo "done with loop </br>";
 }
 
 function create_news_article_feed(){
