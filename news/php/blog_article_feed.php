@@ -29,6 +29,14 @@ function get_blog_rss_xml($fileToLoad){
 //    return $pages;
 }
 
+function traverse_blog_as_json($xml)
+{
+    $xmlAsJson = json_encode($xml);
+    $xmlArray = json_decode($xmlAsJson, TRUE);
+    print_r($xmlArray);
+}
+
+
 function traverse_blog_rss($xml){
     if (!$xml) {
         echo "Cannot parse invalid xml</br>";
@@ -45,6 +53,8 @@ function traverse_blog_rss($xml){
 
     //$linkToMore = $xml->channel->link;
     echo "done with loop </br>";
+
+    traverse_blog_as_json($xml);
 }
 
 function create_news_article_feed(){
