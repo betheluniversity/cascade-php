@@ -60,11 +60,10 @@ function get_only_desired_elements($mlArray)
 {
     $retArray = array();
     foreach($mlArray as $k => $i){
-        echo $k;
-        echo $i;
-        echo "</br> </br> </br>";
+        $retArray[$k] = $i;
+        $retArray["-----------------------------</br>"];
     }
-    return $mlArray;
+    return $retArray;
 }
 
 
