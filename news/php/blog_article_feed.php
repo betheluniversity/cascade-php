@@ -59,7 +59,7 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($mlArray)
 {
     echo "hello</br>";
-    echo $mlArray->id;
+    echo $mlArray->channel->description;
     echo "</br>";
     return $mlArray;
 }
