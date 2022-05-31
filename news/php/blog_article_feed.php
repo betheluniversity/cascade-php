@@ -56,7 +56,6 @@ function traverse_blog_rss($xml){
 
     traverse_blog_as_json($xml);
 }
-$NewsFeed = create_news_article_feed();
 
 function create_blog_feed_array(){
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
