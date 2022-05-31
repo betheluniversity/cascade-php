@@ -60,6 +60,7 @@ function get_only_desired_elements($mlArray)
 {
     $retArray = array();
     foreach($mlArray as $item){
+        echo "in foreach </br>";
         $retArray[] = $item;
         $retArray[] = "-----------------------------</br>";
     }
