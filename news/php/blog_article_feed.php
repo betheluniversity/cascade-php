@@ -59,9 +59,9 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($mlArray)
 {
     $retArray = array();
-    foreach($mlArray as $k => $i){
-        $retArray[$k] = $i;
-        $retArray["-----------------------------</br>"];
+    foreach($mlArray as $item){
+        $retArray[] = $item;
+        $retArray[] = "-----------------------------</br>";
     }
     return $retArray;
 }
