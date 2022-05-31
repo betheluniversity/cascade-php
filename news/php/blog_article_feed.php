@@ -57,13 +57,19 @@ function traverse_blog_rss($xml){
 }
 
 function get_only_desired_elements($mlArray){
-    return $mlArray;
+    $retArray = array();
+    foreach($mlArray as $element){
+        if($element[@attributes] == 'item'){
+            $retArray[] = $element->title;
+        }
+    }
+    return $retArray;
 }
 
 function create_blog_feed(){
     $feedArray = create_blog_feed_array();
     $retArray = get_only_desired_elements($feedArray);
-    return retArray;
+    return $retArray;
 }
 
 function create_blog_feed_array(){
