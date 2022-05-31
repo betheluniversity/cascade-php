@@ -69,7 +69,7 @@ function create_news_article_feed_logic(){
 
     $xml = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xmlToJson = json_encode($xml);
-    $jsonToArray = json_decode($xmlToJson);
+    $jsonToArray = json_decode($xmlToJson, TRUE);
 
     return $jsonToArray;
 }
