@@ -56,7 +56,7 @@ function traverse_blog_rss($xml){
     traverse_blog_as_json($xml);
 }
 
-function get_only_desired_elements($mlArray): array
+function get_only_desired_elements($mlArray)
 {
     $retArray = array();
     foreach($mlArray as $k){
@@ -66,7 +66,7 @@ function get_only_desired_elements($mlArray): array
 }
 
 
-function create_blog_feed(): array
+function create_blog_feed()
 {
     $feedArray = create_blog_feed_array();
     $retArray = get_only_desired_elements($feedArray);
