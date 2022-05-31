@@ -60,7 +60,7 @@ function get_only_desired_elements($mlArray){
     $retArray = array();
     foreach($mlArray as $element){
         if($element[@attributes] == 'item'){
-            $retArray[] = $element->title;
+            $retArray[] = "nothing";
         }
     }
     return $retArray;
