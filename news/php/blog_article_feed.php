@@ -58,9 +58,7 @@ function traverse_blog_rss($xml){
 }
 
 function create_news_article_feed(){
-    echo "Called create news article feed</br>";
     $feed = autoCache("create_news_article_feed_logic");
-    //$feed = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     return $feed;
 }
 
@@ -69,9 +67,9 @@ function create_news_article_feed_logic(){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-    $xml = get_blog_rss_xml($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+    $xml = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xmlToJson = json_encode($xml);
-    $jsonToArray = jsonDecode($xmlToJson);
+    $jsonToArray = json_decode($xmlToJson);
 
     return $jsonToArray;
 }
