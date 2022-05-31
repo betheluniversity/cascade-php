@@ -56,9 +56,10 @@ function traverse_blog_rss($xml){
     traverse_blog_as_json($xml);
 }
 
-function get_only_desired_elements($mlArray){
+function get_only_desired_elements($mlArray): array
+{
     $retArray = array();
-    foreach($mlArray as $element){
+    foreach($mlArray as &$element){
         if($element[@attributes] == 'item'){
             $retArray[] = "something";
         } else {
@@ -68,17 +69,20 @@ function get_only_desired_elements($mlArray){
     return $retArray;
 }
 
-function create_blog_feed(){
+
+function create_blog_feed(): array
+{
     $feedArray = create_blog_feed_array();
     $retArray = get_only_desired_elements($feedArray);
     return $retArray;
 }
 
-function create_blog_feed_array(){
+
+function create_blog_feed_array()
+{
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xmlAsJson = json_encode($feed);
     $xmlArray = json_decode($xmlAsJson, TRUE);
-
     return $xmlArray;
 }
 
