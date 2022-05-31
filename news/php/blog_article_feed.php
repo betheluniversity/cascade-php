@@ -58,12 +58,8 @@ function traverse_blog_rss($xml){
 
 function get_only_desired_elements($mlArray)
 {
-    $retArray = array();
-    foreach($mlArray as $item){
-        echo "in foreach </br>";
-        $retArray[] = $item;
-        $retArray[] = "-----------------------------</br>";
-    }
+    echo "hello";
+    $retArray = $mlArray->channel;
     return $retArray;
 }
 
