@@ -36,7 +36,6 @@ function traverse_blog_as_json($xml)
     print_r($xmlArray);
 }
 
-
 function traverse_blog_rss($xml){
     if (!$xml) {
         echo "Cannot parse invalid xml</br>";
@@ -57,6 +56,16 @@ function traverse_blog_rss($xml){
     traverse_blog_as_json($xml);
 }
 
+function get_only_desired_elements($mlArray){
+    return $mlArray;
+}
+
+function create_blog_feed(){
+    $feedArray = create_blog_feed_array();
+    $retArray = get_only_desired_elements($feedArray);
+    return retArray;
+}
+
 function create_blog_feed_array(){
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xmlAsJson = json_encode($feed);
@@ -64,17 +73,6 @@ function create_blog_feed_array(){
     return $xmlArray;
 }
 
-// returns an array of html elements.
-function create_news_article_feed_logic(){
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
-    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
-
-    $xml = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
-    $xmlToJson = json_encode($xml);
-    $jsonToArray = json_decode($xmlToJson, TRUE);
-
-    return $jsonToArray;
-}
 
 // Returns a formatted version of the date.
 function format_featured_date_news_article( $date)
