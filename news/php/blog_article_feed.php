@@ -59,8 +59,10 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($mlArray)
 {
     $retArray = array();
-    foreach($mlArray as $k){
+    foreach($mlArray as $k => $i){
         echo $k;
+        echo $i;
+        echo "</br> </br> </br>";
     }
     return $mlArray;
 }
