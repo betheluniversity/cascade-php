@@ -60,6 +60,8 @@ function get_only_desired_elements($mlArray){
     $retArray = array();
     foreach($mlArray as $element){
         if($element[@attributes] == 'item'){
+            $retArray[] = "something";
+        } else {
             $retArray[] = "nothing";
         }
     }
@@ -76,6 +78,7 @@ function create_blog_feed_array(){
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xmlAsJson = json_encode($feed);
     $xmlArray = json_decode($xmlAsJson, TRUE);
+
     return $xmlArray;
 }
 
