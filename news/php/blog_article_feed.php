@@ -59,8 +59,8 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($mlArray): array
 {
     $retArray = array();
-    foreach($mlArray as &$element){
-        if($element[@attributes] == 'item'){
+    foreach($mlArray as $k => $v){
+        if($k == 'item'){
             $retArray[] = "something";
         } else {
             $retArray[] = "nothing";
