@@ -62,18 +62,20 @@ function get_only_desired_elements($xml)
     $itemsAr = $xml->channel->children();
 
     foreach($itemsAr as $item){
-        echo $item->getName();
+        if($item->getName() == 'item'){
+            $retArray[] = $item->title;
+        }
     }
 
 
     echo "</br></br></br>"; //Tennyson reference
-    return $itemsAr;
+    return $retArray;
 }
 
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:05</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:10</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
