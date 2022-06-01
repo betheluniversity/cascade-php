@@ -11,6 +11,15 @@ $linkTest;
 $includeBlogLink;
 $customLinkText;
 
+function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
+    global $metadata;
+
+    $metadata['creator'] = $creator;
+    $metadata['pub date'] = $pubDate;
+    $metadata['categories'] = $categories;
+    $metadata['description'] = $description;
+    $metadata['image'] = $image;
+}
 
 //TODO Move to feed_helper later (ACH)
 function get_blog_rss_xml($fileToLoad){
@@ -60,14 +69,14 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:31</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 11:34</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
-    var_dump(metadata);
+
     echo '</br></br>';
     $retArray = get_only_desired_elements($xml);
     return $retArray;
