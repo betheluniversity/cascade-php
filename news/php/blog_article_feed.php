@@ -97,10 +97,10 @@ function get_only_desired_elements($xml)
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
             if($metadata['description']){
-
+                $retArray[$numItems]['description'] = (string) $description['p'][0];
             }
             if($metadata['image']) {
-
+                $retArray[$numItems]['image'] = (string) $description['a']['img']['@attributes']['src'];
             }
             $numItems++;
         }
@@ -111,7 +111,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:56</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 4:00</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
