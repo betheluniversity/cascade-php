@@ -88,13 +88,16 @@ function get_only_desired_elements($xml)
                 $desc = $item->description->attributes();
                 $attribAr = (array) $item->description->attributes();
                 $attribArTwo = $attribAr['@attributes'];
+                $it = (string)$item->description;
                 echo '</br></br>' . $item->title . '</br>';
                 var_dump($attribAr);
                 echo '</br>';
                 var_dump($attribArTwo);
                 echo '</br>';
                 var_dump($desc);
-                $retArray[$numItems]['description'] = (string)$item->description;
+                echo '</br>';
+                echo strrpos($it, 'src');
+                //$retArray[$numItems]['description'] = (string)$item->description;
             }
             $numItems++;
         }
@@ -105,7 +108,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 2:01</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 2:07</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
