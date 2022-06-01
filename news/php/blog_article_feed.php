@@ -85,30 +85,24 @@ function get_only_desired_elements($xml)
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
             if($metadata['description']) {
+                $attribAr = $item->description->attributes();
+                var_dump($attribAr);
                 $retArray[$numItems]['description'] = (string)$item->description;
             }
             $numItems++;
         }
     }
-
-    echo 'num items is ' . $numItems . '</br>';
-
-    echo "</br></br></br>"; //Tennyson reference
     return $retArray;
 }
 
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:32</br></br>";
-    //$feedArray = create_blog_feed_array();
-    //$retArray = get_only_desired_elements($feedArray);
-
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:46</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
-    echo '</br></br>';
     $retArray = get_only_desired_elements($xml);
     return $retArray;
 }
