@@ -20,6 +20,8 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
     $metadata['description'] = $description;
     $metadata['image'] = $image;
 
+    $temp = TRUE;
+    var_dump($temp);
     var_dump($metadata);
 }
 
