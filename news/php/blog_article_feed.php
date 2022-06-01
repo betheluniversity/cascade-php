@@ -92,8 +92,9 @@ function get_only_desired_elements($xml)
 
                 $descToString = "<root>$item->description</root>".PHP_EOL;
                 $res = simplexml_load_string($descToString);
-                echo '</br></br>';
-                print_r("<pre>$res</pre>".PHP_EOL);
+                echo '</br></br><pre>';
+                print_r($res.PHP_EOL);
+                echo '</pre>';
 //                foreach ($res->root->children() as $aaa){
 //                    echo '~~~'. $aaa->getName() . '</br>';
 //                }
@@ -116,7 +117,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:28</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:29</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
