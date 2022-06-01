@@ -85,28 +85,14 @@ function get_only_desired_elements($xml)
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
             if($metadata['description']) {
-                //$desc = $item->description->attributes();
-//                $attribAr = (array) $item->description->attributes();
-//                $attribArTwo = $attribAr['@attributes'];
-//                $it = (string)$item->description;
-
                 $descToString = "<root>$item->description</root>".PHP_EOL;
-                $res = simplexml_load_string($descToString);
+                $stringToObj = simplexml_load_string($descToString);
+                $objToJson = json_encode($stringToObj);
+                $jsonToArr = json_decode($objToJson, TRUE);
+
                 echo '</br></br><pre>';
-                print_r($res);
+                print_r($jsonToArr);
                 echo '</pre>';
-//                foreach ($res->root->children() as $aaa){
-//                    echo '~~~'. $aaa->getName() . '</br>';
-//                }
-//                echo '</br></br>' . $item->title . '</br>';
-//                var_dump($attribAr);
-//                echo '</br>';
-//                var_dump($attribArTwo);
-//                echo '</br>';
-//                var_dump($desc);
-//                echo '</br>';
-//                echo strrpos($it, 'src');
-                //$retArray[$numItems]['description'] = (string)$item->description;
             }
             $numItems++;
         }
