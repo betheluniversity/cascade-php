@@ -77,8 +77,9 @@ function create_blog_feed_array()
 {
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+    $xml = simplexml_load_string($feed);
     echo "go away json</br>";
-    echo $feed->channel->description;
+    echo $xml->channel->description;
     echo "</br>json time</br>";
     $xmlAsJson = json_encode($feed);
     $xmlArray = json_decode($xmlAsJson, TRUE);
