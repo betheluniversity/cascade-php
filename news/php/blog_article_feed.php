@@ -19,10 +19,25 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
     $metadata['categories'] = $categories;
     $metadata['description'] = $description;
     $metadata['image'] = $image;
+}
 
-    $temp = TRUE;
-    var_dump($temp);
-    var_dump($metadata);
+function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $wellbeing, $all){
+    global $categories;
+
+    $categories['academics'] = $academics;
+    $categories['admissions'] = $admissions;
+    $categories['col exploration'] = $col_exploration;
+    $categories['col life'] = $col_life;
+    $categories['fin aid'] = $fin_aid;
+    $categories['careers'] = $careers;
+    $categories['advice'] = $advice;
+    $categories['prof roles'] = $prof_roles;
+    $categories['spiritual'] = $spiritual;
+    $categories['study'] = $study;
+    $categories['wellbeing'] = $wellbeing;
+    $categories['all'] = $all;
+
+    var_dump($categories);
 }
 
 //TODO Move to feed_helper later (ACH)
@@ -73,7 +88,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 11:34</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 12:23</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
