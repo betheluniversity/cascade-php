@@ -89,8 +89,12 @@ function get_only_desired_elements($xml)
 //                $attribAr = (array) $item->description->attributes();
 //                $attribArTwo = $attribAr['@attributes'];
 //                $it = (string)$item->description;
-                $descToString = (string) $item->description;
-                $res = simplexml_load_string($descToString);
+                try {
+                    $descToString = (string)$item->description;
+                    $res = simplexml_load_string($descToString);
+                } catch (Exception $ex) {
+                    $res = $ex;
+                }
                 echo '~~~~~~~~~~~~</br>';
                 echo $res;
                 foreach ($item->description->a->attributes() as $aaa){
