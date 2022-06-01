@@ -61,10 +61,11 @@ function get_only_desired_elements($xml)
     $retArray = array();
     $itemsAr = $xml->channel->item;
 
-    echo "attempting to get ml specifics</br>";
+    foreach($itemsAr as $item){
+        $retArray[] = $itemsAr->title;
+    }
 
-    echo $xml->channel->item[0]->title;
-    $retArray[] = $xml->channel->item[0]->title;
+
     echo "</br></br></br>"; //Tennyson reference
     return $itemsAr;
 }
