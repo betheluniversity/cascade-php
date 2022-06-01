@@ -61,6 +61,7 @@ function get_only_desired_elements($mlArray)
     $retArray = array();
     echo "attempting to get ml specifics</br>";
     echo $mlArray->channel->item[0]->title;
+    $retArray[] = $mlArray->channel->item[0]->title;
     echo "</br>done attempting</br>";
     return $retArray;
 }
