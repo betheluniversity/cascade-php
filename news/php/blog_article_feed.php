@@ -59,7 +59,7 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($mlArray)
 {
     echo "attempting to get ml specifics</br>";
-    echo $mlArray[0];
+    echo $mlArray['channel']['description'];
     echo "</br>done attempting</br>";
     return $mlArray;
 }
@@ -78,9 +78,6 @@ function create_blog_feed_array()
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
-    echo "go away json</br>";
-    echo $xml->channel->description;
-    echo "</br>json time</br>";
     $xmlAsJson = json_encode($xml);
     $xmlArray = json_decode($xmlAsJson, TRUE);
     return $xmlArray;
