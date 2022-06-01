@@ -88,6 +88,7 @@ function get_only_desired_elements($xml)
                 $attribAr = (array) $item->description->attributes();
                 $attribArTwo = $attribAr['@attributes'];
                 var_dump($attribAr);
+                echo '</br>';
                 var_dump($attribArTwo);
                 $retArray[$numItems]['description'] = (string)$item->description;
             }
