@@ -59,9 +59,9 @@ function traverse_blog_rss($xml){
 function get_only_desired_elements($xml)
 {
     $retArray = array();
-    $itemsAr = $xml->channel->item;
+    $itemsAr = $xml->channel->getChildren();
 
-    foreach($xml->channel as $item){
+    foreach($itemsAr as $item){
         echo $item->getName();
     }
 
@@ -73,7 +73,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 9:58</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:01</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
