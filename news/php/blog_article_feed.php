@@ -79,7 +79,7 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['title'] = (string) $item->title;
 
             if($metadata['creator']){
-                $retArray[$numItems]['creator'] = (string) $item->creator;
+                $retArray[$numItems]['creator'] = (string) $item->dc->creator;
             }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
@@ -90,7 +90,7 @@ function get_only_desired_elements($xml)
 //                $attribArTwo = $attribAr['@attributes'];
 //                $it = (string)$item->description;
                 foreach ($item->description->attributes() as $aaa => $bbb){
-                    echo $aaa . $bbb . '</br>';
+                    echo '~~~'. $aaa . $bbb . '</br>';
                 }
 //                echo '</br></br>' . $item->title . '</br>';
 //                var_dump($attribAr);
