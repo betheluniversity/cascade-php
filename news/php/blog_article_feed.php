@@ -75,19 +75,19 @@ function get_only_desired_elements($xml)
             break;
         }
         if($item->getName() == 'item'){
-            $numItems++;
 
-            $retArray[]['title'] = (string) $item->title;
+            $retArray[$numItems]['title'] = (string) $item->title;
 
             if($metadata['creator']){
-                $retArray[]['creator'] = (string) $item->creator;
+                $retArray[$numItems]['creator'] = (string) $item->creator;
             }
             if($metadata['pub date']) {
-                $retArray[]['pub date'] = (string) $item->pubDate;
+                $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
             if($metadata['description']) {
-                $retArray[]['description'] = (string) $item->description;
+                $retArray[$numItems]['description'] = (string)$item->description;
             }
+            $numItems++;
         }
     }
 
@@ -100,7 +100,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:21</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:32</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
