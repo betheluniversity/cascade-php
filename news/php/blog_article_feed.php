@@ -11,6 +11,7 @@ $linkTest;
 $includeBlogLink;
 $customLinkText;
 
+
 function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
     global $metadata;
 
@@ -36,8 +37,6 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     $categories['study'] = $study;
     $categories['wellbeing'] = $wellbeing;
     $categories['all'] = $all;
-
-    var_dump($categories);
 }
 
 //TODO Move to feed_helper later (ACH)
@@ -67,15 +66,29 @@ function traverse_blog_as_json($xml)
 
 function get_only_desired_elements($xml)
 {
+    global $metadata, $numPosts;
     $retArray = array();
     $itemsAr = $xml->channel->children();
     $numItems = 0;
 
     foreach($itemsAr as $item){
+        if($numItems >= $numPosts) {
+            break;
+        }
         if($item->getName() == 'item'){
             $numItems++;
+
             $retArray[]['title'] = (string) $item->title;
-            $retArray[]['description'] = (string) $item->description;
+
+            if($metadata['creator']){
+                $retArray[]['creator'] = (string) $item->creator;
+            }
+            if($metadata['pub date']) {
+                $retArray[]['pub date'] = (string) $item->pubDate;
+            }
+            if($metadata['description']) {
+                $retArray[]['description'] = (string) $item->description;
+            }
         }
     }
 
@@ -88,7 +101,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 12:23</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:18</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
