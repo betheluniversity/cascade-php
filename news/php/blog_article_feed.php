@@ -63,6 +63,17 @@ function traverse_blog_as_json($xml)
 }
 
 
+function get_description_as_array($item)
+{
+    $descToString = "<root>$item->description</root>".PHP_EOL;
+    $stringToObj = simplexml_load_string($descToString);
+    $objToJson = json_encode($stringToObj);
+    $jsonToArr = json_decode($objToJson, TRUE);
+
+    return $jsonToArr;
+}
+
+
 function get_only_desired_elements($xml)
 {
     global $metadata, $numPosts;
@@ -75,8 +86,9 @@ function get_only_desired_elements($xml)
             break;
         }
         if($item->getName() == 'item'){
-
+            $description = get_description_as_array($item);
             $retArray[$numItems]['title'] = (string) $item->title;
+            $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
             if($metadata['creator']){
                 $retArray[$numItems]['creator'] = (string) $item->dc->creator;
@@ -84,15 +96,11 @@ function get_only_desired_elements($xml)
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
-            if($metadata['description']) {
-                $descToString = "<root>$item->description</root>".PHP_EOL;
-                $stringToObj = simplexml_load_string($descToString);
-                $objToJson = json_encode($stringToObj);
-                $jsonToArr = json_decode($objToJson, TRUE);
+            if($metadata['description']){
 
-                echo '</br></br><pre>';
-                print_r($jsonToArr);
-                echo '</pre>';
+            }
+            if($metadata['image']) {
+
             }
             $numItems++;
         }
@@ -103,7 +111,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:29</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:56</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
