@@ -94,9 +94,9 @@ function get_only_desired_elements($xml)
                 $res = simplexml_load_string($descToString);
 
                 echo 'o*0~~~~~~~~~~~~0*o</br>';
-                echo 'res: ' . $res->getName() . '</br>';
-                foreach ($item->description->a as $aaa){
-                    echo '~~~'. $aaa . '</br>';
+                echo 'res: ' . $res->root . '</br>';
+                foreach ($res->root as $aaa){
+                    echo '~~~'. $aaa->getName() . '</br>';
                 }
 //                echo '</br></br>' . $item->title . '</br>';
 //                var_dump($attribAr);
@@ -117,7 +117,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:17</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:19</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
