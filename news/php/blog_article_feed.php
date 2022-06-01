@@ -1,7 +1,7 @@
 <?php
 
 // Values are passed in from Cascade
-$numPosts;
+$numPosts = 3;
 $includeTitle;
 $feedTitle;
 $categories;
@@ -10,7 +10,6 @@ $linkType;
 $linkTest;
 $includeBlogLink;
 $customLinkText;
-
 
 function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
     global $metadata;
@@ -72,7 +71,7 @@ function get_only_desired_elements($xml)
     $numItems = 0;
 
     foreach($itemsAr as $item){
-        if($numItems >= $numPosts) {
+        if($numItems == $numPosts) {
             break;
         }
         if($item->getName() == 'item'){
@@ -101,7 +100,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:18</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 1:21</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
