@@ -58,10 +58,11 @@ function traverse_blog_rss($xml){
 
 function get_only_desired_elements($mlArray)
 {
+    $retArray = array();
     echo "attempting to get ml specifics</br>";
-    echo $mlArray->channel->description;
+    echo $mlArray->channel->item[0]->title;
     echo "</br>done attempting</br>";
-    return $mlArray;
+    return $retArray;
 }
 
 
