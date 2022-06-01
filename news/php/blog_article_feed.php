@@ -63,7 +63,7 @@ function get_only_desired_elements($xml)
 
     foreach($itemsAr as $item){
         if($item->getName() == 'item'){
-            $retArray[] = $item->title;
+            $retArray[] = (string) $item->title;
         }
     }
 
@@ -75,7 +75,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:10</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:16</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
