@@ -90,11 +90,11 @@ function get_only_desired_elements($xml)
 //                $attribArTwo = $attribAr['@attributes'];
 //                $it = (string)$item->description;
 
-                $descToString = (string)$item->description;
+                $descToString = "<root>$item->description</root>".PHP_EOL;
                 $res = simplexml_load_string($descToString);
 
-                echo '~~~~~~~~~~~~</br>';
-                echo $res;
+                echo 'o*0~~~~~~~~~~~~0*o</br>';
+                echo 'res: ' . $res . '</br>';
                 foreach ($item->description->a as $aaa){
                     echo '~~~'. $aaa . '</br>';
                 }
@@ -117,7 +117,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:06</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 3:14</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
