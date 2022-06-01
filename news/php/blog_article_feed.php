@@ -19,6 +19,8 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
     $metadata['categories'] = $categories;
     $metadata['description'] = $description;
     $metadata['image'] = $image;
+
+    var_dump($metadata);
 }
 
 //TODO Move to feed_helper later (ACH)
