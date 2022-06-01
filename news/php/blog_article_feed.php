@@ -93,7 +93,7 @@ function get_only_desired_elements($xml)
                 $descToString = "<root>$item->description</root>".PHP_EOL;
                 $res = simplexml_load_string($descToString);
                 echo '</br></br><pre>';
-                print_r($res.PHP_EOL);
+                print_r($res);
                 echo '</pre>';
 //                foreach ($res->root->children() as $aaa){
 //                    echo '~~~'. $aaa->getName() . '</br>';
