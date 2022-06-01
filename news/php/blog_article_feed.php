@@ -81,7 +81,7 @@ function create_blog_feed_array()
     echo "go away json</br>";
     echo $xml->channel->description;
     echo "</br>json time</br>";
-    $xmlAsJson = json_encode($feed);
+    $xmlAsJson = json_encode($xml);
     $xmlArray = json_decode($xmlAsJson, TRUE);
     return $xmlArray;
 }
