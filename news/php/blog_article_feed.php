@@ -73,8 +73,10 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
+    echo "NEW SANITY CHECK: WORKS AS OF MON JUNE 1 9:47AM</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
+
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
