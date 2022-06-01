@@ -60,13 +60,16 @@ function get_only_desired_elements($xml)
 {
     $retArray = array();
     $itemsAr = $xml->channel->children();
+    $numItems = 0;
 
     foreach($itemsAr as $item){
         if($item->getName() == 'item'){
-            $retArray[] = (string) $item->title;
+            $numItems++;
+            $retArray[]['title'] = (string) $item->title;
         }
     }
 
+    echo 'num items is ' . $numItems . '</br>';
 
     echo "</br></br></br>"; //Tennyson reference
     return $retArray;
@@ -75,7 +78,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:16</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 1 10:21</br></br>";
     //$feedArray = create_blog_feed_array();
     //$retArray = get_only_desired_elements($feedArray);
 
