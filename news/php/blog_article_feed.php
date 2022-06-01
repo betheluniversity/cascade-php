@@ -60,7 +60,7 @@ function get_only_desired_elements($mlArray)
 {
     echo "attempting to get ml specifics</br>";
     echo $mlArray[0];
-    echo var_dump($mlArray);
+    echo array_count_values($mlArray);
     echo "</br>done attempting</br>";
     return $mlArray;
 }
