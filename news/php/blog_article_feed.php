@@ -56,14 +56,17 @@ function traverse_blog_rss($xml){
     traverse_blog_as_json($xml);
 }
 
-function get_only_desired_elements($mlArray)
+function get_only_desired_elements($xml)
 {
     $retArray = array();
+    $itemsAr = $xml->channel->item;
+
     echo "attempting to get ml specifics</br>";
-    echo $mlArray->channel->item[0]->title;
-    $retArray[] = $mlArray->channel->item[0]->title;
-    echo "</br>done attempting</br>";
-    return $retArray;
+
+    echo $xml->channel->item[0]->title;
+    $retArray[] = $xml->channel->item[0]->title;
+    echo "</br></br></br>"; //Tennyson reference
+    return $itemsAr;
 }
 
 
