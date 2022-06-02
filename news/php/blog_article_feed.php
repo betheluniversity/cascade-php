@@ -91,7 +91,7 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
             if($metadata['creator']){
-                $retArray[$numItems]['creator'] = (string) $item->dc->creator;
+                $retArray[$numItems]['creator'] = (string) $item['dc:creator'];
             }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
