@@ -73,7 +73,6 @@ function post_matches_cats($post){
     global $categories;
     foreach($post->category as $cat){
         if(in_array($cat, $categories)){
-            echo "Match for " . $post->title . " on category " . $cat . ".</br>";
             return true;
         }
     }
@@ -151,7 +150,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 1:05</br></br>";
+    echo "CURRENT AS OF JUNE 2 1:06</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -160,7 +159,7 @@ function create_blog_feed()
 
     $postInfo = get_only_desired_elements($xml);
 
-    return $potInfo;
+    return $postInfo;
 }
 
 
