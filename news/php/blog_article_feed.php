@@ -107,9 +107,9 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['title'] = (string) $item->title;
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
-//            if($metadata['creator']){
-//                $retArray[$numItems]['creator'] = (string) $item['dc:creator'];
-//            }
+            if($metadata['creator']){
+                $retArray[$numItems]['creator'] = $item.getNamespaces(TRUE);
+            }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
             }
@@ -128,13 +128,13 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 9:05</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 9:18</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
     $temp = get_as_array($feed);
-    print_s($temp);
+    //print_s($temp);
 
     $retArray = get_only_desired_elements($xml);
 
