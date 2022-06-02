@@ -134,7 +134,7 @@ function create_blog_feed()
     $xml = simplexml_load_string($feed);
 
     $temp = $xml->channel->children('sy');
-    var_dump($xml);
+    var_dump($temp);
     //print_s($temp);
 
     $retArray = get_only_desired_elements($xml);
