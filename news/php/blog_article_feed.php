@@ -137,7 +137,9 @@ function get_only_desired_elements($xml)
                     foreach($item->category as $cat){
                         $retArray[$numItems]['categories'] =  $cat;
                     }
-                    echo implode(", ", retArray[$numItems]['categories']);
+                    var_dump(retArray[$numItems]['categories']);
+                    $i = implode(", ", retArray[$numItems]['categories']);
+                    var_dump($i);
                 }
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string) $item->pubDate;
