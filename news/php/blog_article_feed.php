@@ -50,9 +50,8 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
         echo "(il) ";
         if($incl == 1) {
             $categories[] = $cat;
-        } else {
-            unset($categories[$cat]);
         }
+        unset($categories[$cat]);
     }
 }
 
