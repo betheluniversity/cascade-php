@@ -133,8 +133,9 @@ function create_blog_feed()
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
-    $temp = $xml->channel->attributes('sy');
-    echo "</br> attribute children in sy </br>";
+    $temp = $xml->channel->children('sy');
+    echo "</br> children in sy </br>";
+    var_dump($temp);
     var_dump(get_as_array($temp));
     //print_s($temp);
     echo "</br> doc namespaces </br>";
