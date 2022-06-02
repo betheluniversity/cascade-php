@@ -111,10 +111,10 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
             if($metadata['creator']){
-                $dcNamespace = $item->children($allNamespaces['dc']);
-                var_dump($dcNamespace);
-                var_dump($dcNamespace->creator);
-                $retArray[$numItems]['creator'] = $dcNamespace->creator;
+//                $dcNamespace = $item->children($allNamespaces['dc']);
+//                var_dump($dcNamespace);
+//                var_dump($dcNamespace->creator);
+//                $retArray[$numItems]['creator'] = $dcNamespace->creator;
             }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
@@ -135,7 +135,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 10:53</br></br>";
+    echo "CURRENT AS OF JUNE 2 10:55</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -160,9 +160,9 @@ function create_blog_feed()
 //    var_dump($xml->getNamespaces(TRUE));
 //    echo "</br>channel ns</br>";
     $chan_ns = $xml->channel->getNamespaces(TRUE);
-    var_dump($chan_ns);
+    //var_dump($chan_ns);
     $chan_ar = $xml->channel->children($chan_ns['sy']);
-    var_dump($chan_ar);
+    //var_dump($chan_ar);
     $up = $chan_ar->updatePeriod;
     var_dump($up);
 //
