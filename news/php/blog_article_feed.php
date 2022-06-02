@@ -47,30 +47,14 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     $categories['all'] = $all;
 }
 
-//TODO Move to feed_helper later (ACH)
-function get_blog_rss_xml($fileToLoad){
-    echo "in get_blog_rss_xml</br>";
-    $feed = file_get_contents($fileToLoad);
-    $xml = simplexml_load_string($feed);
-    if(!$xml){
-        echo "returning due to !xml</br>";
-        return;
+function post_matches_cats($post){
+    global $categories;
+    echo '</br>post is in categories: </br>';
+    echo '</br>feed wants categories: </br>';
+    foreach($categories as $cat){
+        echo "    " . $cat . "</br>";
     }
-//    $pages = array();
-//    $func = "inspect_news_article";
-//
-    $pages = traverse_blog_rss($xml);
-    echo "survived traverse_blog_rss</br>";
-//    return $pages;
 }
-
-function traverse_blog_as_json($xml)
-{
-    $xmlAsJson = json_encode($xml);
-    $xmlArray = json_decode($xmlAsJson, TRUE);
-    print_r($xmlArray);
-}
-
 
 function get_description_as_array($item)
 {
@@ -95,7 +79,7 @@ function get_as_array($item)
 
 function get_only_desired_elements($xml)
 {
-    global $metadata, $numPosts, $allNamespaces;
+    global $metadata, $numPosts, $allNamespaces, $categories;
     $retArray = array();
     $itemsAr = $xml->channel->children();
     $numItems = 0;
@@ -110,20 +94,20 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['title'] = (string) $item->title;
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
-            if($metadata['creator']){
-                $dcNamespace = $item->children($allNamespaces['dc']);
-//                var_dump($dcNamespace);
-//                var_dump($dcNamespace->creator);
-                $retArray[$numItems]['creator'] = (string) $dcNamespace->creator[0];
-            }
-            if($metadata['pub date']) {
-                $retArray[$numItems]['pub date'] = (string) $item->pubDate;
-            }
-            if($metadata['description']){
-                $retArray[$numItems]['description'] = (string) $description['p'][0];
-            }
-            if($metadata['image']) {
-                $retArray[$numItems]['image'] = (string) $description['a']['img']['@attributes']['src'];
+            if($categories['all'] || post_matches_cats($item)){
+                if ($metadata['creator']) {
+                    $dcNamespace = $item->children($allNamespaces['dc']);
+                    $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
+                }
+                if ($metadata['pub date']) {
+                    $retArray[$numItems]['pub date'] = (string)$item->pubDate;
+                }
+                if ($metadata['description']) {
+                    $retArray[$numItems]['description'] = (string)$description['p'][0];
+                }
+                if ($metadata['image']) {
+                    $retArray[$numItems]['image'] = (string)$description['a']['img']['@attributes']['src'];
+                }
             }
             $numItems++;
         }
@@ -135,23 +119,12 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 11:02</br></br>";
+    echo "CURRENT AS OF JUNE 2 11:32</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
     $allNamespaces = $xml->getDocNamespaces(TRUE);
-
-    $chan_ns = $xml->channel->getNamespaces(TRUE);
-    //var_dump($chan_ns);
-    $chan_ar = $xml->channel->children($chan_ns['sy']);
-    //var_dump($chan_ar);
-    $up = $chan_ar->updatePeriod;
-
-//    echo "</br></br>item ns</br>";
-//    var_dump($xml->channel->item[0]->getNamespaces(TRUE));
-
-
 
     $retArray = get_only_desired_elements($xml);
 
