@@ -112,21 +112,14 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:39</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:43</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
-
+    print_r($xml);
     $retArray = get_only_desired_elements($xml);
 
-    echo 'how about ';
-    $xmlAsJson = json_encode($xml);
-    $xmlArray = json_decode($xmlAsJson, TRUE);
-    //echo $xmlArray['channel']['item'][0];
-    echo var_dump($xmlArray['channel']['item'][0]);
-    echo '</br>';
-    echo var_dump($xmlArray['channel']['item'][0]['category'][0]);
-    echo '</br>';
+
     return $retArray;
 }
 
