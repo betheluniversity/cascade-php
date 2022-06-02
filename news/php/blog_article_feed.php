@@ -11,6 +11,9 @@ $linkTest;
 $includeBlogLink;
 $customLinkText;
 
+// Assigned when xml is loaded
+$allNamespaces;
+
 function print_s($thing){
     echo '<pre>';
     echo print_r($thing);
@@ -92,7 +95,7 @@ function get_as_array($item)
 
 function get_only_desired_elements($xml)
 {
-    global $metadata, $numPosts;
+    global $metadata, $numPosts, $allNamespaces;
     $retArray = array();
     $itemsAr = $xml->channel->children();
     $numItems = 0;
@@ -108,7 +111,8 @@ function get_only_desired_elements($xml)
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
 
             if($metadata['creator']){
-                $retArray[$numItems]['creator'] = $item->getNamespaces();
+                $dcNamespace = $item->children($allNamespaces['dc']);
+                $retArray[$numItems]['creator'] = $dcNamespace('creator');
             }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
@@ -128,11 +132,13 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "CURRENT AS OF JUNE 2 10:18</br></br>";
-    $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+    global $allNamespaces;
+    echo "CURRENT AS OF JUNE 2 10:38</br></br>";
 
+    $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
+    $allNamespaces = $xml->getDocNamespaces(TRUE);
 //    $tempc = $xml->channel->children('sy');
 //    $tempa = $xml->channel->attributes('sy', TRUE)->updatePeriod;
 //    $tempn = $xml->channel->getNamespaces();
@@ -146,18 +152,18 @@ function create_blog_feed()
 //    var_dump($tempa);
 //    var_dump(get_as_array($tempa));
 //    echo "</br> doc namespaces </br>";
-    echo "</br>docns</br>";
-    var_dump($xml->getDocNamespaces(TRUE));
-    echo "</br>ns</br>";
-    var_dump($xml->getNamespaces(TRUE));
-    echo "</br>channel ns</br>";
-    $chan_ns = $xml->channel->getNamespaces(TRUE);
-    var_dump($chan_ns);
-    $chan_ar = $xml->channel->children($chan_ns['sy']);
-    var_dump($chan_ar);
-
-    echo "</br>item ns</br>";
-    var_dump($xml->channel->item[0]->getNamespaces(TRUE));
+//    echo "</br>docns</br>";
+//    var_dump($xml->getDocNamespaces(TRUE));
+//    echo "</br>ns</br>";
+//    var_dump($xml->getNamespaces(TRUE));
+//    echo "</br>channel ns</br>";
+//    $chan_ns = $xml->channel->getNamespaces(TRUE);
+//    var_dump($chan_ns);
+//    $chan_ar = $xml->channel->children($chan_ns['sy']);
+//    var_dump($chan_ar);
+//
+//    echo "</br>item ns</br>";
+//    var_dump($xml->channel->item[0]->getNamespaces(TRUE));
 
 
 
