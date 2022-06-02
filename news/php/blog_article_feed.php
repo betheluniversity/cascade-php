@@ -158,6 +158,7 @@ function create_blog_feed()
     $allNamespaces = $xml->getDocNamespaces(TRUE);
 
     $postInfo = get_only_desired_elements($xml);
+    reformat_post_info($postInfo);
 
     return $postInfo;
 }
