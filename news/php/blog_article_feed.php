@@ -63,7 +63,7 @@ function post_matches_cats($post){
     foreach($categories as $cat){
         echo "    " . $cat . "</br>";
     }
-
+    return true;
 }
 
 function get_description_as_array($item)
@@ -129,7 +129,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:09</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:14</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
