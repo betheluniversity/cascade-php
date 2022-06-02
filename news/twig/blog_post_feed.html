@@ -2,19 +2,17 @@
     <div>
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
         {% if post['creator'] %}
-        <div>
-            <p>Author: {{ post['creator'] }}</p>
-        </div>
+        <p>Author: {{ post['creator'] }}</p>
         {% endif %}
+
         {% if post['categories'] %}
-        <div>
             <p>Tags: </p>
             {% for category in post['categories'] %}
-            <p>{{category}} </p>
+                <p>{{category}} </p>
             {% endfor %}
-        </div>
         {% endif %}
     </div>
+
     {% if post['image']%}
         <div>
             <img    class="d-flex  mr-3  lazyload  mb-3"
@@ -22,7 +20,8 @@
                     alt="{{ post['title'] }}"
             />
         </div>
-    {% endif %}
+    {% endif
+
     {% if post['description'] %}
     <div>
         <p>{{ post['description'] }}</p>
