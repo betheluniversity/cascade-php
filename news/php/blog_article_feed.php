@@ -138,7 +138,7 @@ function get_only_desired_elements($xml)
                     }
                 }
                 if ($metadata['pub date']) {
-                    $retArray[$numItems]['pub date'] = format_featured_event_date((string)$item->pubDate);
+                    $retArray[$numItems]['pub date'] = (string) $item->pubDate;
                 }
                 if ($metadata['description']) {
                     $retArray[$numItems]['description'] = (string)$description['p'][0];
