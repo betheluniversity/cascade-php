@@ -38,7 +38,11 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
 function setup_individual_category($var_value, $correct_string){
     global $categories;
     if($var_value == 1){
-        $categories[] = "$correct_string";
+        if($correct_string == "all"){
+            $categories[] = TRUE;
+        } else {
+            $categories[] = "$correct_string";
+        }
     }
 }
 
@@ -106,13 +110,14 @@ function get_only_desired_elements($xml)
         if($numItems == $numPosts) {
             break;
         }
+
         if($item->getName() == 'item'){
-
-            $description = get_description_as_array($item);
-            $retArray[$numItems]['title'] = (string) $item->title;
-            $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
-
             if($categories['all'] || post_matches_cats($item)){
+
+                $description = get_description_as_array($item);
+                $retArray[$numItems]['title'] = (string) $item->title;
+                $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
+
                 if ($metadata['creator']) {
                     $dcNamespace = $item->children($allNamespaces['dc']);
                     $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
@@ -126,8 +131,8 @@ function get_only_desired_elements($xml)
                 if ($metadata['image']) {
                     $retArray[$numItems]['image'] = (string)$description['a']['img']['@attributes']['src'];
                 }
+                $numItems++;
             }
-            $numItems++;
         }
     }
     return $retArray;
@@ -137,7 +142,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:35</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:40</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
