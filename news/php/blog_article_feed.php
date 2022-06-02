@@ -125,7 +125,7 @@ function create_blog_feed()
     //echo $xmlArray['channel']['item'][0];
     echo var_dump($xmlArray['channel']['item'][0]);
     echo '</br>';
-    echo var_dump($xmlArray['channel']['item'][0]['dc:creator']);
+    echo var_dump($xmlArray['channel']['item'][0]['category'][0]);
     echo '</br>';
     return $retArray;
 }
