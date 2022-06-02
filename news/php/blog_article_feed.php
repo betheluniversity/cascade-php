@@ -135,13 +135,16 @@ function create_blog_feed()
 
     $tempc = $xml->channel->children('sy');
     $tempa = $xml->channel->attributes('sy');
+    $tempn = $xml->channel->getNamespaces();
 
     echo "</br> children in sy </br>";
     var_dump($tempc);
     var_dump(get_as_array($tempc));
+    var_dump(get_as_array($tempn));
     echo "</br> attrib in sy </br>";
     var_dump($tempa);
     var_dump(get_as_array($tempa));
+    var_dump(get_as_array($tempn));
     echo "</br> doc namespaces </br>";
     var_dump($xml->getDocNamespaces(TRUE));
 
