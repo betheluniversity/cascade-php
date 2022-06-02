@@ -73,7 +73,7 @@ function get_description_as_array($item)
     return $jsonToArr;
 }
 
-function get_cat_as_array($item)
+function get_as_array($item)
 {
     $descToString = "<root>$item</root>".PHP_EOL;
     $stringToObj = simplexml_load_string($descToString);
@@ -122,13 +122,15 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:48</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:52</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
     echo '<pre>';
     print_r($xml);
-    $temp = get_cat_as_array($xml->channel->item[0]->category[0]);
+    $temp = get_as_array($xml->channel->item[0]->category[0]);
+    print_r($temp);
+    $temp = get_as_array($xml->channel->item[0]);
     print_r($temp);
     echo '</pre>';
     $retArray = get_only_desired_elements($xml);
