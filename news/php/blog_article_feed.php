@@ -119,7 +119,7 @@ function get_only_desired_elements($xml)
 
                 $description = get_description_as_array($item);
                 $retArray[$numItems] = array('creator' => 'hidden',
-                                            'categories' => 'hidden',
+                                            'categories' => ['hidden'],
                                             'pub date' => 'hidden',
                                             'description' => 'hidden',
                                             'image' => 'hidden');

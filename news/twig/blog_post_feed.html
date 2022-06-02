@@ -5,7 +5,7 @@
         <p>Author: {{ post['creator'] }}</p>
         {% endif %}
 
-        {% if post['categories'] != 'hidden' %}
+        {% if post['categories'][0] != 'hidden' %}
             <p>Tags: </p>
             {% for category in post['categories'] %}
                 <p>{{category}} </p>
