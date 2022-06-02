@@ -128,16 +128,14 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "CURRENT AS OF JUNE 2 9:42</br></br>";
+    echo "CURRENT AS OF JUNE 2 9:44</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
-    $temp = $xml->channel->children('sy');
-    echo "</br> children in sy </br>";
+    $temp = $xml->channel->attributes('sy');
+    echo "</br> attribute children in sy </br>";
     var_dump(get_as_array($temp));
-    echo "</br> attributes sy </br>";
-    var_dump($xml->channel->attributes('sy'));
     //print_s($temp);
     echo "</br> doc namespaces </br>";
     var_dump($xml->getDocNamespaces(TRUE));
