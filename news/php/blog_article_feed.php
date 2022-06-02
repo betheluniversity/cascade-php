@@ -20,6 +20,11 @@ function print_s($thing){
     echo '</pre>';
 }
 
+function set_num_posts($from_cascade){
+    global $numPosts;
+    $numPosts = (int) $from_cascade;
+}
+
 function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
     global $metadata;
 
@@ -129,7 +134,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:15</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:19</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
