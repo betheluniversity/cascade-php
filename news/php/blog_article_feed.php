@@ -30,29 +30,27 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
     $metadata['image'] = $image;
 }
 
-function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $wellbeing, $all){
+function setup_individual_category($var_value, $correct_string){
     global $categories;
-
-    $categories['academics'] = $academics;
-    $categories['admissions'] = $admissions;
-    $categories['col exploration'] = $col_exploration;
-    $categories['col life'] = $col_life;
-    $categories['fin aid'] = $fin_aid;
-    $categories['careers'] = $careers;
-    $categories['advice'] = $advice;
-    $categories['prof roles'] = $prof_roles;
-    $categories['spiritual'] = $spiritual;
-    $categories['study'] = $study;
-    $categories['wellbeing'] = $wellbeing;
-    $categories['all'] = $all;
-
-    foreach($categories as $cat => $incl){
-        echo "(il) ";
-        if($incl == 1) {
-            $categories[] = $cat;
-        }
-        unset($categories[$cat]);
+    if($var_value == 1){
+        $categories[] = "$correct_string";
     }
+}
+
+
+function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $wellbeing, $all){
+    setup_individual_category($academics, "Academics");
+    setup_individual_category($admissions, "Admissions Process");
+    setup_individual_category($col_exploration, "College Exploration");
+    setup_individual_category($col_life, "College Life");
+    setup_individual_category($fin_aid, "Financial Aid");
+    setup_individual_category($careers, "Jobs and Careers");
+    setup_individual_category($advice, "Life Advice");
+    setup_individual_category($prof_roles, "Professional Roles");
+    setup_individual_category($spiritual, "Spiritual Growth");
+    setup_individual_category($study, "Study Skills");
+    setup_individual_category($wellbeing, "Wellbeing");
+    setup_individual_category($all, "All");
 }
 
 function post_matches_cats($post){
@@ -131,7 +129,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 11:56</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:09</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
