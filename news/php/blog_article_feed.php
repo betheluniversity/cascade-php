@@ -73,6 +73,16 @@ function get_description_as_array($item)
     return $jsonToArr;
 }
 
+function get_cat_as_array($item)
+{
+    $descToString = "<root>$item</root>".PHP_EOL;
+    $stringToObj = simplexml_load_string($descToString);
+    $objToJson = json_encode($stringToObj);
+    $jsonToArr = json_decode($objToJson, TRUE);
+
+    return $jsonToArr;
+}
+
 
 function get_only_desired_elements($xml)
 {
@@ -118,7 +128,8 @@ function create_blog_feed()
     $xml = simplexml_load_string($feed);
     echo '<pre>';
     print_r($xml);
-    print_r($xml->channel->item[0]->category[0]);
+    $temp = get_cat_as_array($xml->channel->item[0]->category[0]);
+    print_r($temp);
     echo '</pre>';
     $retArray = get_only_desired_elements($xml);
 
