@@ -118,8 +118,15 @@ function get_only_desired_elements($xml)
             if($categories['all'] || post_matches_cats($item)){
 
                 $description = get_description_as_array($item);
+                $retArray[$numItems] = array('creator' => 'hidden',
+                                            'categories' => 'hidden',
+                                            'pub date' => 'hidden',
+                                            'description' => 'hidden',
+                                            'image' => 'hidden');
                 $retArray[$numItems]['title'] = (string) $item->title;
                 $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
+
+
 
                 if ($metadata['creator']) {
                     $dcNamespace = $item->children($allNamespaces['dc']);
