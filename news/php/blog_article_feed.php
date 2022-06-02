@@ -151,7 +151,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 1:02</br></br>";
+    echo "CURRENT AS OF JUNE 2 1:05</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -159,21 +159,17 @@ function create_blog_feed()
     $allNamespaces = $xml->getDocNamespaces(TRUE);
 
     $postInfo = get_only_desired_elements($xml);
-    $retArray = reformat_post_info($postInfo);
 
-    return $retArray;
+    return $potInfo;
 }
 
 
 function reformat_post_info($raw_post_info_ar){
-    $formatted_ar = array();
 
     foreach($raw_post_info_ar as $post){
         $div = "<div><h3><a href =" . $post->link . ">". $post->title ."</a></h3></div>";
-        $formatted_ar[] = $div;
+        echo $div;
     }
-
-    return $formatted_ar;
 }
 
 
