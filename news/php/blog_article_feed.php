@@ -112,7 +112,7 @@ function get_only_desired_elements($xml)
 
             if($metadata['creator']){
                 $dcNamespace = $item->children($allNamespaces['dc']);
-                $retArray[$numItems]['creator'] = $dcNamespace('creator');
+                $retArray[$numItems]['creator'] = $dcNamespace['creator'];
             }
             if($metadata['pub date']) {
                 $retArray[$numItems]['pub date'] = (string) $item->pubDate;
@@ -133,7 +133,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 10:38</br></br>";
+    echo "CURRENT AS OF JUNE 2 10:40</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
