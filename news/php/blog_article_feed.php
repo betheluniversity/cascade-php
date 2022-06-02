@@ -119,7 +119,7 @@ function get_only_desired_elements($xml)
 
                 $description = get_description_as_array($item);
                 $retArray[$numItems] = array('creator' => 'hidden',
-                                            'categories' => ['hidden'],
+                                            'categories' => 'hidden',
                                             'pub date' => 'hidden',
                                             'description' => 'hidden',
                                             'image' => 'hidden');
@@ -134,7 +134,8 @@ function get_only_desired_elements($xml)
                 }
                 if ($metadata['categories']){
                     foreach($item->category as $cat){
-                        $retArray[$numItems]['categories'][] = (string) $cat;
+                        $retArray[$numItems]['categories'] .= $cat . ", ";
+                        echo(retArray[$numItems]['categories']);
                     }
                 }
                 if ($metadata['pub date']) {
@@ -186,24 +187,6 @@ function get_post_html( $post){
     $html = $twig->render('blog_post_feed.html', array('post' => $post));
 
     return $html;
-}
-
-
-// Returns a formatted version of the date.
-function format_featured_date_news_article( $date)
-{
-    $date = $date/1000;
-    $formattedDate = date("F d, Y | g:i a", $date);
-
-    // Change am/pm to a.m./p.m.
-    $formattedDate = str_replace("am", "a.m.", $formattedDate);
-    $formattedDate = str_replace("pm", "p.m.", $formattedDate);
-
-    // format 7:00 to 7
-    $formattedDate = str_replace(":00", "", $formattedDate);
-    $formattedDate = str_replace("12 p.m.", "Noon", $formattedDate);
-    $formattedDate = str_replace("12 a.m", "midnight", $formattedDate);
-    return $formattedDate;
 }
 
 
