@@ -20,10 +20,12 @@ function print_s($thing){
     echo '</pre>';
 }
 
+
 function set_num_posts($from_cascade){
     global $numPosts;
     $numPosts = (int) $from_cascade;
 }
+
 
 function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
     global $metadata;
@@ -34,6 +36,7 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
     $metadata['description'] = $description;
     $metadata['image'] = $image;
 }
+
 
 function setup_individual_category($var_value, $correct_string){
     global $categories;
@@ -65,33 +68,23 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     var_dump($categories);
 }
 
+
 function post_matches_cats($post){
     global $categories;
     foreach($post->category as $cat){
         if(in_array($cat, $categories)){
             echo "Match for " . $post->title . " on category " . $cat . ".</br>";
             return true;
-        } else {
-            echo "No match for " . $post->title . " on category " . $cat . ".</br>";
         }
     }
     return false;
 }
 
+
 function get_description_as_array($item)
 {
     $descToString = "<root>$item->description</root>".PHP_EOL;
     $stringToObj = simplexml_load_string($descToString);
-    $objToJson = json_encode($stringToObj);
-    $jsonToArr = json_decode($objToJson, TRUE);
-
-    return $jsonToArr;
-}
-
-function get_as_array($item)
-{
-    //$descToString = "<root>$item</root>".PHP_EOL;
-    $stringToObj = simplexml_load_string($item);
     $objToJson = json_encode($stringToObj);
     $jsonToArr = json_decode($objToJson, TRUE);
 
@@ -122,6 +115,9 @@ function get_only_desired_elements($xml)
                     $dcNamespace = $item->children($allNamespaces['dc']);
                     $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
                 }
+                if ($metadata['categories']){
+                    $retArray[$numItems]['categories'] = $item->category;
+                }
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string)$item->pubDate;
                 }
@@ -142,7 +138,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:40</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:43</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
