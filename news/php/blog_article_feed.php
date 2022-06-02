@@ -133,8 +133,9 @@ function get_only_desired_elements($xml)
                     $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
                 }
                 if ($metadata['categories']){
+                    $retArray[$numItems]['categories'] = "";
                     foreach($item->category as $cat){
-                        $retArray[$numItems]['categories'] .= $cat . ", ";
+                        $retArray[$numItems]['categories'] = $retArray[$numItems]['categories'] . $cat . ", ";
                         echo(retArray[$numItems]['categories']);
                     }
                 }
