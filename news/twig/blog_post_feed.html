@@ -1,11 +1,11 @@
 <div>
     <div>
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
-        {% if post['creator'] %}
+        {% if post['creator'] != 'hidden' %}
         <p>Author: {{ post['creator'] }}</p>
         {% endif %}
 
-        {% if post['categories'] %}
+        {% if post['categories'] != 'hidden' %}
             <p>Tags: </p>
             {% for category in post['categories'] %}
                 <p>{{category}} </p>
@@ -13,7 +13,7 @@
         {% endif %}
     </div>
 
-    {% if post['image']%}
+    {% if post['image'] != 'hidden'%}
         <div>
             <img    class="d-flex  mr-3  lazyload  mb-3"
                     data-src="{{ post['image'] }}?w=240"
@@ -22,7 +22,7 @@
         </div>
     {% endif
 
-    {% if post['description'] %}
+    {% if post['description'] != 'hidden' %}
     <div>
         <p>{{ post['description'] }}</p>
     </div>

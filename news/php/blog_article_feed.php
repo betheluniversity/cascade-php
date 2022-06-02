@@ -157,7 +157,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 2:17</br></br>";
+    echo "CURRENT AS OF JUNE 2 2:55</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
