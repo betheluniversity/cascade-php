@@ -86,9 +86,7 @@ function get_only_desired_elements($xml)
             break;
         }
         if($item->getName() == 'item'){
-            echo '<pre>';
-            print_r($item);
-            echo '</pre>';
+
             $description = get_description_as_array($item);
             $retArray[$numItems]['title'] = (string) $item->title;
             $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
@@ -114,7 +112,7 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:18</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:20</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -132,6 +130,10 @@ function create_blog_feed_array()
     $xmlAsJson = json_encode($xml);
     $xmlArray = json_decode($xmlAsJson, TRUE);
     return $xmlArray;
+
+    echo '<pre>';
+    print_r($xmlArray);
+    echo '</pre>';
 }
 
 
