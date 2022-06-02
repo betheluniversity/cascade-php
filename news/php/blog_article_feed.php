@@ -128,7 +128,7 @@ function get_only_desired_elements($xml)
                 }
                 if ($metadata['categories']){
                     foreach($item->category as $cat){
-                        $retArray[$numItems]['categories'][] = $cat[0];
+                        $retArray[$numItems]['categories'][] = (string) $cat;
                     }
                 }
                 if ($metadata['pub date']) {
@@ -151,7 +151,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:52</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:53</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
