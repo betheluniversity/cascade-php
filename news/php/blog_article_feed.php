@@ -62,7 +62,10 @@ function post_matches_cats($post){
     global $categories;
     foreach($post->category as $cat){
         if(isset($categories[$cat])){
+            echo "Match for " . $post->title . " on category " . $cat . ".</br>";
             return true;
+        } else {
+            echo "No match for " . $post->title . " on category " . $cat . ".</br>";
         }
     }
     return false;
