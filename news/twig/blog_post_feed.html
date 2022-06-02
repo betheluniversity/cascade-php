@@ -1,15 +1,31 @@
 <div>
     <div>
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
+        {% if post['creator'] %}
+        <div>
+            <p>Author: {{ post['creator'] }}</p>
+        </div>
+        {% endif %}
+        {% if post['categories'] %}
+        <div>
+            <p>Tags: </p>
+            {% for category in post['categories'] %}
+            <p>{{category}} </p>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
     {% if post['image']%}
-    <div>
-
+        <div>
             <img    class="d-flex  mr-3  lazyload  mb-3"
                     data-src="{{ post['image'] }}?w=240"
                     alt="{{ post['title'] }}"
             />
-
+        </div>
+    {% endif %}
+    {% if post['description'] %}
+    <div>
+        <p>{{ post['description'] }}</p>
     </div>
     {% endif %}
 </div>
