@@ -45,20 +45,28 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     $categories['study'] = $study;
     $categories['wellbeing'] = $wellbeing;
     $categories['all'] = $all;
+
+    foreach($categories as $cat => $incl){
+        if($incl == 1) {
+            $categories[] = $cat;
+        } else {
+            unset($categories[$cat]);
+        }
+    }
 }
 
 function post_matches_cats($post){
     global $categories;
     echo '</br></br>post is in categories: </br>';
-    echo "    " . $post->category[0] . "</br>";
-
+    foreach($post->category as $cat){
+        echo "    " . $cat . "</br>";
+    }
     print_s($post);
     echo 'feed wants categories: </br>';
-    foreach($categories as $cat => $incl){
-        if($incl == 1) {
-            echo "    " . $cat . "</br>";
-        }
+    foreach($categories as $cat){
+        echo "    " . $cat . "</br>";
     }
+
 }
 
 function get_description_as_array($item)
@@ -124,7 +132,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 11:48</br></br>";
+    echo "CURRENT AS OF JUNE 2 11:54</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
