@@ -92,6 +92,17 @@ function get_description_as_array($item)
 }
 
 
+function get_as_array($item)
+{
+    $descToString = "<root>$item</root>".PHP_EOL;
+    $stringToObj = simplexml_load_string($descToString);
+    $objToJson = json_encode($stringToObj);
+    $jsonToArr = json_decode($objToJson, TRUE);
+
+    return $jsonToArr;
+}
+
+
 function get_only_desired_elements($xml)
 {
     global $metadata, $numPosts, $allNamespaces, $categories;
@@ -116,7 +127,7 @@ function get_only_desired_elements($xml)
                     $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
                 }
                 if ($metadata['categories']){
-                    $retArray[$numItems]['categories'] = $item->category;
+                    $retArray[$numItems]['categories'] = get_as_array($item->category);
                 }
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string)$item->pubDate;
@@ -138,7 +149,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:43</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:45</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
