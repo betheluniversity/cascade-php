@@ -64,7 +64,7 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
 function post_matches_cats($post){
     global $categories;
     foreach($post->category as $cat){
-        if(isset($categories[$cat])){
+        if(in_array($cat, $categories)){
             echo "Match for " . $post->title . " on category " . $cat . ".</br>";
             return true;
         } else {
@@ -137,7 +137,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 2 12:32</br></br>";
+    echo "CURRENT AS OF JUNE 2 12:35</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
