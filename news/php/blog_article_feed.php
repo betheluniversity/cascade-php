@@ -135,7 +135,7 @@ function get_only_desired_elements($xml)
                 if ($metadata['categories']){
                     $retArray[$numItems]['categories'] = " ";
                     foreach($item->category as $cat){
-                        $retArray[$numItems]['categories'] =  $cat;
+                        $retArray[$numItems]['categories'] = (string)$cat;
                     }
                     var_dump($retArray[$numItems]['categories']);
                     $i = implode("</br>", $retArray[$numItems]['categories']);
