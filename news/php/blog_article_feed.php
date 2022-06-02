@@ -165,9 +165,14 @@ function create_blog_feed()
 
 
 function reformat_post_info($raw_post_info_ar){
-
+    global $customLinkText;
     foreach($raw_post_info_ar as $post){
         $heading = "<h3><a href='$post[link]'>$post[title] </a></h3>".PHP_EOL;
+        $teaser = "";
+        $image = "";
+        $tags = "";
+        $author = "";
+        $rm = "<h3><a href='$post[link]'>$customLinkText</a></h3>".PHP_EOL;
         $div = "<div>$heading</div>".PHP_EOL;
         echo $div;
     }
