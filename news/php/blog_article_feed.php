@@ -112,11 +112,14 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:43</br></br>";
+    echo "NEW SANITY CHECK: WORKS AS OF JUNE 2 8:46</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
+    echo '<pre>';
     print_r($xml);
+    print_r($xml->channel->item[0]);
+    echo '</pre>';
     $retArray = get_only_desired_elements($xml);
 
 
