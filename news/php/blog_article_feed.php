@@ -138,7 +138,7 @@ function get_only_desired_elements($xml)
                         $retArray[$numItems]['categories'] =  $cat;
                     }
                     var_dump(retArray[$numItems]['categories']);
-                    $i = implode(", ", retArray[$numItems]['categories']);
+                    $i = implode(", ", $retArray[$numItems]['categories']);
                     var_dump($i);
                 }
                 if ($metadata['pub date']) {
