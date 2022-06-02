@@ -167,26 +167,17 @@ function create_blog_feed()
 function reformat_post_info($raw_post_info_ar){
     global $customLinkText;
     foreach($raw_post_info_ar as $post){
-        $heading = "<h3><a href='$post[link]'>$post[title] </a></h3>".PHP_EOL;
-        $teaser = "";
-        $image = "";
-        $tags = "";
-        $author = "";
-        $rm = "<h3><a href='$post[link]'>$customLinkText</a></h3>".PHP_EOL;
-        $div = "<div>$heading</div>".PHP_EOL;
-        echo $div;
+        get_post_html($post);
     }
 }
 
 
-function create_blog_feed_array()
-{
+// Returns the html of the news article
+function get_post_html( $post){
+    $twig = makeTwigEnviron('/code/news/twig');
+    $html = $twig->render('blog_post_feed.html', array('post' => $post));
 
-    $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
-    $xml = simplexml_load_string($feed);
-    $xmlAsJson = json_encode($xml);
-    $xmlArray = json_decode($xmlAsJson, TRUE);
-    return $xmlArray;
+    return $html;
 }
 
 
