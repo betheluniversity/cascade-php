@@ -11,6 +11,12 @@ $linkTest;
 $includeBlogLink;
 $customLinkText;
 
+function print_s($thing){
+    echo '<pre>';
+    echo print_r($thing);
+    echo '</pre>';
+}
+
 function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
     global $metadata;
 
@@ -126,7 +132,10 @@ function create_blog_feed()
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
-    echo get_as_array($feed);
+
+    $temp = get_as_array($feed);
+    print_s($temp);
+
     $retArray = get_only_desired_elements($xml);
 
 
