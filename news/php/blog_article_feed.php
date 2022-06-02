@@ -128,9 +128,9 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    echo "CURRENT AS OF JUNE 2 10:04</br></br>";
-
+    echo "CURRENT AS OF JUNE 2 10:07</br></br>";
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+
     $xml = simplexml_load_string($feed);
 
 //    $tempc = $xml->channel->children('sy');
@@ -146,8 +146,12 @@ function create_blog_feed()
 //    var_dump($tempa);
 //    var_dump(get_as_array($tempa));
 //    echo "</br> doc namespaces </br>";
+    echo "docns</br>";
     var_dump($xml->getDocNamespaces(TRUE));
+    echo "ns</br>";
     var_dump($xml->getNamespaces(TRUE));
+    echo "channel ns</br>";
+    var_dump($xml->channel->getNamespaces(TRUE));
 
     $retArray = get_only_desired_elements($xml);
 
