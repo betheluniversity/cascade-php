@@ -138,7 +138,7 @@ function get_only_desired_elements($xml)
                         $retArray[$numItems]['categories'] = "{$retArray[$numItems]['categories']} $cat,".PHP_EOL;
 
                     }
-                    echo(retArray[$numItems]['categories']);
+                    echo retArray[$numItems]['categories'];
                 }
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string) $item->pubDate;
