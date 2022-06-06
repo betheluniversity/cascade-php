@@ -2,17 +2,22 @@
 
 // Values are passed in from Cascade
 $numPosts;
+
 $includeTitle;
 $feedTitle;
+
 $categories;
 $metadata;
+
 $linkType;
 $linkTest;
+
 $includeBlogLink;
 $customLinkText;
 
 // Assigned when xml is loaded
 $allNamespaces;
+
 $readMoreLink;
 
 function print_s($thing){
@@ -29,10 +34,9 @@ function set_num_posts($from_cascade){
 
 
 function set_read_more_link(){
-    global $includeBlogLink;
-    global $customLinkText;
-    echo "</br>Include Blog Link:" . $includeBlogLink;
-    echo "</br>Custom Link Text" . $customLinkText;
+    global $linkType, $linkTest;
+    echo "</br>Include Blog Link:" . $linkType;
+    echo "</br>Custom Link Text" . $linkTest;
 }
 
 
@@ -167,7 +171,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces, $readMoreLink;
-    echo "CURRENT AS OF JUNE 2 3:36</br></br>";
+    echo "CURRENT AS OF JUNE 6 9:05</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
