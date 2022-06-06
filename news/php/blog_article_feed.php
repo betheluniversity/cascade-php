@@ -10,6 +10,7 @@ global $numPosts;
 // Feed title
 global $includeTitle;
 global $feedTitle;
+global $completeTitle;
 // What kinds of post this feed displays
 global $categories;
 // What information to display about a given post
@@ -66,10 +67,10 @@ function set_num_posts($from_cascade){
 
 // Sets the title of the feed
 function set_title($included, $custom){
-    global $feedTitle;
+    global $completeTitle;
     echo "</br> incl " . $included;
     echo "</br> cust " . $custom . "</br>";
-    $feedTitle = "nothing";
+    $completeTitle = "nothing";
 }
 
 
@@ -258,8 +259,8 @@ function get_post_html( $post){
 
 // Returns an html representation of the heading.
 function display_heading(){
-    global $feedHeading;
-    return "<p>" . $feedHeading . "</p>";
+    global $completeTitle;
+    return "<p>" . $completeTitle . "</p>";
 }
 
 // Outputs if a problem occurs.
