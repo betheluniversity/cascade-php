@@ -31,15 +31,9 @@ function create_blog_feed()
 {
     // Load RSS+XML File.
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
-    if(!$feed){
-        could_not_load_xml();
-        return;
-    }
-
-    $xml = simplexml_load_string($feed);
-    if(!$xml){
-        could_not_load_xml();
-        return;
+    $xml = simplexml_load_string("<tag>you're<it></it>");
+    if(!$xml || !$feed){
+        return could_not_load_xml();
     }
 
     // Find all namespaces in the document (these may be needed when feed is created.)
@@ -249,7 +243,7 @@ function get_post_html( $post){
 
 // Outputs if a problem occurs.
 function could_not_load_xml(){
-    echo "There was a problem loading this Blog Feed.";
+    return array("<p>There was a problem loading this Blog Feed.</p>");
 }
 
 ?>
