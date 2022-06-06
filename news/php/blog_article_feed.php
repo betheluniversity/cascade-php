@@ -38,6 +38,14 @@ function set_read_more_link($type, $text){
     global $readMoreLink;
     echo "</br>Include Blog Link:" . $type;
     echo "</br>Custom Link Text:" . $text;
+    if ($type == 1){
+        if(strlen($type) == 0){
+            $text == "Read More";
+        }
+    } else {
+        $text = '';
+    }
+    echo $text;
     $readMoreLink = $text;
 }
 
@@ -173,7 +181,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces, $readMoreLink;
-    echo "CURRENT AS OF JUNE 6 9:25</br></br>";
+    echo "CURRENT AS OF JUNE 6 9:30</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
