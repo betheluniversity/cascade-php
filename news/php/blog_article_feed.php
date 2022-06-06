@@ -36,8 +36,6 @@ function set_num_posts($from_cascade){
 
 function set_read_more_link($type, $text){
     global $readMoreLink;
-    echo "</br>Include Blog Link:" . $type;
-    echo "</br>Custom Link Text:" . $text;
     if ($type == 1){
         if(strlen($text) == 0){
             $text = "Read More";
@@ -45,7 +43,6 @@ function set_read_more_link($type, $text){
     } else {
         $text = '';
     }
-    echo "</br>Final Link Text:" .  $text;
     $readMoreLink = $text;
 }
 
@@ -127,7 +124,7 @@ function get_as_array($item)
 
 function get_only_desired_elements($xml)
 {
-    global $metadata, $numPosts, $allNamespaces, $categories;
+    global $readMoreLink, $metadata, $numPosts, $allNamespaces, $categories;
     $retArray = array();
     $itemsAr = $xml->channel->children();
     $numItems = 0;
@@ -148,7 +145,7 @@ function get_only_desired_elements($xml)
                                             'image' => 'hidden');
                 $retArray[$numItems]['title'] = (string) $item->title;
                 $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
-
+                $retArray[$numItems]['read more'] = $readMoreLink;
 
 
                 if ($metadata['creator']) {
@@ -181,7 +178,7 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces;
-    echo "CURRENT AS OF JUNE 6 9:44</br></br>";
+    echo "CURRENT AS OF JUNE 6 9:51</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
