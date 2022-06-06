@@ -271,7 +271,6 @@ function get_post_html( $post){
 // Returns an html representation of the heading, to be called by the Velocity code.
 function display_heading(){
     global $completeTitle;
-    echo $completeTitle;
     return "<h2>" . $completeTitle . "</h2>";
 }
 
