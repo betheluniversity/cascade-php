@@ -31,7 +31,7 @@ function create_blog_feed()
 {
     // Load RSS+XML File.
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
-    $xml = simplexml_load_string("<tag>you're<it></it>");
+    $xml = simplexml_load_string($feed);
     if(!$xml || !$feed){
         return could_not_load_xml();
     }
