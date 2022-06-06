@@ -81,7 +81,7 @@ function set_title($included, $custom){
     } else {
         $completeTitle = "";
     }
-    echo $completeTitle;
+   // echo $completeTitle;
 }
 
 
