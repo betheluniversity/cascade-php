@@ -1,7 +1,17 @@
 <div>
     <div>
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
-        <p>Author: {{ post['creator'] }} Date: {{ post['pub date'] }} Categories: {{ post['categories'] }}</p>
+        {% if post['creator'] != "hidden" %}
+            <p>Author: {{ post['creator'] }}</p>
+        {% endif %}
+
+        {% if post['pub date'] != "hidden" %}
+            <p>Date: {{ post['pub date']}}</p>
+        {% endif %}
+
+        {% if post['categories'] != "hidden" %}
+            <p>Categories: {{ post['categories'] }}</p>
+        {% endif %}
     </div>
     {% if post['image'] != "hidden" %}
         <div>
@@ -13,12 +23,8 @@
     {% endif %}
 
     {% if post['image'] != "hidden" %}
-        <div>
-            <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
-        </div>
+        <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     {% else %}
-        <div>
-            <p><a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
-        </div>
+        <p><a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     {% endif %}
 </div>
