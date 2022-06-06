@@ -36,7 +36,7 @@ function create_blog_feed()
         return;
     }
 
-    $xml = simplexml_load_string($feed . ":)");
+    $xml = simplexml_load_string($feed);
     if(!$xml){
         could_not_load_xml();
         return;
