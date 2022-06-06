@@ -68,9 +68,17 @@ function set_num_posts($from_cascade){
 // Sets the title of the feed
 function set_title($included, $custom){
     global $completeTitle;
-    echo "</br> incl " . $included;
-    echo "</br> cust " . $custom . "</br>";
-    $completeTitle = "nothing";
+
+    // If this feed will display the title
+    if($included == 1){
+        if(strlen($custom) == 0){
+            $completeTitle = "Latest Blog Posts";
+        } // Only use the default if no custom text was specified
+
+    // Not displaying a title
+    } else {
+        $completeTitle = "";
+    }
 }
 
 
@@ -82,7 +90,7 @@ function set_read_more_link($type, $text){
     if ($type == 1){
         if(strlen($text) == 0){
             $text = "Read More";
-        }
+        } // Only use the default if no custom text was specified
 
     // Not using "read more" links
     } else {
