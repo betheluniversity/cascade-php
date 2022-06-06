@@ -69,6 +69,8 @@ function set_num_posts($from_cascade){
 function set_title($included, $custom){
     global $completeTitle;
 
+    echo $included;
+    echo $custom;
     // If this feed will display the title
     if($included == 1){
         if(strlen($custom) == 0){
