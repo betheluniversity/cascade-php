@@ -69,19 +69,19 @@ function set_num_posts($from_cascade){
 function set_title($included, $custom){
     global $completeTitle;
 
-    echo $included;
-   echo $custom;
     // If this feed will display the title
     if($included == 1){
+        // Only use the default if no custom text was specified
         if(strlen($custom) == 0){
             $completeTitle = "Latest Blog Posts";
-        } // Only use the default if no custom text was specified
+        } else {
+            $completeTitle = $custom;
+        }
 
     // Not displaying a title
     } else {
         $completeTitle = "";
     }
-    echo $completeTitle;
 }
 
 
