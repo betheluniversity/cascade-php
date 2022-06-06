@@ -33,10 +33,11 @@ function set_num_posts($from_cascade){
 }
 
 
-function set_read_more_link(){
-    global $linkType, $linkTest;
-    echo "</br>Include Blog Link:" . $linkType;
-    echo "</br>Custom Link Text" . $linkTest;
+function set_read_more_link($type, $text){
+    global $readMoreLink;
+    echo "</br>Include Blog Link:" . $type;
+    echo "</br>Custom Link Text" . $text;
+    $readMoreLink = $text;
 }
 
 
@@ -171,15 +172,12 @@ function get_only_desired_elements($xml)
 function create_blog_feed()
 {
     global $allNamespaces, $readMoreLink;
-    echo "CURRENT AS OF JUNE 6 9:05</br></br>";
+    echo "CURRENT AS OF JUNE 6 9:09</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
     $allNamespaces = $xml->getDocNamespaces(TRUE);
-
-    set_read_more_link();
-    echo $readMoreLink;
 
     $postInfo = get_only_desired_elements($xml);
     $postsInHTML = reformat_post_info($postInfo);
