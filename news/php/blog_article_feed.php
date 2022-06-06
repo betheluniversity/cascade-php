@@ -171,11 +171,6 @@ function get_only_desired_elements($xml)
                 // Convert information about the description into an easier format
                 $description = get_description_as_array($item);
 
-                // Set all post information which will definitely be included
-                $retArray[$numItems]['title'] = (string) $item->title;
-                $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
-                $retArray[$numItems]['read more'] = $readMoreLink;
-
                 // Set all post information which may not be included.
                 $retArray[$numItems] = array('creator' => 'hidden',
                     'categories' => 'hidden',
@@ -183,6 +178,12 @@ function get_only_desired_elements($xml)
                     'description' => 'hidden',
                     'image' => 'hidden');
 
+                // Set all post information which will definitely be included.
+                $retArray[$numItems]['title'] = (string) $item->title;
+                $retArray[$numItems]['link'] = (string) $description['a']['@attributes']['href'];
+                $retArray[$numItems]['read more'] = $readMoreLink;
+
+                // Return to the categories which may or may not be included and set their values accordingly.
                 if ($metadata['creator']) {
                     $dcNamespace = $item->children($allNamespaces['dc']);
                     $retArray[$numItems]['creator'] = (string)$dcNamespace->creator[0];
