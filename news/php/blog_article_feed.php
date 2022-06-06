@@ -17,7 +17,7 @@ global $metadata;
 // Link to the full post
 global $hasMoreLink;
 global $linkType;
-global $linkTest;
+global $linkText;
 global $readMoreLink;
 // Link to the blog
 global $includeBlogLink;
