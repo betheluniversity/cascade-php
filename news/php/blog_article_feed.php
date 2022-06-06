@@ -33,11 +33,13 @@ function create_blog_feed()
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/bog-articles-xml.xml");
     if(!$feed){
         could_not_load_xml();
+        return;
     }
 
     $xml = simplexml_load_string($feed);
     if(!$xml){
         could_not_load_xml();
+        return;
     }
 
     // Find all namespaces in the document (these may be needed when feed is created.)
