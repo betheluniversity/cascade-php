@@ -150,9 +150,6 @@ function get_description_as_array($item)
 
     // String --> XML
     $stringToObj = simplexml_load_string($descToString);
-    if(!$stringToObj){
-        could_not_load_xml();
-    }
 
     // XML --> Array
     $objToJson = json_encode($stringToObj);
@@ -252,7 +249,7 @@ function get_post_html( $post){
 
 // Outputs if a problem occurs.
 function could_not_load_xml(){
-    echo "could not return blog feed";
+    echo "There was a problem loading this Blog Feed.";
 }
 
 ?>
