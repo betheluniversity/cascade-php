@@ -1,19 +1,25 @@
 <?php
 
-// Values are passed in from Cascade
-$numPosts;
+////////////////////////////////////////////////////////////////////////////////////////
+/// GLOBAL VARIABLES
+////////////////////////////////////////////////////////////////////////////////////////
 
-$includeTitle;
-$feedTitle;
-
-$categories;
-$metadata;
-
-$hasMoreLink;
-$linkType;
-$linkTest;
-$readMoreLink;
-
+//// FROM CASCADE ////
+// Number of posts to display (between 1 and 10)
+global $numPosts;
+// Feed title
+global $includeTitle;
+global $feedTitle;
+// What kinds of post this feed displays
+global $categories;
+// What information to display about a given post
+global $metadata;
+// Link to the full post
+global $hasMoreLink;
+global $linkType;
+global $linkTest;
+global $readMoreLink;
+// Link to the blog
 $includeBlogLink;
 $customLinkText;
 
