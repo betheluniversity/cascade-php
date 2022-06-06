@@ -22,9 +22,9 @@
         </div>
     {% endif %}
 
-    {% if post['image'] != "hidden" %}
-        <p>a {{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
+    {% if post['description'] != "hidden" %}
+        <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     {% else %}
-        <p>b <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
+        <p><a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     {% endif %}
 </div>
