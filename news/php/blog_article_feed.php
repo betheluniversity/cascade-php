@@ -30,7 +30,7 @@ $twigEnv;
 function create_blog_feed()
 {
     // Load RSS+XML File.
-    $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
+    $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/bog-articles-xml.xml");
     if(!$feed){
         could_not_load_xml();
     }
@@ -143,11 +143,18 @@ function post_matches_cats($post){
 // Converts the description's SimpleXMLObject into a multidimensional array (for easier use/debugging.)
 function get_description_as_array($item)
 {
+    // Item --> String (root must be added to make XML valid)
     $descToString = "<root>$item->description</root>".PHP_EOL;
+
+    // String --> XML
     $stringToObj = simplexml_load_string($descToString);
+    if(!$stringToObj){
+        could_not_load_xml();
+    }
+
+    // XML --> Array
     $objToJson = json_encode($stringToObj);
     $jsonToArr = json_decode($objToJson, TRUE);
-
     return $jsonToArr;
 }
 
