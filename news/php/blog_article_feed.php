@@ -45,7 +45,7 @@ function set_read_more_link($type, $text){
     } else {
         $text = '';
     }
-    echo $text;
+    echo "</br>Final Link Text:" .  $text;
     $readMoreLink = $text;
 }
 
@@ -180,8 +180,8 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    global $allNamespaces, $readMoreLink;
-    echo "CURRENT AS OF JUNE 6 9:30</br></br>";
+    global $allNamespaces;
+    echo "CURRENT AS OF JUNE 6 9:32</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
