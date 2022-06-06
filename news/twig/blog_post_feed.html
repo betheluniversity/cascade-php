@@ -3,12 +3,14 @@
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
         <p>Author: {{ post['creator'] }} Date: {{ post['pub date'] }} Categories: {{ post['categories'] }}</p>
     </div>
+    {% if post['image'] != "hidden" %}
         <div>
             <img    class="d-flex  mr-3  lazyload  mb-3"
                     data-src="{{ post['image'] }}?w=240"
                     alt="{{ post['title'] }}"
             />
         </div>
+    {% endif %}
     <div>
         <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     </div>
