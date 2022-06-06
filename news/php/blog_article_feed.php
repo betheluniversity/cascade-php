@@ -13,6 +13,7 @@ $customLinkText;
 
 // Assigned when xml is loaded
 $allNamespaces;
+$readMoreLink;
 
 function print_s($thing){
     echo '<pre>';
@@ -24,6 +25,14 @@ function print_s($thing){
 function set_num_posts($from_cascade){
     global $numPosts;
     $numPosts = (int) $from_cascade;
+}
+
+
+function set_read_more_link(){
+    global $includeBlogLink;
+    global $customLinkText;
+    echo "</br>Include Blog Link:" . $includeBlogLink;
+    echo "</br>Custom Link Text" . $customLinkText;
 }
 
 
@@ -157,13 +166,16 @@ function get_only_desired_elements($xml)
 
 function create_blog_feed()
 {
-    global $allNamespaces;
+    global $allNamespaces, $readMoreLink;
     echo "CURRENT AS OF JUNE 2 3:36</br></br>";
 
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_testing/anna-h/blog/_feeds/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
 
     $allNamespaces = $xml->getDocNamespaces(TRUE);
+
+    set_read_more_link();
+    echo $readMoreLink;
 
     $postInfo = get_only_desired_elements($xml);
     $postsInHTML = reformat_post_info($postInfo);
