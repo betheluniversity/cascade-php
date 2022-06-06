@@ -4,7 +4,7 @@
 /// GLOBAL VARIABLES
 ////////////////////////////////////////////////////////////////////////////////////////
 
-//// FROM CASCADE ////
+//// ASSIGNED WITH VELOCITY CODE ////
 // Number of posts to display (between 1 and 10)
 global $numPosts;
 // Feed title
@@ -20,12 +20,12 @@ global $linkType;
 global $linkTest;
 global $readMoreLink;
 // Link to the blog
-$includeBlogLink;
-$customLinkText;
+global $includeBlogLink;
+global $customLinkText;
 
-// Assigned when xml is loaded
-$allNamespaces;
-$twigEnv;
+//// OTHER ////
+global $allNamespaces;
+global $twigEnv;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
