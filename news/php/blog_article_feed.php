@@ -22,14 +22,13 @@ global $readMoreLink;
 // Link to the blog
 global $includeBlogLink;
 global $customLinkText;
-
-//// OTHER ////
+// Assigned when xml is loaded in to avoid recalculating in loops
 global $allNamespaces;
 global $twigEnv;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
-/// SETTERS FOR VELOCITY CODE
+/// HELPERS FOR VELOCITY CODE
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Called by Velocity. Returns the blog feed in the form of an array of html objects.
@@ -62,6 +61,15 @@ function create_blog_feed()
 function set_num_posts($from_cascade){
     global $numPosts;
     $numPosts = (int) $from_cascade;
+}
+
+
+// Sets the title of the feed
+function set_title($included, $custom){
+    global $feedTitle;
+    echo "</br> incl " . $included;
+    echo "</br> cust " . $custom . "</br>";
+    $feedTitle = "nothing";
 }
 
 
@@ -245,6 +253,13 @@ function get_post_html( $post){
     global $twigEnv;
     $html = $twigEnv->render('blog_post_feed.html', array('post' => $post));
     return $html;
+}
+
+
+// Returns an html representation of the heading.
+function display_heading(){
+    global $feedHeading;
+    return "<p>" . $feedHeading . "</p>";
 }
 
 // Outputs if a problem occurs.
