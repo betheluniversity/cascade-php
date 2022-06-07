@@ -346,9 +346,9 @@ function get_pretty_day_of_week($dowStr){
 function get_pretty_time($hour, $min, $sec){
     $modHour = $hour % 12;
     if($modHour == $hour){
-        $retHour = '{$modHour}:{$min} a.m';
+        $retHour = "{$modHour}:{$min} a.m.";
     } else {
-        $retHour = '{$modHour}:{$min} p.m';
+        $retHour = "{$modHour}:{$min} p.m.";
     }
     return $retHour;
 }
