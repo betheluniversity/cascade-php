@@ -288,17 +288,26 @@ function could_not_load_xml(){
 function format_pub_date($dateStr){
     $dateData = array();
     $dateData['dow'] = substr($dateStr, 0, 3);
-    $dateData['day'] = substr($dateStr, 5, 2);
+    $dateData['day'] = (int)substr($dateStr, 5, 2);
     $dateData['mon'] = substr($dateStr, 8, 3);
-    $dateData['yer'] = substr($dateStr, 12, 4);
+    $dateData['yer'] = (int)substr($dateStr, 12, 4);
     $dateData['our'] = substr($dateStr, 17, 2);
-    $dateData['min'] = substr($dateStr, 20, 2);
-    $dateData['sec'] = substr($dateStr, 23, 2);
-    $dc = date_create_from_format(substr($dateStr, 0, 15));
-    $dateData['abc'] = date_format($dc, 'd M, y');
+    $dateData['min'] = (int)substr($dateStr, 20, 2);
+    $dateData['sec'] = (int)substr($dateStr, 23, 2);
 
     echo '<pre>';
     echo print_r($dateData);
     echo '</pre>';
+}
+
+function get_pretty_month($monStr){
+    $retMon = "";
+    switch($monStr){
+        case 'Jan': $retMon = 'January'; break;
+        case 'Feb': $retMon = 'February'; break;
+        case 'Mar': $retMon = 'March'; break;
+        case 'Apr': $retMon = 'April'; break;
+    }
+    return $retMon;
 }
 ?>
