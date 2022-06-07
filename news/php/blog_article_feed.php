@@ -35,8 +35,6 @@ global $twigEnv;
 // Called by Velocity. Returns the blog feed in the form of an array of html objects.
 function create_blog_feed()
 {
-    format_pub_date('Mon, 25 Apr 2022 15:49:26 +0000');
-
     // Load RSS+XML File.
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_rss-feed/blog-wp/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -61,14 +59,16 @@ function create_blog_feed()
 
 
 // Sets the number of posts to display.
-function set_num_posts($from_cascade){
+function set_num_posts($from_cascade)
+{
     global $numPosts;
     $numPosts = (int) $from_cascade;
 }
 
 
 // Sets the title of the feed
-function set_title($included, $custom){
+function set_title($included, $custom)
+{
     global $completeTitle;
 
     // If this feed will display the title
@@ -88,7 +88,8 @@ function set_title($included, $custom){
 
 
 // Creates the text for the link to the full post.
-function set_read_more_link($type, $text){
+function set_read_more_link($type, $text)
+{
     global $readMoreLink;
 
     // If this feed will use "read more" links
@@ -107,7 +108,8 @@ function set_read_more_link($type, $text){
 
 
 // Creates the array of metadata this feed will display for each post.
-function set_metadata_cats($creator, $pubDate, $categories, $description, $image){
+function set_metadata_cats($creator, $pubDate, $categories, $description, $image)
+{
     global $metadata;
 
     $metadata['creator'] = $creator;
@@ -119,7 +121,8 @@ function set_metadata_cats($creator, $pubDate, $categories, $description, $image
 
 
 // Helper for set_categories_cats(). Associates the actual category names with their abbreviated ones.
-function setup_individual_category($var_value, $correct_string){
+function setup_individual_category($var_value, $correct_string)
+{
     global $categories;
     if($var_value == 1){
         if($correct_string == "all"){
@@ -154,7 +157,8 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Checks if a given post is within the categories this feed is looking for
-function post_matches_cats($post){
+function post_matches_cats($post)
+{
     global $categories;
     foreach($post->category as $cat){
         if(in_array($cat, $categories)){
@@ -227,7 +231,7 @@ function get_only_desired_elements($xml)
                 }
 
                 if ($metadata['pub date']) {
-                    $retArray[$numItems]['pub date'] = (string) $item->pubDate;
+                    $retArray[$numItems]['pub date'] = format_pub_date((string) $item->pubDate);
                 }
 
                 if ($metadata['description']) {
@@ -254,7 +258,8 @@ function get_only_desired_elements($xml)
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // Passes post info through Twig and returns it as an array of html.
-function reformat_post_info($raw_post_info_ar){
+function reformat_post_info($raw_post_info_ar)
+{
     $formatted = array();
     foreach($raw_post_info_ar as $post){
         $formatted[] = get_post_html($post);
@@ -264,7 +269,8 @@ function reformat_post_info($raw_post_info_ar){
 
 
 // Helper for reformat_post_info(). Returns the html of the news article from Twig.
-function get_post_html( $post){
+function get_post_html( $post)
+{
     global $twigEnv;
     $html = $twigEnv->render('blog_post_feed.html', array('post' => $post));
     return $html;
@@ -272,20 +278,27 @@ function get_post_html( $post){
 
 
 // Returns an html representation of the heading, to be called by the Velocity code.
-function display_heading(){
+function display_heading()
+{
     global $completeTitle;
     return "<h2>" . $completeTitle . "</h2>";
 }
 
 
 // Outputs if a problem occurs.
-function could_not_load_xml(){
+function could_not_load_xml()
+{
     return array("<p>There was a problem loading this Blog Feed.</p>");
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////
+/// Date and Time
+////////////////////////////////////////////////////////////////////////////////////////
+
 // Reformats a given publication date to look nicer when displayed
-function format_pub_date($dateStr){
+function format_pub_date($dateStr)
+{
     $d = array();
 
     $d['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
@@ -306,7 +319,8 @@ function format_pub_date($dateStr){
 
 
 // Helper for date formatting
-function get_pretty_month($monStr){
+function get_pretty_month($monStr)
+{
     $retMon = "";
     switch($monStr){
         case 'Jan': $retMon = 'January'; break;
@@ -327,7 +341,8 @@ function get_pretty_month($monStr){
 
 
 // Helper for date formatting
-function get_pretty_day_of_week($dowStr){
+function get_pretty_day_of_week($dowStr)
+{
     $retDoW = "";
     switch($dowStr){
         case 'Mon': $retDoW = 'Monday'; break;
@@ -343,7 +358,8 @@ function get_pretty_day_of_week($dowStr){
 
 
 // Helper for time formatting
-function get_pretty_time($hour, $min, $sec){
+function get_pretty_time($hour, $min, $sec)
+{
     $modHour = $hour % 12;
     if($modHour == $hour){
         $retHour = "{$modHour}:{$min} a.m.";
