@@ -35,6 +35,8 @@ global $twigEnv;
 // Called by Velocity. Returns the blog feed in the form of an array of html objects.
 function create_blog_feed()
 {
+    format_pub_date('Mon, 25 Apr 2022 15:49:26 +0000');
+
     // Load RSS+XML File.
     $feed = file_get_contents($_SERVER["DOCUMENT_ROOT"] . "/_rss-feed/blog-wp/blog-articles-xml.xml");
     $xml = simplexml_load_string($feed);
@@ -226,11 +228,6 @@ function get_only_desired_elements($xml)
 
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string) $item->pubDate;
-
-                    echo '</br></br>Not cast</br>';
-                    var_dump($item->pubDate);
-                    echo '</br>Cast</br>';
-                    var_dump((string)$item->pubDate);
                 }
 
                 if ($metadata['description']) {
@@ -280,9 +277,25 @@ function display_heading(){
     return "<h2>" . $completeTitle . "</h2>";
 }
 
+
 // Outputs if a problem occurs.
 function could_not_load_xml(){
     return array("<p>There was a problem loading this Blog Feed.</p>");
 }
 
+
+// Reformats a given publication date to look nicer when displayed
+function format_pub_date($dateStr){
+    $dateData = array();
+    $dateData['DoW'] = 'Tue';
+    $dateData['Day'] = '31';
+    $dateData['Mon'] = 'Jun';
+    $dateData['our'] = '12';
+    $dateData['min'] = '03';
+    $dateData['sec'] = '32';
+
+    echo '<pre>';
+    echo print_r($dateData);
+    echo '</pre>';
+}
 ?>
