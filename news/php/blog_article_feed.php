@@ -287,11 +287,11 @@ function could_not_load_xml(){
 // Reformats a given publication date to look nicer when displayed
 function format_pub_date($dateStr){
     $dateData = array();
-    $dateData['dow'] = substr($dateStr, 0, 3);
+    $dateData['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
     $dateData['day'] = (int)substr($dateStr, 5, 2);
     $dateData['mon'] = get_pretty_month(substr($dateStr, 8, 3));
     $dateData['yer'] = (int)substr($dateStr, 12, 4);
-    $dateData['our'] = substr($dateStr, 17, 2);
+    $dateData['our'] = get_pretty_hour(substr($dateStr, 17, 2));
     $dateData['min'] = (int)substr($dateStr, 20, 2);
     $dateData['sec'] = (int)substr($dateStr, 23, 2);
 
@@ -300,6 +300,8 @@ function format_pub_date($dateStr){
     echo '</pre>';
 }
 
+
+// Helper for date formatting
 function get_pretty_month($monStr){
     $retMon = "";
     switch($monStr){
@@ -307,7 +309,43 @@ function get_pretty_month($monStr){
         case 'Feb': $retMon = 'February'; break;
         case 'Mar': $retMon = 'March'; break;
         case 'Apr': $retMon = 'April'; break;
+        case 'May': $retMon = 'May'; break;
+        case 'Jun': $retMon = 'June'; break;
+        case 'Jul': $retMon = 'July'; break;
+        case 'Aug': $retMon = 'August'; break;
+        case 'Sept': $retMon = 'September'; break;
+        case 'Oct': $retMon = 'October'; break;
+        case 'Nov': $retMon = 'November'; break;
+        case 'Dec': $retMon = 'December'; break;
     }
     return $retMon;
+}
+
+
+// Helper for date formatting
+function get_pretty_day_of_week($dowStr){
+    $retDoW = "";
+    switch($dowStr){
+        case 'Mon': $retDoW = 'Monday'; break;
+        case 'Tue': $retDoW = 'Tuesday'; break;
+        case 'Wed': $retDoW = 'Wednesday'; break;
+        case 'Thu': $retDoW = 'Thursday'; break;
+        case 'Fri': $retDoW = 'Friday'; break;
+        case 'Sat': $retDoW = 'Saturday'; break;
+        case 'Sun': $retDoW = 'Sunday'; break;
+    }
+    return $retDoW;
+}
+
+
+// Helper for time formatting
+function get_pretty_hour($hour){
+    $modHour = $hour % 12;
+    if($modHour == $hour){
+        $retHour = $modHour . ' a.m.';
+    } else {
+        $retHour = $modHour . ' p.m.';
+    }
+    return $retHour;
 }
 ?>
