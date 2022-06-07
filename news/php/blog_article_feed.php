@@ -296,9 +296,11 @@ function format_pub_date($dateStr){
     $d['our'] = (int)substr($dateStr, 17, 2);
     $d['min'] = substr($dateStr, 20, 2);
     $d['sec'] = substr($dateStr, 23, 2);
-    
+
     $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
 
+
+    echo "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
     return "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
 }
 
