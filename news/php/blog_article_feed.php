@@ -13,6 +13,8 @@ global $feedTitle;
 global $completeTitle;
 // What kinds of post this feed displays
 global $categories;
+// Whether or not to meet post the post num
+global $meetNumPosts;
 // What information to display about a given post
 global $metadata;
 // Link to the full post
@@ -48,6 +50,9 @@ function create_blog_feed()
 
     // Gather the essential post information from the RSS+XML document provided
     $postInfo = get_only_desired_elements($xml);
+
+    global $meetNumPosts;
+    echo $meetNumPosts;
 
     // Use the post info to create a formatted html element for each post.
     global $twigEnv;
@@ -134,6 +139,18 @@ function setup_individual_category($var_value, $correct_string)
 }
 
 
+// Sets the boolean value representing the policy about matching the desired number of posts in the feed
+function set_meet_post_num($meetPosts)
+{
+    global $meetNumPosts;
+    if ($meetPosts == 1){
+        $meetNumPosts = TRUE;
+        return;
+    }
+    $meetNumPosts = FALSE;
+}
+
+
 // Creates the array of post categories that this feed will include.
 function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all){
     setup_individual_category($academics, "Academics");
@@ -186,7 +203,7 @@ function get_description_as_array($item)
 
 
 // Aggregates posts according to metadata specs, for a given SimpleXMLObject.
-function get_only_desired_elements($xml)
+function get_only_desired_elements($xml, $noCats = FALSE)
 {
     global $readMoreLink, $metadata, $numPosts, $allNamespaces, $categories;
     $retArray = array();
@@ -199,7 +216,7 @@ function get_only_desired_elements($xml)
         }
 
         if($item->getName() == 'item'){ // Things not called "item" in the XML represent things other than posts.
-            if($categories['all'] || post_matches_cats($item)){ // Checks if the feed accepts this category of post.
+            if($noCats || post_matches_cats($item)){ // Checks if the feed accepts this category of post.
 
                 // Convert information about the description into an easier format
                 $description = get_description_as_array($item);
