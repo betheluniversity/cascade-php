@@ -287,12 +287,13 @@ function could_not_load_xml(){
 // Reformats a given publication date to look nicer when displayed
 function format_pub_date($dateStr){
     $dateData = array();
-    $dateData['DoW'] = 'Tue';
-    $dateData['Day'] = '31';
-    $dateData['Mon'] = 'Jun';
-    $dateData['our'] = '12';
-    $dateData['min'] = '03';
-    $dateData['sec'] = '32';
+    $dateData['dow'] = substr($dateStr, 0, 3);
+    $dateData['day'] = substr($dateStr, 5, 2);
+    $dateData['mon'] = substr($dateStr, 8, 3);
+    $dateData['yer'] = substr($dateStr, 12, 4);
+    $dateData['our'] = substr($dateStr, 17, 2);
+    $dateData['min'] = substr($dateStr, 20, 2);
+    $dateData['sec'] = substr($dateStr, 23, 2);
 
     echo '<pre>';
     echo print_r($dateData);
