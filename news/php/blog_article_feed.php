@@ -295,6 +295,8 @@ function format_pub_date($dateStr){
     $dateData['min'] = substr($dateStr, 20, 2);
     $dateData['sec'] = substr($dateStr, 23, 2);
 
+    $dateData['mon'] = jdmonthname($dateData['mon'], CAL_MONTH_GREGORIAN_LONG);
+
     echo '<pre>';
     echo print_r($dateData);
     echo '</pre>';
