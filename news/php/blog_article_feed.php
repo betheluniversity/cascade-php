@@ -289,7 +289,7 @@ function format_pub_date($dateStr){
     $dateData = array();
     $dateData['dow'] = substr($dateStr, 0, 3);
     $dateData['day'] = (int)substr($dateStr, 5, 2);
-    $dateData['mon'] = substr($dateStr, 8, 3);
+    $dateData['mon'] = get_pretty_month(substr($dateStr, 8, 3));
     $dateData['yer'] = (int)substr($dateStr, 12, 4);
     $dateData['our'] = substr($dateStr, 17, 2);
     $dateData['min'] = (int)substr($dateStr, 20, 2);
