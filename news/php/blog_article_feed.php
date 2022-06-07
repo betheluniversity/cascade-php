@@ -51,9 +51,11 @@ function create_blog_feed()
     // Gather the essential post information from the RSS+XML document provided
     $postInfo = get_only_desired_elements($xml);
 
-    global $meetNumPosts;
-    echo count($postInfo);
-    echo $meetNumPosts;
+    global $meetNumPosts, $numPosts;
+    if($meetNumPosts && count($postInfo) < $numPosts){
+        unset($postInfo);
+        $postInfo = get_only_desired_elements($xml, TRUE);
+    }
 
     // Use the post info to create a formatted html element for each post.
     global $twigEnv;
