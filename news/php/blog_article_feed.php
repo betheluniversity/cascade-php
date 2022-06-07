@@ -294,8 +294,8 @@ function format_pub_date($dateStr){
     $dateData['our'] = substr($dateStr, 17, 2);
     $dateData['min'] = substr($dateStr, 20, 2);
     $dateData['sec'] = substr($dateStr, 23, 2);
-
-    $dateData['mon'] = jdmonthname($dateData['mon'], CAL_MONTH_GREGORIAN_LONG);
+    $dc = date_create_from_format(substr($dateStr, 0, 15));
+    $dateData['abc'] = date_format($dc, 'd M, y');
 
     echo '<pre>';
     echo print_r($dateData);
