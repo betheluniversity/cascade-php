@@ -286,18 +286,20 @@ function could_not_load_xml(){
 
 // Reformats a given publication date to look nicer when displayed
 function format_pub_date($dateStr){
-    $dateData = array();
-    $dateData['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
-    $dateData['day'] = (int)substr($dateStr, 5, 2);
-    $dateData['mon'] = get_pretty_month(substr($dateStr, 8, 3));
-    $dateData['yer'] = (int)substr($dateStr, 12, 4);
-    $dateData['our'] = get_pretty_hour(substr($dateStr, 17, 2));
-    $dateData['min'] = (int)substr($dateStr, 20, 2);
-    $dateData['sec'] = (int)substr($dateStr, 23, 2);
+    $d = array();
 
-    echo '<pre>';
-    echo print_r($dateData);
-    echo '</pre>';
+    $d['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
+    $d['day'] = (int)substr($dateStr, 5, 2);
+    $d['mon'] = get_pretty_month(substr($dateStr, 8, 3));
+    $d['yer'] = (int)substr($dateStr, 12, 4);
+
+    $d['our'] = (int)substr($dateStr, 17, 2);
+    $d['min'] = substr($dateStr, 20, 2);
+    $d['sec'] = substr($dateStr, 23, 2);
+    
+    $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
+
+    return "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
 }
 
 
@@ -339,13 +341,14 @@ function get_pretty_day_of_week($dowStr){
 
 
 // Helper for time formatting
-function get_pretty_hour($hour){
+function get_pretty_time($hour, $min, $sec){
     $modHour = $hour % 12;
     if($modHour == $hour){
-        $retHour = $modHour . ' a.m.';
+        $retHour = '{$modHour}:{$min} a.m';
     } else {
-        $retHour = $modHour . ' p.m.';
+        $retHour = '{$modHour}:{$min} p.m';
     }
     return $retHour;
 }
+
 ?>
