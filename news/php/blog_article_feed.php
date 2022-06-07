@@ -213,7 +213,7 @@ function get_only_desired_elements($xml, $noCats = FALSE)
     $itemsAr = $xml->channel->children(); // This contains both posts and other info about the channel.
     $numItems = 0;
 
-    foreach($itemsAr as $item){ // LOOP THROUGH ALL IT
+    foreach($itemsAr as $item){ // LOOP THROUGH ALL ITEMS
         if($numItems == $numPosts) { // Stop looking for posts if the desired quantity of posts has been met.
             break;
         }
