@@ -312,8 +312,6 @@ function format_pub_date($dateStr)
 
     $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
 
-
-    echo "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
     return "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
 }
 
@@ -362,8 +360,14 @@ function get_pretty_time($hour, $min, $sec)
 {
     $modHour = $hour % 12;
     if($modHour == $hour){
+        if($modHour == 0){
+            $modHour = 12;
+        }
         $retHour = "{$modHour}:{$min} a.m.";
     } else {
+        if($modHour == 0){
+            $modHour = 12;
+        }
         $retHour = "{$modHour}:{$min} p.m.";
     }
     return $retHour;
