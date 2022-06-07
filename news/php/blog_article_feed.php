@@ -52,6 +52,7 @@ function create_blog_feed()
     $postInfo = get_only_desired_elements($xml);
 
     global $meetNumPosts;
+    echo count($postInfo);
     echo $meetNumPosts;
 
     // Use the post info to create a formatted html element for each post.
