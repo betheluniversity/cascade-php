@@ -130,7 +130,7 @@ function setup_individual_category($var_value, $correct_string){
 
 
 // Creates the array of post categories that this feed will include.
-function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $wellbeing, $all){
+function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all){
     setup_individual_category($academics, "Academics");
     setup_individual_category($admissions, "Admissions Process");
     setup_individual_category($col_exploration, "College Exploration");
@@ -142,6 +142,7 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     setup_individual_category($spiritual, "Spiritual Growth");
     setup_individual_category($study, "Study Skills");
     setup_individual_category($wellbeing, "Wellbeing");
+    setup_individual_category($undergrad, "Undergrad");
     setup_individual_category($all, "All");
 }
 
@@ -225,6 +226,11 @@ function get_only_desired_elements($xml)
 
                 if ($metadata['pub date']) {
                     $retArray[$numItems]['pub date'] = (string) $item->pubDate;
+
+                    echo '</br></br>Not cast</br>';
+                    var_dump($item->pubDate);
+                    echo '</br>Cast</br>';
+                    var_dump((string)$item->pubDate);
                 }
 
                 if ($metadata['description']) {
