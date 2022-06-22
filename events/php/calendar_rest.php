@@ -224,19 +224,30 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 }
 
 
-function add_page_to_day(&$days, $page, &$dayPaths){
+function add_page_to_day(&$days, $page, &$dayPaths)
+{
     if (isset($days)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $days[] = $page;
+            $pageWithTime = $page;
+            $pageWithTime['time_string'] = make_time_str($page);
+            $days = array($pageWithTime);
             $dayPaths[] = $page["path"];
         } else {
-            $days[$findPath]["specific_end"] .= "duplicate";
+            $days[$findPath]["specific_end"] .= make_time_str($page);
         }
     } else {
-        $days = array($page);
+        $pageWithTime = $page;
+        $pageWithTime['time_string'] = make_time_str($page);
+        $days = array($pageWithTime);
         $dayPaths = array($page['path']);
     }
+}
+
+
+function make_time_str($page)
+{
+    return "time string";
 }
 
 
