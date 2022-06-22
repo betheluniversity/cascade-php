@@ -191,32 +191,8 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             }
         } else {
             $page_data['specific_time_zone'] = "";
-        }        $start_date = (int)($date['start-date']) / 1000;
-        $end_date = (int)($date['end-date']) / 1000;
-        $specific_start = date("Y-m-d", $start_date  );
-        $specific_end = date("Y-m-d", $end_date );
-        $page_data['specific_start'] = $date['start-date'];
-        $page_data['specific_end'] = $date['end-date'];
-        $page_data['specific_all_day'] = $date['all-day'];
-        $page_data['specific_need_time_zone'] = $date['outside-of-minnesota'];
-        if($page_data['specific_need_time_zone'] == true) {
-            $time_zone = $date['time-zone'];
-            if ($time_zone == "Hawaii-Aleutian Time") {
-                $page_data['specific_time_zone'] = "HT";
-            } elseif ($time_zone == "Alaska Time") {
-                $page_data['specific_time_zone'] = "AT";
-            } elseif ($time_zone == "Pacific Time") {
-                $page_data['specific_time_zone'] = "PT";
-            } elseif ($time_zone == "Mountain Time") {
-                $page_data['specific_time_zone'] = "MT";
-            } elseif ($time_zone == "Eastern Time") {
-                $page_data['specific_time_zone'] = "ET";
-            } else {
-                $page_data['specific_time_zone'] = "CT";
-            }
-        } else {
-            $page_data['specific_time_zone'] = "";
         }
+
 
 
         $page_data['time_string'] = $date['time-string'];
@@ -289,13 +265,13 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 function add_page_to_day(&$day, &$page, &$dayPaths)
 {
     if (isset($day)) {
-        $findPath = array_search($page["path"], $dayPaths);
-        if(!$findPath) {
-//            $page['time-string'] = make_time_str($page);
+        $findPathKey = array_search($page["path"], $dayPaths);
+        if(!$findPathKey) {
+            $page['time_string'] = $day['time-string'];
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-//            $day[$findPath]['time-string'] = $day[$findPath]['time-string'] . make_time_str($page);
+            $day[$findPathKey]['time_string'] = $day[$findPathKey]['time_string'] . ", " . $day['temp_string'];
         }
     } else {
         $page['time_string'] = $day['time-string'];
