@@ -191,14 +191,72 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             }
         } else {
             $page_data['specific_time_zone'] = "";
+        }        $start_date = (int)($date['start-date']) / 1000;
+        $end_date = (int)($date['end-date']) / 1000;
+        $specific_start = date("Y-m-d", $start_date  );
+        $specific_end = date("Y-m-d", $end_date );
+        $page_data['specific_start'] = $date['start-date'];
+        $page_data['specific_end'] = $date['end-date'];
+        $page_data['specific_all_day'] = $date['all-day'];
+        $page_data['specific_need_time_zone'] = $date['outside-of-minnesota'];
+        if($page_data['specific_need_time_zone'] == true) {
+            $time_zone = $date['time-zone'];
+            if ($time_zone == "Hawaii-Aleutian Time") {
+                $page_data['specific_time_zone'] = "HT";
+            } elseif ($time_zone == "Alaska Time") {
+                $page_data['specific_time_zone'] = "AT";
+            } elseif ($time_zone == "Pacific Time") {
+                $page_data['specific_time_zone'] = "PT";
+            } elseif ($time_zone == "Mountain Time") {
+                $page_data['specific_time_zone'] = "MT";
+            } elseif ($time_zone == "Eastern Time") {
+                $page_data['specific_time_zone'] = "ET";
+            } else {
+                $page_data['specific_time_zone'] = "CT";
+            }
+        } else {
+            $page_data['specific_time_zone'] = "";
         }
+
+
+        $page_data['time_string'] = $date['time-string'];
 
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
             add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
 
-//            $page_data['time_string'] = $date['time-string'];
+        }
+        // range of dates
+        else{
+            $page_data['specific_all_day'] = true;
+            $start = date("Y-n-j", $start_date);
+            // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
+            $end = date("Y-n-j", strtotime('+1 day', $end_date));
+            // Create a date period for each of the dates this event-date spans.
+            // This will put it on the calendar each day.
+            $period = new DatePeriod(
+                new DateTime($start),
+                new DateInterval('P1D'),
+                new DateTime($end)
+            );
+            // Add a listng to the array for each event / event date
+            $foreach_start_time = microtime(true);
+            foreach ($period as $inner_date) {
+                $key = $inner_date->format('Y-m-d');
+                add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
+
+//                $page_data['time_string'] = $date['time-string'];
+            }
+
+        }
+
+
+        if($specific_start == $specific_end){
+            //Don't need a date range.
+            $key = date("Y-m-d", $start_date);
+            add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
+
         }
         // range of dates
         else{
