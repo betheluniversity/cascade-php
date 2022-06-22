@@ -153,6 +153,7 @@ function get_event_xml(){
     $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml"));
     $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
     $dates = array();
+    $datePaths = array();
     foreach($event_pages as $child ){
         $page_data = inspect_page($child, $categories);
         if (!$page_data["hide-from-calendar"]){
@@ -162,7 +163,7 @@ function get_event_xml(){
     return $dates;
 }
 
-function add_event_to_array($dates, $page_data){
+function add_event_to_array($dates, $page_data, $datePaths) {
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
         $start_date = (int)($date['start-date']) / 1000;
@@ -196,7 +197,7 @@ function add_event_to_array($dates, $page_data){
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
-            add_page_to_day($dates[$key], $page_data);
+            add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
         }
         // range of dates
         else{
@@ -215,7 +216,7 @@ function add_event_to_array($dates, $page_data){
             $foreach_start_time = microtime(true);
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
-                add_page_to_day($dates[$key], $page_data);
+                add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
             }
         }
     }
@@ -223,13 +224,14 @@ function add_event_to_array($dates, $page_data){
 }
 
 
-function add_page_to_day(&$day, $page){
+function add_page_to_day(&$day, $page, $dayPaths){
     if (isset($day)) {
-        if($page['title'] == "Co-ed Soccer Mini Day Camp Ages 3-4"){
+        if(!in_array($page["path"], $dayPaths)){
             $day[] = $page;
         }
     } else {
         $day = array($page);
+        $dayPaths = array($page['path']);
     }
 }
 
