@@ -213,10 +213,10 @@ function add_event_to_array($dates, $page_data){
             );
             // Add a listng to the array for each event / event date
             $foreach_start_time = microtime(true);
-            foreach ($period as $inner_date) {
-                $key = $inner_date->format('Y-m-d');
-                add_page_to_day($dates[$key], $page_data);
-            }
+//            foreach ($period as $inner_date) {
+//                $key = $inner_date->format('Y-m-d');
+//                add_page_to_day($dates[$key], $page_data);
+//            }
         }
     }
     return $dates;
