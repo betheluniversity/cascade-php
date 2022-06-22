@@ -229,14 +229,11 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
     if (isset($day)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $page['time-string'] = make_time_str($page);
             $day = array($page);
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPath]['time-string'] = make_time_str($page);
         }
     } else {
-        $page['time-string'] = make_time_str($page);
         $day = array($page);
         $dayPaths = array($page['path']);
     }
