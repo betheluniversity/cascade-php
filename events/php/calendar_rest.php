@@ -265,7 +265,7 @@ function inspect_page($xml, $categories){
         "dates" => array(),
         "md" => array(),
         "hide-from-calendar" => false,
-        "time-string" => ':)'
+        "time-string" => ''
     );
     $ds = $xml->{'system-data-structure'};
     $page_info["externallink"] = $ds->{'link'};
@@ -327,7 +327,7 @@ function inspect_page($xml, $categories){
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
                     "timezone" => (string)$date_v->{'timezone'},
-                    "time-string" => (string)$date_v->{'time-string'}
+                    "time-string" => (string)$date_v->{'start-date'}
                 );
                 $dates[$date_k] = $date_v;
             }
