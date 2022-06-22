@@ -198,6 +198,8 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
             add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
+
+            $page_data['time_string'] = $date['time-string'];
         }
         // range of dates
         else{
@@ -217,7 +219,10 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
                 add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
+
+                $page_data['time_string'] = $date['time-string'];
             }
+
         }
     }
     return $dates;
@@ -233,7 +238,7 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPath]['time-string'] = make_time_str($page);
+            $day[$findPath]['time-string'] = $day[$findPath]['time-string'] . make_time_str($page);
         }
     } else {
         $page['time-string'] = make_time_str($page);
