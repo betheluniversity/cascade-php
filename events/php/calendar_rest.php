@@ -242,7 +242,7 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPathKey]['time_string'] = "${day[$findPathKey]['time_string']}, ${day['temp_string']}";
+            $day[$findPathKey]['time_string'] = "${day[$findPathKey]['time_string']}, ${day['temp_string']}".PHP_EOL;
         }
     } else {
         $page['time_string'] = $day['time-string'];
