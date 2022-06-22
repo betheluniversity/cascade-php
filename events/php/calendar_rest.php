@@ -224,22 +224,20 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 }
 
 
-function add_page_to_day(&$days, $page, &$dayPaths)
+function add_page_to_day(&$day, &$page, &$dayPaths)
 {
-    if (isset($days)) {
+    if (isset($day)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $pageWithTime = $page;
-            $pageWithTime['time_string'] = make_time_str($page);
-            $days = array($pageWithTime);
+            $page['time_string'] = make_time_str($page);
+            $day = array($page);
             $dayPaths[] = $page["path"];
         } else {
-            $days[$findPath]["time_string"] = make_time_str($page);
+            $day[$findPath]['time_string'] = make_time_str($page);
         }
     } else {
-        $pageWithTime = $page;
-        $pageWithTime['time_string'] = make_time_str($page);
-        $days = array($pageWithTime);
+        $page['time_string'] = make_time_str($page);
+        $day = array($page);
         $dayPaths = array($page['path']);
     }
 }
@@ -262,6 +260,7 @@ function inspect_page($xml, $categories){
         "dates" => array(),
         "md" => array(),
         "hide-from-calendar" => false,
+        "time-string" => ''
     );
     $ds = $xml->{'system-data-structure'};
     $page_info["externallink"] = $ds->{'link'};
