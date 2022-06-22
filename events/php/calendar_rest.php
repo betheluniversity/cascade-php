@@ -192,6 +192,9 @@ function add_event_to_array($dates, $page_data){
         } else {
             $page_data['specific_time_zone'] = "";
         }
+
+        var_dump($date);
+
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
