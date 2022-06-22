@@ -224,10 +224,11 @@ function add_event_to_array($dates, $page_data, $datePaths) {
 }
 
 
-function add_page_to_day(&$day, $page, $dayPaths){
+function add_page_to_day(&$day, $page, &$dayPaths){
     if (isset($day)) {
         if(!in_array($page["path"], $dayPaths)){
             $day[] = $page;
+            $dayPaths[] = $page["path";
         }
     } else {
         $day = array($page);
