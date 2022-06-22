@@ -198,8 +198,7 @@ function add_event_to_array($dates, $page_data){
             $key = date("Y-m-d", $start_date);
             // Check if this date has events already
             if (isset($dates[$key])) {
-                echo "here in ss = ss";
-                array_push($dates[$key], $page_data );
+
                 //Otherwise add a new array with this event for this date.
             } else {
                 $dates[$key] = array($page_data);
@@ -224,7 +223,7 @@ function add_event_to_array($dates, $page_data){
                 $key = $inner_date->format('Y-m-d');
                 // Check if this date has events already
                 if (isset($dates[$key])) {
-                    array_push($dates[$key], $page_data);
+                    add_page_to_day($dates[$key], $page_data);
                 } else {
                     $dates[$key] = array($page_data);
                 }
@@ -233,6 +232,14 @@ function add_event_to_array($dates, $page_data){
     }
     return $dates;
 }
+
+
+function add_page_to_day($day, $page){
+    array_push($day, $page );
+    
+}
+
+
 function inspect_page($xml, $categories){
     //echo "inspecting page";
     $page_info = array(
