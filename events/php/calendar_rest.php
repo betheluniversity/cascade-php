@@ -234,9 +234,8 @@ function add_event_to_array($dates, $page_data){
 }
 
 
-function add_page_to_day($day, $page){
-    array_push($day, $page );
-    
+function add_page_to_day(&$day, $page){
+    $day[] = $page;
 }
 
 
