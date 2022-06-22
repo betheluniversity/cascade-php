@@ -170,7 +170,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
         $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
-        $time_string = "time string a " . $specific_start;
+        $page_data['time_string'] = "time string a " . $specific_start;
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
