@@ -199,7 +199,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             $key = date("Y-m-d", $start_date);
             add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
 
-            $page_data['time_string'] = $date['time-string'];
+//            $page_data['time_string'] = $date['time-string'];
         }
         // range of dates
         else{
@@ -220,7 +220,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
                 $key = $inner_date->format('Y-m-d');
                 add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
 
-                $page_data['time_string'] = $date['time-string'];
+//                $page_data['time_string'] = $date['time-string'];
             }
 
         }
@@ -234,14 +234,14 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
     if (isset($day)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $page['time-string'] = make_time_str($page);
+//            $page['time-string'] = make_time_str($page);
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPath]['time-string'] = $day[$findPath]['time-string'] . make_time_str($page);
+//            $day[$findPath]['time-string'] = $day[$findPath]['time-string'] . make_time_str($page);
         }
     } else {
-        $page['time-string'] = make_time_str($page);
+//        $page['time-string'] = make_time_str($page);
         $day = array($page);
         $dayPaths = array($page['path']);
     }
@@ -326,7 +326,8 @@ function inspect_page($xml, $categories){
                     "end-date" => (string)$date_v->{'end-date'},
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
-                    "timezone" => (string)$date_v->{'timezone'}
+                    "timezone" => (string)$date_v->{'timezone'},
+                    "time-string" => (string)$date_v->{'time-string'}
                 );
                 $dates[$date_k] = $date_v;
             }
