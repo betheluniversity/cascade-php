@@ -224,16 +224,19 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 }
 
 
-function add_page_to_day(&$day, $page, &$dayPaths)
+function add_page_to_day(&$day, &$page, &$dayPaths)
 {
     if (isset($day)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $day = array($page);
+            $page['time-string'] = make_time_str($page);
+            $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
+            $day[$findPath]['time-string'] = make_time_str($page);
         }
     } else {
+        $page['time-string'] = make_time_str($page);
         $day = array($page);
         $dayPaths = array($page['path']);
     }
