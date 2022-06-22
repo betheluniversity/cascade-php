@@ -224,14 +224,17 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 }
 
 
-function add_page_to_day(&$day, $page, &$dayPaths){
-    if (isset($day)) {
-        if(!in_array($page["path"], $dayPaths)){
-            $day[] = $page;
+function add_page_to_day(&$days, $page, &$dayPaths){
+    if (isset($days)) {
+        $findPath = array_search($page["path"], $dayPaths);
+        if(!$findPath) {
+            $days[] = $page;
             $dayPaths[] = $page["path"];
+        } else {
+            $days[$findPath]["title"] = "duplicate";
         }
     } else {
-        $day = array($page);
+        $days = array($page);
         $dayPaths = array($page['path']);
     }
 }
