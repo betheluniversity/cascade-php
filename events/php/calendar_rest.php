@@ -215,9 +215,7 @@ function add_event_to_array($dates, $page_data){
             $foreach_start_time = microtime(true);
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
-
                 add_page_to_day($dates[$key], $page_data);
-
             }
         }
     }
@@ -227,7 +225,9 @@ function add_event_to_array($dates, $page_data){
 
 function add_page_to_day(&$day, $page){
     if (isset($day)) {
-        $day[] = $page;
+        if(!in_array($page, $day)){
+            $day[] = $page;
+        }
     } else {
         $day = array($page);
     }
