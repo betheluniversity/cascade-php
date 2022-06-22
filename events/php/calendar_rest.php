@@ -225,10 +225,10 @@ function add_event_to_array($dates, $page_data){
 
 function add_page_to_day(&$day, $page){
     if (isset($day)) {
-        $pathToMatch = $page['path'];
         foreach($day as $oldPage){
-            if($oldPage['path'] == $pathToMatch) {
-                // pass
+            if($oldPage['path'] == $page['path']) {
+                $page['title'] = "no";
+                $day[] = $page;
             } else {
                 return;
             }
