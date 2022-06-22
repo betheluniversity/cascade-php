@@ -196,13 +196,7 @@ function add_event_to_array($dates, $page_data){
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
-            // Check if this date has events already
-            if (isset($dates[$key])) {
-
-                //Otherwise add a new array with this event for this date.
-            } else {
-                $dates[$key] = array($page_data);
-            }
+            add_page_to_day($dates[$key], $page_data);
         }
         // range of dates
         else{
@@ -221,12 +215,9 @@ function add_event_to_array($dates, $page_data){
             $foreach_start_time = microtime(true);
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
-                // Check if this date has events already
-                if (isset($dates[$key])) {
-                    add_page_to_day($dates[$key], $page_data);
-                } else {
-                    $dates[$key] = array($page_data);
-                }
+
+                add_page_to_day($dates[$key], $page_data);
+
             }
         }
     }
@@ -235,7 +226,11 @@ function add_event_to_array($dates, $page_data){
 
 
 function add_page_to_day(&$day, $page){
-    $day[] = $page;
+    if (isset($day)) {
+        $day[] = $page;
+    } else {
+        $day = array($page);
+    }
 }
 
 
