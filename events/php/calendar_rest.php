@@ -170,7 +170,6 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
         $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
-        $page_data['time_string'] = $date['time-string'];
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
@@ -327,7 +326,7 @@ function inspect_page($xml, $categories){
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
                     "timezone" => (string)$date_v->{'timezone'},
-                    "time-string" => (string)$date_v->{'start-date'}
+                    "time-string" => form_time_string((string)$date_v->{'start-date'}, (string)$date_v->{'end-date'})
                 );
                 $dates[$date_k] = $date_v;
             }
@@ -337,4 +336,13 @@ function inspect_page($xml, $categories){
         }
     }
     return $final_page_info;
+}
+
+
+function form_time_string($start, $end){
+    $start_date = (int) $start / 1000;
+    $end_date = (int) $end / 1000;
+    $specific_start = date("Y-m-d", $start_date  );
+    $specific_end = date("Y-m-d", $end_date);
+    return $specific_start . "-" . $specific_end;
 }
