@@ -242,7 +242,7 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPathKey]['time_string'] = $day[$findPathKey]['time_string'] . ", " . $day['temp_string'];
+            $day[$findPathKey]['time_string'] = "${day[$findPathKey]['time_string']}, ${day['temp_string']}";
         }
     } else {
         $page['time_string'] = $day['time-string'];
@@ -347,7 +347,8 @@ function inspect_page($xml, $categories){
 function form_time_string($start, $end){
     $start_date = (int) $start/1000;
     $end_date = (int) $end/1000;
-    $specific_start = date("g:i a", $start_date  );
-    $specific_end = date("g:i a", $end_date);
-    return "$specific_start - $specific_end".PHP_EOL;
+    $specific_start = date("Y M g:i a", $start_date  );
+    $specific_end = date("Y M g:i a", $end_date );
+    //return "$specific_start - $specific_end".PHP_EOL;
+    return "$start to $end".PHP_EOL;
 }
