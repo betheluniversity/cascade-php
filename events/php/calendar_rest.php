@@ -238,23 +238,17 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
     if (isset($day)) {
         $findPathKey = array_search($page["path"], $dayPaths);
         if(!$findPathKey) {
-//            $page['time_string'] = $day['time-string'];
+            $page['time_string'] = $day['time-string'];
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
 //            $day[$findPathKey]['time_string'] = "{$day[$findPathKey]['time_string'].len}, {$day['temp_string']}".PHP_EOL;
         }
     } else {
-//        $page['time_string'] = $day['time-string'];
+        $page['time_string'] = $day['time-string'];
         $day = array($page);
         $dayPaths = array($page['path']);
     }
-}
-
-
-function make_time_str($page)
-{
-    return "time string b";
 }
 
 
