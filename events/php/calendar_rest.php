@@ -196,7 +196,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 
 
 
-        $page_data['time_string'] = $date['time-string'];
+        //$page_data['time_string'] = $date['time-string'];
 
         if($specific_start == $specific_end){
             //Don't need a date range.
@@ -345,8 +345,8 @@ function inspect_page($xml, $categories){
 
 
 function form_time_string($start, $end){
-    $start_date = (int) $start / 1000;
-    $end_date = (int) $end / 1000;
+    $start_date = (int) $start;
+    $end_date = (int) $end;
     $specific_start = date("g:i a", $start_date  );
     $specific_end = date("g:i a", $end_date);
     return $specific_start . "-" . $specific_end;
