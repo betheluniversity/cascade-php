@@ -170,6 +170,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
         $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
+
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
@@ -195,7 +196,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 
 
 
-        //$page_data['time_string'] = $date['time-string'];
+        $page_data['time_string'] = $date['time-string'];
 
         if($specific_start == $specific_end){
             //Don't need a date range.
@@ -226,7 +227,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             }
 
         }
-        
+
     }
     return $dates;
 }
