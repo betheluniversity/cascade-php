@@ -29,9 +29,6 @@
             <dd>
                 {% if all_day == true %}
                     {% set time_string = '' %}
-                {% else %}
-                    {$ set time_string = time_string|replace({':00': '', 'am': 'a.m.', 'pm': 'p.m.'}) %}
-                    {$ set time_string = time_string|replace({'12 p.m.': 'noon'}) %}
                 {% endif %}
                 <span class="event-description">
                     {% if event.description %}
