@@ -157,7 +157,7 @@ function get_event_xml(){
     foreach($event_pages as $child ){
         $page_data = inspect_page($child, $categories);
         if (!$page_data["hide-from-calendar"]){
-            $dates = add_event_to_array($dates, $page_data);
+            $dates = add_event_to_array($dates, $page_data, $datePaths);
         }
     }
     return $dates;
