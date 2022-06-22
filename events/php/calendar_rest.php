@@ -345,9 +345,9 @@ function inspect_page($xml, $categories){
 
 
 function form_time_string($start, $end){
-    $start_date = (int) $start;
-    $end_date = (int) $end;
+    $start_date = (int) $start/1000;
+    $end_date = (int) $end/1000;
     $specific_start = date("g:i a", $start_date  );
     $specific_end = date("g:i a", $end_date);
-    return $specific_start . "-" . $specific_end;
+    return "$specific_start - $specific_end".PHP_EOL;
 }
