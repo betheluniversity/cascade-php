@@ -225,10 +225,9 @@ function add_event_to_array($dates, $page_data){
 
 function add_page_to_day(&$day, $page){
     if (isset($day)) {
-        foreach($day as $oldPage){
+        if($page['title'] == "Co-ed Soccer Mini Day Camp Ages 3-4"){
             $day[] = $page;
         }
-        $day[] = $page;
     } else {
         $day = array($page);
     }
