@@ -195,7 +195,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 
 
 
-        $page_data['time_string'] = $date['time-string'];
+        //$page_data['time_string'] = $date['time-string'];
 
         if($specific_start == $specific_end){
             //Don't need a date range.
@@ -226,37 +226,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             }
 
         }
-
-
-        if($specific_start == $specific_end){
-            //Don't need a date range.
-            $key = date("Y-m-d", $start_date);
-            add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
-
-        }
-        // range of dates
-        else{
-            $page_data['specific_all_day'] = true;
-            $start = date("Y-n-j", $start_date);
-            // Add 1 day to $end so that the DatePeriod includes the last day in 'end-date'
-            $end = date("Y-n-j", strtotime('+1 day', $end_date));
-            // Create a date period for each of the dates this event-date spans.
-            // This will put it on the calendar each day.
-            $period = new DatePeriod(
-                new DateTime($start),
-                new DateInterval('P1D'),
-                new DateTime($end)
-            );
-            // Add a listng to the array for each event / event date
-            $foreach_start_time = microtime(true);
-            foreach ($period as $inner_date) {
-                $key = $inner_date->format('Y-m-d');
-                add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
-
-//                $page_data['time_string'] = $date['time-string'];
-            }
-
-        }
+        
     }
     return $dates;
 }
