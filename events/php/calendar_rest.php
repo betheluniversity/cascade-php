@@ -163,7 +163,7 @@ function get_event_xml(){
     return $dates;
 }
 
-function add_event_to_array($dates, $page_data, $datePaths) {
+function add_event_to_array($dates, $page_data, &$datePaths) {
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
         $start_date = (int)($date['start-date']) / 1000;
@@ -228,7 +228,7 @@ function add_page_to_day(&$day, $page, &$dayPaths){
     if (isset($day)) {
         if(!in_array($page["path"], $dayPaths)){
             $day[] = $page;
-            $dayPaths[] = $page["path";
+            $dayPaths[] = $page["path"];
         }
     } else {
         $day = array($page);
