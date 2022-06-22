@@ -231,7 +231,7 @@ function add_page_to_day(&$days, $page, &$dayPaths){
             $days[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $days[$findPath]["title"] = "duplicate";
+            $days[$findPath]["specific_end"] .= "duplicate";
         }
     } else {
         $days = array($page);
