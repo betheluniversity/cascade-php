@@ -170,7 +170,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
         $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
-        $page_data['time_string'] = "time string a " . $specific_start;
+        $page_data['time_string'] = $date['time-string'];
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
@@ -265,7 +265,7 @@ function inspect_page($xml, $categories){
         "dates" => array(),
         "md" => array(),
         "hide-from-calendar" => false,
-        "time-string" => ''
+        "time-string" => ':)'
     );
     $ds = $xml->{'system-data-structure'};
     $page_info["externallink"] = $ds->{'link'};
