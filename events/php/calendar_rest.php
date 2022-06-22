@@ -234,7 +234,7 @@ function add_page_to_day(&$days, $page, &$dayPaths)
             $days = array($pageWithTime);
             $dayPaths[] = $page["path"];
         } else {
-            $days[$findPath]["time_string"] .= make_time_str($page);
+            $days[$findPath]["time_string"] = make_time_str($page);
         }
     } else {
         $pageWithTime = $page;
