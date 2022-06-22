@@ -196,7 +196,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
 
 
 
-        //$page_data['time_string'] = $date['time-string'];
+        $page_data['time_string'] = $date['time-string'];
 
         if($specific_start == $specific_end){
             //Don't need a date range.
@@ -238,14 +238,14 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
     if (isset($day)) {
         $findPathKey = array_search($page["path"], $dayPaths);
         if(!$findPathKey) {
-            $page['time_string'] = $day['time-string'];
+//            $page['time_string'] = $day['time-string'];
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPathKey]['time_string'] = "{$day[$findPathKey]['time_string']}, {$day['temp_string']}".PHP_EOL;
+//            $day[$findPathKey]['time_string'] = "{$day[$findPathKey]['time_string'].len}, {$day['temp_string']}".PHP_EOL;
         }
     } else {
-        $page['time_string'] = $day['time-string'];
+//        $page['time_string'] = $day['time-string'];
         $day = array($page);
         $dayPaths = array($page['path']);
     }
