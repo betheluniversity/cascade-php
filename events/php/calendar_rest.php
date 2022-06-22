@@ -170,7 +170,7 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
         $end_date = (int)($date['end-date']) / 1000;
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
-
+        $time_string = "time string a " . $specific_start;
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
@@ -229,14 +229,14 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
     if (isset($day)) {
         $findPath = array_search($page["path"], $dayPaths);
         if(!$findPath) {
-            $page['time_string'] = make_time_str($page);
+            $page['time-string'] = make_time_str($page);
             $day = array($page);
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPath]['time_string'] = make_time_str($page);
+            $day[$findPath]['time-string'] = make_time_str($page);
         }
     } else {
-        $page['time_string'] = make_time_str($page);
+        $page['time-string'] = make_time_str($page);
         $day = array($page);
         $dayPaths = array($page['path']);
     }
@@ -245,7 +245,7 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
 
 function make_time_str($page)
 {
-    return "time string";
+    return "time string b";
 }
 
 
