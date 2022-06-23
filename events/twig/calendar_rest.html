@@ -11,42 +11,38 @@
     {% if attribute(xml, key) is defined %}
     <dl>
         {% for event in attribute(xml, key) %}
-        {% set start = event.specific_start %}
-        {% set end = event.specific_end %}
-        {% set time_string = event.time_string %}
-        {% set all_day = event.specific_all_day %}
-        {% set outside_of_minnesota = event.specific_outside_of_minnesota %}
-        {% set time_zone = event.specific_time_zone %}
-        {% if event.published %}
-        <div class="vevent">
-            <dt class="summary">
-                {% if event.externallink != "" %}
-                <a href="{{event.externallink}}">{{event.title}}</a>
-                {% else %}
-                <a href="//www.bethel.edu{{event.path}}">{{event.title}}</a>
-                {% endif %}
-            </dt>
-            <dd>
-                {% if all_day == true %}
-                    {% set time_string = '' %}
-                {% endif %}
-                <span class="event-description">
-                    {% if event.description %}
-                        {{event.description}}</br>
-                    {% endif %}
-                    {% if time_string %}
-                        {{time_string}}</br>
-                    {% endif %}
-                    <span class="location">{{event.location}}</span>
-                </span>
-                <ul class="categories" style="display:none">
-                    {% for md in event.md %}
-                    <li class="category" data-category="{{md}}">{{md}}</li>
-                    {% endfor %}
-                </ul>
-            </dd>
-        </div>
-        {% endif %}
+            {% set time_string = event.time_string %
+            {% set all_day = event.specific_all_day %}
+            {% if event.published %}
+                <div class="vevent">
+                    <dt class="summary">
+                        {% if event.externallink != "" %}
+                        <a href="{{event.externallink}}">{{event.title}}</a>
+                        {% else %}
+                        <a href="//www.bethel.edu{{event.path}}">{{event.title}}</a>
+                        {% endif %}
+                    </dt>
+                    <dd>
+                        {% if all_day == true %}
+                            {% set time_string = '' %}
+                        {% endif %}
+                        <span class="event-description">
+                            {% if event.description %}
+                                {{event.description}}</br>
+                            {% endif %}
+                            {% if time_string %}
+                                {{time_string}}</br>
+                            {% endif %}
+                            <span class="location">{{event.location}}</span>
+                        </span>
+                        <ul class="categories" style="display:none">
+                            {% for md in event.md %}
+                            <li class="category" data-category="{{md}}">{{md}}</li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                </div>
+            {% endif %}
         {% endfor %}
     </dl>
     {% endif %}
