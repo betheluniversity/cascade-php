@@ -354,9 +354,9 @@ function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
     $r_start = str_replace($find, $replace, $specific_start);
     $r_end = str_replace($find, $replace, $specific_end);
 
-    $tz_ret = "";
+    $tz_ret = "inMN";
     if($outsideMN){
-        $tz_ret = "{$timeZone}";
+        $tz_ret = "($timeZone)";
     }
-    return "$r_start - $r_end $tz_ret".PHP_EOL;
+    return "$r_start -$r_end $tz_ret".PHP_EOL;
 }
