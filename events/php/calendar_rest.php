@@ -347,9 +347,9 @@ function form_time_string($start, $end){
     $specific_start = str_replace("pm","p.m.",$specific_start);
     $specific_end = str_replace("am","a.m.", $specific_end);
     $specific_start = str_replace("12 p.m.","noon",$specific_start);
-    $specific_end = str_replace("12 p.m","noon", $specific_end);
+    $specific_end = str_replace("12 p.m.","noon", $specific_end);
     $specific_start = str_replace("12 a.m.","midnight",$specific_start);
     $specific_end = str_replace("12 a.m.","midnight", $specific_end);
-    return "$specific_start - $specific_end".PHP_EOL;
+    return "$specific_start-$specific_end".PHP_EOL;
     //return "$start to $end".PHP_EOL;
 }
