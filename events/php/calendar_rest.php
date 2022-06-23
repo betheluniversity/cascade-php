@@ -238,8 +238,8 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $day[$findPathKey]['time_string'] = "{$day[$findPathKey]['time_string']}, {$page['time_string']}".PHP_EOL;
-
+            $removeTrailingSpace = substr($day[$findPathKey]['time_string'],0,-1);
+            $day[$findPathKey]['time_string'] = "$removeTrailingSpace, {$page['time_string']}".PHP_EOL;
         }
     } else {
         $day = array($page);
@@ -364,5 +364,5 @@ function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
         return "$r_start $tz_ret".PHP_EOL;
     }
 
-    return "$r_start-$r_end $tz_ret $allDay".PHP_EOL;
+    return "$r_start-$r_end $tz_ret".PHP_EOL;
 }
