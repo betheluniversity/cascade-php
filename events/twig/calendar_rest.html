@@ -11,11 +11,11 @@
     {% if attribute(xml, key) is defined %}
     <dl>
         {% for event in attribute(xml, key) %}
-            {% set time_string = event.time_string %
-            {% set all_day = event.specific_all_day %}
-            {% if event.published %}
-            <div class="vevent">
-                <dt class="summary">
+        {% set time_string = event.time_string %
+        {% set all_day = event.specific_all_day %}
+        {% if event.published %}
+        <div class="vevent">
+            <dt class="summary">
                 {% if event.externallink != "" %}
                 <a href="{{event.externallink}}">{{event.title}}</a>
                 {% else %}
