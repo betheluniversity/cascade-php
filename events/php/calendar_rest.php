@@ -342,14 +342,22 @@ function form_time_string($start, $end){
     $end_date = (int) $end/1000;
     $specific_start = date("g:i a", $start_date  );
     $specific_end = date("g:i a", $end_date );
-    $specific_start = str_replace(":00","",$specific_start);
-    $specific_end = str_replace(":00","", $specific_end);
-    $specific_start = str_replace("pm","p.m.",$specific_start);
-    $specific_end = str_replace("am","a.m.", $specific_end);
-    $specific_start = str_replace("12 p.m.","noon",$specific_start);
-    $specific_end = str_replace("12 p.m.","noon", $specific_end);
-    $specific_start = str_replace("12 a.m.","midnight",$specific_start);
-    $specific_end = str_replace("12 a.m.","midnight", $specific_end);
-    return "$specific_start-$specific_end".PHP_EOL;
+//    $specific_start = str_replace(":00","",$specific_start);
+//    $specific_end = str_replace(":00","", $specific_end);
+//    $specific_start = str_replace("pm","p.m.",$specific_start);
+//    $specific_end = str_replace("am","a.m.", $specific_end);
+//    $specific_start = str_replace("12 p.m.","noon",$specific_start);
+//    $specific_end = str_replace("12 p.m.","noon", $specific_end);
+//    $specific_start = str_replace("12 a.m.","midnight",$specific_start);
+//    $specific_end = str_replace("12 a.m.","midnight", $specific_end);
+
+    $find =     array(":00", "m", "12 p.m.", "12 a.m.");
+    $replace =  array("", ".m.", "noon", "midnight");
+    $counta = 0;
+    $countb = 0;
+    $r_start = str_replace($find, $replace, $specific_start, $counta);
+    $r_end = str_replace($find, $replace, $specific_end, $countb);
+
+    return "$r_start-$r_end ($counta, $countb".PHP_EOL;
     //return "$start to $end".PHP_EOL;
 }
