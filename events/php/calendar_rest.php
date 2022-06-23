@@ -324,7 +324,11 @@ function inspect_page($xml, $categories){
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
                     "timezone" => (string)$date_v->{'timezone'},
-                    "time-string" => form_time_string((string)$date_v->{'start-date'}, (string)$date_v->{'end-date'})
+                    "time-string" => form_time_string((string)$date_v->{'start-date'},
+                                                    (string)$date_v->{'end-date'},
+                                                    (string)$date_v->{'all-day'},
+                                                    (string)$date_v->{"outside-of-minnesota"},
+                                                    (string)$date_v->{"timezone"})
                 );
                 $dates[$date_k] = $date_v;
             }
@@ -337,27 +341,22 @@ function inspect_page($xml, $categories){
 }
 
 
-function form_time_string($start, $end){
+function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
+    if($allDay){
+        return "";
+    }
     $start_date = (int) $start/1000;
     $end_date = (int) $end/1000;
-    $specific_start = date("g:i a", $start_date  );
-    $specific_end = date("g:i a", $end_date );
-//    $specific_start = str_replace(":00","",$specific_start);
-//    $specific_end = str_replace(":00","", $specific_end);
-//    $specific_start = str_replace("pm","p.m.",$specific_start);
-//    $specific_end = str_replace("am","a.m.", $specific_end);
-//    $specific_start = str_replace("12 p.m.","noon",$specific_start);
-//    $specific_end = str_replace("12 p.m.","noon", $specific_end);
-//    $specific_start = str_replace("12 a.m.","midnight",$specific_start);
-//    $specific_end = str_replace("12 a.m.","midnight", $specific_end);
-
+    $specific_start = date("g:i a", $start_date);
+    $specific_end = date("g:i a", $end_date);
     $find =     array(":00", "m", "12 p.m.", "12 a.m.");
     $replace =  array("", ".m.", "noon", "midnight");
-    $counta = 0;
-    $countb = 0;
-    $r_start = str_replace($find, $replace, $specific_start, $counta);
-    $r_end = str_replace($find, $replace, $specific_end, $countb);
+    $r_start = str_replace($find, $replace, $specific_start);
+    $r_end = str_replace($find, $replace, $specific_end);
 
-    return "$r_start-$r_end ($counta, $countb".PHP_EOL;
-    //return "$start to $end".PHP_EOL;
+    $tz_ret = "";
+    if($outsideMN){
+        $tz_ret = "{$timeZone}";
+    }
+    return "$r_start - $r_end $tz_ret".PHP_EOL;
 }
