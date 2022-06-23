@@ -339,7 +339,7 @@ function inspect_page($xml, $categories){
 
 
 function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
-    if($allDay == "True"){
+    if($allDay == True){
         return "";
     }
 
@@ -351,10 +351,18 @@ function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
     $replace = array("", ".m.", "Noon", "noon", "midnight");
     $r_start = str_replace($find, $replace, $specific_start);
     $r_end = str_replace($find, $replace, $specific_end);
-    
+
     $tz_ret = "";
     if($outsideMN){
         $tz_ret = "($timeZone)";
     }
+
+    if($r_start == $r_end){
+        if($r_start == "midnight"){
+            return "";
+        }
+        return "$r_start $tz_ret".PHP_EOL;
+    }
+
     return "$r_start-$r_end $tz_ret $allDay".PHP_EOL;
 }
