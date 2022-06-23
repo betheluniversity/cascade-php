@@ -195,10 +195,6 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             $page_data['specific_time_zone'] = "";
         }
 
-
-
-
-
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
@@ -343,22 +339,22 @@ function inspect_page($xml, $categories){
 
 
 function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
-    if($allDay){
+    if($allDay == "True"){
         return "";
     }
+
     $start_date = (int) $start/1000;
     $end_date = (int) $end/1000;
     $specific_start = date("g:i a", $start_date);
     $specific_end = date("g:i a", $end_date);
-    $find =     array(":00", "m", "12 p.m.", "12 a.m.");
-    $replace =  array("", ".m.", "noon", "midnight");
+    $find = array(":00", "m", "12 p.m.", "Noon", "12 a.m.");
+    $replace = array("", ".m.", "Noon", "noon", "midnight");
     $r_start = str_replace($find, $replace, $specific_start);
     $r_end = str_replace($find, $replace, $specific_end);
-
-
+    
     $tz_ret = "";
     if($outsideMN){
         $tz_ret = "($timeZone)";
     }
-    return "$r_start -$r_end $tz_ret $allDay".PHP_EOL;
+    return "$r_start-$r_end $tz_ret $allDay".PHP_EOL;
 }
