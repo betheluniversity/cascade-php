@@ -11,8 +11,12 @@
     {% if attribute(xml, key) is defined %}
     <dl>
         {% for event in attribute(xml, key) %}
-        {% set time_string = event.time_string %
+        {% set start = event.specific_start %}
+        {% set end = event.specific_end %}
+        {% set time_string = event.time_string %}
         {% set all_day = event.specific_all_day %}
+        {% set outside_of_minnesota = event.specific_outside_of_minnesota %}
+        {% set time_zone = event.specific_time_zone %}
         {% if event.published %}
         <div class="vevent">
             <dt class="summary">
