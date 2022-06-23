@@ -232,8 +232,15 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
     return $dates;
 }
 
-
-function add_page_to_day(&$day, &$page, &$dayPaths)
+/** Adds an event page to a given day.
+ * Also accounts for empty days and duplicate events.
+ *
+ * @param $day Array The array of event pages associated with a particular day
+ * @param $page Array Represents the information about a given page, ultimately set by inspect_page()
+ * @param $dayPaths Array The array of event page links associated with a particular day, for preventing duplicates.
+ * @return void Void because the method acts on the arrays themselves.
+ */
+function add_page_to_day(&$day, $page, &$dayPaths)
 {
     if (isset($day)) {
         $findPathKey = array_search($page["path"], $dayPaths);
@@ -324,9 +331,10 @@ function inspect_page($xml, $categories){
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
                     "timezone" => (string)$date_v->{'timezone'},
+
+                    //The time-string is generated using the information from the XML but is not a part of the XML directly.
                     "time-string" => form_time_string((string)$date_v->{'start-date'},
                                                     (string)$date_v->{'end-date'},
-                                                    (string)$date_v->{'all-day'},
                                                     (string)$date_v->{"outside-of-minnesota"},
                                                     (string)$date_v->{"timezone"})
                 );
@@ -341,11 +349,14 @@ function inspect_page($xml, $categories){
 }
 
 
-function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
-    if($allDay == True){
-        return "";
-    }
-
+/** Creates and formats a string representing the time an event takes place, for easy display on the calendar.
+ * @param $start string beginning of a single instance ("sub-event") of the event
+ * @param $end string ending of a single instance ("sub-event") of the event
+ * @param $outsideMN string if the event is outside Minnesota
+ * @param $timeZone string the time zone, for foreign events.
+ * @return string easily-displayable event time string. Does not include the actual date.
+ */
+function form_time_string($start, $end, $outsideMN, $timeZone){
     $start_date = (int) $start/1000;
     $end_date = (int) $end/1000;
     $specific_start = date("g:i a", $start_date);
