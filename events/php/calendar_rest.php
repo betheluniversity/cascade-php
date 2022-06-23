@@ -23,6 +23,11 @@ $data = autoCache("build_calendar_data", array($month, $year));
 
 echo $data;
 
+/**
+ * @param $month
+ * @param $year
+ * @return false|string
+ */
 function build_calendar_data($month, $year){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
     // Set the month and year if it isn't passed in GET
@@ -163,6 +168,7 @@ function get_event_xml(){
     return $dates;
 }
 
+
 function add_event_to_array($dates, $page_data, &$datePaths) {
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
@@ -199,7 +205,6 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
             add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
-
         }
         // range of dates
         else{
@@ -219,8 +224,6 @@ function add_event_to_array($dates, $page_data, &$datePaths) {
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
                 add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
-
-//                $page_data['time_string'] = $date['time-string'];
             }
 
         }
@@ -238,7 +241,7 @@ function add_page_to_day(&$day, &$page, &$dayPaths)
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
-            $removeTrailingSpace = substr($day[$findPathKey]['time_string'],0,-1);
+            $removeTrailingSpace = trim($day[$findPathKey]['time_string']);
             $day[$findPathKey]['time_string'] = "$removeTrailingSpace, {$page['time_string']}".PHP_EOL;
         }
     } else {
@@ -354,15 +357,15 @@ function form_time_string($start, $end, $allDay, $outsideMN, $timeZone){
 
     $tz_ret = "";
     if($outsideMN){
-        $tz_ret = "($timeZone)";
+        $tz_ret = " ($timeZone)";
     }
 
     if($r_start == $r_end){
         if($r_start == "midnight"){
             return "";
         }
-        return "$r_start $tz_ret".PHP_EOL;
+        return "$r_start$tz_ret".PHP_EOL;
     }
 
-    return "$r_start-$r_end $tz_ret".PHP_EOL;
+    return "$r_start-$r_end$tz_ret".PHP_EOL;
 }
