@@ -13,6 +13,7 @@
         {% for event in attribute(xml, key) %}
         {% set start = event.specific_start %}
         {% set end = event.specific_end %}
+        {% set time_string = event.time_string %}
         {% set all_day = event.specific_all_day %}
         {% set outside_of_minnesota = event.specific_outside_of_minnesota %}
         {% set time_zone = event.specific_time_zone %}
@@ -27,20 +28,14 @@
             </dt>
             <dd>
                 {% if all_day == true %}
-                    {% set start = '' %}
-                    {% set end = '' %}
-                {% else %}
-                    {% set start = start/1000 %}
-                    {% set start = start|date("g:i a")|replace({':00': '', 'am': 'a.m.', 'pm': 'p.m.'}) %}
-                    {% set end = end/1000 %}
-                    {% set end = end|date("g:i a")|replace({':00': '', 'am': 'a.m.', 'pm': 'p.m.'}) %}
+                    {% set time_string = '' %}
                 {% endif %}
                 <span class="event-description">
                     {% if event.description %}
                         {{event.description}}</br>
                     {% endif %}
-                    {% if start and end %}
-                        {{start|replace({'12 p.m.': 'Noon'}) }} {% if start != end %}-{{end|replace({'12 p.m.': 'noon'}) }}{% endif %} {{time_zone}}<br>
+                    {% if time_string %}
+                        {{time_string}}</br>
                     {% endif %}
                     <span class="location">{{event.location}}</span>
                 </span>

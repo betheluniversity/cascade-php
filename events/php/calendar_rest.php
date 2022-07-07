@@ -23,6 +23,11 @@ $data = autoCache("build_calendar_data", array($month, $year));
 
 echo $data;
 
+/**
+ * @param $month
+ * @param $year
+ * @return false|string
+ */
 function build_calendar_data($month, $year){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
     // Set the month and year if it isn't passed in GET
@@ -153,16 +158,18 @@ function get_event_xml(){
     $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml"));
     $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
     $dates = array();
+    $datePaths = array();
     foreach($event_pages as $child ){
         $page_data = inspect_page($child, $categories);
         if (!$page_data["hide-from-calendar"]){
-            $dates = add_event_to_array($dates, $page_data);
+            $dates = add_event_to_array($dates, $page_data, $datePaths);
         }
     }
     return $dates;
 }
 
-function add_event_to_array($dates, $page_data){
+
+function add_event_to_array($dates, $page_data, &$datePaths) {
     //Iterate over each Date in this event
     foreach ($page_data['dates'] as $date) {
         $start_date = (int)($date['start-date']) / 1000;
@@ -170,6 +177,7 @@ function add_event_to_array($dates, $page_data){
         $specific_start = date("Y-m-d", $start_date  );
         $specific_end = date("Y-m-d", $end_date );
 
+        $page_data['time_string'] = $date['time-string'];
         $page_data['specific_start'] = $date['start-date'];
         $page_data['specific_end'] = $date['end-date'];
         $page_data['specific_all_day'] = $date['all-day'];
@@ -192,16 +200,11 @@ function add_event_to_array($dates, $page_data){
         } else {
             $page_data['specific_time_zone'] = "";
         }
+
         if($specific_start == $specific_end){
             //Don't need a date range.
             $key = date("Y-m-d", $start_date);
-            // Check if this date has events already
-            if (isset($dates[$key])) {
-                array_push($dates[$key], $page_data );
-                //Otherwise add a new array with this event for this date.
-            } else {
-                $dates[$key] = array($page_data);
-            }
+            add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
         }
         // range of dates
         else{
@@ -220,17 +223,41 @@ function add_event_to_array($dates, $page_data){
             $foreach_start_time = microtime(true);
             foreach ($period as $inner_date) {
                 $key = $inner_date->format('Y-m-d');
-                // Check if this date has events already
-                if (isset($dates[$key])) {
-                    array_push($dates[$key], $page_data);
-                } else {
-                    $dates[$key] = array($page_data);
-                }
+                add_page_to_day($dates[$key], $page_data, $datePaths[$key]);
             }
+
         }
+
     }
     return $dates;
 }
+
+/** Adds an event page to a given day.
+ * Also accounts for empty days and duplicate events.
+ *
+ * @param $day Array The array of event pages associated with a particular day
+ * @param $page Array Represents the information about a given page, ultimately set by inspect_page()
+ * @param $dayPaths Array The array of event page links associated with a particular day, for preventing duplicates.
+ * @return void Void because the method acts on the arrays themselves.
+ */
+function add_page_to_day(&$day, $page, &$dayPaths)
+{
+    if (isset($day)) {
+        $findPathKey = array_search($page["path"], $dayPaths);
+        if(!$findPathKey) {
+            $day[] = $page;
+            $dayPaths[] = $page["path"];
+        } else {
+            $removeTrailingSpace = trim($day[$findPathKey]['time_string']);
+            $day[$findPathKey]['time_string'] = "$removeTrailingSpace, {$page['time_string']}".PHP_EOL;
+        }
+    } else {
+        $day = array($page);
+        $dayPaths = array($page['path']);
+    }
+}
+
+
 function inspect_page($xml, $categories){
     //echo "inspecting page";
     $page_info = array(
@@ -242,6 +269,7 @@ function inspect_page($xml, $categories){
         "dates" => array(),
         "md" => array(),
         "hide-from-calendar" => false,
+        "time-string" => ''
     );
     $ds = $xml->{'system-data-structure'};
     $page_info["externallink"] = $ds->{'link'};
@@ -302,7 +330,13 @@ function inspect_page($xml, $categories){
                     "end-date" => (string)$date_v->{'end-date'},
                     "all-day" => (string)$date_v->{'all-day'},
                     "outside-of-minnesota" => (string)$date_v->{'outside-of-minnesota'},
-                    "timezone" => (string)$date_v->{'timezone'}
+                    "timezone" => (string)$date_v->{'timezone'},
+
+                    //The time-string is generated using the information from the XML but is not a part of the XML directly.
+                    "time-string" => form_time_string((string)$date_v->{'start-date'},
+                                                    (string)$date_v->{'end-date'},
+                                                    (string)$date_v->{"outside-of-minnesota"},
+                                                    (string)$date_v->{"timezone"})
                 );
                 $dates[$date_k] = $date_v;
             }
@@ -312,4 +346,37 @@ function inspect_page($xml, $categories){
         }
     }
     return $final_page_info;
+}
+
+
+/** Creates and formats a string representing the time an event takes place, for easy display on the calendar.
+ * @param $start string beginning of a single instance ("sub-event") of the event
+ * @param $end string ending of a single instance ("sub-event") of the event
+ * @param $outsideMN string if the event is outside Minnesota
+ * @param $timeZone string the time zone, for foreign events.
+ * @return string easily-displayable event time string. Does not include the actual date.
+ */
+function form_time_string($start, $end, $outsideMN, $timeZone){
+    $start_date = (int) $start/1000;
+    $end_date = (int) $end/1000;
+    $specific_start = date("g:i a", $start_date);
+    $specific_end = date("g:i a", $end_date);
+    $find = array(":00", "m", "12 p.m.", "Noon", "12 a.m.");
+    $replace = array("", ".m.", "Noon", "noon", "midnight");
+    $r_start = str_replace($find, $replace, $specific_start);
+    $r_end = str_replace($find, $replace, $specific_end);
+
+    $tz_ret = "";
+    if($outsideMN){
+        $tz_ret = " ($timeZone)";
+    }
+
+    if($r_start == $r_end){
+        if($r_start == "midnight"){
+            return "";
+        }
+        return "$r_start$tz_ret".PHP_EOL;
+    }
+
+    return "$r_start-$r_end$tz_ret".PHP_EOL;
 }
