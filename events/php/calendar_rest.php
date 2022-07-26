@@ -244,7 +244,7 @@ function add_page_to_day(&$day, $page, &$dayPaths)
 {
     if (isset($day)) {
         $findPathKey = array_search($page["path"], $dayPaths);
-        if(!$findPathKey) {
+        if($findPathKey === FALSE) {
             $day[] = $page;
             $dayPaths[] = $page["path"];
         } else {
