@@ -1,0 +1,22 @@
+<table>
+    <tr>
+        <th>State</th>
+        <th>Name</th>
+        <th>Website</th>
+        <th>License Title</th>
+        <th>Degree Required?</th>
+        <th>Meets State Licensure Requirements?</th>
+        <th>Last Reviewed</th>
+    </tr>
+    {% for state in results %}
+        <tr>
+            <td>{{ attribute(state, 'State') }}</td>
+            <td></td>
+            <td><a target="_blank" href="{{ attribute(state, 'Board/Agency Website') }}">website</a></td>
+            <td>{{ attribute(state, 'License Title') }}</td>
+            <td></td>
+            <td>{{ attribute(state, 'Meets state licensure requirements') }}</td>
+            <td>{{ attribute(state, 'Last Reviewed Date')|date("M j, Y") }}</td>
+        </tr>
+    {% endfor %}
+</table>
