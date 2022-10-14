@@ -36,7 +36,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
     $threeStories = array();
     $onlyLookForCoronavirus = False;
-    $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
+//    $coronavirusArticleId = 'c0a958b58c5865fc6f6501cb65bc8c89'; // TODO: THIS CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
 
     foreach( $arrayOfNewsAndStories as $index => $article) {
         $id = $article['id'];
@@ -46,9 +46,9 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             continue;
 
         // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
-        if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
-            continue;
-        }
+//        if($onlyLookForCoronavirus === True && $galleryStyle == 'Homepage Top Feature' && $id != $coronavirusArticleId){
+//            continue;
+//        }
 
         // If the news feed is set to use blerts, we check to make sure they include the values we want, else continue
         // if we include public alerts, then we only want to skip internal ones
@@ -73,16 +73,16 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         unset($arrayOfNewsAndStories[$index]);
 
         // TODO: THIS IS THE DEFAULT CODE, but we don't want to do this while we have the cornavirus locked in position 3
-//        // exit once there are 3
-//        if( sizeof($threeStories) >= 3)
-//            break;
-        // TODO: If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
-        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories) == 2 && !in_array($coronavirusArticleId, $GLOBALS['stories-already-used'])) {
-            $onlyLookForCoronavirus = True;
-        }
-        elseif( sizeof($threeStories) == 3) {
+        // exit once there are 3
+        if( sizeof($threeStories) >= 3)
             break;
-        }
+        // TODO: If its the homepage top feature and we have 2 and the coronavirus isn't in it, we only need to look for the cornavirus article.
+//        if( $galleryStyle == 'Homepage Top Feature' && sizeof($threeStories) == 2 && !in_array($coronavirusArticleId, $GLOBALS['stories-already-used'])) {
+//            $onlyLookForCoronavirus = True;
+//        }
+//        elseif( sizeof($threeStories) == 3) {
+//            break;
+//        }
     }
 
     $arrayOfArticles = array_merge($arrayOfArticles, $arrayOfNewsAndStories);
