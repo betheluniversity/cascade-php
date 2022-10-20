@@ -19,5 +19,7 @@ function programLicensure($code){
     if ($results) {
         echo $twig->render('program_licensure.html', array(
             'results' => $results));
+    } else {
+        echo "No Data Available.";
     }
 }

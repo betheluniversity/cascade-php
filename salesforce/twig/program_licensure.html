@@ -9,7 +9,9 @@
     {% for state, licenses in results %}
         {% for license in licenses %}
             <tr>
-                <td>{{ state }}</td>
+                {% if loop.index == 1 %}
+                    <td rowspan="{{ licenses|length }}">{{ state }}</td>
+                {% endif %}
                 <td>{{ attribute(license, 'Meets state licensure requirements') }}</td>
                 <td>{{ attribute(license, 'License Title') }}</td>
                 {% if attribute(license, 'Board/Agency Website') is defined %}
