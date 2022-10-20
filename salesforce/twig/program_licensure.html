@@ -6,21 +6,28 @@
         <th>Board/Agency Contact</th>
         <th>Last Reviewed</th>
     </tr>
-    {% for state in results %}
-        <tr>
-            <td>{{ attribute(state, 'State') }}</td>
-            <td>{{ attribute(state, 'Meets state licensure requirements') }}</td>
-            <td>{{ attribute(state, 'License Title') }}</td>
-            {% if attribute(state, 'Board/Agency Website') is defined %}
-                <td><a target="_blank" href="{{ attribute(state, 'Board/Agency Website') }}">{{ attribute(state, 'Board Agency Name') }}</a></td>
-            {% else %}
-                <td>{{ attribute(state, 'Board Agency Name') }}<br /><br />{{ attribute(state, 'Board/Agency Address') }}</td>
-            {% endif %}
-            {% if attribute(state, 'Last Reviewed Date') != "None" %}
-                <td>{{ attribute(state, 'Last Reviewed Date')|date("M j, Y") }}</td>
-            {% else %}
-                <td>{{ attribute(state, 'Last Reviewed Date') }}</td>
-            {% endif %}
-        </tr>
+    {% for state, licenses in results %}
+        {% for license in licenses %}
+            <tr>
+                <td>{{ state }}</td>
+                <td>{{ attribute(license, 'Meets state licensure requirements') }}</td>
+                <td>{{ attribute(license, 'License Title') }}</td>
+                {% if attribute(license, 'Board/Agency Website') is defined %}
+                    <td><a target="_blank" href="{{ attribute(license, 'Board/Agency Website') }}">{{ attribute(license, 'Board Agency Name') }}</a></td>
+                {% else %}
+                    <td>{{ attribute(license, 'Board Agency Name') }}
+                    {% if attribute(license, 'Board/Agency Address') != "None" %}
+                        {% if attribute(license, 'Board/Agency Address') != attribute(license, 'Board Agency Name') %}
+                            <br /><br />{{ attribute(license, 'Board/Agency Address') }}</td>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if attribute(license, 'Last Reviewed Date') != "None" %}
+                    <td>{{ attribute(license, 'Last Reviewed Date')|date("M j, Y") }}</td>
+                {% else %}
+                    <td>{{ attribute(license, 'Last Reviewed Date') }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
     {% endfor %}
 </table>

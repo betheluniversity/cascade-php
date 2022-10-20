@@ -11,7 +11,7 @@ function programLicensure($code){
     echo "<!-- $url -->";
 
     try {
-        $results = json_decode(@file_get_contents($url));
+        $results = json_decode(@file_get_contents($url), true);
     } catch(ErrorException $e) {
         $results = null;
     }
