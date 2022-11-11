@@ -214,7 +214,7 @@ function get_news_article_html( $article ){
         'DisplayTeaser'     => $DisplayTeaser,
         'article'           => $article,
         'image'             => $article['image'],
-        'horizontal'          => $article['horizontal']
+        'horizontal'        => $article['horizontal']
     ));
 
     return $html;
