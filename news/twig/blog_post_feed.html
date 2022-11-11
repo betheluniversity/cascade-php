@@ -1,4 +1,14 @@
-<div>
+<div class="grid-cell">
+
+    {% if post['image'] != "hidden" %}
+    <div>
+        <img    class="d-flex  mr-3  lazyload  mb-3"
+                data-src="{{ post['image'] }}?w=240"
+                alt="{{ post['title'] }}"
+        />
+    </div>
+    {% endif %}
+
     <div>
         <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
         {% if post['creator'] != "hidden" %}
@@ -13,15 +23,6 @@
             <p>Categories: {{ post['categories'] }}</p>
         {% endif %}
     </div>
-
-    {% if post['image'] != "hidden" %}
-        <div>
-            <img    class="d-flex  mr-3  lazyload  mb-3"
-                    data-src="{{ post['image'] }}?w=240"
-                    alt="{{ post['title'] }}"
-            />
-        </div>
-    {% endif %}
 
     {% if post['description'] != "hidden" %}
         <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
