@@ -29,14 +29,14 @@
         </div>
         {% endif %}
         <div>
-            <h3><a href="{{article['url']}}"><{{article['title']}}</a></h3>
+            <h3><a href="{{article['url']}}">{{article['title']}}</a></h3>
 
             {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
-            <p>{{article['teaser']}}</p>
+                <p>{{article['teaser']}}</p>
             {% endif %}
 
             {% if article['display-date'] %}
-            <p>{{article['display-date']}}</p>
+                <p>{{article['display-date']}}</p>
             {% endif %}
         </div>
     </div>
