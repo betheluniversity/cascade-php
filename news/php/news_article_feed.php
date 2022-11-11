@@ -17,7 +17,7 @@ $AddFeaturedArticle;
 $ExpireAfterXDays;
 $DisplayTeaser;
 $DisplayImages;
-$Vertical
+$Horizontal
 
 $featuredArticleOptions;
 
@@ -175,8 +175,8 @@ function inspect_news_article($xml, $categories){
         $page_info['display-on-feed'] = true;
     }
 
-    global $Vertical;
-    $page_info['vertical'] = $Vertical;
+    global $Horizontal;
+    $page_info['horizontal'] = $Horizontal;
 
     $page_info['display-date'] = format_featured_date_news_article($page_info['date-for-sorting']);
     $page_info['html'] = get_news_article_html($page_info);
@@ -214,7 +214,7 @@ function get_news_article_html( $article ){
         'DisplayTeaser'     => $DisplayTeaser,
         'article'           => $article,
         'image'             => $article['image'],
-        'vertical'          => $article['vertical']
+        'horizontal'          => $article['horizontal']
     ));
 
     return $html;
