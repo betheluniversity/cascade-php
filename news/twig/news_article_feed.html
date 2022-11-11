@@ -1,20 +1,43 @@
-<div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
-    {% if image != '' %}
-        <div class="news__image">
+{% if vertical != 'Yes' %}
+    <div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
+        {% if image != '' %}
+            <div class="news__image">
+                <a href="{{article['url']}}">
+                    {{image|raw}}
+                </a>
+            </div>
+        {% endif %}
+        <div class="news__content">
+            <h4 class="mt0"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h4>
+
+            {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
+                <p>{{article['teaser']}}</p>
+            {% endif %}
+
+            {% if article['display-date'] %}
+                <p class="news__date">{{article['display-date']}}</p>
+            {% endif %}
+        </div>
+    </div>
+{% else %}
+    <div class="grid-cell">
+        {% if image != '' %}
+        <div>
             <a href="{{article['url']}}">
                 {{image|raw}}
             </a>
         </div>
-    {% endif %}
-    <div class="news__content">
-        <h4 class="mt0"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h4>
+        {% endif %}
+        <div>
+            <h3><a href="{{article['url']}}"><{{article['title']}}</a></h3>
 
-        {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
+            {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
             <p>{{article['teaser']}}</p>
-        {% endif %}
-        
-        {% if article['display-date'] %}
-            <p class="news__date">{{article['display-date']}}</p>
-        {% endif %}
+            {% endif %}
+
+            {% if article['display-date'] %}
+            <p>{{article['display-date']}}</p>
+            {% endif %}
+        </div>
     </div>
-</div>
+{% endif %}
