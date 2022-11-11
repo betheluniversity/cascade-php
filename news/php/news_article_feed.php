@@ -17,7 +17,7 @@ $AddFeaturedArticle;
 $ExpireAfterXDays;
 $DisplayTeaser;
 $DisplayImages;
-$Horizontal
+$Horizontal;
 
 $featuredArticleOptions;
 
