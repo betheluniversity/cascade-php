@@ -155,7 +155,7 @@ function set_meet_post_num($meetPosts)
 
 
 // Creates the array of post categories that this feed will include.
-function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all){
+function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all, $admin){
     setup_individual_category($academics, "Academics");
     setup_individual_category($admissions, "Admissions Process");
     setup_individual_category($col_exploration, "College Exploration");
@@ -169,6 +169,7 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     setup_individual_category($wellbeing, "Wellbeing");
     setup_individual_category($undergrad, "Undergrad");
     setup_individual_category($all, "All");
+    setup_individual_category($admin, "Admin");
 }
 
 
