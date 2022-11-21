@@ -343,7 +343,7 @@ function get_pretty_month($monStr)
         case 'Jun': $retMon = 'June'; break;
         case 'Jul': $retMon = 'July'; break;
         case 'Aug': $retMon = 'August'; break;
-        case 'Sept': $retMon = 'September'; break;
+        case 'Sep': $retMon = 'September'; break;
         case 'Oct': $retMon = 'October'; break;
         case 'Nov': $retMon = 'November'; break;
         case 'Dec': $retMon = 'December'; break;
