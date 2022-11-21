@@ -322,16 +322,9 @@ function format_pub_date($dateStr)
 {
     $d = array();
 
-    $d['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
     $d['day'] = (int)substr($dateStr, 5, 2);
     $d['mon'] = get_pretty_month(substr($dateStr, 8, 3));
     $d['yer'] = (int)substr($dateStr, 12, 4);
-
-    $d['our'] = (int)substr($dateStr, 17, 2);
-    $d['min'] = substr($dateStr, 20, 2);
-    $d['sec'] = substr($dateStr, 23, 2);
-
-    $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
 
     return "{$d['mon']} {$d['day']}, {$d['yer']}";
 }
