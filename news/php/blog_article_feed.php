@@ -333,7 +333,7 @@ function format_pub_date($dateStr)
 
     $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
 
-    return "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
+    return "{$d['mon']} {$d['day']}, {$d['yer']}";
 }
 
 
