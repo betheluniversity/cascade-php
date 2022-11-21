@@ -325,8 +325,10 @@ function format_pub_date($dateStr)
     $d['day'] = (int)substr($dateStr, 5, 2);
     $d['mon'] = get_pretty_month(substr($dateStr, 8, 3));
     $d['yer'] = (int)substr($dateStr, 12, 4);
+    $d['our'] = (int)substr($dateStr, 17, 2);
+    $d['time'] = get_pretty_time($d['our']);
 
-    return "{$d['mon']} {$d['day']}, {$d['yer']}";
+    return "{$d['mon']} {$d['day']}, {$d['yer']} | {$d['time']}";
 }
 
 
@@ -370,19 +372,19 @@ function get_pretty_day_of_week($dowStr)
 
 
 // Helper for time formatting
-function get_pretty_time($hour, $min, $sec)
+function get_pretty_time($hour)
 {
     $modHour = $hour % 12;
     if($modHour == $hour){
         if($modHour == 0){
             $modHour = 12;
         }
-        $retHour = "{$modHour}:{$min} a.m.";
+        $retHour = "{$modHour} a.m.";
     } else {
         if($modHour == 0){
             $modHour = 12;
         }
-        $retHour = "{$modHour}:{$min} p.m.";
+        $retHour = "{$modHour} p.m.";
     }
     return $retHour;
 }
