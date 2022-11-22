@@ -17,6 +17,7 @@ $AddFeaturedArticle;
 $ExpireAfterXDays;
 $DisplayTeaser;
 $DisplayImages;
+$Horizontal;
 
 $featuredArticleOptions;
 
@@ -174,6 +175,9 @@ function inspect_news_article($xml, $categories){
         $page_info['display-on-feed'] = true;
     }
 
+    global $Horizontal;
+    $page_info['horizontal'] = $Horizontal;
+
     $page_info['display-date'] = format_featured_date_news_article($page_info['date-for-sorting']);
     $page_info['html'] = get_news_article_html($page_info);
 
@@ -209,7 +213,8 @@ function get_news_article_html( $article ){
     $html = $twig->render('news_article_feed.html', array(
         'DisplayTeaser'     => $DisplayTeaser,
         'article'           => $article,
-        'image'             => $article['image']
+        'image'             => $article['image'],
+        'horizontal'        => $article['horizontal']
     ));
 
     return $html;

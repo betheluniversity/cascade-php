@@ -155,7 +155,7 @@ function set_meet_post_num($meetPosts)
 
 
 // Creates the array of post categories that this feed will include.
-function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all){
+function set_categories_cats($academics, $admissions, $col_exploration, $col_life, $fin_aid, $careers, $advice, $prof_roles, $spiritual, $study, $undergrad, $wellbeing, $all, $admin){
     setup_individual_category($academics, "Academics");
     setup_individual_category($admissions, "Admissions Process");
     setup_individual_category($col_exploration, "College Exploration");
@@ -169,6 +169,7 @@ function set_categories_cats($academics, $admissions, $col_exploration, $col_lif
     setup_individual_category($wellbeing, "Wellbeing");
     setup_individual_category($undergrad, "Undergrad");
     setup_individual_category($all, "All");
+    setup_individual_category($admin, "Admin");
 }
 
 
@@ -321,18 +322,13 @@ function format_pub_date($dateStr)
 {
     $d = array();
 
-    $d['dow'] = get_pretty_day_of_week(substr($dateStr, 0, 3));
     $d['day'] = (int)substr($dateStr, 5, 2);
     $d['mon'] = get_pretty_month(substr($dateStr, 8, 3));
     $d['yer'] = (int)substr($dateStr, 12, 4);
-
     $d['our'] = (int)substr($dateStr, 17, 2);
-    $d['min'] = substr($dateStr, 20, 2);
-    $d['sec'] = substr($dateStr, 23, 2);
+    $d['time'] = get_pretty_time($d['our']);
 
-    $d['time'] = get_pretty_time($d['our'], $d['min'], $d['sec']);
-
-    return "{$d['dow']}, {$d['mon']} {$d['day']}, {$d['yer']} at {$d['time']}";
+    return "{$d['mon']} {$d['day']}, {$d['yer']} | {$d['time']}";
 }
 
 
@@ -349,7 +345,7 @@ function get_pretty_month($monStr)
         case 'Jun': $retMon = 'June'; break;
         case 'Jul': $retMon = 'July'; break;
         case 'Aug': $retMon = 'August'; break;
-        case 'Sept': $retMon = 'September'; break;
+        case 'Sep': $retMon = 'September'; break;
         case 'Oct': $retMon = 'October'; break;
         case 'Nov': $retMon = 'November'; break;
         case 'Dec': $retMon = 'December'; break;
@@ -376,19 +372,19 @@ function get_pretty_day_of_week($dowStr)
 
 
 // Helper for time formatting
-function get_pretty_time($hour, $min, $sec)
+function get_pretty_time($hour)
 {
     $modHour = $hour % 12;
     if($modHour == $hour){
         if($modHour == 0){
             $modHour = 12;
         }
-        $retHour = "{$modHour}:{$min} a.m.";
+        $retHour = "{$modHour} a.m.";
     } else {
         if($modHour == 0){
             $modHour = 12;
         }
-        $retHour = "{$modHour}:{$min} p.m.";
+        $retHour = "{$modHour} p.m.";
     }
     return $retHour;
 }
