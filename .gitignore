@@ -29,3 +29,5 @@ composer.lock
 
 config.php
 program-search/csv
+
+index.php
