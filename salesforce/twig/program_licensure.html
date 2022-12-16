@@ -1,3 +1,40 @@
+<style type="text/css">
+    /* Popover styling */
+    .popover__wrapper {
+    position: relative;
+    margin-top: 1.5rem;
+    display: inline-block;
+    }
+    .popover__content {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    transform: translate(0, 10px);
+    background-color: #ffffff;
+    padding: 1.5rem;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.26);
+    width: 300px;
+    }
+    .popover__content:before {
+    position: absolute;
+    z-index: -1;
+    content: "";
+    right: calc(50% - 10px);
+    top: -8px;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent transparent transparent;
+    transition-duration: 0.3s;
+    transition-property: transform;
+    }
+    .popover__wrapper:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, -20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+    }
+</style>
 <table>
     <tr>
         <th>State</th>
@@ -12,7 +49,18 @@
                 {% if loop.index == 1 %}
                     <td rowspan="{{ licenses|length }}">{{ state }}</td>
                 {% endif %}
-                <td>{{ attribute(license, 'Meets state licensure requirements') }}</td>
+                {% if attribute(license, 'Licensure Comments') != "None" %}
+                    <td>
+                        <div class="popover__wrapper">
+                            <a>{{ attribute(license, 'Meets state licensure requirements') }}</a>
+                            <div class="popover__content">
+                                <p class="popover__message">{{ attribute(license, 'Licensure Comments') }}</p>
+                            </div>
+                        </div>
+                    </td>
+                {% else %}
+                    <td>{{ attribute(license, 'Meets state licensure requirements') }}</td>
+                {% endif %}
                 <td>{{ attribute(license, 'License Title') }}</td>
                 {% if attribute(license, 'Board/Agency Website') is defined %}
                     <td><a target="_blank" href="{{ attribute(license, 'Board/Agency Website') }}">{{ attribute(license, 'Board Agency Name') }}</a></td>
