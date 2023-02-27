@@ -50,9 +50,36 @@ function load_course_catalog ($values, $code) {
         $content = autoCache('course_catalog_call', array($code, $values, 86400));
         $content = json_decode($content, true);
 
-        if( strpos($content['data'], '<li') !== false ) {
+        if (array_key_exists('data', $content)) {
+            // Data from program code
+            if( strpos($content['data'], '<li') !== false ) {
+                echo "<h2>Courses</h2>";
+                echo $content['data'];
+            }
+        } else {
+            // Data from peso-de sorted by year and semester
+            // Displayed in order of course start
             echo "<h2>Courses</h2>";
-            echo $content['data'];
+            foreach($content as $year => $terms) {
+                foreach($terms as $semester => $courses) {
+                    if ($semester == "Interim") {
+                        echo "<h3>".$semester." ".$year."</h3>";
+                        echo $courses;
+                    }
+                }
+                foreach($terms as $semester => $courses) {
+                    if ($semester == "Spring") {
+                        echo "<h3>".$semester." ".$year."</h3>";
+                        echo $courses;
+                    }
+                }
+                foreach($terms as $semester => $courses) {
+                    if ($semester == "Fall") {
+                        echo "<h3>".$semester." ".$year."</h3>";
+                        echo $courses;
+                    }
+                }
+            }
         }
     } catch(Exception $e) {
         return '';
