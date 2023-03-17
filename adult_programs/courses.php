@@ -7,8 +7,17 @@
  */
 
 
+// Select wsapi.xp for Staging site
+if( strpos($_SERVER['SERVER_NAME'],'staging')  !== false ) {
+    $wsapi_url = "https://wsapi.xp.bethel.edu";
+    //$wsapi_url = "https://ngrok_url"; // Set a temporary testing URL
+} else {
+    $wsapi_url = "https://wsapi.bethel.edu";
+}
+
 // this is the cached version
 function course_catalog_call($code, $values){
+    global $wsapi_url;
     try {
         $data = array('options' => $values);
         $options = array(
@@ -18,7 +27,7 @@ function course_catalog_call($code, $values){
                 'content' => http_build_query($data),
             ),
         );
-        $url = "https://wsapi.bethel.edu/courses/course-catalog/$code";
+        $url = $wsapi_url . "/courses/course-catalog/$code";
         $context = stream_context_create($options);
         return file_get_contents($url, false, $context);
     } catch(Exception $e) {
@@ -28,8 +37,9 @@ function course_catalog_call($code, $values){
 
 // this is the cached version
 function individual_courses_call($code){
+    global $wsapi_url;
     try {
-        $url = "https://wsapi.bethel.edu/courses/open-enrollment-courses/$code";
+        $url = $wsapi_url . "/courses/open-enrollment-courses/$code";
         return file_get_contents($url, false);
     } catch(Exception $e) {
         return '';
