@@ -105,6 +105,7 @@ function inspect_news_article($xml, $categories){
         "display-on-feed"           => false,
         "id"                        => (string)$xml['id'],
         "featured-homepage-article" => false,
+        "about-page"                => false,
         "bethel-alert"              => 'No'
     );
 
@@ -150,6 +151,8 @@ function inspect_news_article($xml, $categories){
         $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         if( $ds->{'story-metadata'}->{'featured'} == 'Yes' )
             $page_info['featured-homepage-article'] = true;  // this defaults to false above, if it doesn't hit this
+        if( $ds->{'story-metadata'}->{'about-page'} == 'Yes' )
+            $page_info['about-page'] = true;  // this defaults to false above, if it doesn't hit this
     }
 
     global $DisplayImages;
