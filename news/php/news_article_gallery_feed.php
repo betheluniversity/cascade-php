@@ -42,7 +42,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         $id = $article['id'];
         // if it's already been used, skip this article
         // if its the Homepage Top Feature, skip any that aren't tagged as homepage
-        if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) )
+        if( in_array($id, $GLOBALS['stories-already-used']) || ($galleryStyle == 'Homepage Top Feature' && !$article['featured-homepage-article']) || ($galleryStyle == 'About Page Feature' && !$article['about-page']) )
             continue;
 
         // TODO: THIS CHECK CAN BE REMOVED ONCE WE DON't HAVE THE CORNAVIRUS ARTICLE
