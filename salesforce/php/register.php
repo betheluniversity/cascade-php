@@ -3,12 +3,21 @@
 session_start();
 
 $staging = strstr(getcwd(), "/staging");
+$onramps = isset($_POST["onramps"]) ? $_POST["onramps"] : 'false';
 
 //prepare a URL for returning
 if ($staging){
-    $url = 'https://staging.bethel.edu/admissions/apply/';
+    if ($onramps == 'true'){
+        $url = 'https://staging.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
+    }else{
+        $url = 'https://staging.bethel.edu/admissions/apply/';
+    }
 }else{
-    $url = 'https://www.bethel.edu/admissions/apply';
+    if ($onramps == 'true'){
+        $url = 'https://www.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
+    }else{
+        $url = 'https://www.bethel.edu/admissions/apply/';
+    }
 }
 
 $email = $_POST["email"];
@@ -27,12 +36,14 @@ $utm_source = '';
 $utm_medium = '';
 $utm_campaign = '';
 
-if( $_COOKIE['utm_source'] )
-    $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
-if( $_COOKIE['utm_medium'] )
-    $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
-if( $_COOKIE['utm_campaign'] )
-    $utm_campaign = $_COOKIE['utm_campaign'];
+if ($onramps == 'false'){
+    if( $_COOKIE['utm_source'] )
+        $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
+    if( $_COOKIE['utm_medium'] )
+        $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
+    if( $_COOKIE['utm_campaign'] )
+        $utm_campaign = $_COOKIE['utm_campaign'];
+}
 
 $payload = array(
     "email" => $email,
@@ -74,7 +85,11 @@ if($json['success'] == true && $json['account_recovery'] == true){
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
-    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
+    if ($onramps == 'true'){
+        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=true';
+    }else{
+        $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
+    }
     header("Location: $url");
 }else{
     $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=false';
