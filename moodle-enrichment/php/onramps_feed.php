@@ -9,9 +9,13 @@ function create_moodle_feed_logic(){
     //include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     //include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
-    $url = 'https://bethel-university--full.sandbox.my.salesforce.com/services/apexrest/course';
-    $xml = simplexml_load_file($url);
-    print_r($xml);
+    $url = 'https://wsapi.xp.bethel.edu/salesforce/moodle-enrichment';
+    try {
+        $results = json_decode(@file_get_contents($url));
+        print_r($results);
+    } catch(ErrorException $e) {
+        $results = null;
+    }
     return '1';
 }
 
