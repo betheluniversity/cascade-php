@@ -5,7 +5,7 @@ function create_moodle_feed(){
     return $feed;
 }
 
-function create_moodle_feed_logic($categories, $blerts){
+function create_moodle_feed_logic(){
     //include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     //include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
