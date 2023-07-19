@@ -3,17 +3,17 @@
 session_start();
 
 $staging = strstr(getcwd(), "/staging");
-$onramps = isset($_POST["onramps"]) ? $_POST["onramps"] : 'false';
+$redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
 
 //prepare a URL for returning
 if ($staging){
-    if ($onramps == 'true'){
+    if ($redir == 'onramps'){
         $url = 'https://staging.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
     }else{
         $url = 'https://staging.bethel.edu/admissions/apply/';
     }
 }else{
-    if ($onramps == 'true'){
+    if ($redir == 'onramps'){
         $url = 'https://www.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
     }else{
         $url = 'https://www.bethel.edu/admissions/apply/';
@@ -24,19 +24,17 @@ $email = $_POST["email"];
 $email = strtolower($email);
 $email = trim($email);
 
-
 $first = $_POST["first"];
 $last = $_POST["last"];
 $programCode = isset($_POST["programCode"]) ? $_POST["programCode"] : '';
 $quickCreate = isset($_POST["quickCreate"]) ? $_POST["quickCreate"] : '';
-$redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
 
 // prep UTM data
 $utm_source = '';
 $utm_medium = '';
 $utm_campaign = '';
 
-if ($onramps == 'false'){
+if ($redir != 'onramps'){
     if( $_COOKIE['utm_source'] )
         $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
     if( $_COOKIE['utm_medium'] )
@@ -85,7 +83,7 @@ if($json['success'] == true && $json['account_recovery'] == true){
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
-    if ($onramps == 'true'){
+    if ($redir == 'onramps'){
         $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=true';
     }else{
         $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
