@@ -17,8 +17,13 @@ function create_moodle_feed_logic(){
     }
     foreach ($results as $class) {
         $class_array = json_decode(json_encode($class), true);
-//        print "Name: " . $class_array[Name] . "\n";
-//        print "Description: " . $class_array[Description__c] . "\n";
+        print "Name: " . $class_array[Name] . "\n";
+        print "Description: " . $class_array[Description__c] . "\n";
+        print "ID: " . $class_array[Id] . "\n";
+        print "Registration Cost: " . $class_array[Registration_Cost__c] . "\n";
+        print "Attributes: " . $class_array[attributes] . "\n";
+        print "Start Date: " . $class_array[hed__Start_Date__c] . "\n";
+        print "End Date: " . $class_array[hed__End_Date__c] . "\n";
     }
     print_r($class_array);
     return '1';
