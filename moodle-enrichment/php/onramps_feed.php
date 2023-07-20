@@ -28,7 +28,7 @@ function create_moodle_feed_logic(){
         print "URL: " . $class_array[attributes][url] . "</br>";
         print "Registration Cost: " . $class_array[Registration_Cost__c] . "</br>";
         print "Start Date: " . $class_array[hed__Start_Date__c] . "</br>";
-        print "End Date: " . $class_array[hed__End_Date__c] . "</br>";
+        print "End Date: " . $class_array[hed__End_Date__c] . "</br></br>";
 //        $html = $twig->render('onramps_feed.html', array(
 //            'results' => $course));
     }
