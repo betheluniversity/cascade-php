@@ -1,12 +1,12 @@
 <ul>
   {% for course in courses %}
   <li>
-    {{course[Name]}}}
+    {{course[Name]}}
     {{course[Description__c]}}
-    {{$course[Registration_Cost__c]}}
-    {{$course[Registration_Cost__c]}}
-    {{$course[hed__Start_Date__c]}}
-    {{$course[hed__End_Date__c]}}
+    {{course[Registration_Cost__c]}}
+    {{course[Registration_Cost__c]}}
+    {{course[hed__Start_Date__c]}}
+    {{course[hed__End_Date__c]}}
   </li>
   {% endfor %}
 </ul>
