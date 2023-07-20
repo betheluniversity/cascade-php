@@ -22,6 +22,6 @@ function create_moodle_feed_logic(){
         array_push( $courses, json_decode(json_encode($class), true));
     }
 
-    return $twig->render('onramps_feed.html', array('results' => $courses));
+    return $twig->render('onramps_feed.html', array('courses' => $courses));
 }
 
