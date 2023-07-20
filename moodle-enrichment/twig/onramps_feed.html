@@ -2,6 +2,8 @@
   {% for course in courses %}
   <li>
     <h3>{{ course['Name'] }}</h3>
+    <p>{{ course['Description__c'] }}</p>
+    <p>Registration Cost: ${{ course['Registration_Cost__c'] }}</p>
   </li>
   {% endfor %}
 </ul>
