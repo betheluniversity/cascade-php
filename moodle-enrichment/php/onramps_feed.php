@@ -15,8 +15,11 @@ function create_moodle_feed_logic(){
     } catch(ErrorException $e) {
         $results = $e;
     }
+    foreach ($results as $class) {
+        print "Name: " . $class[Name] . "\n";
+        print "Description: " . $class[Description__c] . "\n";
+    }
     print_r($results);
     return '1';
 }
 
-?>
