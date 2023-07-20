@@ -16,10 +16,11 @@ function create_moodle_feed_logic(){
         $results = $e;
     }
     foreach ($results as $class) {
-        print "Name: " . $class[Name] . "\n";
-        print "Description: " . $class[Description__c] . "\n";
+        $class_array = json_decode(json_encode($class), true);
+//        print "Name: " . $class_array[Name] . "\n";
+//        print "Description: " . $class_array[Description__c] . "\n";
     }
-    print_r($results);
+    print_r($class_array);
     return '1';
 }
 
