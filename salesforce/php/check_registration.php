@@ -7,8 +7,10 @@ $staging = strstr(getcwd(), "/staging");
 //Changes the authenticating URL depending on the staging environment
 if ($staging){
     $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/check-registration';
+    $moodle_url = 'https://moodle.xp.bethel.edu';
 }else{
     $wsapi_url = 'https://wsapi.bethel.edu/salesforce/check-registration';
+    $moodle_url = 'https://moodle.bethel.edu';
 }
 
 $reg_id = isset($_POST["reg_id"]) ? $_POST["reg_id"] : '';
@@ -35,7 +37,7 @@ $json = json_decode($result, true);
 
 $url = $url = $referrer . '?error=true';
 if($json['status'] == 'success'){
-    $url = 'https://moodle.bethel.edu';
+    $url = $moodle_url;
 }elseif($json['status'] == 'timeout'){
     $url = $referrer . '?timeout=true';
 }
