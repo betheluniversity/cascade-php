@@ -3,22 +3,19 @@
 session_start();
 
 $staging = strstr(getcwd(), "/staging");
-$redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
+
+//Changes the authenticating URL depending on the staging environment
+if ($staging){
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
+}else{
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
+}
 
 //prepare a URL for returning
-if ($staging){
-    if ($redir == 'onramps'){
-        $url = 'https://staging.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
-    }else{
-        $url = 'https://staging.bethel.edu/admissions/apply/';
-    }
-}else{
-    if ($redir == 'onramps'){
-        $url = 'https://www.bethel.edu/_testing/josiah-tillman/Onramps/onramps/';
-    }else{
-        $url = 'https://www.bethel.edu/admissions/apply/';
-    }
-}
+$url = isset($_POST["referrer"]) ? $_POST["referrer"] : '';
+$login_url = isset($_POST["login_url"]) ? $_POST["login_url"] : '';
+
+$redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
 
 $email = $_POST["email"];
 $email = strtolower($email);
@@ -66,20 +63,16 @@ $options = array(
 
 $context  = stream_context_create($options);
 
-//Changes the authenticating URL depending on the staging environment
-if ($staging){
-    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
-}else{
-    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
-}
-
 // Here is the returned value
 $result = file_get_contents($wsapi_url, false, $context);
-
 $json = json_decode($result, true);
 
 if($json['success'] == true && $json['account_recovery'] == true){
-    $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
+    if ($login_url){
+        $url = $login_url;
+    }else{
+        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
+    }
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
