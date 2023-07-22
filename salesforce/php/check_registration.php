@@ -6,17 +6,16 @@ $staging = strstr(getcwd(), "/staging");
 
 //Changes the authenticating URL depending on the staging environment
 if ($staging){
-    $wsapi_url = 'https://wsapi.xp.bethel.edu/salseforce/check-registration';
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/check-registration';
 }else{
-    $wsapi_url = 'https://wsapi.bethel.edu/salseforce/check-registration';
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/check-registration';
 }
 
 $reg_id = isset($_POST["reg_id"]) ? $_POST["reg_id"] : '';
 $referrer = isset($_POST["referrer"]) ? $_POST["referrer"] : '';
 
 $payload = array(
-    "reg_id" => $reg_id,
-    "referrer" => $referrer
+    "reg_id" => $reg_id
 );
 
 $json_payload = json_encode($payload);
