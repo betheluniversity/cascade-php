@@ -19,22 +19,9 @@ function create_moodle_feed_logic(){
 
     $courses = Array();
     foreach ($results as $class) {
-        $class_array = json_decode(json_encode($class), true);
-        print "Name: " . $class_array[Name] . "</br>";
-        print "Description: " . $class_array[Description__c] . "</br>";
-        print "ID: " . $class_array[Id] . "</br>";
-        print "Registration Cost: " . $class_array[Registration_Cost__c] . "</br>";
-        print "Type: " . $class_array[attributes][type] . "</br>";
-        print "URL: " . $class_array[attributes][url] . "</br>";
-        print "Registration Cost: " . $class_array[Registration_Cost__c] . "</br>";
-        print "Start Date: " . $class_array[hed__Start_Date__c] . "</br>";
-        print "End Date: " . $class_array[hed__End_Date__c] . "</br></br>";
-//        $html = $twig->render('onramps_feed.html', array(
-//            'results' => $course));
+        array_push( $courses, json_decode(json_encode($class), true));
     }
 
-
-
-    return '1';
+    return $twig->render('onramps_feed.html', array('courses' => $courses));
 }
 
