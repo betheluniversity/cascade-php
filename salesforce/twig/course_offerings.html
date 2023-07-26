@@ -1,8 +1,10 @@
-<ul>
-  {% for course in courses %}
-    <h4>{{ course['Name'] }}</h4>
-    <p>{{ course['Description__c'] }}</p>
-    <p>Registration Cost: ${{ course['Registration_Cost__c'] }}</br>
-    Course Term: {{ course['hed__Start_Date__c']|date("F j, Y") }} - {{ course['hed__End_Date__c']|date("F j, Y") }}</p>
-  {% endfor %}
-</ul>
+{% if courses is defined and courses|length > 0 %}
+  <ul>
+    {% for course in courses %}
+      <h4>{{ course['Name'] }}</h4>
+      <p>{{ course['Description__c'] }}</p>
+      <p>Registration Cost: ${{ course['Registration_Cost__c'] }}</br>
+      Course Term: {{ course['hed__Start_Date__c']|date("F j, Y") }} - {{ course['hed__End_Date__c']|date("F j, Y") }}</p>
+    {% endfor %}
+  </ul>
+{% endif %}
