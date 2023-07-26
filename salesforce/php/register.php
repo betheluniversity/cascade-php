@@ -31,7 +31,7 @@ $utm_source = '';
 $utm_medium = '';
 $utm_campaign = '';
 
-if ($redir != 'onramps'){
+if (!$login_url){
     if( $_COOKIE['utm_source'] )
         $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
     if( $_COOKIE['utm_medium'] )
@@ -49,7 +49,8 @@ $payload = array(
     'utm_campaign' => $utm_campaign,
     'program_code' => $programCode,
     'quick_create' => $quickCreate,
-    'redir' => $redir
+    'redir' => $redir,
+    'login_url' => $login_url
 );
 
 $json_payload = json_encode($payload);
@@ -76,7 +77,7 @@ if($json['success'] == true && $json['account_recovery'] == true){
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
-    if ($redir == 'onramps'){
+    if ($login_url){
         $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=true';
     }else{
         $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
