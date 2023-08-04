@@ -13,7 +13,6 @@ if ($staging){
 
 //prepare a URL for returning
 $url = isset($_POST["referrer"]) ? $_POST["referrer"] : '';
-$login_url = isset($_POST["login_url"]) ? $_POST["login_url"] : '';
 
 $redir = isset($_POST["redir"]) ? $_POST["redir"] : '';
 
@@ -31,14 +30,12 @@ $utm_source = '';
 $utm_medium = '';
 $utm_campaign = '';
 
-if (!$login_url){
-    if( $_COOKIE['utm_source'] )
-        $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
-    if( $_COOKIE['utm_medium'] )
-        $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
-    if( $_COOKIE['utm_campaign'] )
-        $utm_campaign = $_COOKIE['utm_campaign'];
-}
+if( $_COOKIE['utm_source'] )
+    $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
+if( $_COOKIE['utm_medium'] )
+    $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
+if( $_COOKIE['utm_campaign'] )
+    $utm_campaign = $_COOKIE['utm_campaign'];
 
 $payload = array(
     "email" => $email,
@@ -49,8 +46,7 @@ $payload = array(
     'utm_campaign' => $utm_campaign,
     'program_code' => $programCode,
     'quick_create' => $quickCreate,
-    'redir' => $redir,
-    'login_url' => $login_url
+    'redir' => $redir
 );
 
 $json_payload = json_encode($payload);
@@ -69,19 +65,11 @@ $result = file_get_contents($wsapi_url, false, $context);
 $json = json_decode($result, true);
 
 if($json['success'] == true && $json['account_recovery'] == true){
-    if ($login_url){
-        $url = $login_url;
-    }else{
-        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
-    }
+    $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
     header("Location: $url");
 }elseif($json['success'] == true){
     $contact_id = $json['contact_id'];
-    if ($login_url){
-        $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=true';
-    }else{
-        $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
-    }
+    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
     header("Location: $url");
 }else{
     $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=false';

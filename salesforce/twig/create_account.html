@@ -1,0 +1,50 @@
+<div id="account_form">
+{% include 'account_form.html' %}
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+  function process_form(e) {
+      
+    e.preventDefault();
+
+    form = $(".registerForm" );
+    message = $("#validateMessage");
+
+    all_fields = $("#all_fields");
+    submit_button = $("#submit_button");
+
+    var filter=/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i;
+    if (filter.test($("#email").val())){
+        if ( message.hasClass('alert') ) {
+          message.removeClass('alert');
+          message.css("display", "none");
+        }
+
+        all_fields.css("pointer-events", "none");
+        
+        submit_button.css("pointer-events", "none");
+        submit_button.html("<img src='https://www.bethel.edu/cdn/images/load.gif' style='display: block; height: 48px; margin: 0 12px; padding: 10px;pointer-events: none;'/>");
+    } else {
+        message.html('Please enter a valid email address.');
+        message.addClass('alert');
+        message.css("display", "block");
+        return;
+    }
+
+    $.ajax({
+      url: form.attr('action'),
+      type: "POST",
+      data: form.serialize(),
+      success: function(response) {
+        console.log(response);
+        $("#account_form").html(response);
+      },
+      error: function(xhr) {
+        console.log(xhr);
+        message.html('ajax error');
+        message.addClass('alert');
+        message.css("display", "block");
+      }
+    });
+  }
+</script>

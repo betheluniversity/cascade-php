@@ -1,0 +1,45 @@
+{% if data['message'] %}
+  <p id="message" class="{{ data['messageClass'] }}" style="display:block;">{{ data['message']|raw }}</p>
+{% endif %}
+<div class="grid false">
+  <div class="grid-cell u-medium-1-2 ">
+    <div class=" grid-pad-1x ">
+      <form name="registerForm" class="registerForm" action="{{ data['php_path'] }}" onsubmit="return process_form(event);">
+          <fieldset>
+            {% if data['noinput'] %}
+              <div id="all_fields" style="display: block; pointer-events: none;" >
+            {% else %}
+              <div id="all_fields" style="display: block;" >
+            {% endif %}
+              {% if data['fullname'] %}
+                <label for="first">First Name</label>
+                <input class="text u-w100" type="text" id="first" name="first" placeholder="First Name" value="" required="true" />
+                <label for="last">Last Name</label>
+                <input class="text u-w100" type="text" id="last" name="last" placeholder="Last Name" value="" required="true" />
+              {% endif %}
+              <p id="validateMessage" class="alert" style="display:none;"></p>
+              {% if not data['bethel'] %}
+                <label for="email">Email Address</label>
+                {% if data['fullname'] %}
+                  <input class="text u-w100 mb2" type="text" id="email" name="email" placeholder="Email" value="{{ data['email'] }}" required="true" style="pointer-events: none;"/>
+                {% else %}
+                  <input class="text u-w100 mb2" type="text" id="email" name="email" placeholder="Email" value="{{ data['email'] }}" required="true"/>
+                {% endif %}
+              {% endif %}
+            </div>
+            <input type="hidden" name="org_id" id="org_id" value="{{ data['org_id'] }}" readonly="true" />
+            <button id="submit_button" type="submit" class="btn">{{ data['buttonTitle'] }}</button>
+          </fieldset>
+      </form>
+    </div>
+    {% if data['problems'] %}
+      <p>Problems? Contact <a href="https://www.bethel.edu/its">ITS</a>.</p>
+    {% endif %}
+    {% if data['bethel'] %}
+      <p>Not you? <a href="">Try another account.</a></p>
+    {% endif %}
+  </div>
+  {% if data['fullname'] %}
+    <p>Already have an account? <a href="">Try another email.</a></p>
+  {% endif %}
+</div>
