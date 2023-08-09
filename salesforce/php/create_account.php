@@ -5,7 +5,10 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 $email = isset($_POST["email"]) ? $_POST["email"] : '';
 if ( $email ) {
     $data = process_form($_POST);
-    echo $data;
+
+    $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/salesforce/twig');
+    $twig = new Twig_Environment($loader);
+    echo $twig->render('create_account_form.html', array('data' => $data));
 }
 
 function get_account_form($data) {
@@ -15,15 +18,27 @@ function get_account_form($data) {
 
 function create_account_form($data) {
 
-    $data += array(
-        'message' => "To get started, let's see if you already have a Bethel Account.",
-        'messageClass' => '',
-        'fullname' => false,
-        "buttonTitle" => 'Check Email',
-        'problems' => true
-    );
-
     $twig = makeTwigEnviron('/code/salesforce/twig');
+
+    if ( $data["bca_username"] ) {
+        $data += array(
+            'message' => "Getting your Bethel Account...",
+            'messageClass' => '',
+            'fullname' => false,
+            "buttonTitle" => "<img src='https://www.bethel.edu/cdn/images/load.gif' style='display: block; height: 48px; margin: 0 12px; padding: 10px;pointer-events: none;'/>",
+            'nobutton' => true,
+            'problems' => true
+        );
+    } else {
+        $data += array(
+            'message' => "To get started, let's see if you already have a Bethel Account.",
+            'messageClass' => '',
+            'fullname' => false,
+            "buttonTitle" => 'Check Email',
+            'problems' => true
+        );
+    }
+
     return $twig->render('create_account.html', array('data' => $data));
 }
 
@@ -34,12 +49,10 @@ function process_form($data) {
     );
 
     $staging = strstr(getcwd(), "/staging");
-    $loader = new Twig_Loader_Filesystem($_SERVER["DOCUMENT_ROOT"] . '/code/salesforce/twig');
-    $twig = new Twig_Environment($loader);
 
     if ($staging){
-        //$wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
-        $wsapi_url = 'https://e46b-173-165-237-157.ngrok-free.app/salesforce/register';
+        //$wsapi_url = 'https://a2ad-97-116-115-179.ngrok-free.app/salesforce/register';
+        $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
     }else{
         $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
     }
@@ -54,6 +67,18 @@ function process_form($data) {
     //    );
     //    return $twig->render('account_form.html', array('data' => $data));
     //}
+
+    $params = isset($data["params"]) ? $data["params"] : '';
+    $login_url = isset($data["login_url"]) ? $data["login_url"] : '';
+
+    $query = '';
+    if ($params) {
+        $http_query = http_build_query($params);
+        $query = '?' . $http_query;
+    }
+
+    $iam_redirect = $login_url;
+    $iam_redirect.= $query;
     
     $payload = array(
         "email" => $email,
@@ -65,7 +90,7 @@ function process_form($data) {
         'program_code' => '',
         'quick_create' => '',
         'redir' => '',
-        'login_url' => ''
+        'login_url' => $iam_redirect
     );
     
     $json_payload = json_encode($payload);
@@ -89,43 +114,45 @@ function process_form($data) {
             $name = $json['account']['first'];
 
             if ($json['account']['bethel'] == true){
-                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in with the username and password for your Bethel Community Account.';
+                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using your Bethel Community Account username and password.';
                 $data += array('bethel' => true);
             } else {
-                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using this email address and your Bethel Account password.';
+                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using the email address below and your Bethel Account password.';
             }
 
+            $data['bca_username'] = '';
             $data += array(
                 'message' => $message,
                 'messageClass' => '',
-                'fullname' => false,
                 'buttonTitle' => 'Log In',
+                'login_url' => $login_url,
                 'php_path' => '',
-                'org_id' => '',
                 'noinput' => true
             );
 
         } else {
+            $data['bca_username'] = '';
             $data += array(
-                'message' => "We've emailed you a link to create your Bethel Account and password.<br /><br />Please check your inbox within the next few minutes.<br />If you don't get the email, please check your spam folder, or contact <a href='https://www.bethel.edu/its'>ITS</a>.<br /><br />After you create your account, you will be able to log in.",
+                'message' => "We've emailed you a link to create your Bethel Account and password.<br /><br />Please check your inbox within the next few minutes.<br />If you don't get the email, please check your spam folder, try again, then contact <a href='https://www.bethel.edu/its'>ITS</a>.<br /><br />After you create your account, you will be able to log in.",
                 'messageClass' => 'alert',
-                'fullname' => false,
                 'buttonTitle' => 'Log In',
+                'login_url' => $login_url,
                 'php_path' => '',
-                'org_id' => '',
-                'noinput' => true
+                'noinput' => true,
+                'tryagain' => true
             );
         }
     } else {
+        $data['bca_username'] = '';
         $data += array(
             'message' => "<h3>Create an Account</h3>Before we continue, let's create a Bethel Account.<br />Please enter your first and last name.",
             'messageClass' => '',
             'fullname' => true,
             'buttonTitle' => 'Create Account',
-            'php_path' => '',
-            'org_id' => ''
+            'login_url' => $login_url,
+            'php_path' => ''
         );
     }
 
-    return $twig->render('account_form.html', array('data' => $data));
+    return $data;
 }
