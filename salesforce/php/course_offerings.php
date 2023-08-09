@@ -13,9 +13,9 @@ function create_moodle_feed_logic($org_id){
 
     //Changes the authenticating URL depending on the staging environment
     if ($staging){
-        $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/moodle-enrichment';
+        $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/course-offerings';
     }else{
-        $wsapi_url = 'https://wsapi.bethel.edu/salesforce/moodle-enrichment';
+        $wsapi_url = 'https://wsapi.bethel.edu/salesforce/course-offerings';
     }
 
     if ($org_id) {
