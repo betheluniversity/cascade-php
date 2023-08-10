@@ -21,14 +21,14 @@ function create_account_form($data) {
     $twig = makeTwigEnviron('/code/salesforce/twig');
 
     if ( $data["bca_username"] ) {
-        $data += array(
-            'message' => "Getting your Bethel Account...",
-            'messageClass' => '',
-            'fullname' => false,
-            "buttonTitle" => "<img src='https://www.bethel.edu/cdn/images/load.gif' style='display: block; height: 48px; margin: 0 12px; padding: 10px;pointer-events: none;'/>",
-            'nobutton' => true,
-            'problems' => true
-        );
+            $data += array(
+                'message' => "Getting your Bethel Account...",
+                'messageClass' => '',
+                'fullname' => false,
+                "buttonTitle" => "<img src='https://www.bethel.edu/cdn/images/load.gif' style='display: block; height: 48px; margin: 0 12px; padding: 10px;pointer-events: none;'/>",
+                'nobutton' => true,
+                'problems' => true
+            );
     } else {
         $data += array(
             'message' => "To get started, let's see if you already have a Bethel Account.",
@@ -51,7 +51,7 @@ function process_form($data) {
     $staging = strstr(getcwd(), "/staging");
 
     if ($staging){
-        //$wsapi_url = 'https://a2ad-97-116-115-179.ngrok-free.app/salesforce/register';
+        //$wsapi_url = 'https://c056-97-116-115-179.ngrok-free.app/salesforce/register';
         $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
     }else{
         $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
@@ -68,13 +68,26 @@ function process_form($data) {
     //    return $twig->render('account_form.html', array('data' => $data));
     //}
 
-    $params = isset($data["params"]) ? $data["params"] : '';
+    $allowed_params = isset($data["allowed_params"]) ? $data["allowed_params"] : '';
+    $allowed_params = str_replace(' ', '', $allowed_params);
+    $allowed_params = array_values(preg_split("/\,/", $allowed_params));
+
+    $params = isset($data["params"]) ? $data["params"] : Array();
+    foreach ($params as $key => $value) {
+        if (!in_array($key, $allowed_params)) {
+            unset($params[$key]);
+        }
+    }
+    $data['params'] = $params;
+
     $login_url = isset($data["login_url"]) ? $data["login_url"] : '';
 
     $query = '';
     if ($params) {
         $http_query = http_build_query($params);
-        $query = '?' . $http_query;
+        if ($http_query) {
+            $query = '?' . $http_query;
+        }
     }
 
     $iam_redirect = $login_url;
@@ -107,6 +120,8 @@ function process_form($data) {
     // Here is the returned value
     $result = file_get_contents($wsapi_url, false, $context);
     $json = json_decode($result, true);
+
+    $data['email'] = strtolower($email);
 
     if ($json['success'] == true) {
         if ( $json['account_recovery'] == true && $json['account']) {

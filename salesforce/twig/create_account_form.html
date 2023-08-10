@@ -33,6 +33,11 @@
           {% if data['bca_username'] %}
           <input type="hidden" name="bca_username" id="bca_username" value="{{ data['bca_username'] }}" readonly="true" />
           {% endif %}
+          {% if data['allowed_params'] %}
+          {% if data['buttonTitle'] != 'Log In' %}
+          <input type="hidden" name="allowed_params" id="allowed_params" value="{{ data['allowed_params'] }}" readonly="true" />
+          {% endif %}
+          {% endif %}
           {% if data['noinput'] %}
           <div id="all_fields" style="display: block; pointer-events: none; opacity: 0.6;" >
           {% else %}
