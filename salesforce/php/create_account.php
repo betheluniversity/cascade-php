@@ -61,6 +61,25 @@ function process_form($data) {
     $last = isset($data["last"]) ? $data["last"] : '';
     $email = isset($data["email"]) ? $data["email"] : '';
 
+    $redir = isset($data["redir"]) ? $data["redir"] : '';
+    $programCode = isset($data["programCode"]) ? $data["programCode"] : '';
+    $quickCreate = isset($data["quickCreate"]) ? $data["quickCreate"] : '';
+
+    // prep UTM data
+    $utm_source = '';
+    $utm_medium = '';
+    $utm_campaign = '';
+
+    if ( $_COOKIE['utm_source'] ) {
+        $utm_source = ucwords(str_replace('_', ' ', $_COOKIE['utm_source']));
+    }
+    if ( $_COOKIE['utm_medium'] ) {
+        $utm_medium = ucwords(str_replace('_', ' ', $_COOKIE['utm_medium']));
+    }
+    if ( $_COOKIE['utm_campaign'] ) {
+        $utm_campaign = $_COOKIE['utm_campaign'];
+    }
+
     //if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     //    $data += array(
     //        'validateMessage' => 'Please enter a valid email address.'
@@ -81,6 +100,11 @@ function process_form($data) {
     $data['params'] = $params;
 
     $login_url = isset($data["login_url"]) ? $data["login_url"] : '';
+    if ($staging) {
+        if (str_contains($login_url, 'www.bethel.edu')) {
+            $login_url = str_replace('www.bethel.edu', 'staging.bethel.edu', $login_url);
+        }
+    }
 
     $query = '';
     if ($params) {
@@ -97,12 +121,12 @@ function process_form($data) {
         "email" => $email,
         "first_name" => $first,
         "last_name" => $last,
-        'utm_source' => '',
-        'utm_medium' => '',
-        'utm_campaign' => '',
-        'program_code' => '',
-        'quick_create' => '',
-        'redir' => '',
+        'utm_source' => $utm_source,
+        'utm_medium' => $utm_medium,
+        'utm_campaign' => $utm_campaign,
+        'program_code' => $programCode,
+        'quick_create' => $quickCreate,
+        'redir' => $redir,
         'login_url' => $iam_redirect
     );
     
@@ -124,38 +148,107 @@ function process_form($data) {
     $data['email'] = strtolower($email);
 
     if ($json['success'] == true) {
+
+        $contact_id = isset($json["contact_id"]) ? $json["contact_id"] : '';
+        if ($contact_id) {
+            $params +=  array(
+                'cid' => $contact_id
+            );
+        }
+
         if ( $json['account_recovery'] == true && $json['account']) {
 
-            $name = $json['account']['first'];
-
-            if ($json['account']['bethel'] == true){
-                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using your Bethel Community Account username and password.';
-                $data += array('bethel' => true);
-            } else {
-                $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using the email address below and your Bethel Account password.';
+            // Add cid to login url params if allowed
+            if ( in_array('cid', $allowed_params) ) {
+                $query = '';
+                $http_query = http_build_query($params);
+                if ($http_query) {
+                    $query = '?' . $http_query;
+                }
             }
 
-            $data['bca_username'] = '';
-            $data += array(
-                'message' => $message,
-                'messageClass' => '',
-                'buttonTitle' => 'Log In',
-                'login_url' => $login_url,
-                'php_path' => '',
-                'noinput' => true
-            );
+            $auto_login = isset($data["auto_login"]) ? $data["auto_login"] : 'false';
+            if ( $auto_login == 'true' ) {
+                $url = $login_url . $query;
+                echo '<script>window.top.location.href = "' . $url . '";</script>';
+
+                $data += array(
+                    'message' => "To get started, let's see if you already have a Bethel Account.",
+                    'messageClass' => '',
+                    'fullname' => false,
+                    "buttonTitle" => 'Check Email',
+                    'problems' => true,
+                    'noinput' => false
+                );
+            } else {
+                $name = $json['account']['first'];
+
+                if ($json['account']['bethel'] == true){
+                    $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using your Bethel Community Account username and password.';
+                    $data += array('bethel' => true);
+                } else {
+                    $message = '<h3>Welcome back ' . $name . '!</h3>To continue, log in using the email address below and your Bethel Account password.';
+                }
+
+                $data['bca_username'] = '';
+                $data += array(
+                    'message' => $message,
+                    'messageClass' => '',
+                    'buttonTitle' => 'Log In',
+                    'login_url' => $login_url,
+                    'php_path' => '',
+                    'noinput' => true
+                );
+            }
 
         } else {
-            $data['bca_username'] = '';
-            $data += array(
-                'message' => "We've emailed you a link to create your Bethel Account and password.<br /><br />Please check your inbox within the next few minutes.<br />If you don't get the email, please check your spam folder, try again, then contact <a href='https://www.bethel.edu/its'>ITS</a>.<br /><br />After you create your account, you will be able to log in.",
-                'messageClass' => 'alert',
-                'buttonTitle' => 'Log In',
-                'login_url' => $login_url,
-                'php_path' => '',
-                'noinput' => true,
-                'tryagain' => true
-            );
+
+            $confirm_redirect = isset($data["confirm_redirect"]) ? $data["confirm_redirect"] : '';
+            if ($staging) {
+                if (str_contains($confirm_redirect, 'www.bethel.edu')) {
+                    $confirm_redirect = str_replace('www.bethel.edu', 'staging.bethel.edu', $confirm_redirect);
+                }
+            }
+
+            if ( $confirm_redirect ) {
+
+                $confirm_redirect_params = isset($data["confirm_redirect_params"]) ? $data["confirm_redirect_params"] : '';
+                $confirm_redirect_params = str_replace(' ', '', $confirm_redirect_params);
+                $confirm_redirect_params = array_values(preg_split("/\,/", $confirm_redirect_params));
+
+                // Add cid to confirm redirect params if allowed
+                if ( in_array('cid', $confirm_redirect_params) ) {
+                    $query = '';
+                    $http_query = http_build_query($params);
+                    if ($http_query) {
+                        $query = '?' . $http_query;
+                    }
+                }
+
+                $url = $confirm_redirect . $query;
+                echo '<script>window.top.location.href = "' . $url . '";</script>';
+                
+                $data += array(
+                    'message' => "To get started, let's see if you already have a Bethel Account.",
+                    'messageClass' => '',
+                    'fullname' => false,
+                    "buttonTitle" => 'Check Email',
+                    'problems' => true,
+                    'noinput' => false
+                );
+            } else {
+                $data['bca_username'] = '';
+
+                $data += array(
+                    'message' => "We've emailed you a link to create your Bethel Account and password.<br /><br />Please check your inbox within the next few minutes.<br />If you don't get the email, please check your spam folder, try again, then contact <a href='https://www.bethel.edu/its'>ITS</a>.<br /><br />After you create your account, you will be able to log in.",
+                    'messageClass' => 'alert',
+                    'buttonTitle' => 'Log In',
+                    'login_url' => $login_url,
+                    'php_path' => '',
+                    'noinput' => true,
+                    'tryagain' => true
+                );
+            }
         }
     } else {
         $data['bca_username'] = '';

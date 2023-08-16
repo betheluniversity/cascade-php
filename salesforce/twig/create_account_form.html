@@ -21,27 +21,42 @@
       {% endif %}
         <fieldset>
           {% for key, value in data['params'] %}
-          {% if data['buttonTitle'] == 'Log In' %}
-          <input type="hidden" name="{{ key }}" value="{{ value }}" readonly="true" />
-          {% else %}
-          <input type="hidden" name="params[{{ key }}]" value="{{ value }}" readonly="true" />
-          {% endif %}
+            {% if data['buttonTitle'] == 'Log In' %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}" readonly="true" />
+            {% else %}
+            <input type="hidden" name="params[{{ key }}]" value="{{ value }}" readonly="true" />
+            {% endif %}
           {% endfor %}
           {% if data['buttonTitle'] != 'Log In' %}
-          <input type="hidden" name="login_url" id="login_url" value="{{ data['login_url'] }}" readonly="true" />
+            {% if data['login_url'] %}
+            <input type="hidden" name="login_url" id="login_url" value="{{ data['login_url'] }}" readonly="true" />
+            {% endif %}
+            {% if data['redir'] %}
+            <input type="hidden" name="redir" id="redir" value="{{ data['redir'] }}" readonly="true" />
+            {% endif %}
+            {% if data['auto_login'] %}
+            <input type="hidden" name="auto_login" id="auto_login" value="{{ data['auto_login'] }}" readonly="true" />
+            {% endif %}
+            {% if data['allowed_params'] %}
+            <input type="hidden" name="allowed_params" id="allowed_params" value="{{ data['allowed_params'] }}" readonly="true" />
+            {% endif %}
+            {% if data['confirm_redirect'] %}
+            <input type="hidden" name="confirm_redirect" id="confirm_redirect" value="{{ data['confirm_redirect'] }}" readonly="true" />
+              {% if data['confirm_redirect_params'] %}
+              <input type="hidden" name="confirm_redirect_params" id="confirm_redirect_params" value="{{ data['confirm_redirect_params'] }}" readonly="true" />
+              {% endif %}
+            {% endif %}
+            {% for key, value in data['account_type'] %}
+            <input type="hidden" name="account_type[{{ key }}]" value="{{ value }}" readonly="true" />
+            {% endfor %}
           {% endif %}
           {% if data['bca_username'] %}
           <input type="hidden" name="bca_username" id="bca_username" value="{{ data['bca_username'] }}" readonly="true" />
           {% endif %}
-          {% if data['allowed_params'] %}
-          {% if data['buttonTitle'] != 'Log In' %}
-          <input type="hidden" name="allowed_params" id="allowed_params" value="{{ data['allowed_params'] }}" readonly="true" />
-          {% endif %}
-          {% endif %}
           {% if data['noinput'] %}
           <div id="all_fields" style="display: block; pointer-events: none; opacity: 0.6;" >
           {% else %}
-          <div id="all_fields" style="display: block;" >
+          <div id="all_fields" style="display: block; pointer-events: auto; opacity: 1;" >
           {% endif %}
           {% if data['fullname'] %}
           <label for="first">First Name</label>
@@ -49,7 +64,7 @@
           <label for="last">Last Name</label>
           <input class="text u-w100" type="text" id="last" name="last" placeholder="Last Name" value="" required />
           {% endif %}
-          <p id="validateMessage" class="alert" style="display:none;"></p>
+          <p id="validateMessage" class="alert" style="display: none;"></p>
           {% if not data['bethel'] %}
           {% if data['buttonTitle'] == 'Log In' %}
           <label>Login Username</label>
