@@ -1,0 +1,66 @@
+<div id="account_form">
+{% include 'create_account_form.html' %}
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+  bca_username = $("#bca_username");
+  if ( bca_username.val() ) {
+    form = $(".registerForm" );
+    form.submit();
+  }
+
+  function process_form(e) {
+
+    e.preventDefault();
+
+    form = $(".registerForm" );
+    message = $("#validateMessage");
+
+    all_fields = $("#all_fields");
+    submit_button = $("#submit_button");
+
+    email = $("#email").val();
+    if ( email ) {
+      var filter=/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i;
+      if (filter.test(email)){
+        if ( message.hasClass('alert') ) {
+          message.removeClass('alert');
+          message.css("display", "none");
+        }
+
+        all_fields.css("pointer-events", "none");
+        all_fields.css("opacity", 0.6);
+        
+        submit_button.css("pointer-events", "none");
+        submit_button.html("<img src='https://www.bethel.edu/cdn/images/load.gif' style='display: block; height: 48px; margin: 0 12px; padding: 10px;pointer-events: none;'/>");
+      } else {
+          message.html('Please enter a valid email address.');
+          message.addClass('alert');
+          message.css("display", "block");
+          return;
+      }
+    } else {
+      bca_username = $("#bca_username");
+      if ( bca_username ) {
+        $("#email").val(bca_username.val());
+      }
+    }
+
+    $.ajax({
+      url: form.attr('action'),
+      type: "POST",
+      data: form.serialize(),
+      success: function(response) {
+        //console.log(response);
+        $("#account_form").html(response);
+      },
+      error: function(xhr) {
+        console.log(xhr);
+        message.html('There was a problem with your account, please contact <a href="https://www.bethel.edu/its">ITS</a>.');
+        message.addClass('alert');
+        message.css("display", "block");
+      }
+    });
+  }
+</script>
