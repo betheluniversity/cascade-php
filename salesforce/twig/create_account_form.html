@@ -105,8 +105,8 @@
         {% endif %}
       {% endif %}
     {% endif %}
+    {% if data['fullname'] %}
+    <p>Already have an account? <a href="">Try another email.</a></p>
+    {% endif %}
   </div>
-  {% if data['fullname'] %}
-  <p>Already have an account? <a href="">Try another email.</a></p>
-  {% endif %}
 </div>
