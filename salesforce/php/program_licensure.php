@@ -6,7 +6,14 @@ function programLicensure($code){
     $call_program_code = str_replace("%", "%25", $code);
     error_log($call_program_code, 0);
 
-    $url = "https://wsapi.xp.bethel.edu/salesforce/state-licensures/$call_program_code";
+    // Get the prod or staging WSAPI URL
+    $staging = strstr(getcwd(), "/staging");
+    if ($staging){
+        $wsapi_url = 'https://wsapi.xp.bethel.edu';
+    }else{
+        $wsapi_url = 'https://wsapi.bethel.edu';
+    }
+    $wsapi_url .= '/salesforce/state-licensures/' . $call_program_code;
 
     echo "<!-- $url -->";
 
