@@ -15,10 +15,10 @@ function programLicensure($code){
     }
     $wsapi_url .= '/salesforce/state-licensures/' . $call_program_code;
 
-    echo "<!-- $url -->";
+    echo "<!-- $wsapi_url -->";
 
     try {
-        $results = json_decode(@file_get_contents($url), true);
+        $results = json_decode(@file_get_contents($wsapi_url), true);
     } catch(ErrorException $e) {
         $results = null;
     }
