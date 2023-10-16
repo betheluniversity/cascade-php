@@ -20,6 +20,10 @@ function create_account_form($data) {
 
     $twig = makeTwigEnviron('/code/salesforce/twig');
 
+    if (strpos($data["bca_username"], 'email') !== false) {
+        $data["bca_username"] = '';
+    }
+
     if ( $data["bca_username"] ) {
             $data += array(
                 'message' => "Getting your Bethel Account...",
