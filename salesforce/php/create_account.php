@@ -20,6 +20,23 @@ function create_account_form($data) {
 
     $twig = makeTwigEnviron('/code/salesforce/twig');
 
+    if (strpos($data["bca_username"], 'email') !== false) {
+        $data["bca_username"] = '';
+    }
+
+    $login_url = isset($data["login_url"]) ? $data["login_url"] : '';
+
+    $staging = strstr(getcwd(), "/staging");
+    if ($staging) {
+        if (str_contains($login_url, 'www.bethel.edu')) {
+            $login_url = str_replace('www.bethel.edu', 'staging.bethel.edu', $login_url);
+        }
+        if (str_contains($login_url, 'bethel-university.my.site.com')) {
+            $login_url = str_replace('bethel-university.my.site.com', 'bethel-university%2D%2Dfull.sandbox.my.site.com', $login_url);
+        }
+        $data["login_url"] = $login_url;
+    }
+
     if ( $data["bca_username"] ) {
             $data += array(
                 'message' => "Getting your Bethel Account...",
@@ -51,7 +68,6 @@ function process_form($data) {
     $staging = strstr(getcwd(), "/staging");
 
     if ($staging){
-        //$wsapi_url = 'https://c056-97-116-115-179.ngrok-free.app/salesforce/register';
         $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
     }else{
         $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
@@ -80,13 +96,6 @@ function process_form($data) {
         $utm_campaign = $_COOKIE['utm_campaign'];
     }
 
-    //if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    //    $data += array(
-    //        'validateMessage' => 'Please enter a valid email address.'
-    //    );
-    //    return $twig->render('account_form.html', array('data' => $data));
-    //}
-
     $allowed_params = isset($data["allowed_params"]) ? $data["allowed_params"] : '';
     $allowed_params = str_replace(' ', '', $allowed_params);
     $allowed_params = array_values(preg_split("/\,/", $allowed_params));
@@ -103,6 +112,9 @@ function process_form($data) {
     if ($staging) {
         if (str_contains($login_url, 'www.bethel.edu')) {
             $login_url = str_replace('www.bethel.edu', 'staging.bethel.edu', $login_url);
+        }
+        if (str_contains($login_url, 'bethel-university.my.site.com')) {
+            $login_url = str_replace('bethel-university.my.site.com', 'bethel-university%2D%2Dfull.sandbox.my.site.com', $login_url);
         }
     }
 
