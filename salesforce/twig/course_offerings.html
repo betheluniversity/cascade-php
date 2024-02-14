@@ -1,75 +1,83 @@
-{% if courses is defined and courses|length > 0 %}
+{% if departments is defined and departments|length > 0 %}
 <form id="course-offerings" method="POST" action="{{ php_path }}">
   <div id="registration">
     <input id="submit_button" type="submit" class="btn" value="Continue Registration" style="opacity: 0.5; pointer-events: none;" />
   </div>
+  <span id="tuition_num" style="visibility: hidden;">0</span>
   <input id="type" name="type" type="hidden" value="{{ type }}" />
   <input id="account_url" name="account_url" type="hidden" value="{{ account_url }}" />
-  <p>Selected: <span id="course_num">0</span><span style="margin-left: 20px">Total: $<span id="course_total">0</span></p>
-  <br />
-  <ul>
-    {% for course in courses %}
-    <li>
-      <h4>{{ course['Name'] }}</h4>
-      <p>{{ course['Description__c'] }}</p>
-      <p>Registration Cost: $<span id="{{ course['Id'] }}_cost">{{ course['Registration_Cost__c'] }}</span></p>
+  <p>Selected: <span id="course_num">0</span><span style="margin-left: 20px">Total: $<span id="course_total">0</span><span id="tuition_message" style="display: none;"> + Tuition</span></p>
+  {% for department in departments %}
+    <h3>{{ department['Name'] }}</h3><br />
+    {% for course in department['Courses'] %}
+    <li class="collapsible collapsible--generic">
+      <div class="collapsible-heading"><h4>{{ course['Name'] }}</h4><h6 style="opacity: 0.8;">View Description</h6></div>
+      <div class="collapsible-block"><p>{{ course['Description__c'] }}</p></div>
+      {% if course['Registration_Cost__c'] is defined %}
+        <p>Registration Cost: $<span id="{{ course['Id'] }}_cost">{{ course['Registration_Cost__c'] }}</span></p>
+      {% else %}
+        <p>
+          Registration Cost: Tuition rate per credit<br />
+          See Bethel's current <a href="{{ tuition_url }}" target="_blank">tuition and costs</a> for more information.
+        </p>
+      {% endif %}
       <p>Course Term: {{ course['hed__Start_Date__c']|date("F j, Y") }} - {{ course['hed__End_Date__c']|date("F j, Y") }}</p>
-      <input type="button" id="{{ course['Id'] }}_add_button" class="btn btn-small" value="Add to Cart" style="display: block;" onclick="addCourse(this.id)" />
-      <input type="button" id="{{ course['Id'] }}_remove_button" class="btn btn-small" value="Remove From Cart" style="display: none;" onclick="removeCourse(this.id)" />
+      <input type="button" id="{{ course['Id'] }}_add_button" class="btn btn-small" value="Add to Cart" style="display: block;" onclick="addRemoveCourse(this.id, 'add')" />
+      <input type="button" id="{{ course['Id'] }}_remove_button" class="btn btn-small" value="Remove From Cart" style="display: none;" onclick="addRemoveCourse(this.id, 'remove')" />
       <input type="checkbox" id="{{ course['Id'] }}_checkbox" name="courses[]" class="course-checkbox" value="{{ course['Id'] }}" style="display: none;" />
     </li><br />
     {% endfor %}
-  </ul>
+  {% endfor %}
 </form>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://malsup.github.io/jquery.form.js"></script> 
 <script type="text/javascript">
 
-  function addCourse(button_id) {
-    $("#" + button_id).hide();
+function addRemoveCourse(button_id, action) {
+  $("#" + button_id).hide();
 
-    course_id = button_id.replace('_add_button', '');
+  course_total = $("#course_total").text();
+  tuition_num = $("#tuition_num").text();
+  course_num = $("#course_num").text();
 
+  course_id = button_id.replace('_' + action + '_button', '');
+  cost = $("#" + course_id + '_cost').text();
+
+  if ( action == 'add' ) {
     $("#" + course_id + '_checkbox').prop('checked', true);
     $("#" + course_id + '_remove_button').show();
-
-    cost = $("#" + course_id + '_cost').text();
-
-    course_total = $("#course_total").text();
     new_total = Number(course_total) + Number(cost);
+    new_tuition_num = Number(tuition_num) + 1;
+    new_course_num = Number(course_num) + 1;
+  } else {
+    $("#" + course_id + '_checkbox').prop('checked', false);
+    $("#" + course_id + '_add_button').show();
+    new_total = Number(course_total) - Number(cost);
+    new_tuition_num = Number(tuition_num) - 1;
+    new_course_num = Number(course_num) - 1;
+  }
+
+  if (cost) {
     $("#course_total").text(new_total.toString());
+  } else {
+    $("#tuition_num").text(new_tuition_num.toString());
+    if (new_tuition_num == 0) {
+      $("#tuition_message").hide();
+    } else {
+      $("#tuition_message").show();
+    }
+  }
 
-    course_num = $("#course_num").text();
-    new_num = Number(course_num) + 1;
-    $("#course_num").text(new_num.toString());
+  $("#course_num").text(new_course_num.toString());
 
+  if (new_course_num == 0) {
+    $('#submit_button').css('opacity', 0.5);
+    $('#submit_button').css('pointer-events', 'none');
+  } else {
     $('#submit_button').css('opacity', 1);
     $('#submit_button').css('pointer-events', 'auto');
   }
-
-  function removeCourse(button_id) {
-    $("#" + button_id).hide();
-
-    course_id = button_id.replace('_remove_button', '');
-
-    $("#" + course_id + '_checkbox').prop('checked', false);
-    $("#" + course_id + '_add_button').show();
-
-    cost = $("#" + course_id + '_cost').text();
-
-    course_total = $("#course_total").text();
-    new_total = Number(course_total) - Number(cost);
-    $("#course_total").text(new_total.toString());
-
-    course_num = $("#course_num").text();
-    new_num = Number(course_num) - 1;
-    $("#course_num").text(new_num.toString());
-
-    if (new_num == 0) {
-      $('#submit_button').css('opacity', 0.5);
-      $('#submit_button').css('pointer-events', 'none');
-    }
-  }
+}
 </script>
 {% else %}
 <ul><li>No courses available at this time.</li></ul>
