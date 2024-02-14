@@ -44,25 +44,22 @@ function get_course_offerings($params){
     $staging = strstr(getcwd(), "/staging");
     if ($staging){
         $wsapi_url = 'https://wsapi.xp.bethel.edu';
+        $tuition_url = 'https://staging.bethel.edu/admissions/faq#cost-financial-aid';
     }else{
         $wsapi_url = 'https://wsapi.bethel.edu';
+        $tuition_url = 'https://www.bethel.edu/admissions/faq#cost-financial-aid';
     }
     $wsapi_url .= '/salesforce/course-offerings/' . $type;
 
     // Get the list of courses from WSAPI
     try {
-        $results = json_decode(@file_get_contents($wsapi_url));
+        $results = json_decode(@file_get_contents($wsapi_url), true);
     } catch(ErrorException $e) {
         $results = $e;
     }
 
-    $courses = Array();
-    foreach ($results as $course) {
-        array_push( $courses, json_decode(json_encode($course), true));
-    }
-
     // Process the courses list
-    if ($type != 'all' && !$courses) {
+    if ($type != 'all' && !$results) {
         // Invalid Org Code entered. Refresh using no parameters.
         return '<script type="text/javascript">window.location = window.location.href.split("?")[0];</script>';
     } else {
@@ -71,7 +68,8 @@ function get_course_offerings($params){
             'php_path' => $php_path,
             'account_url' => $account_url,
             'type' => $type,
-            'courses' => $courses
+            'departments' => $results,
+            'tuition_url' => $tuition_url
         );
         return $twig->render('course_offerings.html', $data);
     }
