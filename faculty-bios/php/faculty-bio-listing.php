@@ -23,6 +23,8 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     // Print bios
     $found_lead = false;
     $found_faculty = false;
+    $found_emeritus = false;
+    $found_adjunct = false;
     foreach( $bios as $bio){
         if( !is_array($bio))
             continue;
@@ -37,9 +39,17 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
                     echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
                 $found_lead = true;
             }
-            elseif( !$bio['is_lead'] && !$found_faculty) {
+            elseif( !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
                 echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
                 $found_faculty = true;
+            }
+            elseif( !$found_adjunct && $bio['adjunct'] && $bio['emeritus'] == "Neither" ) {
+                echo '<h1 class="uppercase-underlined mt5">Adjunct Faculty</h1>';
+                $found_adjunct = true;
+            }
+            elseif( !$found_emeritus && $bio['emeritus'] != "Neither" ) {
+                echo '<h1 class="uppercase-underlined mt5">Emeritus/Emerita Faculty</h1>';
+                $found_emeritus = true;
             }
         }
 
@@ -52,12 +62,12 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
 function get_faculty_bio_xml(){
     $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/faculty-bios.xml");
     $bios = array();
-    $bios = traverse_folder($xml, $bios);
+    $bios = traverse_folder($xml);
     return $bios;
 }
 
 
-function traverse_folder($xml, $bios){
+function traverse_folder($xml){
     $return_bios = array();
     foreach ($xml->children() as $child) {
         $name = $child->getName();
@@ -84,7 +94,10 @@ function inspect_faculty_bio($xml){
         "is_lead"       =>  false, // this is set in filter_bios
         "top_lead"      =>  false,
         "first"         =>  '',
-        "last"          =>  ''
+        "last"          =>  '',
+        "adjunct"       =>  false,
+        "fulltime"      =>  true,
+        "emeritus"      =>  "Neither"
     );
 
     // if the file doesn't exist, skip it.
@@ -153,6 +166,9 @@ function inspect_faculty_bio($xml){
             $temp_job['program-director'] = strval($job_title->{'program-director'});
             $temp_job['lead-faculty'] = strval($job_title->{'lead-faculty'});
             $temp_job['job_title'] = strval($job_title->{'job_title'});
+            $temp_job['adjunct'] = strval($job_title->{'adjunct'});
+            $temp_job['fulltime'] = strval($job_title->{'fulltime'});
+            $temp_job['emeritus'] = strval($job_title->{'emeritus'});
 
             array_push($page_info['job-titles'], $temp_job);
         }
@@ -215,6 +231,12 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                         // pass the job title 'lead' up to the bio level (for diane dahl)
                         if( $job_title['top_lead'] == true)
                             $bio['top_lead'] = true;
+                        if( $job_title['adjunct'] == 'Yes')
+                            $bio['adjunct'] = true;
+                        if( $job_title['fulltime'] == 'No')
+                            $bio['fulltime'] = false;
+                        if( $job_title['emeritus'] != "Neither")
+                            $bio['emeritus'] = $job_title['emeritus'];
                         array_push( $array_of_job_titles, $job_title['title']);
                     }
                     $bio['array_of_job_titles'] = $array_of_job_titles;
@@ -293,6 +315,9 @@ function create_bio_html($bio){
 
 
 function get_job_title($job_title, $id){
+
+    $returned_title = array();
+
     // This is a current hack to make sure Diane Dahl appears at the top, whenever she should appear
     if( $id == 'aab255628c5865131315e7c4685d543b') {
         $is_lead = true;
@@ -302,16 +327,44 @@ function get_job_title($job_title, $id){
         $top_lead = false;
     }
 
-    if( $job_title['department-chair'] == 'Yes' )
-        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Department Chair');
-    elseif( $job_title['program-director'] == 'Yes' )
-        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => 'Program Director');
-    elseif( $job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty' )
-        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['lead-faculty']);
-    elseif( $job_title['job_title'] == 'Director of Online Programs' )
-        return array('top_lead' => $top_lead, 'is_lead' => true, 'title' => $job_title['job_title']);
-    else
-        return array('top_lead' => $top_lead, 'is_lead' => $is_lead, 'title' => $job_title['job_title']);
+    $returned_title['emeritus'] = $job_title['emeritus'];
+    $returned_title['fulltime'] = $job_title['fulltime'];
+    $returned_title['adjunct'] = $job_title['adjunct'];
+
+    if( $job_title['emeritus'] != 'Neither') {
+        $job_title['job_title'] = $job_title['job_title'] . ' ' . $job_title['emeritus'];
+    }
+    if( $job_title['adjunct'] == 'Yes') {
+        $job_title['job_title'] = 'Adjunct ' . $job_title['job_title'];
+    }
+
+    if ($job_title['department-chair'] == 'Yes') {
+        $returned_title['top_lead'] = $top_lead;
+        $returned_title['is_lead'] = true;
+        $returned_title['title'] = 'Department Chair';
+        return $returned_title;
+    } elseif ($job_title['program-director'] == 'Yes') {
+        $returned_title['top_lead'] = $top_lead;
+        $returned_title['is_lead'] = true;
+        $returned_title['title'] = 'Program Director';
+        return $returned_title;
+    } elseif ($job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty') {
+        $returned_title['top_lead'] = $top_lead;
+        $returned_title['is_lead'] = true;
+        $returned_title['title'] = $job_title['lead-faculty'];
+        return $returned_title;
+    } elseif ($job_title['job_title'] == 'Director of Online Programs') {
+        $returned_title['top_lead'] = $top_lead;
+        $returned_title['is_lead'] = true;
+        $returned_title['title'] = $job_title['job_title'];
+        return $returned_title;
+    } else {
+        $returned_title['top_lead'] = $top_lead;
+        $returned_title['is_lead'] = $is_lead;
+        $returned_title['title'] = $job_title['job_title'];
+        return $returned_title;
+    }
+
 }
 
 
@@ -319,6 +372,9 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     $top_lead = array();
     $is_lead = array();
     $last = array();
+    $fulltime = array();
+    $emeritus = array();
+    $adjunct = array();
 
     // Obtain a list of columns
     foreach ($bios as $key => $row) {
@@ -332,6 +388,21 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
         else
             $is_lead[$key] = false;
 
+        if (array_key_exists('fulltime', $row))
+            $fulltime[$key] = $row['fulltime'];
+        else
+            $fulltime[$key] = false;
+
+        if (array_key_exists('emeritus', $row) and $row['emeritus'] != 'Neither')
+            $emeritus[$key] = 'Emeritus';
+        else
+            $emeritus[$key] = 'Neither';
+
+        if (array_key_exists('adjunct', $row))
+            $adjunct[$key] = $row['adjunct'];
+        else
+            $adjunct[$key] = false;
+
         if (array_key_exists('last', $row))
             $last[$key] = $row['last'];
         else
@@ -341,9 +412,11 @@ function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
     // Sort the data with leads on top, then alpha sort
     // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
     if( $top_lead_sort ) {
-        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $emeritus, SORT_DESC,
+            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
     } else {
-        array_multisort($is_lead, SORT_DESC, $last, SORT_ASC, $bios);
+        array_multisort($is_lead, SORT_DESC, $emeritus, SORT_DESC,
+            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
     }
 
     return $bios;
