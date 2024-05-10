@@ -39,7 +39,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
                     echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
                 $found_lead = true;
             }
-            elseif( !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
+            elseif( !$bio['is_lead'] && !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
                 echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
                 $found_faculty = true;
             }
