@@ -331,12 +331,12 @@ function get_job_title($job_title, $id){
     $returned_title['fulltime'] = $job_title['fulltime'];
     $returned_title['adjunct'] = $job_title['adjunct'];
 
-    if( $job_title['emeritus'] != 'Neither') {
-        $job_title['job_title'] = $job_title['job_title'] . ' ' . $job_title['emeritus'];
-    }
-    if( $job_title['adjunct'] == 'Yes') {
-        $job_title['job_title'] = 'Adjunct ' . $job_title['job_title'];
-    }
+//    if( $job_title['emeritus'] != 'Neither') {
+//        $job_title['job_title'] = $job_title['job_title'] . ' ' . $job_title['emeritus'];
+//    }
+//    if( $job_title['adjunct'] == 'Yes') {
+//        $job_title['job_title'] = 'Adjunct ' . $job_title['job_title'];
+//    }
 
     if ($job_title['department-chair'] == 'Yes') {
         $returned_title['top_lead'] = $top_lead;
