@@ -17,9 +17,9 @@
 
         $toReturn = "";
         foreach($proofPointsToDisplay as $finalPP){
-            $toReturn .= createGridCell("medium 1-$numProofPoints", $finalPP);
+            $toReturn .= createGridCell("", $finalPP);
         }
-        echo createGrid("proof-points proof-point-collection test", $toReturn);
+        echo createGrid("proofPoints proof-point-collection test", $toReturn);
 
     }
 

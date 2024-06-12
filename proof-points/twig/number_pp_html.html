@@ -1,15 +1,17 @@
 <!-- {{ id }} -->
-<div class="proofPoint">
-    <p class="proofPoint__number">
-        {% if main_text_number %}
-            {{main_text_number|raw}}
-        {% endif %}
-    </p>
-    <p>
-        {{text_below|raw}}
-    </p>
+<div class="medium-grid-pad-1x">
+    <div class="proofPoint">
+        <p class="proofPoint__number">
+            {% if main_text_number %}
+                {{main_text_number|raw}}
+            {% endif %}
+        </p>
+        <p>
+            {{text_below|raw}}
+        </p>
 
-    {% if source != "" %}
-        <cite class="proofPoint__cite">- {{source}}</cite>
-    {% endif %}
+        {% if source != "" %}
+            <cite class="proofPoint__cite">- {{source}}</cite>
+        {% endif %}
+    </div>
 </div>
