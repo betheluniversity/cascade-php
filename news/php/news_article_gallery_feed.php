@@ -103,6 +103,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         $renderFile = "carousel-news-feed.html";
     }
 
+    $renderFile
+
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render($renderFile, array(
         'sortedArticles'     => $sortedArticles,
