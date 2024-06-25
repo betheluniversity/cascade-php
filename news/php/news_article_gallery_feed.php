@@ -94,7 +94,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
 
 //     echo "<script>console.log( 'Debug Objects: " . $galleryStyle . "' );</script>";
 
-    $renderFile = "feature_home_news_gallery.html";
+    $renderFile = "carousel-news-feed.html";
+    // $renderFile = "feature_home_news_gallery.html";
     if( $galleryStyle == "Feature Top") {
         $renderFile = "feature_top_news_gallery.html";
     } else if( $galleryStyle == "Feature Left") {
@@ -102,9 +103,7 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
     } else if( $galleryStyle == "Carousel") {
         $renderFile = "carousel-news-feed.html";
     }
-
-    $renderFile
-
+    
     $twig = makeTwigEnviron('/code/news/twig');
     $html = $twig->render($renderFile, array(
         'sortedArticles'     => $sortedArticles,
