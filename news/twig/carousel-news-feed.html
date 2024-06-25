@@ -1,0 +1,94 @@
+{% set story1 = threeStories[0] %}
+{% set story2 = threeStories[1] %}
+{% set story3 = threeStories[2] %}
+{% set story4 = threeStories[3] %}
+{% set story5 = threeStories[4] %}
+{% set story6 = threeStories[5] %}
+{% set story7 = threeStories[6] %}
+
+<div class='swiper swiper--customCards'>
+    <!-- Additional required wrapper -->
+    <div class='swiper-wrapper'>
+
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story1['url']}}">{{story1['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story1['url']}}">{{ story1['title'] }}</a></h5>
+                <p>{{ story1['teaser'] }}</p>
+                <p><small>{{ story1['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story2['url']}}">{{story2['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story2['url']}}">{{ story2['title'] }}</a></h5>
+                <p>{{ story2['teaser'] }}</p>
+                <p><small>{{ story2['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story3['url']}}">{{story3['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story3['url']}}">{{ story3['title'] }}</a></h5>
+                <p>{{ story3['teaser'] }}</p>
+                <p><small>{{ story3['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story4['url']}}">{{story4['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story4['url']}}">{{ story4['title'] }}</a></h5>
+                <p>{{ story4['teaser'] }}</p>
+                <p><small>{{ story4['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story5['url']}}">{{story5['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story5['url']}}">{{ story5['title'] }}</a></h5>
+                <p>{{ story5['teaser'] }}</p>
+                <p><small>{{ story5['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story6['url']}}">{{story6['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story6['url']}}">{{ story6['title'] }}</a></h5>
+                <p>{{ story6['teaser'] }}</p>
+                <p><small>{{ story6['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+      
+      <div class="swiper-slide">
+        <div class="facultyBox">
+            <a href="{{story7['url']}}">{{story7['gallery-image']|raw}}</a>
+            <div class="facultyBox__content">
+                <h5 class="mv0"><a href="{{story7['url']}}">{{ story7['title'] }}</a></h5>
+                <p>{{ story7['teaser'] }}</p>
+                <p><small>{{ story7['display-date'] }}</small></p>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+{% for sortedArticle in sortedArticles %}
+{{ sortedArticle['html'] | raw }}
+{% endfor %}
