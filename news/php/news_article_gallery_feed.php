@@ -99,6 +99,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
         $renderFile = "feature_top_news_gallery.html";
     } else if( $galleryStyle == "Feature Left") {
         $renderFile = "feature_left_news_gallery.html";
+    } else if( $galleryStyle == "Carousel") {
+        $renderFile = "carousel-news-feed.html";
     }
 
     $twig = makeTwigEnviron('/code/news/twig');
