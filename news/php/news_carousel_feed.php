@@ -36,10 +36,10 @@ function create_news_carousel_feed($categories, $galleryStyle, $myBethel, $blert
         // if we include public alerts, then we only want to skip internal ones
         // if we don't want blerts, then we skip all blerts
         // if we want to include internal, then we don't skip any
-        // if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
-        //     or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
-        //     continue;
-        // }
+        if( ($blerts == 'Yes - Public Bethel Alert' and $article['bethel-alert'] == 'Internal Bethel Alert')
+            or ($blerts == 'No' and $article['bethel-alert'] != 'No')){
+            continue;
+        }
 
         // We add the mybethel class for the community dashboard
         // $add_mybethel_class = '';
