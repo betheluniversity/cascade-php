@@ -23,7 +23,7 @@ function create_news_carousel_feed($categories, $galleryStyle, $myBethel, $blert
     // This is the new version of news.
     $arrayOfNewsAndStories = autoCache('get_xml', array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/news-and-stories.xml", $categories, "inspect_news_article"), 300, $blerts);
     $arrayOfNewsAndStories = sort_by_date($arrayOfNewsAndStories);
-    $threeStories = array();
+    $articleArray = array();
 
     foreach( $arrayOfNewsAndStories as $index => $article) {
         $id = $article['id'];
@@ -51,12 +51,12 @@ function create_news_carousel_feed($categories, $galleryStyle, $myBethel, $blert
         // don't use this story on this page again
         array_push($GLOBALS['stories-already-used'], $id);
 
-        array_push($threeStories, $article);
+        array_push($articleArray, $article);
         unset($arrayOfNewsAndStories[$index]);
 
         // TODO: THIS IS THE DEFAULT CODE, but we don't want to do this while we have the cornavirus locked in position 3
         // exit once there are 3
-        if( sizeof($threeStories) >= 3)
+        if( sizeof($articleArray) >= 3)
             break;
     }
 

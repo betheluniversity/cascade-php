@@ -1,14 +1,12 @@
 
-
 <div class='swiper swiper--customCards'>
     <!-- Additional required wrapper -->
     <div class='swiper-wrapper'>
 
-
       {% for sortedArticle in sortedArticles %}
       <div class="swiper-slide">
         <div class="facultyBox">
-            <a href="{{sortedArticle['url']}}">{{sortedArticle['gallery-image']|raw}}</a>
+            <a href="{{sortedArticle['url']}}">{{image|raw}}</a>
             <div class="facultyBox__content">
                 <h5 class="mv0"><a href="{{sortedArticle['url']}}">{{ sortedArticle['title'] }}</a></h5>
                 <p>{{ sortedArticle['teaser'] }}</p>
@@ -19,6 +17,11 @@
       {% endfor %}
       
     </div>
+</div>
+
+<div class="swiper-navigation swiperNavigationWrapper--custom">
+  <div class='swiper-button-prev'></div>
+  <div class='swiper-button-next'></div>
 </div>
 
 
