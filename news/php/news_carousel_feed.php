@@ -10,14 +10,6 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 // todo - remove unused variable here later
 function create_news_carousel_feed($categories, $galleryStyle, $myBethel, $blerts='No'){
     
-    $carouselFeed = create_news_article_feed($categories, $blerts='No');
+    create_news_article_feed($categories, $blerts='No');
 
-    $renderFile = "carousel-news-feed.html";    
-    
-    $twig = makeTwigEnviron('/code/news/twig');
-    $html = $twig->render($renderFile, array(
-        $carouselFeed
-    ));
-
-    return $html;
 }
