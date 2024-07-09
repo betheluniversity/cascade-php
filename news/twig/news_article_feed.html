@@ -1,12 +1,5 @@
 {% if horizontal != 'Yes' %}
     <div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
-        {% if image != '' %}
-            <div class="news__image">
-                <a href="{{article['url']}}">
-                    {{image|raw}}
-                </a>
-            </div>
-        {% endif %}
         <div class="news__content">
             <h4 class="mt0"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h4>
 
@@ -18,6 +11,14 @@
                 <p class="news__date">{{article['display-date']}}</p>
             {% endif %}
         </div>
+        {% if image != '' %}
+            <div class="news__image">
+                <a href="{{article['url']}}">
+                    {{image|raw}}
+                </a>
+            </div>
+        {% endif %}
+
     </div>
 {% else %}
     <div class="grid-cell">
