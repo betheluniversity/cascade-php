@@ -9,7 +9,7 @@
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 
-function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFaculty){
+function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFaculty, $departmental=false){
     $bios = get_faculty_bio_xml();
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
@@ -30,7 +30,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             continue;
 
         // output the corresponding headers, depending on who should be shown
-        if( array_key_exists('is_lead', $bio) ){
+        if( !$departmental and array_key_exists('is_lead', $bio) ){
             if( $bio['is_lead'] && !$found_lead ) {
                 // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
                 if( in_array('College of Arts & Sciences', $schools) )

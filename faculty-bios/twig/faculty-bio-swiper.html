@@ -1,0 +1,14 @@
+<div class="swiper-slide">
+    <div class="facultyBox">
+        <a href="https://www.bethel.edu{{ bio.path }}">{{ bio_image|raw }}</a>
+        <div class="facultyBox__content">
+            <h5 class="mv0">{{ bio.first }} {{ bio.last }}</h5>
+            {% if job_titles %}
+            <p>{{ job_titles }}</p>
+            {% endif %}
+            <p class="mb0">
+                <a class="btn btn-soft btn-small" href="https://www.bethel.edu{{ bio.path }}">Bio ></a>
+            </p>
+        </div>
+    </div>
+</div>
