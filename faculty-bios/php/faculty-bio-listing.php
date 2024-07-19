@@ -54,7 +54,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
         }
 
         // output faculty bio html
-        echo create_bio_html($bio);
+        echo create_bio_html($bio, $departmental);
     }
 }
 
@@ -295,7 +295,7 @@ function get_matched_job_titles_for_bio($bio, $school, $cas, $caps, $gs, $sem) {
 }
 
 
-function create_bio_html($bio){
+function create_bio_html($bio, $departmental){
     if( $bio['image-path'] != '/') {
         $alt_text = $bio['first'] . ' ' . $bio['last'];
         $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
@@ -304,11 +304,19 @@ function create_bio_html($bio){
     $twig = makeTwigEnviron('/code/faculty-bios/twig');
 
     $job_titles = format_job_titles($bio['array_of_job_titles']);
-    $html = $twig->render('faculty-bio.html', array(
-        'bio'                   =>  $bio,
-        'bio_image'             =>  $bio_image,
-        'job_titles'            =>  $job_titles
-    ));
+    if( $departmental ) {
+        $html = $twig->render('faculty-bio-swiper.html', array(
+            'bio'                   =>  $bio,
+            'bio_image'             =>  $bio_image,
+            'job_titles'            =>  $job_titles
+        ));
+    } else {
+        $html = $twig->render('faculty-bio.html', array(
+            'bio'                   =>  $bio,
+            'bio_image'             =>  $bio_image,
+            'job_titles'            =>  $job_titles
+        ));
+    }
 
     return $html;
 }
