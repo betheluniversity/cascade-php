@@ -62,12 +62,12 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
 function get_faculty_bio_xml(){
     $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/faculty-bios.xml");
     $bios = array();
-    $bios = traverse_folder($xml);
+    $bios = traverse_folder_faculty($xml);
     return $bios;
 }
 
 
-function traverse_folder($xml){
+function traverse_folder_faculty($xml){
     $return_bios = array();
     foreach ($xml->children() as $child) {
         $name = $child->getName();
