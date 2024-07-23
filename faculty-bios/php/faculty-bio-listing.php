@@ -34,21 +34,21 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             if( $bio['is_lead'] && !$found_lead ) {
                 // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
                 if( in_array('College of Arts & Sciences', $schools) )
-                    echo '<h1 class="uppercase-underlined mt5">Department Chair</h1>';
+                    echo '<h2>Department Chair</h2>';
                 else
-                    echo '<h1 class="uppercase-underlined mt5">Program Directors & Lead Faculty</h1>';
+                    echo '<h2>Program Directors & Lead Faculty</h2>';
                 $found_lead = true;
             }
             elseif( !$bio['is_lead'] && !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
-                echo '<h1 class="uppercase-underlined mt5">Faculty</h1>';
+                echo '<h2>Faculty</h2>';
                 $found_faculty = true;
             }
             elseif( !$found_adjunct && $bio['adjunct'] && $bio['emeritus'] == "Neither" ) {
-                echo '<h1 class="uppercase-underlined mt5">Adjunct Faculty</h1>';
+                echo '<h2>Adjunct Faculty</h2>';
                 $found_adjunct = true;
             }
             elseif( !$found_emeritus && $bio['emeritus'] != "Neither" ) {
-                echo '<h1 class="uppercase-underlined mt5">Emeritus/Emerita Faculty</h1>';
+                echo '<h2>Emeritus/Emerita Faculty</h2>';
                 $found_emeritus = true;
             }
         }
