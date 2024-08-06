@@ -138,7 +138,10 @@ function inspect_program($xml){
             if( $page_info['display-name'] != '' ){
                 $temp_concentration['title'] = $page_info['display-name'];
             } elseif( $temp_concentration['concentration_page']->{'path'} != '/' ) {
-                $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'title'});
+                if( strval($temp_concentration['concentration_page']->{'display-name'}) != '' )
+                    $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'display-name'});
+                else
+                    $temp_concentration['title'] = strval($temp_concentration['concentration_page']->{'title'});
                 $temp_concentration['title'] = str_replace('Program Details', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Concentration', '', $temp_concentration['title']);
                 $temp_concentration['title'] = str_replace('Major', '', $temp_concentration['title']);
