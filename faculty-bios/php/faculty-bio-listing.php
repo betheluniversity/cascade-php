@@ -356,17 +356,17 @@ function get_job_title($job_title, $id){
     if ($job_title['department-chair'] == 'Yes') {
         $returned_title['top_lead'] = $top_lead;
         $returned_title['is_lead'] = true;
-        $returned_title['title'] = 'Department Chair';
+        $returned_title['title'] = $job_title['job_title'];
         return $returned_title;
     } elseif ($job_title['program-director'] == 'Yes') {
         $returned_title['top_lead'] = $top_lead;
         $returned_title['is_lead'] = true;
-        $returned_title['title'] = 'Program Director';
+        $returned_title['title'] = $job_title['job_title'];
         return $returned_title;
     } elseif ($job_title['lead-faculty'] == 'Program Director' || $job_title['lead-faculty'] == 'Lead Faculty') {
         $returned_title['top_lead'] = $top_lead;
         $returned_title['is_lead'] = true;
-        $returned_title['title'] = $job_title['lead-faculty'];
+        $returned_title['title'] = $job_title['job_title'];
         return $returned_title;
     } elseif ($job_title['job_title'] == 'Director of Online Programs') {
         $returned_title['top_lead'] = $top_lead;
