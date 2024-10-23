@@ -6,7 +6,7 @@ function get_name_and_photo($userName) {
     //    "fullName" => $userName
     //);
     //echo json_encode($data);
-    return $userName;
+    return 'test';
 }
 
 // Check if userName parameter is set in the query string
