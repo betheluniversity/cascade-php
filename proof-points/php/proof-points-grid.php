@@ -19,6 +19,8 @@
             $toReturn .= $finalPP;
         }
 
+        echo $toReturn;
+
         echo "</div>";
     }
 
