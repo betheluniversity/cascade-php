@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ces55739
- * Date: 3/9/15
- * Time: 10:36 AM
- */
     require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
     include_once 'proof-point-logic.php';
     include_once $_SERVER['DOCUMENT_ROOT'] . "/code/general-cascade/macros.php";
@@ -18,13 +12,13 @@
         //     $toReturn .= createGridCell("", $finalPP);
         // }
 
-        // echo createGrid("proofPoints", $toReturn);
+        echo $proofPointsToDisplay;
 
         return $proofPointsToDisplay;
     }
 
     function get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-//        $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
+        // $categories = array( $School, $Topic, $CAS, $CAPS, $GS, $SEM );
         $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'] ."/_shared-content/xml/proof-points.xml");
         $proof_points = $xml->xpath("system-block");
         $matches = array();
@@ -69,8 +63,6 @@ function number_pp_html($ds, $id){
         'text_below' => $text_below,
         'source' => $source,
         'id' => $id));
-
-    
     return $html;
 }
 
@@ -84,8 +76,5 @@ function text_pp_html($ds, $id){
         'mainText' => $mainText,
         'source' => $source,
         'id' => $id));
-
     return $html;
 }
-
-
