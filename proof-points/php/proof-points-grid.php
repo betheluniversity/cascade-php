@@ -8,10 +8,18 @@
         $numProofPoints = count($proofPointsToDisplay);
         $toReturn = "";
 
+        // foreach($proofPointsToDisplay as $finalPP){
+        //     $toReturn .= createGridCell("", $finalPP);
+        // }
+        // echo createGrid("proofPoints", $toReturn);
+
+        echo "<div class='proofPoints'>";
+
         foreach($proofPointsToDisplay as $finalPP){
-            $toReturn .= createGridCell("", $finalPP);
+            $toReturn .= $finalPP;
         }
-        echo createGrid("proofPoints", $toReturn);
+
+        echo "</div>";
     }
 
     function get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
