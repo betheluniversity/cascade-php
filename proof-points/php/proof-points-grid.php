@@ -10,17 +10,17 @@
     include_once $_SERVER['DOCUMENT_ROOT'] . "/code/general-cascade/macros.php";
 
     function show_proof_point_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
-
         $proofPointsToDisplay = get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM);
-
         $numProofPoints = count($proofPointsToDisplay);
-
         $toReturn = "";
-        foreach($proofPointsToDisplay as $finalPP){
-            $toReturn .= createGridCell("", $finalPP);
-        }
-        echo createGrid("proofPoints proof-point-collection test", $toReturn);
 
+        // foreach($proofPointsToDisplay as $finalPP){
+        //     $toReturn .= createGridCell("", $finalPP);
+        // }
+
+        // echo createGrid("proofPoints", $toReturn);
+
+        return $proofPointsToDisplay;
     }
 
     function get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
