@@ -9,12 +9,9 @@
         $toReturn = "";
 
         foreach($proofPointsToDisplay as $finalPP){
-            $toReturn .= $finalPP;
+            $toReturn .= createGridCell("", $finalPP);
         }
-
-        echo $toReturn;
-
-        return $proofPointsToDisplay;
+        echo createGrid("proofPoints", $toReturn);
     }
 
     function get_proof_points($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SEM){
