@@ -8,11 +8,11 @@
         $numProofPoints = count($proofPointsToDisplay);
         $toReturn = "";
 
-        // foreach($proofPointsToDisplay as $finalPP){
-        //     $toReturn .= createGridCell("", $finalPP);
-        // }
+        foreach($proofPointsToDisplay as $finalPP){
+            $toReturn .= $finalPP;
+        }
 
-        echo $proofPointsToDisplay;
+        echo $toReturn;
 
         return $proofPointsToDisplay;
     }
