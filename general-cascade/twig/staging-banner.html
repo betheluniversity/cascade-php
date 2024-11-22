@@ -1,7 +1,8 @@
 {% if staging %}
     {% if cms_url %}
         <div style='z-index:50;width:100%;text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;z-index:50' id="warning">
-            This page is a <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>TESTING</a> version.
+            This page is a <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>TESTING</a> version. View <a href="">LIVE</a> version.
+            <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>Cascade</a> - TEST VERSION - <a href='{{page_path}}' style='color: white; text-decoration: underline;'>Live</a> 
         </div>
     {% else %}
         <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
@@ -19,8 +20,3 @@
     </div>
 {% endif %}
 -->
-
-<!--{% if cms_url %}-->
-<!--<meta name="cms_url"  content="{{cms_url|raw}}">-->
-<!--{% endif %}-->
-<!--&lt;!&ndash;&ndash;&gt;-->
