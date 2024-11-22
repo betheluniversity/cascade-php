@@ -1,6 +1,6 @@
 {% if staging %}
     {% if cms_url %}
-    $liveURL = str_replace('staging','www',$cms_url)
+    {% $liveURL = str_replace('staging','www',$cms_url) %}
 
     <div style='z-index:50;width:100%;text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;z-index:50' id="warning">
             <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>Cascade</a> - TEST VERSION - <a href='{{liveURL}}' style='color: white; text-decoration: underline;'>Live</a> 
