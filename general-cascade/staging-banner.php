@@ -8,11 +8,9 @@
 
 $twig = makeTwigEnviron('/code/general-cascade/twig');
 
-
-
 echo $twig->render('staging-banner.html', array(
     'staging' => $staging,
     'cms_url' => $cms_url,
     'page_path' => $_SERVER['REQUEST_URI'],
-    'liveURL' => str_replace('staging', 'www', $_SERVER['REQUEST_URI'])
-));
+    'liveURL' => rtrim("https://www.bethel.edu", '/') . '/' . ltrim($_SERVER['REQUEST_URI'], '/')
+))
