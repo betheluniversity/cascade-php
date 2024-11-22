@@ -14,5 +14,5 @@ echo $twig->render('staging-banner.html', array(
     'staging' => $staging,
     'cms_url' => $cms_url,
     'page_path' => $_SERVER['REQUEST_URI'],
-    'liveURL' => str_replace('staging', 'www', $cms_url)
+    'liveURL' => str_replace('staging', 'www', $page_path)
 ));
