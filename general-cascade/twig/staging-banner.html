@@ -1,11 +1,10 @@
 {% if staging %}
     {% if cms_url %}
-
-    <div style='z-index:50;width:100%;text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;z-index:50' id="warning">
+        <div id="warning" class="staging-banner">
             <a href='{{cms_url}}' style='color: white; text-decoration: underline;'>Cascade</a> - TEST VERSION - <a href='{{liveURL}}' style='color: white; text-decoration: underline;'>Live</a> 
         </div>
     {% else %}
-        <div style='text-align:center; background:tomato;color:#fff;font-weight:500;padding:.7em;'>
+        <div id="warning" class="staging-banner">
             This page is a TESTING version.
         </div>
     {% endif %}
