@@ -13,6 +13,7 @@
         // }
         // echo createGrid("proofPoints", $toReturn);
 
+        echo "<div class='proofPointContainer'>";
         echo "<div class='proofPoints'>";
 
         foreach($proofPointsToDisplay as $finalPP){
@@ -21,6 +22,7 @@
 
         echo $toReturn;
 
+        echo "</div>";
         echo "</div>";
     }
 
