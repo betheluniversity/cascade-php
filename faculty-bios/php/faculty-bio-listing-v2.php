@@ -318,7 +318,7 @@ function create_bio_html($bio, $departmental){
         } else {
             $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
         }
-        $html = $twig->render('faculty-bio.html', array(
+        $html = $twig->render('faculty-bio-v2.html', array(
             'bio'                   =>  $bio,
             'bio_image'             =>  $bio_image,
             'job_titles'            =>  $job_titles
