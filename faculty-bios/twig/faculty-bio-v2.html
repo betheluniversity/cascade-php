@@ -1,0 +1,37 @@
+<div class="pa1 mb2">
+    <div class="flex ">
+        <div class="flex-cell u-medium-1-4 ">
+            <div class=" flex-pad-1x ">
+                {{ bio_image|raw }}
+            </div>
+        </div>
+        <div class="flex-cell u-medium-3-4 ">
+            <div class=" flex-pad-1x ">
+                <h3>
+                    <a href="https://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a>
+                </h3>
+                <p>
+                    {% if job_titles %}
+                    {{ job_titles }}
+                    {% endif %}
+                    {% if bio.email != '' %}
+                        | <a href="mailto:{{ bio.email }}">{{ bio.email }}</a>
+                    {% endif %}
+                    {% if bio['started-at-bethel'] != '' %}
+                        | Started at Bethel: {{ bio['started-at-bethel'] }}
+                    {% endif %}
+                    <!--Todo: we need to have the seminary bios updated...-->
+                    <!--{% if bio['faculty_location'] %}-->
+                        <!--| {% for location in bio['faculty_location'] %}-->
+                        <!--<span class="btn btn-mini">{{ location }}</span>-->
+                        <!--{% endfor %}-->
+                    <!--{% endif %}-->
+                </p>
+
+                {% if bio.highlight != '' %}
+                    <p>{{ bio.highlight|raw }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
