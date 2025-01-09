@@ -1,32 +1,28 @@
-<div class="grid-cell">
-    <div class="medium-grid-pad-1x">
+<div class="flex-cell">
     
     {% if post['image'] != "hidden" %}
-
-        <img    class="mb1 lazyload"
+        <img    class="lazyload"
                 data-src="{{ post['image'] }}?w=240"
                 alt="{{ post['title'] }}"
         />
-
     {% endif %}
 
+    <h3 class="mt1 shrink--1x"><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
 
-        <h3><a href="{{ post['link'] }}">{{ post['title'] }}</a></h3>
-        {% if post['creator'] != "hidden" %}
-            <p>Author: {{ post['creator'] }}</p>
-        {% endif %}
+    {% if post['creator'] != "hidden" %}
+        <p>Author: {{ post['creator'] }}</p>
+    {% endif %}
 
-        {% if post['pub date'] != "hidden" %}
-            <p>{{ post['pub date']}}</p>
-        {% endif %}
+    {% if post['pub date'] != "hidden" %}
+        <p>{{ post['pub date']}}</p>
+    {% endif %}
 
-        {% if post['categories'] != "hidden" %}
-            <p>Categories: {{ post['categories'] }}</p>
-        {% endif %}
-
+    {% if post['categories'] != "hidden" %}
+        <p>Categories: {{ post['categories'] }}</p>
+    {% endif %}
 
     {% if post['description'] != "hidden" %}
         <p>{{ post['description'] }} <a href="{{ post['link'] }}">{{ post['read more'] }}</a></p>
     {% endif %}
-    </div>
+
 </div>
