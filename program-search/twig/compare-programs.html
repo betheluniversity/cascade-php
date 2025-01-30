@@ -1,12 +1,12 @@
 <a class="btn btn-small mb2" onclick="closeCompareSearch()">Close</a>
 <hr/>
 
-<div class="grid  grid--nowrap">
+<div class="flex">
     {% for program_concentration in program_concentrations %}
         {% set program = program_concentration[0] %}
         {% set concentration = program_concentration[1] %}
 
-        <div class="grid-cell" style="padding-right:.5em">
+        <div class="flex-cell" style="padding-right:.5em">
             <div class="grid-pad-1x">
                 <h3>
                 {% if concentration.title %}
