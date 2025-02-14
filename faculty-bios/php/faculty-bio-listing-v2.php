@@ -23,17 +23,6 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
         'Emeritus/Emerita Faculty' => array()
     );
 
-    // if( $displayFaculty == 'All programs'){
-    //     $bios = sort_bios_by_lead_and_last_name($bios, false);
-    // } else {
-    //     $bios = sort_bios_by_lead_and_last_name($bios, true);
-    // }
-
-    // // Print bios
-    // $found_lead = false;
-    // $found_faculty = false;
-    // $found_emeritus = false;
-    // $found_adjunct = false;
     foreach ($bios as $bio) {
         if (!is_array($bio)) {
             continue;
@@ -55,32 +44,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             } elseif (isset($bio['emeritus']) && $bio['emeritus'] != "Neither") {
                 $grouped_bios['Emeritus/Emerita Faculty'][] = $bio;
             }
-
-            
-        //     if( $bio['is_lead'] && !$found_lead ) {
-        //         // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
-        //         if( in_array('College of Arts & Sciences', $schools) )
-        //             echo '<h2>Department Chair</h2>';
-        //         else
-        //             echo '<h2>Program Directors & Lead Faculty</h2>';
-        //         $found_lead = true;
-        //     }
-        //     elseif( !$bio['is_lead'] && !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
-        //         echo '<h2>Faculty</h2>';
-        //         $found_faculty = true;
-        //     }
-        //     elseif( !$found_adjunct && $bio['adjunct'] && $bio['emeritus'] == "Neither" ) {
-        //         echo '<h2>Adjunct Faculty</h2>';
-        //         $found_adjunct = true;
-        //     }
-        //     elseif( !$found_emeritus && $bio['emeritus'] != "Neither" ) {
-        //         echo '<h2>Emeritus/Emerita Faculty</h2>';
-        //         $found_emeritus = true;
-        //     }
         }
-
-        // // output faculty bio html
-        // echo create_bio_html($bio, $departmental);
     }
 
     // Output grouped bios
@@ -427,61 +391,6 @@ function get_job_title($job_title, $id){
         return $returned_title;
     }
 
-}
-
-
-function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
-    $top_lead = array();
-    $is_lead = array();
-    $last = array();
-    $fulltime = array();
-    $emeritus = array();
-    $adjunct = array();
-
-    // Obtain a list of columns
-    foreach ($bios as $key => $row) {
-        if (array_key_exists('top_lead', $row))
-            $top_lead[$key] = $row['top_lead'];
-        else
-            $top_lead[$key] = false;
-
-        if (array_key_exists('is_lead', $row))
-            $is_lead[$key] = $row['is_lead'];
-        else
-            $is_lead[$key] = false;
-
-        if (array_key_exists('fulltime', $row))
-            $fulltime[$key] = $row['fulltime'];
-        else
-            $fulltime[$key] = false;
-
-        if (array_key_exists('emeritus', $row) and $row['emeritus'] != 'Neither')
-            $emeritus[$key] = 'Emeritus';
-        else
-            $emeritus[$key] = 'Neither';
-
-        if (array_key_exists('adjunct', $row))
-            $adjunct[$key] = $row['adjunct'];
-        else
-            $adjunct[$key] = false;
-
-        if (array_key_exists('last', $row))
-            $last[$key] = $row['last'];
-        else
-            $last[$key] = 'z';
-    }
-
-    // Sort the data with leads on top, then alpha sort
-    // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
-    if( $top_lead_sort ) {
-        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $emeritus, SORT_DESC,
-            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
-    } else {
-        array_multisort($is_lead, SORT_DESC, $emeritus, SORT_DESC,
-            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
-    }
-
-    return $bios;
 }
 
 
