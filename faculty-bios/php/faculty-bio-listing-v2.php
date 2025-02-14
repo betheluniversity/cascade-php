@@ -491,3 +491,5 @@ function check_substring_in_array($substring, $array){
     }
     return false;
 }
+
+?>
