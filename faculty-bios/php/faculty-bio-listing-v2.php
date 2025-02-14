@@ -14,6 +14,15 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
     // Sort bios
+    $grouped_bios = array(
+        'Dean of Nursing' => array(),
+        'Program Directors & Lead Faculty' => array(),
+        'Department Chair' => array(),
+        'Faculty' => array(),
+        'Adjunct Faculty' => array(),
+        'Emeritus/Emerita Faculty' => array()
+    );
+    
     if( $displayFaculty == 'All programs'){
         $bios = sort_bios_by_lead_and_last_name($bios, false);
     } else {
