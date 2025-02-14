@@ -39,8 +39,24 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             continue;
         }
 
-        // output the corresponding headers, depending on who should be shown
-        if( !$departmental && array_key_exists('is_lead', $bio) ){
+        if (!$departmental && array_key_exists('is_lead', $bio)) {
+            if (isset($bio['top_lead']) && $bio['top_lead'] && isset($bio['dean_of_nursing']) && $bio['dean_of_nursing'] == true) {
+                $grouped_bios['Dean of Nursing'][] = $bio;
+            } elseif (isset($bio['is_lead']) && $bio['is_lead'] == true) {
+                if (in_array('College of Arts & Sciences', $schools)) {
+                    $grouped_bios['Department Chair'][] = $bio;
+                } else {
+                    $grouped_bios['Program Directors & Lead Faculty'][] = $bio;
+                }
+            } elseif (isset($bio['emeritus']) && $bio['emeritus'] == "Neither" && isset($bio['fulltime']) && $bio['fulltime'] == true) {
+                $grouped_bios['Faculty'][] = $bio;
+            } elseif (isset($bio['emeritus']) && $bio['emeritus'] == "Neither" && isset($bio['adjunct']) && $bio['adjunct'] == true) {
+                $grouped_bios['Adjunct Faculty'][] = $bio;
+            } elseif (isset($bio['emeritus']) && $bio['emeritus'] != "Neither") {
+                $grouped_bios['Emeritus/Emerita Faculty'][] = $bio;
+            }
+
+            
             if( $bio['is_lead'] && !$found_lead ) {
                 // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
                 if( in_array('College of Arts & Sciences', $schools) )
