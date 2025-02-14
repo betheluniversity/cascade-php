@@ -22,7 +22,7 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
         'Adjunct Faculty' => array(),
         'Emeritus/Emerita Faculty' => array()
     );
-    
+
     if( $displayFaculty == 'All programs'){
         $bios = sort_bios_by_lead_and_last_name($bios, false);
     } else {
@@ -34,12 +34,13 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $found_faculty = false;
     $found_emeritus = false;
     $found_adjunct = false;
-    foreach( $bios as $bio){
-        if( !is_array($bio))
+    foreach ($bios as $bio) {
+        if (!is_array($bio)) {
             continue;
+        }
 
         // output the corresponding headers, depending on who should be shown
-        if( !$departmental and array_key_exists('is_lead', $bio) ){
+        if( !$departmental && array_key_exists('is_lead', $bio) ){
             if( $bio['is_lead'] && !$found_lead ) {
                 // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
                 if( in_array('College of Arts & Sciences', $schools) )
