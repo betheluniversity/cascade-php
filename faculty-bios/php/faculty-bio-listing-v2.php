@@ -258,6 +258,8 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                         // pass the job title 'lead' up to the bio level (for diane dahl)
                         if( $job_title['top_lead'] == true)
                             $bio['top_lead'] = true;
+                        if( $job_title['dean_of_nursing'] == true)
+                            $bio['dean_of_nursing'] = true;
                         if( $job_title['adjunct'] == 'Yes')
                             $bio['adjunct'] = true;
                         if( $job_title['fulltime'] == 'No')
@@ -380,7 +382,12 @@ function get_job_title($job_title, $id){
 //        $job_title['job_title'] = 'Adjunct ' . $job_title['job_title'];
 //    }
 
-    if ($job_title['department-chair'] == 'Yes') {
+    if ($job_title['dean-of-nursing'] == 'Yes') {
+        $returned_title['top_lead'] = true;
+        $returned_title['dean_of_nursing'] = true;
+        $returned_title['title'] = $job_title['job_title'];
+        return $returned_title;
+    } elseif ($job_title['department-chair'] == 'Yes') {
         $returned_title['top_lead'] = $top_lead;
         $returned_title['is_lead'] = true;
         $returned_title['title'] = $job_title['job_title'];
