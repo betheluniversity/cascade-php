@@ -189,6 +189,7 @@ function inspect_faculty_bio($xml){
             $temp_job['graduate-program'] = strval($job_title->{'graduate-program'});
             $temp_job['seminary-program'] = strval($job_title->{'seminary-program'});
             $temp_job['department-chair'] = strval($job_title->{'department-chair'});
+            $temp_job['dean-of-nursing'] = strval($job_title->{'dean-of-nursing'});
             $temp_job['program-director'] = strval($job_title->{'program-director'});
             $temp_job['lead-faculty'] = strval($job_title->{'lead-faculty'});
             $temp_job['job_title'] = strval($job_title->{'job_title'});
