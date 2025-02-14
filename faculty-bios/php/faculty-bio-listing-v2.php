@@ -229,13 +229,15 @@ function filter_bios($bios, $schools, $cas, $caps, $gs, $sem){
                 $array_of_job_titles = array();
                 if( sizeof($temp_array_of_job_titles) ) {
                     foreach( $temp_array_of_job_titles as $job_title){
-                        // pass the job title 'lead' up to the bio level
+                        // pass the job title 'lead' and 'top_lead' up to the bio level
                         if( $job_title['is_lead'] == true)
                             $bio['is_lead'] = true;
-                        // pass the job title 'lead' up to the bio level (for diane dahl)
                         if( $job_title['top_lead'] == true)
                             $bio['top_lead'] = true;
-                        if( isset($job_title['dean_of_nursing']) && $job_title['dean_of_nursing'] == true)
+                        // pass the job title 'dean_of_nursing' up to the bio level
+                        if( !isset($job_title['dean_of_nursing']) )
+                            $job_title['dean_of_nursing'] = false;
+                        if( $job_title['dean_of_nursing'] == true)
                             $bio['dean_of_nursing'] = true;
                         if( $job_title['adjunct'] == 'Yes')
                             $bio['adjunct'] = true;
