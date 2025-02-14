@@ -23,17 +23,17 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
         'Emeritus/Emerita Faculty' => array()
     );
 
-    if( $displayFaculty == 'All programs'){
-        $bios = sort_bios_by_lead_and_last_name($bios, false);
-    } else {
-        $bios = sort_bios_by_lead_and_last_name($bios, true);
-    }
+    // if( $displayFaculty == 'All programs'){
+    //     $bios = sort_bios_by_lead_and_last_name($bios, false);
+    // } else {
+    //     $bios = sort_bios_by_lead_and_last_name($bios, true);
+    // }
 
-    // Print bios
-    $found_lead = false;
-    $found_faculty = false;
-    $found_emeritus = false;
-    $found_adjunct = false;
+    // // Print bios
+    // $found_lead = false;
+    // $found_faculty = false;
+    // $found_emeritus = false;
+    // $found_adjunct = false;
     foreach ($bios as $bio) {
         if (!is_array($bio)) {
             continue;
@@ -57,30 +57,43 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
             }
 
             
-            if( $bio['is_lead'] && !$found_lead ) {
-                // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
-                if( in_array('College of Arts & Sciences', $schools) )
-                    echo '<h2>Department Chair</h2>';
-                else
-                    echo '<h2>Program Directors & Lead Faculty</h2>';
-                $found_lead = true;
-            }
-            elseif( !$bio['is_lead'] && !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
-                echo '<h2>Faculty</h2>';
-                $found_faculty = true;
-            }
-            elseif( !$found_adjunct && $bio['adjunct'] && $bio['emeritus'] == "Neither" ) {
-                echo '<h2>Adjunct Faculty</h2>';
-                $found_adjunct = true;
-            }
-            elseif( !$found_emeritus && $bio['emeritus'] != "Neither" ) {
-                echo '<h2>Emeritus/Emerita Faculty</h2>';
-                $found_emeritus = true;
-            }
+        //     if( $bio['is_lead'] && !$found_lead ) {
+        //         // update title based on school. "Department Chairs" and "Lead Faculty & Program Director"
+        //         if( in_array('College of Arts & Sciences', $schools) )
+        //             echo '<h2>Department Chair</h2>';
+        //         else
+        //             echo '<h2>Program Directors & Lead Faculty</h2>';
+        //         $found_lead = true;
+        //     }
+        //     elseif( !$bio['is_lead'] && !$found_faculty && $bio['emeritus'] == "Neither" && $bio['fulltime'] ) {
+        //         echo '<h2>Faculty</h2>';
+        //         $found_faculty = true;
+        //     }
+        //     elseif( !$found_adjunct && $bio['adjunct'] && $bio['emeritus'] == "Neither" ) {
+        //         echo '<h2>Adjunct Faculty</h2>';
+        //         $found_adjunct = true;
+        //     }
+        //     elseif( !$found_emeritus && $bio['emeritus'] != "Neither" ) {
+        //         echo '<h2>Emeritus/Emerita Faculty</h2>';
+        //         $found_emeritus = true;
+        //     }
         }
 
-        // output faculty bio html
-        echo create_bio_html($bio, $departmental);
+        // // output faculty bio html
+        // echo create_bio_html($bio, $departmental);
+    }
+
+    // Output grouped bios
+    foreach ($grouped_bios as $heading => $bios_group) {
+        if (!empty($bios_group)) {
+            usort($bios_group, function($a, $b) {
+                return strcmp($a['last'], $b['last']);
+            });
+            echo "<h2>$heading</h2>";
+            foreach ($bios_group as $bio) {
+                echo create_bio_html($bio, $departmental);
+            }
+        }
     }
 }
 
