@@ -361,7 +361,10 @@ function get_job_title($job_title, $id){
 //        $job_title['job_title'] = 'Adjunct ' . $job_title['job_title'];
 //    }
 
-    if (isset($job_title['dean_of_nursing']) && $job_title['dean-of-nursing'] == 'Yes') {
+    if (!isset($job_title['dean_of_nursing'])) {
+        $job_title['dean_of_nursing'] = 'No';
+    }
+    if ($job_title['dean-of-nursing'] == 'Yes') {
         $returned_title['top_lead'] = true;
         $returned_title['dean_of_nursing'] = true;
         $returned_title['title'] = $job_title['job_title'];
