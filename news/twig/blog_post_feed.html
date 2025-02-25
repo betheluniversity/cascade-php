@@ -1,9 +1,22 @@
-<div class="flex-cell">
+<div class="grid-cell">
     
     {% if post['image'] != "hidden" %}
-        <img    class="lazyload"
-                data-src="{{ post['image'] }}?w=240"
-                alt="{{ post['title'] }}"
+    <img 
+        src="{{ post['image'] }}?w=200" 
+        srcset="
+            {{ post['image'] }}?w=200 200w,
+            {{ post['image'] }}?w=400 400w,
+            {{ post['image'] }}?w=600 600w,
+            {{ post['image'] }}?w=800 800w,
+            {{ post['image'] }}?w=1000 1000w,
+            {{ post['image'] }}?w=1200 1200w,
+            {{ post['image'] }}?w=1400 1400w,
+            {{ post['image'] }}?w=1600 1600w,
+            {{ post['image'] }}?w=1800 1800w,
+            {{ post['image'] }}?w=2000 2000w
+        "
+        alt="{{ post['title'] }}"
+        loading="lazy"
         />
     {% endif %}
 
