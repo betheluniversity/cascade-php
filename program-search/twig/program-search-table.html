@@ -5,7 +5,7 @@
         <div class="program-search">
             <div class="mb4">
                 <h3>{{degree_display_name}}</h3>
-                <div class="flex program-search__table-head mb1">
+                <div class="flex flex--row program-search__table-head">
                         <div class="flex-cell results-one">Name</div>
                         <div class="flex-cell results-two">Degree Level</div>
                         <div class="flex-cell results-three">Delivery</div>
@@ -15,7 +15,7 @@
                 {% for program_concentration_array in degree_programs %}
                     <!--{% set real_program = program_concentration_array['program'] %}-->
                     {% set real_concentration = program_concentration_array['concentration'] %}
-                    <div class="flex mb1">
+                    <div class="flex flex--row">
                         {{real_concentration.html|raw}}
                     </div>
                 {% endfor %}
@@ -29,6 +29,3 @@
         <!--<a class="btn btn-small" onclick="resetCompareSearch()">Reset all</a>-->
     </div>
 {% endif %}
-
-
-
