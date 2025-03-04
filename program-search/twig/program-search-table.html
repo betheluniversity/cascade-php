@@ -5,17 +5,17 @@
         <div class="program-search">
             <div class="mb4">
                 <h3>{{degree_display_name}}</h3>
-                <div class="grid  program-search__table-head">
-                        <div class="grid-cell results-one">Name</div>
-                        <div class="grid-cell results-two">Degree Level</div>
-                        <div class="grid-cell results-three">Delivery</div>
-                        <div class="grid-cell results-four">Compare</div>
+                <div class="flex program-search__table-head">
+                        <div class="flex-cell results-one">Name</div>
+                        <div class="flex-cell results-two">Degree Level</div>
+                        <div class="flex-cell results-three">Delivery</div>
+                        <div class="flex-cell results-four">Compare</div>
                 </div>
                 
                 {% for program_concentration_array in degree_programs %}
                     <!--{% set real_program = program_concentration_array['program'] %}-->
                     {% set real_concentration = program_concentration_array['concentration'] %}
-                    <div class="grid">
+                    <div class="flex">
                         {{real_concentration.html|raw}}
                     </div>
                 {% endfor %}
