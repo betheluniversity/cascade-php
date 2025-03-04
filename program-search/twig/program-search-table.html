@@ -5,7 +5,7 @@
         <div class="program-search">
             <div class="mb4">
                 <h3>{{degree_display_name}}</h3>
-                <div class="flex program-search__table-head">
+                <div class="flex program-search__table-head mb1">
                         <div class="flex-cell results-one">Name</div>
                         <div class="flex-cell results-two">Degree Level</div>
                         <div class="flex-cell results-three">Delivery</div>
@@ -15,7 +15,7 @@
                 {% for program_concentration_array in degree_programs %}
                     <!--{% set real_program = program_concentration_array['program'] %}-->
                     {% set real_concentration = program_concentration_array['concentration'] %}
-                    <div class="flex">
+                    <div class="flex mb1">
                         {{real_concentration.html|raw}}
                     </div>
                 {% endfor %}
