@@ -1,12 +1,21 @@
 <?php
 
 session_start();
+require_once '/var/www/staging/code/config.php';
+
 class phpMSAL {
-    private static $clientId = $config['MSAL_CLIENT_ID'];
-    private static $clientSecret = $config['MSAL_CLIENT_SECRET'];
-    private static $authority = $config['MSAL_AUTHORITY'];
-    private static $scopes = $config['MSAL_SCOPES'];
+    private static $clientId;
+    private static $clientSecret;
+    private static $authority;
+    private static $scopes;
     private static $redirectUri = '';
+
+    public static function init($config) {
+        self::$clientId = $config['MSAL_CLIENT_ID'];
+        self::$clientSecret = $config['MSAL_CLIENT_SECRET'];
+        self::$authority = $config['MSAL_AUTHORITY'];
+        self::$scopes = $config['MSAL_SCOPES'];
+    }
 
     public static function setRedirectUri($redirectUri) {
         self::$redirectUri = $redirectUri;
@@ -129,6 +138,8 @@ class phpMSAL {
         }
     }
 }
+
+phpMSAL::init($config);
 
 if (isset($_GET['code'])) {
     $redirectUri = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";

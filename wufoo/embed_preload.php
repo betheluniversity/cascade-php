@@ -9,6 +9,10 @@
 // todo: rename and move this to a general method!
 // This is a general method, I know it is used for the wufoo cascade format. It could be used elsewhere (11/2/17)
 function fetchJSONFile($url, $data, $print=true, $method='POST') {
+    if (strpos($_SERVER['HTTP_HOST'], 'staging') !== false) {
+        $url = str_replace('.bethel.edu', '.xp.bethel.edu', $url);
+    }
+
     $opts = array('http' =>
         array(
             'method'  => $method,
