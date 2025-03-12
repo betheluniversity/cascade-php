@@ -1,5 +1,16 @@
 <?php
 
+if (!isset($check_auth)) {
+    $check_auth = "No";
+}
+if (!isset($require_auth)) {
+    $require_auth = "No";
+}
+
+if (!isset($auth_type)) {
+    $auth_type = "Microsoft";
+}
+
 if ( $auth_type == "Microsoft" ) {
     include_once 'msal.php';
     $_SESSION['post-login-redirect'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/" . $canonical_url;
