@@ -1,6 +1,8 @@
 <?php
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once $_SERVER["DOCUMENT_ROOT"] . '/code/config.php';
 
 class phpMSAL {

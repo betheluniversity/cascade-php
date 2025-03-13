@@ -1,8 +1,8 @@
 <?php
-// filepath: /var/www/staging/code/general-cascade/msal-logout.php
 
-session_start();
-
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // Unset all session values
 $_SESSION = array();
 
