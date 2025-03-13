@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-require_once '/var/www/staging/code/config.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . '/code/config.php';
 
 class phpMSAL {
     private static $clientId;
