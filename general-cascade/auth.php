@@ -13,8 +13,8 @@ if (!isset($auth_type)) {
 
 if ( $auth_type == "Microsoft" ) {
     include_once 'msal.php';
-    $_SESSION['post-login-redirect'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/" . $canonical_url;
-    $redirectUri = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
+    $_SESSION['post-login-redirect'] = "https://$_SERVER[HTTP_HOST]/" . $canonical_url;
+    $redirectUri = "https://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
     phpMSAL::setRedirectUri($redirectUri);
 } else {
     include_once 'cas.php';
