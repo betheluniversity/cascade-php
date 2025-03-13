@@ -144,7 +144,7 @@ class phpMSAL {
 phpMSAL::init($config);
 
 if (isset($_GET['code'])) {
-    $redirectUri = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
+    $redirectUri = "https://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
     phpMSAL::setRedirectUri($redirectUri);
     phpMSAL::handleRedirect();
 }
