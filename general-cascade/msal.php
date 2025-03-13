@@ -23,10 +23,10 @@ class phpMSAL {
         self::$redirectUri = $redirectUri;
     }
 
-    public static function forceAuthentication() {
+    public static function forceAuthentication($postLoginRedirectUri = '/') {
         $token_valid = self::checkAuthentication();
         if (!$token_valid) {
-            self::authenticate();
+            self::authenticate($postLoginRedirectUri);
         } else {
             return true;
         }
@@ -93,14 +93,14 @@ class phpMSAL {
         return $jwt;
     }
 
-    private static function authenticate() {
+    private static function authenticate($postLoginRedirectUri = '/') {
         $authUrl = self::$authority . '/oauth2/v2.0/authorize?' . http_build_query([
             'client_id' => self::$clientId,
             'response_type' => 'code',
             'redirect_uri' => self::$redirectUri,
             'response_mode' => 'query',
             'scope' => implode(' ', self::$scopes),
-            'state' => '12345',
+            'state' => $postLoginRedirectUri,
         ]);
 
         header('Location: ' . $authUrl);
@@ -110,6 +110,8 @@ class phpMSAL {
     public static function handleRedirect() {
         if (isset($_GET['code'])) {
             $code = $_GET['code'];
+            $postLoginRedirectUri = $_GET['state'] ?? '/';
+            $postLoginRedirectUri = str_replace('%2f', '/', $postLoginRedirectUri);
 
             $tokenUrl = self::$authority . '/oauth2/v2.0/token';
             $postData = [
@@ -133,9 +135,7 @@ class phpMSAL {
             $token = json_decode($response, true);
             $_SESSION['access_token'] = $token['access_token'];
 
-            $postLoginRedirect = $_SESSION['post-login-redirect'] ?? '/';
-            unset($_SESSION['post-login-redirect']);
-            header('Location: ' . $postLoginRedirect);
+            header('Location: ' . "https://$_SERVER[HTTP_HOST]/" . $postLoginRedirectUri);
             exit();
         }
     }
