@@ -8,7 +8,7 @@ if (!isset($require_auth)) {
 }
 
 if (!isset($auth_type)) {
-    $auth_type = "Microsoft";
+    $auth_type = "CAS";
 }
 
 if ( $auth_type == "Microsoft" ) {
