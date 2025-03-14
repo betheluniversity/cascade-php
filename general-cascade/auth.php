@@ -19,6 +19,12 @@ if (!isset($canonical_url)) {
     $canonical_url = '/';
 }
 
+if (!isset($apache_redirect)) {
+    $apache_redirect = null;
+}
+
+$post_login_redirect = $apache_redirect ? $apache_redirect : $canonical_url;
+
 if ( $auth_type == "Microsoft" ) {
     include_once 'msal.php';
     $redirectUri = "https://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
@@ -32,7 +38,7 @@ if( strpos($require_auth,"Yes") !== false ){
     header("Cache-Control: no-store, no-cache, must-revalidate");
 
     if ( $auth_type == "Microsoft" ) {
-        $authenticated = phpMSAL::forceAuthentication($canonical_url);
+        $authenticated = phpMSAL::forceAuthentication($post_login_redirect);
         $remote_user = phpMSAL::getUsername();
     } else {
         $authenticated = phpCAS::forceAuthentication();

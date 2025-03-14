@@ -112,6 +112,9 @@ class phpMSAL {
             $code = $_GET['code'];
             $postLoginRedirectUri = $_GET['state'] ?? '/';
             $postLoginRedirectUri = str_replace('%2f', '/', $postLoginRedirectUri);
+            if (strpos($postLoginRedirectUri, 'https://') === false) {
+                $postLoginRedirectUri = "https://$_SERVER[HTTP_HOST]/" . $postLoginRedirectUri;
+            }
 
             $tokenUrl = self::$authority . '/oauth2/v2.0/token';
             $postData = [
@@ -135,7 +138,7 @@ class phpMSAL {
             $token = json_decode($response, true);
             $_SESSION['access_token'] = $token['access_token'];
 
-            header('Location: ' . "https://$_SERVER[HTTP_HOST]/" . $postLoginRedirectUri);
+            header('Location: ' . $postLoginRedirectUri);
             exit();
         }
     }
