@@ -112,6 +112,7 @@ class phpMSAL {
             $code = $_GET['code'];
             $postLoginRedirectUri = $_GET['state'] ?? '/';
             $postLoginRedirectUri = str_replace('%2f', '/', $postLoginRedirectUri);
+            $postLoginRedirectUri = str_replace('%3a', ':', $postLoginRedirectUri);
             if (strpos($postLoginRedirectUri, 'https://') === false) {
                 $postLoginRedirectUri = "https://$_SERVER[HTTP_HOST]/" . $postLoginRedirectUri;
             }
