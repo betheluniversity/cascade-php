@@ -27,6 +27,7 @@ if ( $auth_type == "Microsoft" ) {
     include_once 'cas.php';
 }
 
+$remote_user = null;
 if( strpos($require_auth,"Yes") !== false ){
     ##set cache header
     header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -36,7 +37,9 @@ if( strpos($require_auth,"Yes") !== false ){
         $remote_user = phpMSAL::getUsername();
     } else {
         $authenticated = phpCAS::forceAuthentication();
-        $remote_user = phpCAS::getUser();
+        if($authenticated){
+            $remote_user = phpCAS::getUser();
+        }
     }
 
     // If it is faculty/staff only, make sure they have a faculty/staff role - otherwise exit 403
@@ -72,12 +75,12 @@ if( strpos($require_auth,"Yes") !== false ){
         $remote_user = phpMSAL::getUsername();
     } else {
         $authenticated = phpCAS::checkAuthentication();
-        $remote_user = phpCAS::getUser();
+        if($authenticated){
+            $remote_user = phpCAS::getUser();
+        }
     }
 }
 
 if($authenticated){
     setcookie('remote-user', $remote_user);
-}else{
-    $remote_user = null;
 }
