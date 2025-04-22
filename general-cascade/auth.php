@@ -11,9 +11,10 @@ if (!isset($require_auth)) {
     $require_auth = "No";
 }
 
-if (!isset($auth_type)) {
-    $auth_type = "CAS";
-}
+$auth_type = "Microsoft";
+// if (!isset($auth_type)) {
+//     $auth_type = "CAS";
+// }
 
 if (!isset($canonical_url)) {
     $canonical_url = '/';
@@ -23,9 +24,9 @@ if ( $auth_type == "Microsoft" ) {
     include_once 'msal.php';
     $redirectUri = "https://$_SERVER[HTTP_HOST]/code/general-cascade/msal.php";
     phpMSAL::setRedirectUri($redirectUri);
-} else {
-    include_once 'cas.php';
-}
+} // else {
+//     include_once 'cas.php';
+// }
 
 $remote_user = null;
 if( strpos($require_auth,"Yes") !== false ){
@@ -35,12 +36,12 @@ if( strpos($require_auth,"Yes") !== false ){
     if ( $auth_type == "Microsoft" ) {
         $authenticated = phpMSAL::forceAuthentication($canonical_url);
         $remote_user = phpMSAL::getUsername();
-    } else {
-        $authenticated = phpCAS::forceAuthentication();
-        if($authenticated){
-            $remote_user = phpCAS::getUser();
-        }
-    }
+    } // else {
+    //     $authenticated = phpCAS::forceAuthentication();
+    //     if($authenticated){
+    //         $remote_user = phpCAS::getUser();
+    //     }
+    // }
 
     // If it is faculty/staff only, make sure they have a faculty/staff role - otherwise exit 403
     if( $require_auth == 'Yes - Only Faculty/Staff' && $remote_user ){
@@ -50,10 +51,10 @@ if( strpos($require_auth,"Yes") !== false ){
             foreach ($groups as $group) {
                 $roles[] = array('userRole' => $group);
             }
-        } else {
-            $url = "https://wsapi.bethel.edu/username/$remote_user/roles";
-            $roles = fetchJSONFile($url, array(), $print=false, $method='GET');
-        }
+        } // else {
+        //     $url = "https://wsapi.bethel.edu/username/$remote_user/roles";
+        //     $roles = fetchJSONFile($url, array(), $print=false, $method='GET');
+        // }
 
         $has_faculty_or_staff_role = false;
         foreach( $roles as $role ){
@@ -73,12 +74,12 @@ if( strpos($require_auth,"Yes") !== false ){
     if ( $auth_type == "Microsoft" ) {
         $authenticated = phpMSAL::checkAuthentication();
         $remote_user = phpMSAL::getUsername();
-    } else {
-        $authenticated = phpCAS::checkAuthentication();
-        if($authenticated){
-            $remote_user = phpCAS::getUser();
-        }
-    }
+    } // else {
+    //     $authenticated = phpCAS::checkAuthentication();
+    //     if($authenticated){
+    //         $remote_user = phpCAS::getUser();
+    //     }
+    // }
 }
 
 if($authenticated){
