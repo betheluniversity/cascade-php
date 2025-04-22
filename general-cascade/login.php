@@ -5,9 +5,8 @@ $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "https:
 
 // Check if the user is authenticated
 if (!isset($_COOKIE['remote-user'])) {
-    // Handle Microsoft Auth
+    // Handle Auth
     $require_auth = 'Yes';
-    $auth_type = 'Microsoft';
     $canonical_url = $redirect;
     require_once 'auth.php';
 }
