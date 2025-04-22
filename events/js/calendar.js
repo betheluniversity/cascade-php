@@ -194,7 +194,7 @@
         var remote_user = $.cookie('cal-user');
         var url = window.location.origin + '/code/general-cascade/logout';
         if (remote_user != null && remote_user != "null"){
-            $(".bu-topbar-welcome").html("Welcome " + remote_user + ' <a href="' + url + '">Logout</a>');
+            $(".bu-topbar-welcome").html("Welcome " + remote_user + ': <a href="' + url + '">Logout</a>');
         }else{
             var url = window.location.origin + '/code/general-cascade/login';
             $(".bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
