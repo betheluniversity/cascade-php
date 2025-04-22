@@ -185,20 +185,18 @@
         if($.cookie('cal-user') && $.cookie('cal-user') != null && $.cookie('cal-user') != "null"){
             return $.cookie('cal-user');
         }else{
-            $.cookie('cal-user', $.cookie('remote-user'));
+            $.cookie('cal-user', $.cookie('remote-user'), { path: '/' });
         }
 
     }
 
     function updateWelcomeBar(){
         var remote_user = $.cookie('cal-user');
-        var append = document.URL.replace("#", "?");
-        var url = window.location.origin + '/code/general-cascade/logout?redirect=' + append;
+        var url = window.location.origin + '/code/general-cascade/logout';
         if (remote_user != null && remote_user != "null"){
             $(".bu-topbar-welcome").html("Welcome " + remote_user + ' <a href="' + url + '">Logout</a>');
         }else{
-            var url = window.location.origin + '/code/general-cascade/login?redirect=' + append;
-            //url = url.replace("https", "http");
+            var url = window.location.origin + '/code/general-cascade/login';
             $(".bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
     }

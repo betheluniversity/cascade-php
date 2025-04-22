@@ -82,6 +82,6 @@ if( strpos($require_auth,"Yes") !== false ){
     // }
 }
 
-if($authenticated){
-    setcookie('remote-user', $remote_user);
+if ($authenticated) {
+    setcookie('remote-user', $remote_user, 0, '/');
 }

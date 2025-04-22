@@ -7,19 +7,15 @@ if (session_status() == PHP_SESSION_NONE) {
 $_SESSION = array();
 
 // Save the desired redirect URL after logout
-if (isset($_GET['redirect'])) {
-    $redirect = $_GET['redirect'];
-} else {
-    $redirect = "https://$_SERVER[HTTP_HOST]";
-}
+$redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "https://$_SERVER[HTTP_HOST]";
 
 // Remove cookies by setting their expiration time to a past date
 if (isset($_COOKIE['remote-user'])) {
-    setcookie('remote-user', '', time() - 3600, '/', $_SERVER['HTTP_HOST'], isset($_SERVER['HTTPS']), true);
+    setcookie('remote-user', '', time() - 3600, '/');
 }
 
 if (isset($_COOKIE['cal-user'])) {
-    setcookie('cal-user', '', time() - 3600, '/', $_SERVER['HTTP_HOST'], isset($_SERVER['HTTPS']), true);
+    setcookie('cal-user', '', time() - 3600, '/');
 }
 
 // Destroy the session
