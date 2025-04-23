@@ -56,4 +56,13 @@ if( strpos($require_auth,"Yes") !== false ){
 
 if ($authenticated) {
     setcookie('remote-user', $remote_user, 0, '/');
+} else {
+    // Remove cookies by setting their expiration time to a past date
+    if (isset($_COOKIE['remote-user'])) {
+        setcookie('remote-user', '', time() - 3600, '/');
+    }
+
+    if (isset($_COOKIE['cal-user'])) {
+        setcookie('cal-user', '', time() - 3600, '/');
+    }
 }
