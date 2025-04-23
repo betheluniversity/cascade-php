@@ -8,5 +8,7 @@ if (!isset($_COOKIE['remote-user'])) {
     // Handle Auth
     $require_auth = 'Yes';
     require_once 'auth.php';
+} else {
+    header("Location: $redirect_url");
 }
 ?>
