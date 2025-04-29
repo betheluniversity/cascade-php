@@ -146,7 +146,11 @@ function inspect_news_article($xml, $categories){
             }
         }
     } else {
-        $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
+        if (is_object($ds->{'story-metadata'}->{'feed-image'})){
+            $page_info['image-path'] = (string)$ds->{'story-metadata'}->{'feed-image'}->{'path'};
+        } else {
+            $page_info['image-path'] = '';
+        }
         $page_info['date-for-sorting'] = (int)$ds->{'story-metadata'}->{'publish-date'};
         $page_info['bethel-alert'] = $ds->{'story-metadata'}->{'bethel-alert'};
         if( $ds->{'story-metadata'}->{'featured'} == 'Yes' )
