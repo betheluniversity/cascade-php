@@ -1,5 +1,30 @@
 (function($) {
 
+    function highlightSelectedDay() {
+        // Extract query parameters from the URL
+        const url = window.location.toString();
+        const queryParams = url.includes('?')
+            ? extractQueryParameters(url)
+            : extractHashParameters(url);
+
+        // Get the 'day' parameter
+        const selectedDay = parseInt(queryParams['day'], 10);
+
+        // Validate the 'day' parameter
+        if (!isNaN(selectedDay)) {
+            // Highlight the corresponding day cell
+            document.querySelectorAll('.event').forEach(eventElement => {
+                const daySpan = eventElement.querySelector('span[name]');
+                const dayNumber = parseInt(daySpan?.getAttribute('name'), 10);
+
+                if (dayNumber === selectedDay) {
+                    // Apply inline styles to highlight the day
+                    eventElement.style.backgroundColor = '#e9e9e9';
+                }
+            });
+        }
+    }
+
     function SimpleDict() {
         this.count = function() {
             var count = 0;
@@ -226,6 +251,7 @@
             replaceQueryString($(button), '?' + data['current_month_qs']);
         });
         this.month_grid.html(data['grid']);
+        highlightSelectedDay();
     };
 
     CalendarController.prototype.init = function() {
