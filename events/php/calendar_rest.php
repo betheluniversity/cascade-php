@@ -39,9 +39,9 @@ function build_calendar_data($month, $year){
     $prev_year = $prev->format('Y');
     $data = Array();
     $data['previous_title'] = "Previous Month";
-    $data['next_month_qs'] = "month=$next_month&day=1&year=$next_year";
-    $data['previous_month_qs'] = "month=$prev_month&day=1&year=$prev_year";
-    $data['current_month_qs'] = "month=$month&day=1&year=$year";
+    $data['next_month_qs'] = "month=$next_month&year=$next_year";
+    $data['previous_month_qs'] = "month=$prev_month&year=$prev_year";
+    $data['current_month_qs'] = "month=$month&year=$year";
 
     $data['grid'] = draw_calendar($month, $year);
     $data['month_title'] = get_month_name($month) . ' ' . $year;

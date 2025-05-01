@@ -1,5 +1,30 @@
 (function($) {
 
+    function highlightSelectedDay() {
+        // Extract query parameters from the URL
+        const url = window.location.toString();
+        const queryParams = url.includes('?')
+            ? extractQueryParameters(url)
+            : extractHashParameters(url);
+
+        // Get the 'day' parameter
+        const selectedDay = parseInt(queryParams['day'], 10);
+
+        // Validate the 'day' parameter
+        if (!isNaN(selectedDay)) {
+            // Highlight the corresponding day cell
+            document.querySelectorAll('.event').forEach(eventElement => {
+                const daySpan = eventElement.querySelector('span[name]');
+                const dayNumber = parseInt(daySpan?.getAttribute('name'), 10);
+
+                if (dayNumber === selectedDay) {
+                    // Apply inline styles to highlight the day
+                    eventElement.style.backgroundColor = '#e9e9e9';
+                }
+            });
+        }
+    }
+
     function SimpleDict() {
         this.count = function() {
             var count = 0;
@@ -106,7 +131,7 @@
 
     function checkEventCategories(){
 
-        var username = $.cookie('cal-user');
+        var remote_user = $.cookie('remote-user');
 
         // Get all categores that are checked
         var externalCategories = getExternalCategories();
@@ -119,7 +144,7 @@
                 $(this).attr('checked', true);
             }
         });
-        if (username){
+        if (remote_user != null && remote_user != "null"){
             var internalCategories = getInternalCategories();
             $(".subject-internal").each(function(){
                 if (internalCategories.indexOf(this.value) == -1){
@@ -133,11 +158,11 @@
         $(".vevent").each(function(){
             var categories = $(this).find('.categories').children();
             // Hide by default unless we find a good category
-            var username = $.cookie('cal-user');
+            var remote_user = $.cookie('remote-user');
             var hide = true;
             for (var index = 0; index < categories.length; ++index) {
                 var category = $(categories[index]).data()['category'];
-                if (internalCategories && internalCategories.indexOf(category) > -1 && username != "null"){
+                if (internalCategories && internalCategories.indexOf(category) > -1 && remote_user != "null"){
                     hide = false;
                 }
                 if (externalCategories.indexOf(category) > -1){
@@ -181,23 +206,13 @@
         this.title = $('div.calendar-title__month h3');
     }
 
-    function getRemoteUser(){
-        if($.cookie('cal-user') && $.cookie('cal-user') != null && $.cookie('cal-user') != "null"){
-            return $.cookie('cal-user');
-        }else{
-            $.cookie('cal-user', $.cookie('remote-user'));
-        }
-
-    }
-
     function updateWelcomeBar(){
-        var remote_user = $.cookie('cal-user');
+        var remote_user = $.cookie('remote-user');
+        var url = window.location.origin + '/code/general-cascade/logout';
         if (remote_user != null && remote_user != "null"){
-            $(".bu-topbar-welcome").html("Welcome " + remote_user);
+            $(".bu-topbar-welcome").html("Welcome " + remote_user + ': <a href="' + url + '">Logout</a>');
         }else{
-            var append = document.URL.replace("#", "?");
-            var url = "https://auth-prod.bethel.edu/cas/login?service=" + append;
-            //url = url.replace("https", "http");
+            var url = window.location.origin + '/code/general-cascade/login';
             $(".bu-topbar-welcome").html('Welcome guest: <a href="' + url + '">Login</a>');
         }
     }
@@ -209,7 +224,6 @@
         document.querySelector(".calendar-title__month").innerHTML = data['month_title'];
         document.querySelector(".calendar-title__month").style.display = "block";
 
-        getRemoteUser();
         updateWelcomeBar();
 
         if (data['next_month_qs'] !== null) {
@@ -237,6 +251,7 @@
             replaceQueryString($(button), '?' + data['current_month_qs']);
         });
         this.month_grid.html(data['grid']);
+        highlightSelectedDay();
     };
 
     CalendarController.prototype.init = function() {
@@ -258,8 +273,7 @@
 
         $.getJSON(loc, function(data){
             controller.update(data);
-            getRemoteUser();
-            var remote_user = $.cookie('cal-user');
+            var remote_user = $.cookie('remote-user');
             if (!remote_user){
                 //remove the internal categories so they can't be selected via select-all
                 $(".filter-list-internal").remove();
@@ -353,7 +367,6 @@
         var hashParams = extractHashParameters(window.location.toString());
         var controller = new CalendarController('#main');
         controller.init();
-        getRemoteUser();
         updateWelcomeBar();
         if (hashParams.count() >= 0 || queryParams >= 0) {
             updateCalendar();

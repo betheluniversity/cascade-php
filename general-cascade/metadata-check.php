@@ -1,12 +1,16 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 $staging = strstr(getcwd(), "/staging");
 $soda = strstr(getcwd(), "soda");
 
 if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
     header("Cache-Control: no-cache, must-revalidate");
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-    include_once 'cas.php';
+    include_once $_SERVER["DOCUMENT_ROOT"] . "/code/wufoo/embed_preload.php";
+    $redirect_url = $canonical_url;
+    include_once 'auth.php';
 }else{
     header("Cache-Control: public, must-revalidate, max-age=86400");
 }
