@@ -10,10 +10,10 @@ if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/wufoo/embed_preload.php";
     $redirect_url = $canonical_url;
-    if ( $auth_type == "CAS" ) {
-        include_once 'auth-cas.php';
-    } else {
+    if ( $auth_type == "Microsoft" ) {
         include_once 'auth.php';
+    } else {
+        include_once 'auth-cas.php';
     }
 }else{
     header("Cache-Control: public, must-revalidate, max-age=86400");
