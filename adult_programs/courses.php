@@ -77,6 +77,9 @@ function random_courses($code) {
 
             // Select up to 5 random courses
             $selectedCourseNums = array_rand(array_flip($courseNumbers), min(5, count($courseNumbers)));
+            // Randomize the order of selected course numbers
+            shuffle($selectedCourseNums);
+            
             //var_dump($selectedCourseNums);
 
             $selectedCourses = [];
