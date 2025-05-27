@@ -55,6 +55,54 @@ function individual_courses($code){
     }
 }
 
+function random_courses_call($code) {
+    global $wsapi_url;
+    try {
+        $url = $wsapi_url . "/courses/program-courses/$code";
+        return file_get_contents($url, false);
+    } catch(Exception $e) {
+        return '';
+    }
+}
+
+function random_courses($code) {
+    try {
+        $content = autoCache('random_courses_call', array($code, 86400));
+        $content = json_decode($content, true);
+        //var_dump($content);
+
+        if (!empty($content) && is_array($content)) {
+            // Extract course titles into a flat array
+            $courseNumbers = array_column($content, 'crs_num');
+
+            // Select up to 5 random courses
+            $selectedCourseNums = array_rand(array_flip($courseNumbers), min(5, count($courseNumbers)));
+            //var_dump($selectedCourseNums);
+
+            $selectedCourses = [];
+            foreach ($selectedCourseNums as $courseNum) {
+                foreach ($content as $course) {
+                    // Convert $courseNum to string for comparison
+                    if ($course['crs_num'] === (string)$courseNum) {
+                        $selectedCourses[] = $course;
+                        break; // Stop searching once we find the course
+                    }
+                }
+            }
+            //var_dump($selectedCourses); // Debugging step
+
+            $twig = makeTwigEnviron('/code/adult_programs/twig/');
+            return $twig->render('random_courses.html', array(
+                'courses' => $selectedCourses)
+            );
+        } else {
+            return '';
+        }
+    } catch(Exception $e) {
+        return '';
+    }
+}
+
 function load_course_catalog ($values, $code) {
     try {
         $content = autoCache('course_catalog_call', array($code, $values, 86400));

@@ -1,0 +1,20 @@
+<div class="courses-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+    {% for course in courses %}
+        <div class="course-card" style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 300px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #fff;">
+            <h2 class="course-title" style="font-size: 1.5em; margin-bottom: 10px;">{{ course.crs_title }}</h2>
+            <p class="course-number" style="margin: 5px 0;"><strong>Course Number:</strong> {{ course.crs_num }}</p>
+            <p class="course-description" style="margin: 5px 0;">{{ course.crs_desc }}</p>
+            <p class="course-credits" style="margin: 5px 0;"><strong>Credits:</strong> {{ course.credit_hr_low }}</p>
+            {% if course.prereg %}
+                <p class="course-prerequisites" style="margin: 5px 0;"><strong>Prerequisites:</strong> {{ course.prereg }}</p>
+            {% endif %}
+            {% if course.coreq %}
+                <p class="course-corequisites" style="margin: 5px 0;"><strong>Corequisites:</strong> {{ course.coreq }}</p>
+            {% endif %}
+            <p class="program-code" style="margin: 5px 0;"><strong>Program Code:</strong> {{ course.prog_code }}</p>
+            <p class="program-description" style="margin: 5px 0;"><strong>Program Description:</strong> {{ course.prog_desc }}</p>
+            <p class="subject-code" style="margin: 5px 0;"><strong>Subject Code:</strong> {{ course.subj_code }}</p>
+            <p class="term" style="margin: 5px 0;"><strong>Term:</strong> {{ course.term }}</p>
+        </div>
+    {% endfor %}
+</div>
