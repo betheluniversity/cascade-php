@@ -55,7 +55,7 @@ function individual_courses($code){
     }
 }
 
-function random_courses_call($code) {
+function program_courses($code) {
     global $wsapi_url;
     try {
         $url = $wsapi_url . "/courses/program-courses/$code";
@@ -67,21 +67,18 @@ function random_courses_call($code) {
 
 function random_courses($code) {
     try {
-        $content = autoCache('random_courses_call', array($code, 86400));
+        $content = autoCache('program_courses', array($code, 86400));
         $content = json_decode($content, true);
-        //var_dump($content);
 
         if (!empty($content) && is_array($content)) {
-            // Extract course titles into a flat array
+            // Extract course numbers into a flat array
             $courseNumbers = array_column($content, 'crs_num');
 
             // Select up to 5 random courses
             $selectedCourseNums = array_rand(array_flip($courseNumbers), min(5, count($courseNumbers)));
             // Randomize the order of selected course numbers
             shuffle($selectedCourseNums);
-            
-            //var_dump($selectedCourseNums);
-
+            // Get the full course details for the selected course numbers
             $selectedCourses = [];
             foreach ($selectedCourseNums as $courseNum) {
                 foreach ($content as $course) {
@@ -92,8 +89,7 @@ function random_courses($code) {
                     }
                 }
             }
-            //var_dump($selectedCourses); // Debugging step
-
+            // Render the selected courses using Twig
             $twig = makeTwigEnviron('/code/adult_programs/twig/');
             return $twig->render('random_courses.html', array(
                 'courses' => $selectedCourses)
