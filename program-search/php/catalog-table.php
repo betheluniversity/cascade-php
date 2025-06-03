@@ -20,7 +20,7 @@ function get_page_catalog_url($path){
             }
         }
     }
-    return "https://catalog.bethel.edu";
+    return "https://catalog.bethel.edu/#";
 }
 
 function get_catalog_url($path){
