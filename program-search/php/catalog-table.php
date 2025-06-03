@@ -11,16 +11,16 @@ function get_page_catalog_url($path){
     $path = "/" . $path;
     $programs_xml = get_program_xml();
     foreach ($programs_xml as $index => $program){
-        foreach($program["concentration"] as $L2_index => $concentration){
-            if( strlen($concentration["catalog-table-url"]) > 0 ){
+        foreach($program["concentrations"] as $L2_index => $concentration){
+            if( strlen($concentration["catalog_url"]) > 0 ){
                 if( strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0 ){
-                    $destination_url = str_replace("/index.xml", "/#academicplanstext", $concentration["catalog-table-url"]);
+                    $destination_url = str_replace("/index.xml", "/#academicplanstext", $concentration["catalog_url"]);
                     return $destination_url;
                 }
             }
         }
     }
-    return "https://catalog.bethel.edu/#";
+    return "https://catalog.bethel.edu";
 }
 
 function get_catalog_url($path){
