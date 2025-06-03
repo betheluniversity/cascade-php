@@ -8,7 +8,7 @@
 
 
 function get_program_xml(){
-    $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/programs.xml");
+    $xml = simplexml_load_file("https://" . $_SERVER['HTTP_HOST'] . "/_shared-content/xml/programs.xml");
     $programs = array();
     $programs = traverse_programs_folder($xml, $programs);
     return $programs;
