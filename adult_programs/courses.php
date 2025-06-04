@@ -76,7 +76,7 @@ function random_courses($path) {
         foreach ($program["concentrations"] as $L2_index => $concentration) {
             if (strlen($concentration["catalog_url"]) > 0) {
                 if (strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0) {
-                    echo '<p>Program Code: ' . $program["program_name"] . '</p>';
+                    echo '<p>Program Code: ' . $program["program_code"] . '</p>';
                     echo get_random_courses($program["program_code"]);
                     return;
                 }
