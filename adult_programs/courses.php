@@ -66,7 +66,7 @@ function program_courses($code) {
     }
 }
 
-function random_courses_for_path($path) {
+function random_courses($path) {
     // Extract the program code from the path
     $path = str_replace("_testing/", "", $path);
     $path = "/" . $path;
@@ -76,8 +76,8 @@ function random_courses_for_path($path) {
         foreach ($program["concentrations"] as $L2_index => $concentration) {
             if (strlen($concentration["catalog_url"]) > 0) {
                 if (strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0) {
-                    //echo random_courses($program["program_code"]);
-                    echo $program["program_code"];
+                    echo '<p>Program Code: ' . $program["program_name"] . '</p>';
+                    echo get_random_courses($program["program_code"]);
                     return;
                 }
             }
@@ -87,7 +87,7 @@ function random_courses_for_path($path) {
     return;
 }
 
-function random_courses($code) {
+function get_random_courses($code) {
     try {
         $content = autoCache('program_courses', array($code, 86400));
         $content = json_decode($content, true);
