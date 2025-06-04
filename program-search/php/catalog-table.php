@@ -29,6 +29,10 @@ function get_catalog_url($path){
 }
 
 function get_program_code($path){
+    // Allow lookup by path for pages in _testing
+    $path = str_replace("_testing/", "", $path);
+
+    $path = "/" . $path;
     $programs_xml = get_program_xml();
     foreach ($programs_xml as $index => $program){
         foreach($program["concentrations"] as $L2_index => $concentration){
