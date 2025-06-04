@@ -1,38 +1,16 @@
-<div class="inner--content mb6">
-    <div class="pa2  pa0--large">
-        <div class="flex">
-            <div class="flex-cell u-large-9-12 mb2">
-                <div class="large-flex-pad-2x">
-                    <h3 class="h2">Sample courses</h3>
-                    <p>At Bethel, you’ll take courses designed to challenge and inspire you. Classes blend rigorous academics with hands-on learning—and they’re all taught from a Christ-centered perspective. Explore the variety of courses that will shape your journey at Bethel and help you reach your goals.</p>
-                </div>
-            </div>
-        </div>
-        <div class='swiper swiper--customCards'>
-            <!-- Additional required wrapper -->
-            <div class='swiper-wrapper'>
-                <!-- Slides -->
-                {% for course in courses %}
-                <div class='swiper-slide'>
-                    <div class='sampleCourse'>
-                        <p class='subhead--blue'>{{ course.subj_code }} {{ course.crs_num }}</p>
-                        <h4>{{ course.crs_title }}</h4>
-                        <p>{{ course.crs_desc }}</p>
-                        <p>
-                            <b>{{ course.credit_hr_low }} credits</b>
-                        </p>
-                        <hr/>
-                        <p>
-                            <a href='#'>Full listing ></a>
-                        </p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="swiper-navigation swiperNavigationWrapper--custom">
-            <div class='swiper-button-prev'></div>
-            <div class='swiper-button-next'></div>
-        </div>
+{% for course in courses %}
+<div class='swiper-slide'>
+    <div class='sampleCourse'>
+        <p class='subhead--blue'>{{ course.subj_code }} {{ course.crs_num }}</p>
+        <h4>{{ course.crs_title }}</h4>
+        <p>{{ course.crs_desc }}</p>
+        <p>
+            <b>{{ course.credit_hr_low }} credits</b>
+        </p>
+        <hr/>
+        <p>
+            <a href='#'>Full listing ></a>
+        </p>
     </div>
 </div>
+{% endfor %}
