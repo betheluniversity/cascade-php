@@ -6,6 +6,7 @@
  * Time: 8:42 AM
  */
 
+ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/program-search/php/program-search-functions.php";
 
 // Select wsapi.xp for Staging site
 if( strpos($_SERVER['SERVER_NAME'],'staging')  !== false ) {
