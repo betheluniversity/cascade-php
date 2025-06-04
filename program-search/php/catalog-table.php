@@ -40,10 +40,12 @@ function get_program_code($path){
                 if( strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0 ){
                     echo $program["code"];
                 }
+                return;
             }
         }
     }
-    return "";
+    echo "Program code not found";
+    return;
 }
 
 function get_catalog_table($path, $page_title){
