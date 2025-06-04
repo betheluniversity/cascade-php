@@ -34,11 +34,12 @@ function get_program_code($path){
 
     $path = "/" . $path;
     $programs_xml = get_program_xml();
-    var_dump($programs_xml);
+    
     foreach ($programs_xml as $index => $program){
         foreach($program["concentrations"] as $L2_index => $concentration){
             if( strlen($concentration["catalog_url"]) > 0 ){
                 if( strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0 ){
+                    var_dump($concentration);
                     echo "Program Code: " . $program["code"];
                     return;
                 }
