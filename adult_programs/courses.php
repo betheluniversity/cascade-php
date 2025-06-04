@@ -82,7 +82,13 @@ function random_courses($path) {
                         $program_code = '2-EDD-LHED';
                     }
                     echo '<p>Program Code: ' . $program_code . '</p>';
-                    echo get_random_courses($program_code);
+                    $courses = get_random_courses($program_code);
+                    if (empty($courses)) {
+                        // For testing
+                        echo get_random_courses('2-EDD-LHED');
+                    } else {
+                        echo $courses;
+                    }
                     return;
                 }
             }
