@@ -39,8 +39,8 @@ function get_program_code($path){
             if( strlen($concentration["catalog_url"]) > 0 ){
                 if( strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0 ){
                     echo $program["code"];
+                    return;
                 }
-                return;
             }
         }
     }
