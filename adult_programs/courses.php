@@ -76,8 +76,13 @@ function random_courses($path) {
         foreach ($program["concentrations"] as $L2_index => $concentration) {
             if (strlen($concentration["catalog_url"]) > 0) {
                 if (strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0) {
-                    echo '<p>Program Code: ' . $program["program_code"] . '</p>';
-                    echo get_random_courses($program["program_code"]);
+                    $program_code = $program["program_code"];
+                    // For testing
+                    if (empty($program_code)) {
+                        $program_code = '2-EDD-LHED';
+                    }
+                    echo '<p>Program Code: ' . $program_code . '</p>';
+                    echo get_random_courses($program_code);
                     return;
                 }
             }
