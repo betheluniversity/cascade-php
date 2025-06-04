@@ -39,14 +39,12 @@ function get_program_code($path){
         foreach($program["concentrations"] as $L2_index => $concentration){
             if( strlen($concentration["catalog_url"]) > 0 ){
                 if( strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0 ){
-                    var_dump($program);
-                    echo "Program Code: " . $program["program_code"];
+                    echo $program["program_code"];
                     return;
                 }
             }
         }
     }
-    echo "Program code not found";
     return;
 }
 
