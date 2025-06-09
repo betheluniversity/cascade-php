@@ -7,6 +7,7 @@
  */
 
  include_once $_SERVER["DOCUMENT_ROOT"] . "/code/program-search/php/program-search-functions.php";
+ include_once $_SERVER["DOCUMENT_ROOT"] . "/code/program-search/php/catalog-table.php";
 
 // Select wsapi.xp for Staging site
 if( strpos($_SERVER['SERVER_NAME'],'staging')  !== false ) {
@@ -67,34 +68,23 @@ function program_courses($code) {
 }
 
 function random_courses($path) {
-    // Extract the program code from the path
-    $path = str_replace("_testing/", "", $path);
-    $path = "/" . $path;
-    $programs_xml = get_program_xml();
-    
-    foreach ($programs_xml as $index => $program) {
-        foreach ($program["concentrations"] as $L2_index => $concentration) {
-            if (strlen($concentration["catalog_url"]) > 0) {
-                if (strcmp($path, $concentration["concentration_page"]->{"path"}) == 0 || strcmp($path . 'index', $concentration["concentration_page"]->{"path"}) == 0) {
-                    $program_code = $program["program_code"];
-                    // For testing
-                    if (empty($program_code)) {
-                        $program_code = '2-EDD-LHED';
-                    }
-                    echo '<p>Program Code: ' . $program_code . '</p>';
-                    $courses = get_random_courses($program_code);
-                    if (empty($courses)) {
-                        // For testing
-                        echo get_random_courses('2-EDD-LHED');
-                    } else {
-                        echo $courses;
-                    }
-                    return;
-                }
-            }
-        }
+    $program_code = get_program_code($path);
+    if (empty($program_code)) {
+        // For testing
+        $program_code = '2-EDD-LHED';
+        //return;
     }
-    echo 'Program code not found for path: ' . $path;
+    // For Testing
+    echo '<p>Program Code: ' . $program_code . '</p>';
+
+    $courses = get_random_courses($program_code);
+    if (empty($courses)) {
+        // For testing
+        echo get_random_courses('2-EDD-LHED');
+        //return;
+    } else {
+        echo $courses;
+    }
     return;
 }
 
