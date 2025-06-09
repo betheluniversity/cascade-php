@@ -69,26 +69,30 @@ function program_courses($code) {
 
 function random_courses($path) {
     $program_code = get_program_code($path);
+    $listing_url = get_base_catalog_url($path);
+
     if (empty($program_code)) {
+        //return;
+
         // For testing
         $program_code = '2-EDD-LHED';
-        //return;
     }
     // For Testing
     echo '<p>Program Code: ' . $program_code . '</p>';
 
-    $courses = get_random_courses($program_code);
+    $courses = get_random_courses($program_code, $listing_url);
     if (empty($courses)) {
-        // For testing
-        echo get_random_courses('2-EDD-LHED');
         //return;
+
+        // For testing
+        echo get_random_courses('2-EDD-LHED', 'https://catalog.bethel.edu/arts-sciences/academic-programs-departments/business-economics/accounting-finance-bs/');
     } else {
         echo $courses;
     }
     return;
 }
 
-function get_random_courses($code) {
+function get_random_courses($code, $listing_url) {
     try {
         $content = autoCache('program_courses', array($code, 86400));
         $content = json_decode($content, true);
@@ -115,7 +119,8 @@ function get_random_courses($code) {
             // Render the selected courses using Twig
             $twig = makeTwigEnviron('/code/adult_programs/twig/');
             return $twig->render('random_courses.html', array(
-                'courses' => $selectedCourses)
+                'courses' => $selectedCourses),
+                'listing_url' => $listing_url,
             );
         } else {
             return '';

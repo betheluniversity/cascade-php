@@ -18,9 +18,11 @@
                         <p class='subhead--blue'>{{ course.subj_code }} {{ course.crs_num }}</p>
                         <h4>{{ course.crs_title }}</h4>
                         <p class="shrink--1x truncate">{{ course.crs_desc }}</p>
+                        {% if listing_url %}
                         <p class="shrink--1x">
-                            <a href='#'>Full listing ></a>
+                            <a href="{{ listing_url }}">Full listing ></a>
                         </p>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
