@@ -107,8 +107,8 @@ function get_random_courses($code) {
             // Extract course numbers into a flat array
             $courseNumbers = array_column($content, 'crs_num');
 
-            // Select up to 5 random courses
-            $selectedCourseNums = array_rand(array_flip($courseNumbers), min(5, count($courseNumbers)));
+            // Select up to 10 random courses
+            $selectedCourseNums = array_rand(array_flip($courseNumbers), min(10, count($courseNumbers)));
             // Randomize the order of selected course numbers
             shuffle($selectedCourseNums);
             // Get the full course details for the selected course numbers
