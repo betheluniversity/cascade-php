@@ -111,6 +111,8 @@ function inspect_news_archive_page($xml, $categories){
             $date_for_sorting = $ds->{'story-metadata'}->{'publish-date'} / 1000;
         } elseif( $dataDefinition == "News Article - President" ){
             $date_for_sorting = $ds->{'publish-date'} / 1000;
+        } elseif( $dataDefinition == "News Article - Fixed" ) {
+            $date_for_sorting = $ds->{'publish-date'} / 1000;
         } else {
             // todo: this probably isn't needed, but we should have some default value
             $date_for_sorting = $ds->{'story-metadata'}->{'publish-date'} / 1000;
