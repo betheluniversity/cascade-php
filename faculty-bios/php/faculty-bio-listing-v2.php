@@ -16,11 +16,11 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     // Sort bios
     $grouped_bios = array(
         'Dean of Nursing' => array(),
-        'Program Directors & Lead Faculty' => array(),
-        'Department Chair' => array(),
+        'Program directors and lead faculty' => array(),
+        'Department chair' => array(),
         'Faculty' => array(),
-        'Adjunct Faculty' => array(),
-        'Emeritus/Emerita Faculty' => array()
+        'Adjunct faculty' => array(),
+        'Emeritus/emerita faculty' => array()
     );
 
     foreach ($bios as $bio) {
@@ -33,16 +33,16 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
                 $grouped_bios['Dean of Nursing'][] = $bio;
             } elseif (isset($bio['is_lead']) && $bio['is_lead'] == true) {
                 if (in_array('College of Arts & Sciences', $schools)) {
-                    $grouped_bios['Department Chair'][] = $bio;
+                    $grouped_bios['Department chair'][] = $bio;
                 } else {
-                    $grouped_bios['Program Directors & Lead Faculty'][] = $bio;
+                    $grouped_bios['Program directors and lead faculty'][] = $bio;
                 }
             } elseif (isset($bio['emeritus']) && $bio['emeritus'] == "Neither" && isset($bio['fulltime']) && $bio['fulltime'] == true) {
                 $grouped_bios['Faculty'][] = $bio;
             } elseif (isset($bio['emeritus']) && $bio['emeritus'] == "Neither" && isset($bio['adjunct']) && $bio['adjunct'] == true) {
-                $grouped_bios['Adjunct Faculty'][] = $bio;
+                $grouped_bios['Adjunct faculty'][] = $bio;
             } elseif (isset($bio['emeritus']) && $bio['emeritus'] != "Neither") {
-                $grouped_bios['Emeritus/Emerita Faculty'][] = $bio;
+                $grouped_bios['Emeritus/emerita faculty'][] = $bio;
             }
         }
     }
