@@ -6,9 +6,9 @@ $staging = strstr(getcwd(), "/staging");
 
 //Changes the authenticating URL depending on the staging environment
 if ($staging){
-    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/send_to_auth';
 }else{
-    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/send_to_auth';
 }
 
 //prepare a URL for returning
