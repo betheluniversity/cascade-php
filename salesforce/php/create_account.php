@@ -68,9 +68,9 @@ function process_form($data) {
     $staging = strstr(getcwd(), "/staging");
 
     if ($staging){
-        $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
+        $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/send_to_auth';
     }else{
-        $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
+        $wsapi_url = 'https://wsapi.bethel.edu/salesforce/send_to_auth';
     }
 
     $first = isset($data["first"]) ? $data["first"] : '';
