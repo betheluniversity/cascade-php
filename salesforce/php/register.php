@@ -1,4 +1,5 @@
 <?php
+include_once $_SERVER["DOCUMENT_ROOT"] . "/code/config.php";
 
 session_start();
 
@@ -6,10 +7,12 @@ $staging = strstr(getcwd(), "/staging");
 
 //Changes the authenticating URL depending on the staging environment
 if ($staging){
-    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.xp.bethel.edu/salesforce/send-to-auth';
 }else{
-    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/register';
+    $wsapi_url = 'https://wsapi.bethel.edu/salesforce/send-to-auth';
 }
+
+$iam_auth = $config['IAM_AUTH'];
 
 //prepare a URL for returning
 $url = isset($_POST["referrer"]) ? $_POST["referrer"] : '';
@@ -52,7 +55,10 @@ $payload = array(
 $json_payload = json_encode($payload);
 $options = array(
     'http' => array(
-        'header'  => "Content-type: application/json",
+        'header'  => [
+            'Authorization: ' . $iam_auth,
+            'Content-type: application/json',
+        ],
         'method'  => 'POST',
         'content' => $json_payload,
     ),
@@ -68,8 +74,8 @@ if($json['success'] == true && $json['account_recovery'] == true){
     $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'existing-account=true';
     header("Location: $url");
 }elseif($json['success'] == true){
-    $contact_id = $json['contact_id'];
-    $url = "https://www.bethel.edu/admissions/apply/confirm?cid=$contact_id";
+    $contact_uid = $json['uid'];
+    $url = "https://www.bethel.edu/admissions/confirm?cid=$contact_uid";
     header("Location: $url");
 }else{
     $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'email=false';
