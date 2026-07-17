@@ -33,32 +33,25 @@ function related_events_debug_shutdown()
 /**
  * Render two events related to the current event.
  *
- * Pass either the current event's system-page SimpleXML object or a context
- * array containing the current page's live metadata. The function returns an
- * empty string when no related events are found.
+ * Pass a context array containing the current page's live metadata. The
+ * function returns an empty string when no related events are found.
  *
- * @param SimpleXMLElement|array|null $currentEvent
+ * @param array|null $currentEvent
  * @return string
  */
 function create_related_events($currentEvent = null)
 {
     $eventXml = related_events_load_xml();
     if (!$eventXml) {
-        related_events_debug('Related Events: events.xml could not be loaded.');
+        related_events_debug('Related Events: the v2 events feed could not be loaded.');
         return '';
     }
 
-    if (is_object($currentEvent)) {
-        $currentPath = related_events_normalize_path((string)$currentEvent->path);
-        $currentMetadata = related_events_metadata($currentEvent);
-    } elseif (
-        is_array($currentEvent) &&
-        isset($currentEvent['metadata']) &&
-        is_array($currentEvent['metadata'])
+    if (
+        !is_array($currentEvent) ||
+        !isset($currentEvent['metadata']) ||
+        !is_array($currentEvent['metadata'])
     ) {
-        $currentPath = related_events_resolve_request_path($eventXml);
-        $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
-    } else {
         related_events_debug(
             'Related Events: current metadata context was not received. Context type: ' .
             gettype($currentEvent)
@@ -66,102 +59,88 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
+    $currentPath = related_events_resolve_request_path($eventXml);
+    $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
+
     if ($currentPath === '') {
         related_events_debug('Related Events: the current request path could not be resolved.');
         return '';
     }
 
-    $tiers = array();
     $eventTypes = related_events_values($currentMetadata, 'general');
     $organizationalNames = array(
         'offices',
-        'cas-departments',
-        'adult-undergrad-program',
-        'graduate-program',
-        'seminary-program'
+        'departments-programs'
     );
-    $hasOrganizationalMetadata = false;
+    $matchingGroups = array();
 
     foreach ($organizationalNames as $name) {
         if (sizeof(related_events_values($currentMetadata, $name)) > 0) {
-            $hasOrganizationalMetadata = true;
+            $matchingGroups = $organizationalNames;
             break;
         }
     }
 
-    // Office and Department/Program selections take precedence over Event
-    // Type. Match any exact shared organizational value, including multiple
-    // selected programs. Use Event Type (including "Other") only when no
-    // organizational metadata is assigned.
-    if ($hasOrganizationalMetadata) {
-        $tiers[] = $organizationalNames;
-    } elseif (sizeof($eventTypes) > 0) {
-        $tiers[] = array('general');
+    // Every event has an Event Type. Office and Department/Program selections
+    // are optional and take precedence when present. "Other" is a valid type.
+    if (sizeof($matchingGroups) === 0 && sizeof($eventTypes) > 0) {
+        $matchingGroups = array('general');
     }
 
-    if (sizeof($tiers) === 0) {
+    if (sizeof($matchingGroups) === 0) {
         related_events_debug(
-            'Related Events: no usable matching metadata was received for ' . $currentPath .
-            '. Metadata: ' . json_encode($currentMetadata)
+            'Related Events: no usable matching metadata was received for ' .
+            $currentPath . '. Metadata: ' . json_encode($currentMetadata)
         );
         return '';
     }
 
-    $pages = $eventXml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
-    $selected = array();
-    $selectedPaths = array();
+    $pages = $eventXml->event;
+    $matches = array();
 
-    foreach ($tiers as $tier) {
-        $matches = array();
+    foreach ($pages as $pageXml) {
+        $path = related_events_normalize_path((string)$pageXml->path);
 
-        foreach ($pages as $pageXml) {
-            $path = related_events_normalize_path((string)$pageXml->path);
-
-            if ($path === '' || $path === $currentPath || strpos($path, '_testing') !== false) {
-                continue;
-            }
-
-            if (isset($selectedPaths[$path])) {
-                continue;
-            }
-
-            $metadata = related_events_metadata($pageXml);
-            if (!related_events_matches($currentMetadata, $metadata, $tier)) {
-                continue;
-            }
-
-            $occurrence = related_events_earliest_occurrence($pageXml);
-            if (!$occurrence) {
-                continue;
-            }
-
-            $matches[] = array(
-                'path' => $path,
-                'xml' => $pageXml,
-                'metadata' => $metadata,
-                'occurrence' => $occurrence
-            );
+        if (
+            $path === '' ||
+            $path === $currentPath ||
+            strpos($path, '/_testing/') === 0 ||
+            strtolower(trim((string)$pageXml->hidden)) === 'yes'
+        ) {
+            continue;
         }
 
-        usort($matches, 'related_events_sort');
-
-        foreach ($matches as $match) {
-            $selected[] = $match;
-            $selectedPaths[$match['path']] = true;
-
-            if (sizeof($selected) === 2) {
-                break 2;
-            }
+        if (!related_events_matches(
+            $currentMetadata,
+            related_events_metadata($pageXml),
+            $matchingGroups
+        )) {
+            continue;
         }
+
+        $occurrence = related_events_earliest_occurrence($pageXml);
+        if (!$occurrence) {
+            continue;
+        }
+
+        $matches[] = array(
+            'path' => $path,
+            'xml' => $pageXml,
+            'occurrence' => $occurrence
+        );
     }
 
-    if (sizeof($selected) === 0) {
+    if (sizeof($matches) === 0) {
         related_events_debug(
             'Related Events: no active events matched ' . $currentPath .
+            '. Matching group: ' . implode(', ', $matchingGroups) .
             '. Metadata: ' . json_encode($currentMetadata)
         );
         return '';
     }
+
+    usort($matches, 'related_events_sort');
+    $selected = array_slice($matches, 0, 2);
 
     $html = '<section class="related-events">';
     $html .= '<h2>Related Events</h2>';
@@ -179,17 +158,33 @@ function create_related_events($currentEvent = null)
 
 function related_events_load_xml()
 {
-    $file = $_SERVER['DOCUMENT_ROOT'] . '/_shared-content/xml/events.xml';
+    $root = $_SERVER['DOCUMENT_ROOT'];
+    $files = array(
+        $root . '/_testing/jake/events/events-feed-v2-page.xml',
+        $root . '/_shared-content/xml/events-v2.xml',
+        $root . '/_shared-content/xml/events-short.xml',
+        $root . '/_shared-content/xml/events.xml'
+    );
 
-    if (function_exists('autoCache')) {
-        return autoCache('simplexml_load_file', array($file));
+    foreach ($files as $file) {
+        if (!is_readable($file)) {
+            continue;
+        }
+
+        $xml = function_exists('autoCache')
+            ? autoCache('simplexml_load_file', array($file))
+            : simplexml_load_file($file);
+
+        if ($xml && $xml->getName() === 'events' && isset($xml->event[0])) {
+            return $xml;
+        }
     }
 
-    return simplexml_load_file($file);
+    return false;
 }
 
 /**
- * Resolve the current request to the corresponding path in events.xml.
+ * Resolve the current request to the corresponding path in the v2 feed.
  *
  * Test pages may be published under /_testing/ while retaining the same
  * filename as their production source event. A unique filename match lets
@@ -208,7 +203,7 @@ function related_events_resolve_request_path($eventXml)
         return '';
     }
 
-    $pages = $eventXml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
+    $pages = $eventXml->event;
     $filenameMatches = array();
 
     foreach ($pages as $pageXml) {
@@ -237,21 +232,20 @@ function related_events_resolve_request_path($eventXml)
 function related_events_metadata($xml)
 {
     $metadata = array();
+    $groups = array(
+        'general',
+        'offices',
+        'departments-programs'
+    );
 
-    foreach ($xml->{'dynamic-metadata'} as $node) {
-        $name = trim((string)$node->name);
-        if ($name === '') {
-            continue;
-        }
-
-        if (!isset($metadata[$name])) {
-            $metadata[$name] = array();
-        }
-
-        foreach ($node->value as $value) {
+    foreach ($groups as $name) {
+        foreach ($xml->{$name}->value as $value) {
             $value = related_events_normalize((string)$value);
 
             if ($value !== '' && !in_array($value, array('none', 'select'), true)) {
+                if (!isset($metadata[$name])) {
+                    $metadata[$name] = array();
+                }
                 $metadata[$name][$value] = true;
             }
         }
@@ -268,8 +262,8 @@ function related_events_metadata_input($input)
     $metadata = array();
 
     foreach ($input as $name => $values) {
-        $name = trim((string)$name);
-        if ($name === '') {
+        $group = related_events_metadata_group($name);
+        if ($group === '') {
             continue;
         }
 
@@ -287,15 +281,38 @@ function related_events_metadata_input($input)
                 continue;
             }
 
-            if (!isset($metadata[$name])) {
-                $metadata[$name] = array();
+            if (!isset($metadata[$group])) {
+                $metadata[$group] = array();
             }
 
-            $metadata[$name][$value] = true;
+            $metadata[$group][$value] = true;
         }
     }
 
     return $metadata;
+}
+
+/**
+ * Map Cascade's metadata fields into the three related-event categories.
+ */
+function related_events_metadata_group($name)
+{
+    $name = trim((string)$name);
+
+    if ($name === 'general' || $name === 'offices') {
+        return $name;
+    }
+
+    if (in_array($name, array(
+        'cas-departments',
+        'adult-undergrad-program',
+        'graduate-program',
+        'seminary-program'
+    ), true)) {
+        return 'departments-programs';
+    }
+
+    return '';
 }
 
 function related_events_values($metadata, $name)
@@ -320,11 +337,15 @@ function related_events_matches($current, $candidate, $names)
 function related_events_earliest_occurrence($xml)
 {
     $occurrences = array();
-    $dates = $xml->{'system-data-structure'}->{'event-dates'};
+    $dates = $xml->date;
 
     foreach ($dates as $date) {
-        $start = related_events_date($date, 'start-date');
-        $end = related_events_date($date, 'end-date');
+        $start = related_events_date($date, 'start');
+        $end = related_events_date($date, 'end');
+
+        if ($end === false) {
+            $end = $start;
+        }
 
         if ($start === false || $end === false || $end < time()) {
             continue;
@@ -388,13 +409,14 @@ function related_events_sort($a, $b)
 
 function related_events_render($xml, $occurrence)
 {
-    $data = $xml->{'system-data-structure'};
-    $externalLink = trim((string)$data->link);
     $path = trim((string)$xml->path);
-    $link = $externalLink !== '' ? $externalLink : 'https://www.bethel.edu' . $path;
+    $link = trim((string)$xml->url);
+    if ($link === '') {
+        $link = '/' . ltrim($path, '/');
+    }
     $title = trim((string)$xml->title);
     $description = trim(strip_tags((string)$xml->description));
-    $location = related_events_location($data);
+    $location = trim((string)$xml->location);
     $dateText = related_events_date_text($occurrence);
 
     $html = '<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">';
@@ -408,29 +430,13 @@ function related_events_render($xml, $occurrence)
     }
 
     $html .= '</p>';
-    $html .= '<p class="events__description"><span itemprop="description">';
-    $html .= related_events_escape($description) . '</span></p>';
+    if ($description !== '') {
+        $html .= '<p class="events__description"><span itemprop="description">';
+        $html .= related_events_escape($description) . '</span></p>';
+    }
     $html .= '</div></div>';
 
     return $html;
-}
-
-function related_events_location($data)
-{
-    $locationType = trim((string)$data->location);
-
-    if ($locationType === 'On campus' || $locationType === 'On Campus') {
-        $location = trim((string)$data->{'on-campus-location'});
-    } else {
-        $location = trim((string)$data->{'off-campus-location'});
-    }
-
-    $other = trim((string)$data->{'other-on-campus'});
-    if ($other !== '') {
-        $location = $other;
-    }
-
-    return $location === 'none' ? '' : $location;
 }
 
 function related_events_date_text($occurrence)
@@ -468,7 +474,9 @@ function related_events_normalize_path($path)
     }
 
     $path = rtrim($path, '/');
-    return preg_replace('/\.(?:php|html?|xml)$/i', '', $path);
+    $path = preg_replace('/\.(?:php|html?|xml)$/i', '', $path);
+
+    return '/' . ltrim($path, '/');
 }
 
 function related_events_escape($value)
