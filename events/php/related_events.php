@@ -43,7 +43,7 @@ function create_related_events($currentEvent = null)
 {
     $eventXml = related_events_load_xml();
     if (!$eventXml) {
-        related_events_debug('Related Events: the v2 events feed could not be loaded.');
+        related_events_debug('Related Events: events.xml could not be loaded.');
         return '';
     }
 
@@ -95,7 +95,7 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    $pages = $eventXml->event;
+    $pages = related_events_pages($eventXml);
     $matches = array();
 
     foreach ($pages as $pageXml) {
@@ -105,7 +105,7 @@ function create_related_events($currentEvent = null)
             $path === '' ||
             $path === $currentPath ||
             strpos($path, '/_testing/') === 0 ||
-            strtolower(trim((string)$pageXml->hidden)) === 'yes'
+            related_events_is_hidden($pageXml)
         ) {
             continue;
         }
@@ -158,50 +158,54 @@ function create_related_events($currentEvent = null)
 
 function related_events_load_xml()
 {
-    $root = $_SERVER['DOCUMENT_ROOT'];
-    $files = array(
-        $root . '/_testing/jake/events/events-feed-v2-page.xml',
-        $root . '/_shared-content/xml/events-v2.xml',
-        $root . '/_shared-content/xml/events-short.xml',
-        $root . '/_shared-content/xml/events.xml'
-    );
-    $attempts = array();
+    $file = $_SERVER['DOCUMENT_ROOT'] . '/_shared-content/xml/events.xml';
 
-    foreach ($files as $file) {
-        if (!file_exists($file)) {
-            $attempts[] = $file . ' (missing)';
-            continue;
-        }
-
-        if (!is_readable($file)) {
-            $attempts[] = $file . ' (not readable)';
-            continue;
-        }
-
-        $xml = function_exists('autoCache')
-            ? autoCache('simplexml_load_file', array($file))
-            : simplexml_load_file($file);
-
-        if (!$xml) {
-            $attempts[] = $file . ' (XML parse failed)';
-            continue;
-        }
-
-        if ($xml->getName() !== 'events' || !isset($xml->event[0])) {
-            $attempts[] = $file . ' (not a v2 events feed)';
-            continue;
-        }
-
-        return $xml;
+    if (!is_readable($file)) {
+        return false;
     }
 
-    related_events_debug('Related Events feed attempts: ' . implode('; ', $attempts));
+    return function_exists('autoCache')
+        ? autoCache('simplexml_load_file', array($file))
+        : simplexml_load_file($file);
+}
+
+function related_events_pages($eventXml)
+{
+    $pages = $eventXml->xpath('//system-page');
+
+    if (!is_array($pages)) {
+        return array();
+    }
+
+    return array_filter($pages, 'related_events_is_event_page');
+}
+
+function related_events_is_event_page($xml)
+{
+    $definition = trim((string)$xml->{'system-data-structure'}['definition-path']);
+
+    return in_array($definition, array('Event', 'Event v2', 'Event v4'), true);
+}
+
+function related_events_is_hidden($xml)
+{
+    foreach ($xml->{'dynamic-metadata'} as $node) {
+        if (trim((string)$node->name) !== 'hide-from-calendar') {
+            continue;
+        }
+
+        foreach ($node->value as $value) {
+            if (strtolower(trim((string)$value)) === 'yes') {
+                return true;
+            }
+        }
+    }
 
     return false;
 }
 
 /**
- * Resolve the current request to the corresponding path in the v2 feed.
+ * Resolve the current request to the corresponding path in events.xml.
  *
  * Test pages may be published under /_testing/ while retaining the same
  * filename as their production source event. A unique filename match lets
@@ -220,7 +224,7 @@ function related_events_resolve_request_path($eventXml)
         return '';
     }
 
-    $pages = $eventXml->event;
+    $pages = related_events_pages($eventXml);
     $filenameMatches = array();
 
     foreach ($pages as $pageXml) {
@@ -249,21 +253,21 @@ function related_events_resolve_request_path($eventXml)
 function related_events_metadata($xml)
 {
     $metadata = array();
-    $groups = array(
-        'general',
-        'offices',
-        'departments-programs'
-    );
 
-    foreach ($groups as $name) {
-        foreach ($xml->{$name}->value as $value) {
+    foreach ($xml->{'dynamic-metadata'} as $node) {
+        $group = related_events_metadata_group((string)$node->name);
+        if ($group === '') {
+            continue;
+        }
+
+        foreach ($node->value as $value) {
             $value = related_events_normalize((string)$value);
 
             if ($value !== '' && !in_array($value, array('none', 'select'), true)) {
-                if (!isset($metadata[$name])) {
-                    $metadata[$name] = array();
+                if (!isset($metadata[$group])) {
+                    $metadata[$group] = array();
                 }
-                $metadata[$name][$value] = true;
+                $metadata[$group][$value] = true;
             }
         }
     }
@@ -354,11 +358,36 @@ function related_events_matches($current, $candidate, $names)
 function related_events_earliest_occurrence($xml)
 {
     $occurrences = array();
-    $dates = $xml->date;
+    $data = $xml->{'system-data-structure'};
+    $definition = trim((string)$data['definition-path']);
+    $dates = array();
+
+    if ($definition === 'Event') {
+        foreach ($data->{'event-dates'} as $date) {
+            $dates[] = array(
+                'start' => related_events_date($date, 'start-date'),
+                'end' => related_events_date($date, 'end-date'),
+                'all-day' => related_events_value($date, 'all-day'),
+                'outside-of-minnesota' => related_events_value($date, 'outside-of-minnesota'),
+                'time-zone' => related_events_value($date, 'time-zone')
+            );
+        }
+    } else {
+        $date = $data->date;
+        if ($date) {
+            $dates[] = array(
+                'start' => related_events_date($date, 'eventStart'),
+                'end' => related_events_date($date, 'eventEnd'),
+                'all-day' => related_events_value($date, 'hideTime'),
+                'outside-of-minnesota' => 'No',
+                'time-zone' => related_events_value($date, 'timeZone')
+            );
+        }
+    }
 
     foreach ($dates as $date) {
-        $start = related_events_date($date, 'start');
-        $end = related_events_date($date, 'end');
+        $start = $date['start'];
+        $end = $date['end'];
 
         if ($end === false) {
             $end = $start;
@@ -371,9 +400,9 @@ function related_events_earliest_occurrence($xml)
         $occurrences[] = array(
             'start' => $start,
             'end' => $end,
-            'all-day' => related_events_value($date, 'all-day'),
-            'outside-of-minnesota' => related_events_value($date, 'outside-of-minnesota'),
-            'time-zone' => related_events_value($date, 'time-zone')
+            'all-day' => $date['all-day'],
+            'outside-of-minnesota' => $date['outside-of-minnesota'],
+            'time-zone' => $date['time-zone']
         );
     }
 
@@ -426,14 +455,15 @@ function related_events_sort($a, $b)
 
 function related_events_render($xml, $occurrence)
 {
+    $data = $xml->{'system-data-structure'};
     $path = trim((string)$xml->path);
-    $link = trim((string)$xml->url);
+    $link = trim((string)$data->link);
     if ($link === '') {
-        $link = '/' . ltrim($path, '/');
+        $link = 'https://www.bethel.edu/' . ltrim($path, '/');
     }
     $title = trim((string)$xml->title);
     $description = trim(strip_tags((string)$xml->description));
-    $location = trim((string)$xml->location);
+    $location = related_events_location($data);
     $dateText = related_events_date_text($occurrence);
 
     $html = '<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">';
@@ -454,6 +484,46 @@ function related_events_render($xml, $occurrence)
     $html .= '</div></div>';
 
     return $html;
+}
+
+function related_events_location($data)
+{
+    $definition = trim((string)$data['definition-path']);
+
+    if ($definition === 'Event') {
+        $locationType = trim((string)$data->location);
+        $location = ($locationType === 'On campus' || $locationType === 'On Campus')
+            ? trim((string)$data->{'on-campus-location'})
+            : trim((string)$data->{'off-campus-location'});
+        $other = trim((string)$data->{'other-on-campus'});
+
+        if ($other !== '') {
+            $location = $other;
+        }
+
+        return strtolower($location) === 'none' ? '' : $location;
+    }
+
+    $location = $data->location;
+    $locationType = strtolower(preg_replace(
+        '/[^a-z]/',
+        '',
+        trim((string)$location->locationSelect)
+    ));
+
+    if ($locationType === 'oncampus') {
+        return trim((string)$location->onCampusLocation->location);
+    }
+
+    if ($locationType === 'offcampus') {
+        return trim((string)$location->offCampusLocation->name);
+    }
+
+    if ($locationType === 'online') {
+        return 'Online';
+    }
+
+    return '';
 }
 
 function related_events_date_text($occurrence)
