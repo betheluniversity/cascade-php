@@ -165,9 +165,16 @@ function related_events_load_xml()
         $root . '/_shared-content/xml/events-short.xml',
         $root . '/_shared-content/xml/events.xml'
     );
+    $attempts = array();
 
     foreach ($files as $file) {
+        if (!file_exists($file)) {
+            $attempts[] = $file . ' (missing)';
+            continue;
+        }
+
         if (!is_readable($file)) {
+            $attempts[] = $file . ' (not readable)';
             continue;
         }
 
@@ -175,10 +182,20 @@ function related_events_load_xml()
             ? autoCache('simplexml_load_file', array($file))
             : simplexml_load_file($file);
 
-        if ($xml && $xml->getName() === 'events' && isset($xml->event[0])) {
-            return $xml;
+        if (!$xml) {
+            $attempts[] = $file . ' (XML parse failed)';
+            continue;
         }
+
+        if ($xml->getName() !== 'events' || !isset($xml->event[0])) {
+            $attempts[] = $file . ' (not a v2 events feed)';
+            continue;
+        }
+
+        return $xml;
     }
+
+    related_events_debug('Related Events feed attempts: ' . implode('; ', $attempts));
 
     return false;
 }
