@@ -1,5 +1,35 @@
 <?php
 
+if (isset($_GET['related_events_debug']) && $_GET['related_events_debug'] === '1') {
+    error_reporting(E_ALL);
+    ini_set('display_errors', '1');
+    register_shutdown_function('related_events_debug_shutdown');
+}
+
+function related_events_debug($message)
+{
+    if (!isset($_GET['related_events_debug']) || $_GET['related_events_debug'] !== '1') {
+        return;
+    }
+
+    echo '<pre class="related-events-debug" style="white-space:pre-wrap">';
+    echo htmlspecialchars((string)$message, ENT_QUOTES, 'UTF-8');
+    echo '</pre>';
+}
+
+function related_events_debug_shutdown()
+{
+    $error = error_get_last();
+    if (!$error || !in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR), true)) {
+        return;
+    }
+
+    related_events_debug(
+        'Related Events fatal error: ' . $error['message'] .
+        ' in ' . $error['file'] . ':' . $error['line']
+    );
+}
+
 /**
  * Render two events related to the current event.
  *
@@ -14,6 +44,7 @@ function create_related_events($currentEvent = null)
 {
     $eventXml = related_events_load_xml();
     if (!$eventXml) {
+        related_events_debug('Related Events: events.xml could not be loaded.');
         return '';
     }
 
@@ -28,10 +59,15 @@ function create_related_events($currentEvent = null)
         $currentPath = related_events_resolve_request_path($eventXml);
         $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
     } else {
+        related_events_debug(
+            'Related Events: current metadata context was not received. Context type: ' .
+            gettype($currentEvent)
+        );
         return '';
     }
 
     if ($currentPath === '') {
+        related_events_debug('Related Events: the current request path could not be resolved.');
         return '';
     }
 
@@ -61,6 +97,14 @@ function create_related_events($currentEvent = null)
         $tiers[] = $organizationalNames;
     } elseif (sizeof($eventTypes) > 0) {
         $tiers[] = array('general');
+    }
+
+    if (sizeof($tiers) === 0) {
+        related_events_debug(
+            'Related Events: no usable matching metadata was received for ' . $currentPath .
+            '. Metadata: ' . json_encode($currentMetadata)
+        );
+        return '';
     }
 
     $pages = $eventXml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
@@ -112,6 +156,10 @@ function create_related_events($currentEvent = null)
     }
 
     if (sizeof($selected) === 0) {
+        related_events_debug(
+            'Related Events: no active events matched ' . $currentPath .
+            '. Metadata: ' . json_encode($currentMetadata)
+        );
         return '';
     }
 
@@ -121,6 +169,10 @@ function create_related_events($currentEvent = null)
     foreach ($selected as $event) {
         $html .= related_events_render($event['xml'], $event['occurrence']);
     }
+
+    related_events_debug(
+        'Related Events: rendered ' . sizeof($selected) . ' event(s) for ' . $currentPath . '.'
+    );
 
     return $html . '</section>';
 }
