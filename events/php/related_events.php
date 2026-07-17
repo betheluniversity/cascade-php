@@ -110,20 +110,33 @@ function create_related_events($currentEventXml = null, $limit = 2)
 
     $tiers = array();
 
-    // Event Type is intentionally disabled when the current event is marked
-    // Other, because that value is too broad to identify related events.
-    $eventTypes = related_events_get_metadata_values($currentMetadata, 'general');
-    if (!in_array('other', $eventTypes, true)) {
-        $tiers[] = array('general');
-    }
-
-    $tiers[] = array('offices');
-    $tiers[] = array(
+    $organizationalMetadataNames = array(
+        'offices',
         'cas-departments',
         'adult-undergrad-program',
         'graduate-program',
         'seminary-program'
     );
+
+    $hasOrganizationalMetadata = false;
+    foreach ($organizationalMetadataNames as $metadataName) {
+        if (sizeof(related_events_get_metadata_values($currentMetadata, $metadataName)) > 0) {
+            $hasOrganizationalMetadata = true;
+            break;
+        }
+    }
+
+    // Office and Department/Program selections are more specific than Event
+    // Type. If any are assigned, match candidates sharing any selected value
+    // across those fields. This also supports multiple selected programs.
+    $eventTypes = related_events_get_metadata_values($currentMetadata, 'general');
+    if ($hasOrganizationalMetadata) {
+        $tiers[] = $organizationalMetadataNames;
+    } elseif (sizeof($eventTypes) > 0) {
+        // Event Type is used only when no Office or Department/Program has
+        // been assigned.
+        $tiers[] = array('general');
+    }
 
     $selected = array();
     $selectedPaths = array();
