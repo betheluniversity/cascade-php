@@ -46,6 +46,23 @@ function related_events_debug_shutdown()
 }
 
 /**
+ * Report a nonfatal related-events diagnostic only when explicitly enabled.
+ *
+ * @param string $message
+ * @return void
+ */
+function related_events_debug_message($message)
+{
+    if (!isset($_GET['related_events_debug']) || $_GET['related_events_debug'] !== '1') {
+        return;
+    }
+
+    echo '<pre class="related-events-debug" style="white-space: pre-wrap;">';
+    echo htmlspecialchars((string)$message, ENT_QUOTES, 'UTF-8');
+    echo '</pre>';
+}
+
+/**
  * Render up to two events related to the supplied current event.
  *
  * The preferred argument is the system-page SimpleXML object for the event
@@ -61,22 +78,33 @@ function create_related_events($currentEventXml = null, $limit = 2)
 {
     $limit = (int)$limit;
     if ($limit < 1) {
+        related_events_debug_message('Related Events: limit is less than 1.');
         return '';
     }
 
     $currentEventXml = related_events_resolve_current_event($currentEventXml);
     if (!is_object($currentEventXml)) {
+        $requestPath = isset($_SERVER['REQUEST_URI'])
+            ? (string)parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
+            : '';
+        related_events_debug_message(
+            'Related Events: current event was not found in events.xml. Request path: ' . $requestPath
+        );
         return '';
     }
 
     $currentPath = related_events_get_path($currentEventXml);
     if ($currentPath === '') {
+        related_events_debug_message('Related Events: the resolved event has no path.');
         return '';
     }
 
     $currentMetadata = related_events_get_metadata($currentEventXml);
     $candidates = related_events_get_candidates($currentPath);
     if (sizeof($candidates) === 0) {
+        related_events_debug_message(
+            'Related Events: no active candidate events were found for ' . $currentPath . '.'
+        );
         return '';
     }
 
@@ -128,6 +156,12 @@ function create_related_events($currentEventXml = null, $limit = 2)
     }
 
     if (sizeof($selected) === 0) {
+        related_events_debug_message(
+            'Related Events: ' . sizeof($candidates) .
+            ' active candidates were found, but none shared configured metadata with ' .
+            $currentPath . '. Current metadata groups: ' .
+            implode(', ', array_keys($currentMetadata))
+        );
         return '';
     }
 
@@ -139,6 +173,10 @@ function create_related_events($currentEventXml = null, $limit = 2)
     }
 
     $html .= '</section>';
+
+    related_events_debug_message(
+        'Related Events: rendered ' . sizeof($selected) . ' event(s) for ' . $currentPath . '.'
+    );
 
     return $html;
 }
@@ -261,6 +299,25 @@ function related_events_resolve_current_event($currentEvent)
     foreach ($eventPages as $eventXml) {
         if (related_events_get_path($eventXml) === $requestPath) {
             return $eventXml;
+        }
+    }
+
+    // Test pages are commonly published beneath /_testing/events-tests while
+    // their source event remains at its production path in events.xml. When
+    // the exact path cannot match, resolve a unique event by its filename.
+    if (strpos($requestPath, '/_testing/') === 0) {
+        $requestName = basename($requestPath);
+        $filenameMatches = array();
+
+        foreach ($eventPages as $eventXml) {
+            $eventPath = related_events_get_path($eventXml);
+            if ($eventPath !== '' && basename($eventPath) === $requestName) {
+                $filenameMatches[] = $eventXml;
+            }
+        }
+
+        if (sizeof($filenameMatches) === 1) {
+            return $filenameMatches[0];
         }
     }
 
@@ -726,7 +783,10 @@ function related_events_normalize_path($path)
         return $path;
     }
 
-    return rtrim($path, '/');
+    $path = rtrim($path, '/');
+    $path = preg_replace('/\.(?:php|html?|xml)$/i', '', $path);
+
+    return $path;
 }
 
 /**
