@@ -1,35 +1,5 @@
 <?php
 
-if (isset($_GET['related_events_debug']) && $_GET['related_events_debug'] === '1') {
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-    register_shutdown_function('related_events_debug_shutdown');
-}
-
-function related_events_debug($message)
-{
-    if (!isset($_GET['related_events_debug']) || $_GET['related_events_debug'] !== '1') {
-        return;
-    }
-
-    echo '<pre class="related-events-debug" style="white-space:pre-wrap">';
-    echo htmlspecialchars((string)$message, ENT_QUOTES, 'UTF-8');
-    echo '</pre>';
-}
-
-function related_events_debug_shutdown()
-{
-    $error = error_get_last();
-    if (!$error || !in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR), true)) {
-        return;
-    }
-
-    related_events_debug(
-        'Related Events fatal error: ' . $error['message'] .
-        ' in ' . $error['file'] . ':' . $error['line']
-    );
-}
-
 /**
  * Render two events related to the current event.
  *
@@ -43,52 +13,32 @@ function create_related_events($currentEvent = null)
 {
     $eventXml = related_events_load_xml();
     if (!$eventXml) {
-        related_events_debug('Related Events: events.xml could not be loaded.');
-        return '';
-    }
-
-    $currentPath = related_events_resolve_request_path($eventXml);
-
-    if ($currentPath === '') {
-        related_events_debug('Related Events: the current request path could not be resolved.');
         return '';
     }
 
     $pages = related_events_pages($eventXml);
+    $currentPath = related_events_resolve_request_path($pages);
+
+    if ($currentPath === '') {
+        return '';
+    }
+
     $currentPage = related_events_find_page($pages, $currentPath);
 
     if (!$currentPage) {
-        related_events_debug(
-            'Related Events: current page was not found in events.xml: ' . $currentPath
-        );
         return '';
     }
 
     $currentMetadata = related_events_metadata($currentPage);
 
-    $eventTypes = related_events_values($currentMetadata, 'general');
-    $matchingTiers = array();
-
-    // Event Type is the first tier, except when it is Other.
-    if (sizeof($eventTypes) > 0 && !in_array('other', $eventTypes, true)) {
-        $matchingTiers[] = array('general');
-    }
-
-    $matchingTiers[] = array('offices');
-    $matchingTiers[] = array('departments-programs');
-
-    if (sizeof($matchingTiers) === 0) {
-        related_events_debug(
-            'Related Events: no usable matching metadata was received for ' .
-            $currentPath . '. Metadata: ' . json_encode($currentMetadata)
-        );
-        return '';
-    }
+    // Prefer office or department/program matches. Academic dates remain in
+    // the fallback tier until those values are folded into general.
+    $matchingTiers = array(
+        array('offices', 'departments-programs'),
+        array('academic-dates', 'general')
+    );
 
     $selected = array();
-    $selectedPaths = array();
-    $metadataMatchCount = 0;
-    $activeMatchCount = 0;
 
     foreach ($matchingTiers as $matchingTier) {
         $matches = array();
@@ -99,7 +49,6 @@ function create_related_events($currentEvent = null)
             if (
                 $path === '' ||
                 $path === $currentPath ||
-                isset($selectedPaths[$path]) ||
                 strpos($path, '/_testing/') === 0 ||
                 related_events_is_hidden($pageXml)
             ) {
@@ -111,13 +60,11 @@ function create_related_events($currentEvent = null)
                 continue;
             }
 
-            $metadataMatchCount++;
             $occurrence = related_events_earliest_occurrence($pageXml);
             if (!$occurrence) {
                 continue;
             }
 
-            $activeMatchCount++;
             $matches[] = array(
                 'path' => $path,
                 'xml' => $pageXml,
@@ -127,23 +74,13 @@ function create_related_events($currentEvent = null)
 
         usort($matches, 'related_events_sort');
 
-        foreach ($matches as $match) {
-            $selected[] = $match;
-            $selectedPaths[$match['path']] = true;
-
-            if (sizeof($selected) === 2) {
-                break 2;
-            }
+        if (sizeof($matches) > 0) {
+            $selected = array_slice($matches, 0, 2);
+            break;
         }
     }
 
     if (sizeof($selected) === 0) {
-        related_events_debug(
-            'Related Events: no active events matched ' . $currentPath .
-            '. Metadata matches: ' . $metadataMatchCount .
-            '. Active matches: ' . $activeMatchCount .
-            '. Metadata: ' . json_encode($currentMetadata)
-        );
         return '';
     }
 
@@ -153,10 +90,6 @@ function create_related_events($currentEvent = null)
     foreach ($selected as $event) {
         $html .= related_events_render($event['xml'], $event['occurrence']);
     }
-
-    related_events_debug(
-        'Related Events: rendered ' . sizeof($selected) . ' event(s) for ' . $currentPath . '.'
-    );
 
     return $html . '</section>';
 }
@@ -216,7 +149,7 @@ function related_events_is_hidden($xml)
  * filename as their production source event. A unique filename match lets
  * that source event be excluded without borrowing its metadata.
  */
-function related_events_resolve_request_path($eventXml)
+function related_events_resolve_request_path($pages)
 {
     if (!isset($_SERVER['REQUEST_URI'])) {
         return '';
@@ -229,7 +162,6 @@ function related_events_resolve_request_path($eventXml)
         return '';
     }
 
-    $pages = related_events_pages($eventXml);
     $filenameMatches = array();
 
     foreach ($pages as $pageXml) {
@@ -288,6 +220,15 @@ function related_events_metadata($xml)
         }
     }
 
+    if (isset($metadata['general'])) {
+        $location = related_events_location($xml->{'system-data-structure'});
+        $location = related_events_normalize($location);
+
+        if ($location !== '' && isset($metadata['general'][$location])) {
+            unset($metadata['general'][$location]);
+        }
+    }
+
     return $metadata;
 }
 
@@ -299,7 +240,7 @@ function related_events_metadata_name($name)
 {
     $name = trim((string)$name);
 
-    if ($name === 'general' || $name === 'offices') {
+    if ($name === 'general' || $name === 'offices' || $name === 'academic-dates') {
         return $name;
     }
 
@@ -338,69 +279,42 @@ function related_events_earliest_occurrence($xml)
 {
     $occurrences = array();
     $data = $xml->{'system-data-structure'};
-    $dates = array();
 
-    foreach ($data->{'event-dates'} as $date) {
-        $dates[] = array(
-            'start' => related_events_date($date, 'start-date'),
-            'end' => related_events_date($date, 'end-date'),
-            'all-day' => related_events_value($date, 'all-day'),
-            'outside-of-minnesota' => related_events_value($date, 'outside-of-minnesota'),
-            'time-zone' => related_events_value($date, 'time-zone')
+    if (trim((string)$data['definition-path']) === 'Event') {
+        foreach ($data->{'event-dates'} as $date) {
+            $occurrences[] = array(
+                'start' => related_events_date($date, 'start-date'),
+                'end' => related_events_date($date, 'end-date'),
+                'all-day' => related_events_value($date, 'all-day')
+            );
+        }
+    } elseif ($data->date) {
+        $date = $data->date;
+        $occurrences[] = array(
+            'start' => related_events_date($date, 'eventStart'),
+            'end' => related_events_date($date, 'eventEnd'),
+            'all-day' => related_events_value($date, 'hideTime')
         );
     }
 
-    if (sizeof($dates) === 0) {
-        $date = $data->date;
-        if ($date) {
-            $dates[] = array(
-                'start' => related_events_date($date, array(
-                    'eventStart',
-                    'event-start',
-                    'start-date',
-                    'startDate',
-                    'start'
-                )),
-                'end' => related_events_date($date, array(
-                    'eventEnd',
-                    'event-end',
-                    'end-date',
-                    'endDate',
-                    'end'
-                )),
-                'all-day' => related_events_value($date, 'hideTime'),
-                'outside-of-minnesota' => 'No',
-                'time-zone' => related_events_value($date, 'timeZone')
-            );
-        }
-    }
-
-    foreach ($dates as $date) {
-        $start = $date['start'];
-        $end = $date['end'];
-
-        if ($end === false) {
-            $end = $start;
-        }
-
-        if ($start === false || $end === false || $end < time()) {
+    $active = array();
+    foreach ($occurrences as $occurrence) {
+        if (
+            $occurrence['start'] === false ||
+            $occurrence['end'] === false ||
+            $occurrence['end'] < time()
+        ) {
             continue;
         }
 
-        $occurrences[] = array(
-            'start' => $start,
-            'end' => $end,
-            'all-day' => $date['all-day'],
-            'outside-of-minnesota' => $date['outside-of-minnesota'],
-            'time-zone' => $date['time-zone']
-        );
+        $active[] = $occurrence;
     }
 
-    if (sizeof($occurrences) === 0) {
+    if (sizeof($active) === 0) {
         return false;
     }
 
-    usort($occurrences, function ($a, $b) {
+    usort($active, function ($a, $b) {
         if ($a['end'] == $b['end']) {
             return 0;
         }
@@ -408,32 +322,17 @@ function related_events_earliest_occurrence($xml)
         return ($a['end'] < $b['end']) ? -1 : 1;
     });
 
-    return $occurrences[0];
+    return $active[0];
 }
 
 function related_events_date($date, $name)
 {
-    $names = is_array($name) ? $name : array($name);
-    $value = '';
-
-    foreach ($names as $candidateName) {
-        $value = related_events_value($date, $candidateName);
-        if ($value !== '') {
-            break;
-        }
-    }
-
+    $value = related_events_value($date, $name);
     if ($value === '') {
         return false;
     }
 
-    if (is_numeric($value)) {
-        $value = (float)$value;
-        return $value > 100000000000 ? $value / 1000 : $value;
-    }
-
-    $timestamp = strtotime($value);
-    return $timestamp === false ? false : $timestamp;
+    return is_numeric($value) ? (float)$value / 1000 : false;
 }
 
 function related_events_value($date, $name)
@@ -574,5 +473,3 @@ function related_events_escape($value)
 {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 }
-
-?>
