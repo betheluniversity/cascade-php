@@ -24,12 +24,30 @@ function create_related_events($currentEvent = null)
     }
 
     $currentPage = related_events_find_page($pages, $currentPath);
+    $hasCurrentMetadata = (
+        is_array($currentEvent) &&
+        isset($currentEvent['metadata']) &&
+        is_array($currentEvent['metadata'])
+    ) || (
+        is_object($currentEvent) &&
+        isset($currentEvent->{'dynamic-metadata'})
+    );
 
-    if (!$currentPage) {
+    if (!$currentPage && !$hasCurrentMetadata) {
         return '';
     }
 
-    $currentMetadata = related_events_metadata($currentPage);
+    if (is_array($currentEvent) && isset($currentEvent['metadata'])) {
+        $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
+    } elseif (is_object($currentEvent) && isset($currentEvent->{'dynamic-metadata'})) {
+        $currentMetadata = related_events_metadata($currentEvent);
+    } else {
+        $currentMetadata = related_events_metadata($currentPage);
+    }
+
+    if ($currentPage) {
+        $currentMetadata = related_events_remove_location($currentMetadata, $currentPage);
+    }
 
     // Prefer office or department/program matches. Academic dates remain in
     // the fallback tier until those values are folded into general.
@@ -266,13 +284,53 @@ function related_events_metadata($xml)
         }
     }
 
-    if (isset($metadata['general'])) {
-        $location = related_events_location($xml->{'system-data-structure'});
-        $location = related_events_normalize($location);
+    return related_events_remove_location($metadata, $xml);
+}
 
-        if ($location !== '' && isset($metadata['general'][$location])) {
-            unset($metadata['general'][$location]);
+function related_events_metadata_input($input)
+{
+    $metadata = array();
+
+    foreach ($input as $name => $values) {
+        $name = related_events_metadata_name($name);
+        if ($name === '') {
+            continue;
         }
+
+        if (!is_array($values)) {
+            $values = array($values);
+        }
+
+        foreach ($values as $value) {
+            $value = related_events_normalize($value);
+
+            if ($value === '' || in_array($value, array('none', 'select'), true)) {
+                continue;
+            }
+
+            if (!isset($metadata[$name])) {
+                $metadata[$name] = array();
+            }
+
+            $metadata[$name][$value] = true;
+        }
+    }
+
+    return $metadata;
+}
+
+function related_events_remove_location($metadata, $xml)
+{
+    if (!isset($metadata['general']) || !$xml) {
+        return $metadata;
+    }
+
+    $location = related_events_normalize(
+        related_events_location($xml->{'system-data-structure'})
+    );
+
+    if ($location !== '' && isset($metadata['general'][$location])) {
+        unset($metadata['general'][$location]);
     }
 
     return $metadata;
