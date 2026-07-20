@@ -6,7 +6,7 @@
  * The current page metadata is supplied by the template. Candidate events
  * are read from events.xml.
  *
- * @param mixed $currentEvent Kept for template-call compatibility.
+ * @param array|null $currentEvent Current page metadata context.
  * @return string
  */
 function create_related_events($currentEvent = null)
@@ -23,13 +23,15 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    if (is_array($currentEvent) && isset($currentEvent['metadata'])) {
-        $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
-    } elseif (is_object($currentEvent) && isset($currentEvent->{'dynamic-metadata'})) {
-        $currentMetadata = related_events_metadata($currentEvent);
-    } else {
+    if (
+        !is_array($currentEvent) ||
+        !isset($currentEvent['metadata']) ||
+        !is_array($currentEvent['metadata'])
+    ) {
         return '';
     }
+
+    $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
 
     // Prefer office or department/program matches. Academic dates remain in
     // the fallback tier until those values are folded into general.
