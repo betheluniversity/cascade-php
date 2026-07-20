@@ -3,8 +3,8 @@
 /**
  * Render two events related to the current event.
  *
- * The current page is resolved from REQUEST_URI and its metadata is read
- * directly from events.xml, just like each candidate event.
+ * The current page metadata is supplied by the template. Candidate events
+ * are read from events.xml.
  *
  * @param mixed $currentEvent Kept for template-call compatibility.
  * @return string
@@ -23,30 +23,12 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    $currentPage = related_events_find_page($pages, $currentPath);
-    $hasCurrentMetadata = (
-        is_array($currentEvent) &&
-        isset($currentEvent['metadata']) &&
-        is_array($currentEvent['metadata'])
-    ) || (
-        is_object($currentEvent) &&
-        isset($currentEvent->{'dynamic-metadata'})
-    );
-
-    if (!$currentPage && !$hasCurrentMetadata) {
-        return '';
-    }
-
     if (is_array($currentEvent) && isset($currentEvent['metadata'])) {
         $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
     } elseif (is_object($currentEvent) && isset($currentEvent->{'dynamic-metadata'})) {
         $currentMetadata = related_events_metadata($currentEvent);
     } else {
-        $currentMetadata = related_events_metadata($currentPage);
-    }
-
-    if ($currentPage) {
-        $currentMetadata = related_events_remove_location($currentMetadata, $currentPage);
+        return '';
     }
 
     // Prefer office or department/program matches. Academic dates remain in
@@ -249,17 +231,6 @@ function related_events_resolve_request_path($pages)
     }
 
     return $requestPath;
-}
-
-function related_events_find_page($pages, $path)
-{
-    foreach ($pages as $pageXml) {
-        if (related_events_normalize_path((string)$pageXml->path) === $path) {
-            return $pageXml;
-        }
-    }
-
-    return false;
 }
 
 function related_events_metadata($xml)
