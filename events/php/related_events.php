@@ -39,6 +39,8 @@ function create_related_events($currentEvent = null)
     );
 
     $selected = array();
+    $nextMatches = array();
+    $selectedTier = array();
 
     foreach ($matchingTiers as $matchingTier) {
         $matches = array();
@@ -76,12 +78,14 @@ function create_related_events($currentEvent = null)
 
         if (sizeof($matches) > 0) {
             $selected = array_slice($matches, 0, 2);
+            $nextMatches = array_slice($matches, 2, 4);
+            $selectedTier = $matchingTier;
             break;
         }
     }
 
     if (sizeof($selected) === 0) {
-        return '';
+        return related_events_debug_output($currentMetadata, $selected, $nextMatches, $selectedTier);
     }
 
     $html = '<section class="related-events">';
@@ -91,7 +95,49 @@ function create_related_events($currentEvent = null)
         $html .= related_events_render($event['xml'], $event['occurrence']);
     }
 
-    return $html . '</section>';
+    $html .= '</section>';
+    $html .= related_events_debug_output(
+        $currentMetadata,
+        $selected,
+        $nextMatches,
+        $selectedTier
+    );
+
+    return $html;
+}
+
+function related_events_debug_output($currentMetadata, $selected, $nextMatches, $matchingTier)
+{
+    if (!isset($_GET['related_events_debug']) || $_GET['related_events_debug'] !== '1') {
+        return '';
+    }
+
+    $report = array(
+        'matching_tier' => $matchingTier,
+        'current_page_metadata' => $currentMetadata,
+        'selected_events' => related_events_debug_events($selected),
+        'next_four_matches' => related_events_debug_events($nextMatches)
+    );
+
+    return '<pre class="related-events-debug">' .
+        related_events_escape(json_encode($report, JSON_PRETTY_PRINT)) .
+        '</pre>';
+}
+
+function related_events_debug_events($events)
+{
+    $output = array();
+
+    foreach ($events as $event) {
+        $output[] = array(
+            'title' => trim((string)$event['xml']->title),
+            'path' => $event['path'],
+            'end' => date('c', $event['occurrence']['end']),
+            'metadata' => related_events_metadata($event['xml'])
+        );
+    }
+
+    return $output;
 }
 
 function related_events_load_xml()
