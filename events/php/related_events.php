@@ -33,10 +33,10 @@ function related_events_debug_shutdown()
 /**
  * Render two events related to the current event.
  *
- * Pass a context array containing the current page's live metadata. The
- * function returns an empty string when no related events are found.
+ * The current page is resolved from REQUEST_URI and its metadata is read
+ * directly from events.xml, just like each candidate event.
  *
- * @param array|null $currentEvent
+ * @param mixed $currentEvent Kept for template-call compatibility.
  * @return string
  */
 function create_related_events($currentEvent = null)
@@ -47,25 +47,24 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    if (
-        !is_array($currentEvent) ||
-        !isset($currentEvent['metadata']) ||
-        !is_array($currentEvent['metadata'])
-    ) {
-        related_events_debug(
-            'Related Events: current metadata context was not received. Context type: ' .
-            gettype($currentEvent)
-        );
-        return '';
-    }
-
     $currentPath = related_events_resolve_request_path($eventXml);
-    $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
 
     if ($currentPath === '') {
         related_events_debug('Related Events: the current request path could not be resolved.');
         return '';
     }
+
+    $pages = related_events_pages($eventXml);
+    $currentPage = related_events_find_page($pages, $currentPath);
+
+    if (!$currentPage) {
+        related_events_debug(
+            'Related Events: current page was not found in events.xml: ' . $currentPath
+        );
+        return '';
+    }
+
+    $currentMetadata = related_events_metadata($currentPage);
 
     $eventTypes = related_events_values($currentMetadata, 'general');
     $matchingTiers = array();
@@ -76,12 +75,7 @@ function create_related_events($currentEvent = null)
     }
 
     $matchingTiers[] = array('offices');
-    $matchingTiers[] = array(
-        'cas-departments',
-        'adult-undergrad-program',
-        'graduate-program',
-        'seminary-program'
-    );
+    $matchingTiers[] = array('departments-programs');
 
     if (sizeof($matchingTiers) === 0) {
         related_events_debug(
@@ -91,7 +85,6 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    $pages = related_events_pages($eventXml);
     $selected = array();
     $selectedPaths = array();
     $metadataMatchCount = 0;
@@ -262,6 +255,17 @@ function related_events_resolve_request_path($eventXml)
     return $requestPath;
 }
 
+function related_events_find_page($pages, $path)
+{
+    foreach ($pages as $pageXml) {
+        if (related_events_normalize_path((string)$pageXml->path) === $path) {
+            return $pageXml;
+        }
+    }
+
+    return false;
+}
+
 function related_events_metadata($xml)
 {
     $metadata = array();
@@ -288,61 +292,24 @@ function related_events_metadata($xml)
 }
 
 /**
- * Normalize the live metadata array supplied by the Cascade template.
- */
-function related_events_metadata_input($input)
-{
-    $metadata = array();
-
-    foreach ($input as $name => $values) {
-        $name = related_events_metadata_name($name);
-        if ($name === '') {
-            continue;
-        }
-
-        if (!is_array($values)) {
-            $values = array($values);
-        }
-
-        foreach ($values as $value) {
-            if (is_array($value) || is_object($value)) {
-                continue;
-            }
-
-            $value = related_events_normalize($value);
-            if ($value === '' || in_array($value, array('none', 'select'), true)) {
-                continue;
-            }
-
-            if (!isset($metadata[$name])) {
-                $metadata[$name] = array();
-            }
-
-            $metadata[$name][$value] = true;
-        }
-    }
-
-    return $metadata;
-}
-
-/**
- * Keep Cascade's metadata field names intact. The values are not hard-coded;
- * these are only the schema keys used to keep department/program categories
- * from matching across one another.
+ * Map the source metadata fields to the v2 matching groups. The option
+ * values are read from each event; only the field names are defined here.
  */
 function related_events_metadata_name($name)
 {
     $name = trim((string)$name);
 
-    if (in_array($name, array(
-        'general',
-        'offices',
+    if ($name === 'general' || $name === 'offices') {
+        return $name;
+    }
+
+    if ($name === 'departments-programs' || in_array($name, array(
         'cas-departments',
         'adult-undergrad-program',
         'graduate-program',
         'seminary-program'
     ), true)) {
-        return $name;
+        return 'departments-programs';
     }
 
     return '';
