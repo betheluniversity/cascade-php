@@ -31,7 +31,16 @@ function create_related_events($currentEvent = null)
         return '';
     }
 
-    $currentMetadata = related_events_metadata_input($currentEvent['metadata']);
+    $currentMetadataInput = $currentEvent['metadata'];
+    $currentMetadata = related_events_metadata_input($currentMetadataInput);
+
+    $currentPage = related_events_find_page($pages, $currentPath);
+    if ($currentPage) {
+        $currentMetadata = related_events_merge_metadata(
+            $currentMetadata,
+            related_events_metadata($currentPage)
+        );
+    }
 
     // Prefer office or department/program matches. Academic dates remain in
     // the fallback tier until those values are folded into general.
@@ -87,7 +96,13 @@ function create_related_events($currentEvent = null)
     }
 
     if (sizeof($selected) === 0) {
-        return related_events_debug_output($currentMetadata, $selected, $nextMatches, $selectedTier);
+        return related_events_debug_output(
+            $currentMetadataInput,
+            $currentMetadata,
+            $selected,
+            $nextMatches,
+            $selectedTier
+        );
     }
 
     $html = '<section class="related-events">';
@@ -99,6 +114,7 @@ function create_related_events($currentEvent = null)
 
     $html .= '</section>';
     $html .= related_events_debug_output(
+        $currentMetadataInput,
         $currentMetadata,
         $selected,
         $nextMatches,
@@ -108,7 +124,13 @@ function create_related_events($currentEvent = null)
     return $html;
 }
 
-function related_events_debug_output($currentMetadata, $selected, $nextMatches, $matchingTier)
+function related_events_debug_output(
+    $currentMetadataInput,
+    $currentMetadata,
+    $selected,
+    $nextMatches,
+    $matchingTier
+)
 {
     if (!isset($_GET['related_events_debug']) || $_GET['related_events_debug'] !== '1') {
         return '';
@@ -116,6 +138,7 @@ function related_events_debug_output($currentMetadata, $selected, $nextMatches, 
 
     $report = array(
         'matching_tier' => $matchingTier,
+        'received_metadata' => $currentMetadataInput,
         'current_page_metadata' => $currentMetadata,
         'selected_events' => related_events_debug_events($selected),
         'next_four_matches' => related_events_debug_events($nextMatches)
@@ -258,6 +281,32 @@ function related_events_metadata($xml)
     }
 
     return related_events_remove_location($metadata, $xml);
+}
+
+function related_events_find_page($pages, $path)
+{
+    foreach ($pages as $pageXml) {
+        if (related_events_normalize_path((string)$pageXml->path) === $path) {
+            return $pageXml;
+        }
+    }
+
+    return false;
+}
+
+function related_events_merge_metadata($primary, $fallback)
+{
+    foreach ($fallback as $name => $values) {
+        if (!isset($primary[$name])) {
+            $primary[$name] = array();
+        }
+
+        foreach ($values as $value => $enabled) {
+            $primary[$name][$value] = true;
+        }
+    }
+
+    return $primary;
 }
 
 function related_events_metadata_input($input)
