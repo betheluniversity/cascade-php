@@ -79,11 +79,12 @@ function create_related_events($currentEvent = null, $limit = 2)
         return related_events_debug_output($currentMetadata, $selected, $nextMatches);
     }
 
-    $html = '<section class="related-events"><h2>Related Events</h2>';
+    $html = '<section class="bkg--light-gray pv3"><div class="inner--content">';
+    $html .= '<section class="related-events"><h2>Related Events</h2>';
     foreach ($selected as $event) {
         $html .= related_events_render($event);
     }
-    $html .= '</section>';
+    $html .= '</section></div></section>';
 
     return $html . related_events_debug_output($currentMetadata, $selected, $nextMatches);
 }
