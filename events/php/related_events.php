@@ -33,12 +33,14 @@ function create_related_events($currentEvent = null)
 
     $currentMetadataInput = $currentEvent['metadata'];
     $currentMetadata = related_events_metadata_input($currentMetadataInput);
+    $currentXmlMetadata = array();
 
     $currentPage = related_events_find_page($pages, $currentPath);
     if ($currentPage) {
+        $currentXmlMetadata = related_events_metadata($currentPage);
         $currentMetadata = related_events_merge_metadata(
             $currentMetadata,
-            related_events_metadata($currentPage)
+            $currentXmlMetadata
         );
     }
 
@@ -97,6 +99,8 @@ function create_related_events($currentEvent = null)
 
     if (sizeof($selected) === 0) {
         return related_events_debug_output(
+            $currentPath,
+            $currentXmlMetadata,
             $currentMetadataInput,
             $currentMetadata,
             $selected,
@@ -114,6 +118,8 @@ function create_related_events($currentEvent = null)
 
     $html .= '</section>';
     $html .= related_events_debug_output(
+        $currentPath,
+        $currentXmlMetadata,
         $currentMetadataInput,
         $currentMetadata,
         $selected,
@@ -125,6 +131,8 @@ function create_related_events($currentEvent = null)
 }
 
 function related_events_debug_output(
+    $currentPath,
+    $currentXmlMetadata,
     $currentMetadataInput,
     $currentMetadata,
     $selected,
@@ -137,6 +145,8 @@ function related_events_debug_output(
     }
 
     $report = array(
+        'resolved_current_path' => $currentPath,
+        'current_event_xml_metadata' => $currentXmlMetadata,
         'matching_tier' => $matchingTier,
         'received_metadata' => $currentMetadataInput,
         'current_page_metadata' => $currentMetadata,
