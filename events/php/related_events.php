@@ -352,6 +352,7 @@ function related_events_render($event)
     $title = trim((string)$page->title);
     $description = trim(strip_tags((string)$page->description));
     $location = related_events_location($data);
+    $time = related_events_time_text($occurrence);
     $link = trim((string)$data->link);
 
     if (strpos($link, 'http://') !== 0 && strpos($link, 'https://') !== 0) {
@@ -366,15 +367,16 @@ function related_events_render($event)
     $html .= '<div class="events__content">';
     $html .= '<p class="events__headline"><a href="' . related_events_escape($link) . '">';
     $html .= '<span itemprop="name">' . related_events_escape($title) . '</span></a></p>';
-    $html .= '<p class="events__location">' . related_events_escape(
-        related_events_date_text($occurrence)
-    );
 
-    if ($location !== '') {
-        $html .= ' <span itemprop="location">' . related_events_escape($location) . '</span>';
+    if ($time !== '' || $location !== '') {
+        $html .= '<p class="events__location">' . related_events_escape($time);
+        if ($location !== '') {
+            $html .= ($time === '' ? '' : ' ') . '<span itemprop="location">';
+            $html .= related_events_escape($location) . '</span>';
+        }
+        $html .= '</p>';
     }
 
-    $html .= '</p>';
     if ($description !== '') {
         $html .= '<p class="events__description"><span itemprop="description">';
         $html .= related_events_escape($description) . '</span></p>';
@@ -437,20 +439,17 @@ function related_events_location($data)
     return '';
 }
 
-function related_events_date_text($occurrence)
+function related_events_time_text($occurrence)
 {
-    $start = $occurrence['start'];
-    $end = $occurrence['end'];
-
-    if (date('Y-m-d', $start) !== date('Y-m-d', $end)) {
-        return date('F j, Y', $start) . ' - ' . date('F j, Y', $end);
-    }
     if (strtolower($occurrence['all-day']) === 'yes') {
-        return date('F j, Y', $start);
+        return '';
     }
 
-    $time = str_replace(array(':00', 'am', 'pm'), array('', 'a.m.', 'p.m.'), date('g:i a', $start));
-    return date('F j, Y', $start) . ' | ' . $time;
+    return str_replace(
+        array(':00', 'am', 'pm'),
+        array('', 'a.m.', 'p.m.'),
+        date('g:i a', $occurrence['start'])
+    );
 }
 
 function related_events_request_path()
