@@ -353,6 +353,14 @@ function related_events_render($event)
     $description = trim(strip_tags((string)$page->description));
     $location = related_events_location($data);
     $time = related_events_time_text($occurrence);
+    $displayDate = $occurrence['start'];
+    if (
+        date('Y-m-d', $occurrence['start']) !== date('Y-m-d', $occurrence['end']) &&
+        $occurrence['start'] <= time() &&
+        $occurrence['end'] >= time()
+    ) {
+        $displayDate = time();
+    }
     $link = trim((string)$data->link);
 
     if (strpos($link, 'http://') !== 0 && strpos($link, 'https://') !== 0) {
@@ -361,9 +369,9 @@ function related_events_render($event)
 
     $html = '<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">';
     $html .= '<p class="events__date-tile" itemprop="startDate">';
-    $html .= strtoupper(date('M', $occurrence['start']));
-    $html .= '<span>' . date('j', $occurrence['start']) . '</span>';
-    $html .= date('Y', $occurrence['start']) . '</p>';
+    $html .= strtoupper(date('M', $displayDate));
+    $html .= '<span>' . date('j', $displayDate) . '</span>';
+    $html .= date('Y', $displayDate) . '</p>';
     $html .= '<div class="events__content">';
     $html .= '<p class="events__headline"><a href="' . related_events_escape($link) . '">';
     $html .= '<span itemprop="name">' . related_events_escape($title) . '</span></a></p>';
