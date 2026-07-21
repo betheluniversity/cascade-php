@@ -79,7 +79,7 @@ function create_related_events($currentEvent = null, $limit = 2)
         return related_events_debug_output($currentMetadata, $selected, $nextMatches);
     }
 
-    $html = '<section class="pv3"><div class="inner--content pt3" style="border-top: 1px solid #ddd>';
+    $html = '<section class="pv3"><div class="inner--content pt3" style="border-top: 1px solid #ddd">';
     $html .= '<section class="related-events"><h4 class="mt0">Related Events</h2>';
     $html .= '<div class="grid grid-cols-2--large">';
     foreach ($selected as $event) {
