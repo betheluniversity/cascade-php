@@ -79,8 +79,8 @@ function create_related_events($currentEvent = null, $limit = 2)
         return related_events_debug_output($currentMetadata, $selected, $nextMatches);
     }
 
-    $html = '<section class="bkg--light-gray pv3"><div class="inner--content">';
-    $html .= '<section class="related-events"><h2>Related Events</h2>';
+    $html = '<section class="bg-slate-100 pv3"><div class="inner--content">';
+    $html .= '<section class="related-events"><h4 class="mt0">Related Events</h2>';
     $html .= '<div class="grid grid-cols-2--medium">';
     foreach ($selected as $event) {
         $html .= related_events_render($event);
