@@ -272,7 +272,9 @@ function event_v4_normalize_page($page, $compatibility)
         'legacy' => $legacy,
         'title' => trim((string)$page->title),
         'published' => $published,
-        'description' => trim((string)$page->description),
+        'description' => $definition === 'Event v4'
+            ? trim((string)$page->teaser)
+            : trim((string)$page->description),
         'path' => $path,
         'external-link' => event_v4_external_link($data),
         'location' => event_v4_location($data, $definition),
