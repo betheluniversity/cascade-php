@@ -19,7 +19,7 @@
                 {% if event_time %}{{ event_time }}{% endif %}
                 {% if event_timezone %} {{ event_timezone }}{% endif %}
                 {% if event.location %}
-                    {% if event_time or event_timezone %} {% endif %}
+                    {% if event_time or event_timezone %} | {% endif %}
                     <span itemprop="location">{{ event.location }}</span>
                 {% endif %}
             </p>
