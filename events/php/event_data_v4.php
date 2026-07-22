@@ -245,7 +245,7 @@ function event_v4_build_normalized_events($xml, $compatibility)
 function event_v4_normalize_page($page, $compatibility)
 {
     $data = $page->{'system-data-structure'};
-    $definition = trim((string)$data['definition-path']);
+    $definition = basename(trim((string)$data['definition-path']));
     if (!in_array($definition, array('Event', 'Event v2', 'Event v4'), true)) {
         return null;
     }
