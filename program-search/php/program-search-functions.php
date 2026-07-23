@@ -368,17 +368,32 @@ function read_csv_file($path){
 
 
 function check_degree_types($program, $check_degree){
-    $degrees = $program['md']['degree'];
+    // Safe extraction using null coalescing (handles missing keys gracefully)
+    $degrees = $program['md']['degree'] ?? [];
+    $types   = $program['md']['program-type'] ?? [];
 
-    if( sizeof($degrees) == 0 )
-        return true;
+    // Force array type in case metadata is passed as a single string
+    $degrees = is_array($degrees) ? $degrees : [$degrees];
+    $types   = is_array($types) ? $types : [$types];
 
-    foreach( $degrees as $degree ){
-        $check_degree = substr($check_degree, 0, 6);
-        if (strpos($degree, $check_degree) !== false) {
-            return false;
+    // Truncate search term once up front
+    $search_term = substr($check_degree, 0, 6);
+
+    // 1. Check degrees array
+    foreach ($degrees as $degree) {
+        if (strpos($degree, $search_term) !== false) {
+            return false; // Match found!
         }
     }
+
+    // 2. Check program-type array (only reached if no match in $degrees)
+    foreach ($types as $type) {
+        if (strpos($type, $search_term) !== false) {
+            return false; // Match found!
+        }
+    }
+
+    // No match found in either array
     return true;
 }
 
