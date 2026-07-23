@@ -63,6 +63,17 @@ function call_program_search($input_data){
                 }
             }
         }
+        foreach( $program['program']['md']['program-type'] as $program_type) { // loop through program degrees
+            foreach( $final_degrees_array as $degree_name => $program_array ){ // loop through degree holder
+                // Find the shortest substring that will still match all degree types
+                // i.e. Master's MATCHES Master Of Arts
+                $degree_check = substr($degree_name, 0, 6);
+                // if it matches and hasn't been added yet
+                if (strpos($program_type, $degree_check) !== false && !in_array($program, $final_degrees_array[$degree_name])) {
+                    array_push($final_degrees_array[$degree_name], $program);
+                }
+            }
+        }
     }
 
     // if none of a degree type exists, don't show it
