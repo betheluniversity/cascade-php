@@ -72,6 +72,11 @@ function call_program_search($input_data){
 
 //    echo "Elapsed time is: ". (microtime(true) - $startTime + 0.2) ." seconds, for search term: '" . $input_data[0] . "'";
 
+    // Debug: Output array to HTML source
+    echo "<!-- DEBUG FINAL DEGREES ARRAY:\n";
+    print_r($final_degrees_array);
+    echo "\n-->";
+    
     // print the entire table
     echo get_html_for_table($final_degrees_array);
 }
