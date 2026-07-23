@@ -33,6 +33,9 @@ function call_program_search($input_data){
 
 //    $program_data = autoCache("get_program_xml", array(), 4);
     $program_data = get_program_xml();
+    echo "<!-- DEBUG PROGRAM DATA:\n";
+    print_r($program_data);
+    echo "\n-->";
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
@@ -76,7 +79,7 @@ function call_program_search($input_data){
     echo "<!-- DEBUG FINAL DEGREES ARRAY:\n";
     print_r($final_degrees_array);
     echo "\n-->";
-    
+
     // print the entire table
     echo get_html_for_table($final_degrees_array);
 }
