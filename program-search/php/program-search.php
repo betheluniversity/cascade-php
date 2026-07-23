@@ -33,7 +33,6 @@ function call_program_search($input_data){
 
 //    $program_data = autoCache("get_program_xml", array(), 4);
     $program_data = get_program_xml();
-    <!-- <?php echo $program_data; ?> -->
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
