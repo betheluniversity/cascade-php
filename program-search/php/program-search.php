@@ -33,9 +33,6 @@ function call_program_search($input_data){
 
 //    $program_data = autoCache("get_program_xml", array(), 4);
     $program_data = get_program_xml();
-    echo "<!-- DEBUG PROGRAM DATA:\n";
-    print_r($program_data);
-    echo "\n-->";
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
@@ -63,7 +60,7 @@ function call_program_search($input_data){
                 }
             }
         }
-        foreach( $program['program']['md']['program-type'] as $program_type) { // loop through program degrees
+        foreach( $program['program']['md']['program-type'] as $program_type) { // loop through program types
             foreach( $final_degrees_array as $degree_name => $program_array ){ // loop through degree holder
                 // Find the shortest substring that will still match all degree types
                 // i.e. Master's MATCHES Master Of Arts
@@ -85,11 +82,6 @@ function call_program_search($input_data){
 
 
 //    echo "Elapsed time is: ". (microtime(true) - $startTime + 0.2) ." seconds, for search term: '" . $input_data[0] . "'";
-
-    // Debug: Output array to HTML source
-    echo "<!-- DEBUG FINAL DEGREES ARRAY:\n";
-    print_r($final_degrees_array);
-    echo "\n-->";
 
     // print the entire table
     echo get_html_for_table($final_degrees_array);
