@@ -28,18 +28,12 @@ function route_to_functions(){
 
 }
 
-
-function console_log($output) {
-    $js_code = json_encode($output, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-    echo "<script>console.log(" . $js_code . ");</script>";
-}
-
 function call_program_search($input_data){
 //    $startTime = microtime(true);
 
 //    $program_data = autoCache("get_program_xml", array(), 4);
     $program_data = get_program_xml();
-    console_log($program_data);
+    <!-- <?php echo $program_data; ?> -->
 
     $programs = search_programs($program_data, $input_data);
     usort($programs, 'program_sort_by_titles');
