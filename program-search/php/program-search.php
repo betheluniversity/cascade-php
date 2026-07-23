@@ -45,7 +45,8 @@ function call_program_search($input_data){
         "Master's Degrees"      =>  array(),
         'Doctoral Degrees'      =>  array(),
         'License'               =>  array(),
-        'Certificate'           =>  array()
+        'Certificate'           =>  array(),
+        'Endorsement'           =>  array(),
     );
     // sort programs into each degree
     foreach( $programs as $program){
