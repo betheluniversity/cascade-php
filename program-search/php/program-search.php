@@ -44,8 +44,9 @@ function call_program_search($input_data){
         "Bachelor's Degrees"    =>  array(),
         "Master's Degrees"      =>  array(),
         'Doctoral Degrees'      =>  array(),
-        'License'               =>  array(),
-        'Certificate'           =>  array()
+        'Licenses'              =>  array(),
+        'Certificates'          =>  array(),
+        'Endorsements'          =>  array(),
     );
     // sort programs into each degree
     foreach( $programs as $program){
@@ -56,6 +57,17 @@ function call_program_search($input_data){
                 $degree_check = substr($degree_name, 0, 6);
                 // if it matches and hasn't been added yet
                 if (strpos($program_degree, $degree_check) !== false && !in_array($program, $final_degrees_array[$degree_name])) {
+                    array_push($final_degrees_array[$degree_name], $program);
+                }
+            }
+        }
+        foreach( $program['program']['md']['program-type'] as $program_type) { // loop through program types
+            foreach( $final_degrees_array as $degree_name => $program_array ){ // loop through degree holder
+                // Find the shortest substring that will still match all degree types
+                // i.e. Master's MATCHES Master Of Arts
+                $degree_check = substr($degree_name, 0, 6);
+                // if it matches and hasn't been added yet
+                if (strpos($program_type, $degree_check) !== false && !in_array($program, $final_degrees_array[$degree_name])) {
                     array_push($final_degrees_array[$degree_name], $program);
                 }
             }
