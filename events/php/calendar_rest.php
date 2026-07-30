@@ -158,7 +158,7 @@ function get_event_xml(){
     }
 //        $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml");
     $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml"));
-    $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
+    $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event' or @definition-path='Event v2']]");
     $dates = array();
     $datePaths = array();
     foreach($event_pages as $child ){
