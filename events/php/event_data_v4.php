@@ -209,17 +209,75 @@ function event_v4_build_normalized_events_from_file($sourceFile, $compatibility)
     return event_v4_build_normalized_events($xml, $compatibility);
 }
 
+function event_v4_get_calendar_category_values($sourceFile = '')
+{
+    if ($sourceFile === '') {
+        $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
+        if ($documentRoot === '') {
+            return array();
+        }
+        $sourceFile = rtrim($documentRoot, '/') . '/_shared-content/xml/calendar-categories.xml';
+    }
+
+    static $requestCache = array();
+    if (isset($requestCache[$sourceFile])) {
+        return $requestCache[$sourceFile];
+    }
+
+    $requestCache[$sourceFile] = event_v4_build_calendar_category_values_from_file($sourceFile);
+    return $requestCache[$sourceFile];
+}
+
+function event_v4_build_calendar_category_values_from_file($sourceFile)
+{
+    $categories = array();
+    if (!is_file($sourceFile)) {
+        return $categories;
+    }
+
+    $xml = simplexml_load_file($sourceFile);
+    if (!$xml) {
+        return $categories;
+    }
+
+    $metadataNodes = $xml->xpath('//system-page/dynamic-metadata');
+    if (!is_array($metadataNodes)) {
+        return $categories;
+    }
+
+    foreach ($metadataNodes as $metadata) {
+        $field = trim((string)$metadata->name);
+        if ($field === '') {
+            continue;
+        }
+        if (!isset($categories[$field])) {
+            $categories[$field] = array();
+        }
+
+        foreach ($metadata->value as $valueNode) {
+            $value = trim((string)$valueNode);
+            if (!event_v4_empty_metadata_value($value)) {
+                $categories[$field][] = $value;
+            }
+        }
+        $categories[$field] = event_v4_unique_strings($categories[$field]);
+    }
+
+    return $categories;
+}
+
 function event_v4_build_normalized_events($xml, $compatibility)
 {
     $events = array();
     $pathIndexes = array();
+    $calendarCategories = event_v4_get_calendar_category_values();
     $pages = $xml->xpath('//system-page');
     if (!is_array($pages)) {
         return $events;
     }
 
     foreach ($pages as $page) {
-        $event = event_v4_normalize_page($page, $compatibility);
+        $event = event_v4_normalize_page($page, $compatibility, $calendarCategories);
         if (is_array($event)) {
             $path = $event['path'];
             if (!isset($pathIndexes[$path])) {
@@ -242,7 +300,7 @@ function event_v4_build_normalized_events($xml, $compatibility)
     return $events;
 }
 
-function event_v4_normalize_page($page, $compatibility)
+function event_v4_normalize_page($page, $compatibility, $calendarCategories = null)
 {
     $data = $page->{'system-data-structure'};
     $definition = basename(trim((string)$data['definition-path']));
@@ -260,7 +318,10 @@ function event_v4_normalize_page($page, $compatibility)
         return null;
     }
 
-    $metadataResult = event_v4_normalize_metadata($page, $legacy, $compatibility);
+    if ($calendarCategories === null) {
+        $calendarCategories = event_v4_get_calendar_category_values();
+    }
+    $metadataResult = event_v4_normalize_metadata($page, $legacy, $compatibility, $calendarCategories);
     $isPublished = strtolower(trim((string)$page->{'is-published'}));
     $published = trim((string)$page->{'last-published-on'});
     if ($isPublished === 'false' || $isPublished === 'no') {
@@ -287,8 +348,12 @@ function event_v4_normalize_page($page, $compatibility)
     return $record;
 }
 
-function event_v4_normalize_metadata($page, $legacy, $compatibility)
+function event_v4_normalize_metadata($page, $legacy, $compatibility, $calendarCategories = null)
 {
+    if ($calendarCategories === null) {
+        $calendarCategories = event_v4_get_calendar_category_values();
+    }
+
     $canonical = array();
     foreach (event_v4_metadata_fields() as $field) {
         $canonical[$field] = array();
@@ -345,7 +410,7 @@ function event_v4_normalize_metadata($page, $legacy, $compatibility)
     return array(
         'canonical' => $canonical,
         'raw' => $raw,
-        'calendar' => event_v4_calendar_tokens($canonical, $raw, $compatibility),
+        'calendar' => event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories),
         'hidden' => $hidden
     );
 }
@@ -355,16 +420,45 @@ function event_v4_empty_metadata_value($value)
     return $value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0;
 }
 
-function event_v4_calendar_tokens($canonical, $raw, $compatibility)
+function event_v4_calendar_category_is_available($categories, $field, $value)
+{
+    if (!isset($categories[$field])) {
+        return false;
+    }
+
+    foreach ($categories[$field] as $categoryValue) {
+        if (strcasecmp($categoryValue, $value) === 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Preserve the legacy calendar's generic "other" token for metadata values
+ * that are not represented by the public calendar's configured filters.
+ */
+function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories = null)
 {
     $tokens = array();
+    $hasUnmatchedCategory = false;
+    $hasMetadata = false;
     foreach ($canonical as $field => $values) {
         foreach ($values as $value) {
             $tokens[] = $value . '-' . $field;
+            if ($calendarCategories) {
+                $hasMetadata = true;
+                if (!event_v4_calendar_category_is_available($calendarCategories, $field, $value)) {
+                    $hasUnmatchedCategory = true;
+                }
+            }
         }
     }
 
     if (!$compatibility) {
+        if ($hasMetadata && $hasUnmatchedCategory) {
+            $tokens[] = 'other';
+        }
         return event_v4_unique_strings($tokens);
     }
 
@@ -374,6 +468,12 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility)
         }
         foreach ($values as $value) {
             $tokens[] = $value . '-' . $field;
+            if ($calendarCategories) {
+                $hasMetadata = true;
+                if (!event_v4_calendar_category_is_available($calendarCategories, $field, $value)) {
+                    $hasUnmatchedCategory = true;
+                }
+            }
         }
     }
 
@@ -386,6 +486,10 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility)
                 $tokens[] = $legacyPair[1] . '-' . $legacyPair[0];
             }
         }
+    }
+
+    if ($hasMetadata && $hasUnmatchedCategory) {
+        $tokens[] = 'other';
     }
 
     return event_v4_unique_strings($tokens);
