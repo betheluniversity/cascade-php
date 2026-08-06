@@ -216,7 +216,7 @@ function event_v4_get_calendar_category_values($sourceFile = '')
         if ($documentRoot === '') {
             return array();
         }
-        $sourceFile = rtrim($documentRoot, '/') . '/_shared-content/xml/calendar-categories.xml';
+        $sourceFile = rtrim($documentRoot, '/') . '/_shared-content/xml/event-metadata/calendar-categories.xml';
     }
 
     static $requestCache = array();
