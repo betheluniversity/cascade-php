@@ -129,22 +129,73 @@
         $.cookie('internal-categories', JSON.stringify(internalCategories), { expires: 365 });
     }
 
-    // The Event v4 Metadata Set calls this category "Other-general".
-    // Legacy events use the old generic "other" token. Treat those two
-    // tokens as one filter without changing the event data for every event.
-    function isCategorySelected(category, selectedCategories){
-        var normalizedCategory = String(category).toLowerCase();
+    function normalizeCategory(category){
+        return String(category).toLowerCase();
+    }
+
+    function isOtherCategory(category){
+        var normalizedCategory = normalizeCategory(category);
+        return normalizedCategory === 'other' || normalizedCategory === 'other-general';
+    }
+
+    function isFilterSelected(category, selectedCategories){
         for (var index = 0; index < selectedCategories.length; ++index){
-            var selectedCategory = String(selectedCategories[index]).toLowerCase();
-            if (selectedCategory === normalizedCategory){
+            if (isOtherCategory(category) && isOtherCategory(selectedCategories[index])){
                 return true;
             }
-            if ((selectedCategory === 'other' || selectedCategory === 'other-general') &&
-                (normalizedCategory === 'other' || normalizedCategory === 'other-general')){
+            if (normalizeCategory(category) === normalizeCategory(selectedCategories[index])){
                 return true;
             }
         }
         return false;
+    }
+
+    function getEventTypeCategories(){
+        var eventTypeCategories = [];
+        $('.subject-external').each(function(){
+            var category = normalizeCategory(this.value);
+            if (category.slice(-8) === '-general' && !isOtherCategory(category)){
+                eventTypeCategories.push(category);
+            }
+        });
+        return eventTypeCategories;
+    }
+
+    function eventMatchesOtherFilter(categories, eventTypeCategories){
+        for (var index = 0; index < categories.length; ++index){
+            if (normalizeCategory(categories[index]) === 'other-general'){
+                return true;
+            }
+        }
+
+        // A legacy event belongs under Other only when it has no category
+        // represented by one of the visible Event Type checkboxes. Ignore the
+        // old generic "other" token because unrelated metadata can add it.
+        for (var categoryIndex = 0; categoryIndex < categories.length; ++categoryIndex){
+            if (eventTypeCategories.indexOf(normalizeCategory(categories[categoryIndex])) > -1){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function eventMatchesExternalFilters(categories, selectedCategories, eventTypeCategories){
+        var otherSelected = false;
+
+        for (var selectedIndex = 0; selectedIndex < selectedCategories.length; ++selectedIndex){
+            if (isOtherCategory(selectedCategories[selectedIndex])){
+                otherSelected = true;
+                continue;
+            }
+
+            for (var categoryIndex = 0; categoryIndex < categories.length; ++categoryIndex){
+                if (normalizeCategory(selectedCategories[selectedIndex]) === normalizeCategory(categories[categoryIndex])){
+                    return true;
+                }
+            }
+        }
+
+        return otherSelected && eventMatchesOtherFilter(categories, eventTypeCategories);
     }
 
     function checkEventCategories(){
@@ -153,10 +204,11 @@
 
         // Get all categores that are checked
         var externalCategories = getExternalCategories();
+        var eventTypeCategories = getEventTypeCategories();
 
         // Uncheck any that shouldn't be checked (for example, on page reload)
         $(".subject-external").each(function(){
-            if (!isCategorySelected(this.value, externalCategories)){
+            if (!isFilterSelected(this.value, externalCategories)){
                 $(this).attr('checked', false);
             }else{
                 $(this).attr('checked', true);
@@ -175,17 +227,19 @@
 
         $(".vevent").each(function(){
             var categories = $(this).find('.categories').children();
+            var categoryValues = [];
             // Hide by default unless we find a good category
             var remote_user = $.cookie('remote-user');
             var hide = true;
             for (var index = 0; index < categories.length; ++index) {
                 var category = $(categories[index]).data()['category'];
+                categoryValues.push(category);
                 if (internalCategories && internalCategories.indexOf(category) > -1 && remote_user != "null"){
                     hide = false;
                 }
-                if (isCategorySelected(category, externalCategories)){
-                    hide = false;
-                }
+            }
+            if (eventMatchesExternalFilters(categoryValues, externalCategories, eventTypeCategories)){
+                hide = false;
             }
             if (hide){
                 $(this).hide();
