@@ -458,6 +458,7 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
     if (!$compatibility) {
         if ($hasMetadata && $hasUnmatchedCategory) {
             $tokens[] = 'other';
+            $tokens[] = 'Other-general';
         }
         return event_v4_unique_strings($tokens);
     }
@@ -490,6 +491,7 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
 
     if ($hasMetadata && $hasUnmatchedCategory) {
         $tokens[] = 'other';
+        $tokens[] = 'Other-general';
     }
 
     return event_v4_unique_strings($tokens);
