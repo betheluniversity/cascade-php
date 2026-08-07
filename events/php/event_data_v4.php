@@ -216,7 +216,10 @@ function event_v4_get_calendar_category_values($sourceFile = '')
         if ($documentRoot === '') {
             return array();
         }
-        $sourceFile = rtrim($documentRoot, '/') . '/_shared-content/xml/event-metadata/calendar-categories.xml';
+        // Legacy events must use the same category source as the old calendar.
+        // The visible filter list is supplied separately by the Event v4
+        // Metadata Set in the Cascade format.
+        $sourceFile = rtrim($documentRoot, '/') . '/_shared-content/xml/calendar-categories.xml';
     }
 
     static $requestCache = array();
@@ -410,7 +413,7 @@ function event_v4_normalize_metadata($page, $legacy, $compatibility, $calendarCa
     return array(
         'canonical' => $canonical,
         'raw' => $raw,
-        'calendar' => event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories),
+        'calendar' => event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories, $legacy),
         'hidden' => $hidden
     );
 }
@@ -420,46 +423,32 @@ function event_v4_empty_metadata_value($value)
     return $value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0;
 }
 
-function event_v4_calendar_category_is_available($categories, $field, $value)
+function event_v4_calendar_category_is_available($categories, $value)
 {
-    if (!isset($categories[$field])) {
-        return false;
-    }
-
-    foreach ($categories[$field] as $categoryValue) {
-        if (strcasecmp($categoryValue, $value) === 0) {
-            return true;
+    foreach ($categories as $fieldValues) {
+        foreach ($fieldValues as $categoryValue) {
+            if (strcasecmp($categoryValue, $value) === 0) {
+                return true;
+            }
         }
     }
     return false;
 }
 
 /**
- * Preserve the legacy calendar's generic "other" token for metadata values
- * that are not represented by the public calendar's configured filters.
+ * Preserve the legacy calendar's generic "other" token for legacy metadata
+ * values that are not represented by the old calendar's configured filters.
  */
-function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories = null)
+function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCategories = null, $legacy = false)
 {
     $tokens = array();
-    $hasUnmatchedCategory = false;
-    $hasMetadata = false;
     foreach ($canonical as $field => $values) {
         foreach ($values as $value) {
             $tokens[] = $value . '-' . $field;
-            if ($calendarCategories) {
-                $hasMetadata = true;
-                if (!event_v4_calendar_category_is_available($calendarCategories, $field, $value)) {
-                    $hasUnmatchedCategory = true;
-                }
-            }
         }
     }
 
     if (!$compatibility) {
-        if ($hasMetadata && $hasUnmatchedCategory) {
-            $tokens[] = 'other';
-            $tokens[] = 'Other-general';
-        }
         return event_v4_unique_strings($tokens);
     }
 
@@ -469,12 +458,6 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
         }
         foreach ($values as $value) {
             $tokens[] = $value . '-' . $field;
-            if ($calendarCategories) {
-                $hasMetadata = true;
-                if (!event_v4_calendar_category_is_available($calendarCategories, $field, $value)) {
-                    $hasUnmatchedCategory = true;
-                }
-            }
         }
     }
 
@@ -489,8 +472,28 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
         }
     }
 
-    if ($hasMetadata && $hasUnmatchedCategory) {
-        $tokens[] = 'other';
+    if ($legacy && $calendarCategories) {
+        $legacyFields = array(
+            'general',
+            'offices',
+            'academic-dates',
+            'cas-departments',
+            'internal'
+        );
+        foreach ($raw as $field => $values) {
+            if (!in_array($field, $legacyFields, true)) {
+                continue;
+            }
+            foreach ($values as $value) {
+                if (!event_v4_calendar_category_is_available($calendarCategories, $value)) {
+                    $tokens[] = 'other';
+                }
+            }
+        }
+    }
+
+    // One visible Event Type checkbox should match both token conventions.
+    if (in_array('other', $tokens, true)) {
         $tokens[] = 'Other-general';
     }
 
