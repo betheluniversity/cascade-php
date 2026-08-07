@@ -129,6 +129,24 @@
         $.cookie('internal-categories', JSON.stringify(internalCategories), { expires: 365 });
     }
 
+    // The Event v4 Metadata Set calls this category "Other-general".
+    // Legacy events use the old generic "other" token. Treat those two
+    // tokens as one filter without changing the event data for every event.
+    function isCategorySelected(category, selectedCategories){
+        var normalizedCategory = String(category).toLowerCase();
+        for (var index = 0; index < selectedCategories.length; ++index){
+            var selectedCategory = String(selectedCategories[index]).toLowerCase();
+            if (selectedCategory === normalizedCategory){
+                return true;
+            }
+            if ((selectedCategory === 'other' || selectedCategory === 'other-general') &&
+                (normalizedCategory === 'other' || normalizedCategory === 'other-general')){
+                return true;
+            }
+        }
+        return false;
+    }
+
     function checkEventCategories(){
 
         var remote_user = $.cookie('remote-user');
@@ -138,7 +156,7 @@
 
         // Uncheck any that shouldn't be checked (for example, on page reload)
         $(".subject-external").each(function(){
-            if (externalCategories.indexOf(this.value) == -1){
+            if (!isCategorySelected(this.value, externalCategories)){
                 $(this).attr('checked', false);
             }else{
                 $(this).attr('checked', true);
@@ -165,7 +183,7 @@
                 if (internalCategories && internalCategories.indexOf(category) > -1 && remote_user != "null"){
                     hide = false;
                 }
-                if (externalCategories.indexOf(category) > -1){
+                if (isCategorySelected(category, externalCategories)){
                     hide = false;
                 }
             }

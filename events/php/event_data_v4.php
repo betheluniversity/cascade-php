@@ -492,11 +492,6 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
         }
     }
 
-    // One visible Event Type checkbox should match both token conventions.
-    if (in_array('other', $tokens, true)) {
-        $tokens[] = 'Other-general';
-    }
-
     return event_v4_unique_strings($tokens);
 }
 
