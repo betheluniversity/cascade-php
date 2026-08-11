@@ -6,22 +6,24 @@ use Twig\Extension\CoreExtension;
 include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/macros.php";
 require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
-error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
-$total_time_start = microtime(true);
+if (!defined('CALENDAR_REST_LIBRARY_ONLY')) {
+    error_log("Start Run\n------------------------------\n", 3, '/tmp/calendar.log');
+    $total_time_start = microtime(true);
 
-$month = null;
-$year = null;
-if( array_key_exists('month',$_GET) )
-    $month = $_GET['month'];
-if( array_key_exists('year',$_GET) )
-    $year = $_GET['year'];
-if (is_null($month) || is_null($year)){
-    $month = date('n');
-    $year = date('Y');
+    $month = null;
+    $year = null;
+    if( array_key_exists('month',$_GET) )
+        $month = $_GET['month'];
+    if( array_key_exists('year',$_GET) )
+        $year = $_GET['year'];
+    if (is_null($month) || is_null($year)){
+        $month = date('n');
+        $year = date('Y');
+    }
+    $data = autoCache("build_calendar_data", array($month, $year));
+
+    echo $data;
 }
-$data = autoCache("build_calendar_data", array($month, $year));
-
-echo $data;
 
 /**
  * @param $month
@@ -294,21 +296,46 @@ function inspect_page($xml, $categories){
         $location = "";
     }
     $page_info['location'] = $location;
+    $options = array(
+        'general',
+        'offices',
+        'academic-dates',
+        'cas-departments',
+        'undergraduate-departments',
+        'adult-undergrad-program',
+        'graduate-program',
+        'seminary-program',
+        'internal',
+        'hide-from-calendar'
+    );
+    $academicProgramFields = array(
+        'cas-departments',
+        'undergraduate-departments',
+        'adult-undergrad-program',
+        'graduate-program',
+        'seminary-program'
+    );
+
     foreach ($xml->{'dynamic-metadata'} as $md){
-        $name = $md->name;
-        $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal', 'hide-from-calendar');
+        $name = (string)$md->name;
         foreach($md->value as $value ){
+            $value = (string)$value;
             if($value == "None"){
                 continue;
             }
-            if (in_array($name,$options)){
+            if (in_array($name, $options, true)){
                 if ($name == 'hide-from-calendar'){
                     if ($value == "Yes"){
                         $page_info["hide-from-calendar"] = true;
                     }
                 } else {
-                    //Is this a calendar category?
-                    if (in_array($value, $categories)) {
+                    // The public filter intentionally shows four aggregate
+                    // academic choices instead of every department/program.
+                    // Preserve each detailed metadata value so calendar_v5.js
+                    // can match it by its field suffix.
+                    if (in_array($name, $academicProgramFields, true)) {
+                        array_push($page_info['md'], $value . '-' . $name);
+                    } elseif (in_array($value, $categories)) {
                         array_push($page_info['md'], $value . '-' . $name);
                     } else {
                         array_push($page_info['md'], 'other');
