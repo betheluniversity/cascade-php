@@ -508,7 +508,13 @@
                 var errorMessage = documentObject.createElement('p');
                 errorMessage.className = 'calendar-error';
                 errorMessage.setAttribute('role', 'alert');
-                errorMessage.textContent = 'The calendar could not be loaded. Please try again.';
+                errorMessage.appendChild(
+                    documentObject.createTextNode('The calendar could not be loaded. ')
+                );
+                var loginLink = documentObject.createElement('a');
+                loginLink.href = '/code/general-cascade/login';
+                loginLink.textContent = 'Login and try again.';
+                errorMessage.appendChild(loginLink);
                 calendarMain.replaceChildren(errorMessage);
             }
 
@@ -611,6 +617,10 @@
             restoreFilters();
             setFilterOpen(false);
             applyResponsiveView();
+            // Staging protects calendar data behind authentication. Render the
+            // guest login link before the first request so authentication does
+            // not depend on a successful calendar response.
+            updateWelcomeBar(null);
 
             if (elements.monthTitle) {
                 elements.monthTitle.setAttribute('aria-live', 'polite');
