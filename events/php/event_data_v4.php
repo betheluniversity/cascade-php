@@ -13,7 +13,9 @@ if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
     define('EVENT_V4_NORMALIZED_CACHE_VERSION', '2');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
-    define('EVENT_V4_NORMALIZED_CACHE_TTL', 300);
+    // Six hours. The cache key includes the source XML signatures, so a new
+    // events or category publish automatically builds a fresh collection.
+    define('EVENT_V4_NORMALIZED_CACHE_TTL', 21600);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_CHUNK_BYTES')) {
     define('EVENT_V4_NORMALIZED_CACHE_CHUNK_BYTES', 524288);
