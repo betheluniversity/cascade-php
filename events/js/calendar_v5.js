@@ -321,10 +321,13 @@
 
             var initialCalendarState = parseCalendarState(windowObject.location, new Date());
             var savedView = safeReadText(storage, CONFIG.viewStorageKey);
+            var hasViewControls = Boolean(elements.gridButton && elements.listButton);
             var state = {
                 abortController: null,
                 effectiveView: 'grid',
-                preferredView: initialCalendarState.mode || (savedView === 'list' ? 'list' : 'grid'),
+                preferredView: hasViewControls
+                    ? initialCalendarState.mode || (savedView === 'list' ? 'list' : 'grid')
+                    : 'grid',
                 remoteUser: null,
                 requestId: 0,
                 scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list'
@@ -401,6 +404,7 @@
                     action.className = 'event-hover__action';
                     action.style.margin = '0.75rem 0 0';
                     viewLink.href = eventUrl;
+                    viewLink.style.fontSize = 'inherit';
                     viewLink.target = '_blank';
                     viewLink.rel = 'noopener';
                     viewLink.textContent = 'View event';
@@ -876,11 +880,6 @@
                     return;
                 }
 
-                // Pointer/touch clicks open the details first. Keyboard
-                // activation keeps the event title's normal link behavior.
-                if (event.detail !== 0 && event.target.closest('a[href]')) {
-                    event.preventDefault();
-                }
                 showEventHover(heading);
             });
 
@@ -946,9 +945,11 @@
                     applyFilters();
                 }
                 if (event.key === CONFIG.viewStorageKey) {
-                    var updatedView = safeReadText(storage, CONFIG.viewStorageKey);
-                    state.preferredView = updatedView === 'list' ? 'list' : 'grid';
-                    applyResponsiveView();
+                    if (hasViewControls) {
+                        var updatedView = safeReadText(storage, CONFIG.viewStorageKey);
+                        state.preferredView = updatedView === 'list' ? 'list' : 'grid';
+                        applyResponsiveView();
+                    }
                 }
             });
 

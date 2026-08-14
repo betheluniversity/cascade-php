@@ -20,11 +20,7 @@
         {% if event.published %}
         <div class="vevent" data-event-url="{{event.path}}">
             <dt class="summary">
-                {% if event.externallink != "" %}
-                <a href="{{event.externallink}}">{{event.title}}</a>
-                {% else %}
-                <a href="//www.bethel.edu{{event.path}}">{{event.title}}</a>
-                {% endif %}
+                <a href="{{event.path}}">{{event.title}}</a>
             </dt>
             <dd>
                 {% if all_day == true %}
@@ -32,10 +28,10 @@
                 {% endif %}
                 <span class="event-description">
                     {% if event.description %}
-                        {{event.description}}</br>
+                        {{event.description}}{% if time_string %}<br/><br/>{% else %}<br/>{% endif %}
                     {% endif %}
                     {% if time_string %}
-                        {{time_string}}</br>
+                        {{time_string}}<br/>
                     {% endif %}
                     <span class="location">{{event.location}}</span>
                 </span>
