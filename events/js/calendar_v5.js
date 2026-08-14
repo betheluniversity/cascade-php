@@ -403,8 +403,11 @@
                     var viewLink = documentObject.createElement('a');
                     action.className = 'event-hover__action';
                     action.style.margin = '0.75rem 0 0';
+                    action.style.fontSize = 'inherit';
+                    action.style.lineHeight = 'inherit';
                     viewLink.href = eventUrl;
                     viewLink.style.fontSize = 'inherit';
+                    viewLink.style.lineHeight = 'inherit';
                     viewLink.target = '_blank';
                     viewLink.rel = 'noopener';
                     viewLink.textContent = 'View event';

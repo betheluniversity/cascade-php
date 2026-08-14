@@ -20,7 +20,7 @@
         {% if event.published %}
         <div class="vevent" data-event-url="{{event.path}}">
             <dt class="summary">
-                <a href="{{event.path}}">{{event.title}}</a>
+                <a href="{{event.path}}" rel="noopener" target="_blank">{{event.title}}</a>
             </dt>
             <dd>
                 {% if all_day == true %}
