@@ -58,6 +58,30 @@
         return String(value == null ? '' : value).trim().toLowerCase();
     }
 
+    function eventHoverPosition(headingRect, hoverRect, boundaryRect, viewportHeight) {
+        var boundaryWidth = boundaryRect.right - boundaryRect.left;
+        var left = headingRect.right - boundaryRect.left - 20;
+        var top = headingRect.top - boundaryRect.top;
+
+        if (left + hoverRect.width > boundaryWidth) {
+            left = headingRect.left - boundaryRect.left - hoverRect.width;
+        }
+        if (left < 0) {
+            left = 0;
+        }
+
+        if (viewportHeight
+            && headingRect.top + hoverRect.height > viewportHeight
+            && headingRect.bottom - hoverRect.height >= boundaryRect.top) {
+            top = headingRect.bottom - boundaryRect.top - hoverRect.height;
+        }
+
+        return {
+            left: left,
+            top: Math.max(0, top)
+        };
+    }
+
     function isOtherCategory(value) {
         var normalized = normalizeCategory(value);
         return normalized === 'other' || normalized === 'other-general';
@@ -305,6 +329,92 @@
                 requestId: 0,
                 scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list'
             };
+            var eventHover = documentObject.createElement('div');
+            var activeEventHeading = null;
+
+            eventHover.id = 'event-hover';
+            eventHover.hidden = true;
+            eventHover.style.display = 'none';
+            eventHover.style.zIndex = '1000';
+            eventHover.setAttribute('role', 'dialog');
+            eventHover.setAttribute('aria-label', 'Event details');
+
+            if (!calendarMain.style.position) {
+                calendarMain.style.position = 'relative';
+            }
+
+            function hideEventHover() {
+                if (activeEventHeading) {
+                    var activeLink = activeEventHeading.querySelector('a');
+                    if (activeLink) {
+                        activeLink.removeAttribute('aria-expanded');
+                    }
+                }
+
+                eventHover.hidden = true;
+                eventHover.style.display = 'none';
+                eventHover.style.visibility = '';
+                activeEventHeading = null;
+            }
+
+            function eventHeadingFromTarget(target) {
+                if (!target || target.nodeType !== 1 || typeof target.closest !== 'function') {
+                    return null;
+                }
+
+                var heading = target.closest('.vevent > dt');
+                return heading && calendarMain.contains(heading) ? heading : null;
+            }
+
+            function showEventHover(heading) {
+                if (state.effectiveView !== 'grid' || !heading || !calendarMain.contains(heading)) {
+                    return false;
+                }
+
+                var eventElement = heading.closest('.vevent');
+                var details = heading.nextElementSibling;
+                if (!eventElement || eventElement.hidden || !details || details.tagName !== 'DD') {
+                    return false;
+                }
+
+                if (activeEventHeading && activeEventHeading !== heading) {
+                    hideEventHover();
+                }
+
+                eventHover.replaceChildren();
+
+                var eventLink = heading.querySelector('a[href]');
+                if (eventLink) {
+                    var visitLink = eventLink.cloneNode(false);
+                    visitLink.textContent = 'Visit Website';
+                    eventHover.appendChild(visitLink);
+                    eventHover.appendChild(documentObject.createElement('br'));
+                    eventLink.setAttribute('aria-expanded', 'true');
+                }
+
+                Array.from(details.children).forEach(function (child) {
+                    eventHover.appendChild(child.cloneNode(true));
+                });
+
+                calendarMain.appendChild(eventHover);
+                eventHover.hidden = false;
+                eventHover.style.display = 'block';
+                eventHover.style.visibility = 'hidden';
+                eventHover.style.left = '0px';
+                eventHover.style.top = '0px';
+
+                var position = eventHoverPosition(
+                    heading.getBoundingClientRect(),
+                    eventHover.getBoundingClientRect(),
+                    calendarMain.getBoundingClientRect(),
+                    windowObject.innerHeight
+                );
+                eventHover.style.left = position.left + 'px';
+                eventHover.style.top = position.top + 'px';
+                eventHover.style.visibility = '';
+                activeEventHeading = heading;
+                return true;
+            }
 
             function filterInputs() {
                 return elements.filterForm
@@ -399,6 +509,13 @@
                     }
                 });
 
+                if (activeEventHeading) {
+                    var activeEvent = activeEventHeading.closest('.vevent');
+                    if (!activeEvent || activeEvent.hidden) {
+                        hideEventHover();
+                    }
+                }
+
                 calendarMode.dataset.visibleEvents = String(visibleCount);
                 return visibleCount;
             }
@@ -431,6 +548,10 @@
                 state.effectiveView = effectiveView;
                 calendarMode.classList.toggle('calendar-grid', effectiveView === 'grid');
                 calendarMode.classList.toggle('calendar-list', effectiveView === 'list');
+
+                if (effectiveView !== 'grid') {
+                    hideEventHover();
+                }
 
                 if (elements.gridButton) {
                     elements.gridButton.classList.toggle('active', effectiveView === 'grid');
@@ -511,6 +632,7 @@
             }
 
             function showLoadError() {
+                hideEventHover();
                 var errorMessage = documentObject.createElement('p');
                 errorMessage.className = 'calendar-error';
                 errorMessage.setAttribute('role', 'alert');
@@ -536,6 +658,7 @@
 
                 updateMonthLink(elements.previousMonth, data.previous_month_qs, 'Previous month');
                 updateMonthLink(elements.nextMonth, data.next_month_qs, 'Next month');
+                hideEventHover();
                 calendarMain.innerHTML = data.grid;
 
                 state.remoteUser = data.remote_user || null;
@@ -562,6 +685,7 @@
                 var calendarState = parseCalendarState(windowObject.location, new Date());
                 var requestId = state.requestId + 1;
                 state.requestId = requestId;
+                hideEventHover();
 
                 if (state.abortController) {
                     state.abortController.abort();
@@ -683,7 +807,78 @@
                 });
             }
 
+            calendarMain.addEventListener('mouseover', function (event) {
+                var heading = eventHeadingFromTarget(event.target);
+                if (!heading || (event.relatedTarget && heading.contains(event.relatedTarget))) {
+                    return;
+                }
+                showEventHover(heading);
+            });
+
+            calendarMain.addEventListener('mouseout', function (event) {
+                if (!activeEventHeading) {
+                    return;
+                }
+
+                var relatedTarget = event.relatedTarget;
+                var leftHeading = activeEventHeading.contains(event.target);
+                var leftHover = eventHover.contains(event.target);
+                if (!leftHeading && !leftHover) {
+                    return;
+                }
+                if (relatedTarget
+                    && (activeEventHeading.contains(relatedTarget) || eventHover.contains(relatedTarget))) {
+                    return;
+                }
+                hideEventHover();
+            });
+
+            calendarMain.addEventListener('focusin', function (event) {
+                var heading = eventHeadingFromTarget(event.target);
+                if (heading) {
+                    showEventHover(heading);
+                }
+            });
+
+            calendarMain.addEventListener('focusout', function (event) {
+                if (!activeEventHeading) {
+                    return;
+                }
+
+                var relatedTarget = event.relatedTarget;
+                if (relatedTarget
+                    && (activeEventHeading.contains(relatedTarget) || eventHover.contains(relatedTarget))) {
+                    return;
+                }
+                hideEventHover();
+            });
+
+            calendarMain.addEventListener('click', function (event) {
+                if (eventHover.contains(event.target)) {
+                    return;
+                }
+
+                var heading = eventHeadingFromTarget(event.target);
+                if (!heading || state.effectiveView !== 'grid') {
+                    hideEventHover();
+                    return;
+                }
+
+                // Pointer/touch clicks open the details first. Keyboard
+                // activation keeps the event title's normal link behavior.
+                if (event.detail !== 0 && event.target.closest('a[href]')) {
+                    event.preventDefault();
+                }
+                showEventHover(heading);
+            });
+
             documentObject.addEventListener('click', function (event) {
+                if (activeEventHeading
+                    && !activeEventHeading.contains(event.target)
+                    && !eventHover.contains(event.target)) {
+                    hideEventHover();
+                }
+
                 if (!filterIsOpen() || !elements.filterDropdown || !elements.filterToggle) {
                     return;
                 }
@@ -694,10 +889,13 @@
             });
 
             documentObject.addEventListener('keydown', function (event) {
-                if (event.key === 'Escape' && filterIsOpen()) {
-                    setFilterOpen(false);
-                    if (elements.filterToggle) {
-                        elements.filterToggle.focus();
+                if (event.key === 'Escape') {
+                    hideEventHover();
+                    if (filterIsOpen()) {
+                        setFilterOpen(false);
+                        if (elements.filterToggle) {
+                            elements.filterToggle.focus();
+                        }
                     }
                 }
             });
@@ -772,6 +970,7 @@
         calendarHash: calendarHash,
         categoryMatchesFilter: categoryMatchesFilter,
         endpointUrl: endpointUrl,
+        eventHoverPosition: eventHoverPosition,
         eventMatchesExternalFilters: eventMatchesExternalFilters,
         eventMatchesOtherFilter: eventMatchesOtherFilter,
         eventIsVisible: eventIsVisible,
