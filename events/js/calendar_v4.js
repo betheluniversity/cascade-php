@@ -299,9 +299,8 @@
                 gridButton: documentObject.querySelector('.view-mode--grid > a'),
                 listButton: documentObject.querySelector('.view-mode--list > a'),
                 filterDropdown: documentObject.querySelector('.filter-dropdown'),
-                filterDrawer: documentObject.querySelector('.calendar-filter-drawer'),
                 filterForm: documentObject.querySelector('.filter-content'),
-                filterCloseButtons: Array.from(documentObject.querySelectorAll('[data-calendar-filter-close]')),
+                filterClose: documentObject.querySelector('#filter-close'),
                 filterActions: documentObject.querySelector('.filter-content .filter-actions'),
                 welcome: documentObject.querySelector('.bu-topbar-welcome')
             };
@@ -331,9 +330,7 @@
                     : 'grid',
                 remoteUser: null,
                 requestId: 0,
-                scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list',
-                filterCloseTimer: null,
-                filterReturnFocus: null
+                scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list'
             };
             var eventHover = documentObject.createElement('div');
             var activeEventHeading = null;
@@ -555,106 +552,14 @@
                     return;
                 }
 
-                var restoreFocus = !open
-                    && (filterIsOpen() || state.filterReturnFocus !== null);
-
-                if (state.filterCloseTimer) {
-                    windowObject.clearTimeout(state.filterCloseTimer);
-                    state.filterCloseTimer = null;
-                }
-
-                if (open) {
-                    if (filterIsOpen()) {
-                        return;
-                    }
-                    state.filterReturnFocus = documentObject.activeElement;
-                    elements.filterDropdown.hidden = false;
-                    elements.filterDropdown.style.removeProperty('display');
-                    elements.filterDropdown.setAttribute('aria-hidden', 'false');
-                    if (documentObject.body) {
-                        documentObject.body.classList.add('calendar-filter-lock');
-                    }
-                    windowObject.requestAnimationFrame(function () {
-                        if (elements.filterDropdown.hidden) {
-                            return;
-                        }
-                        elements.filterDropdown.classList.add('is-open');
-                        var firstControl = elements.filterDropdown.querySelector('.calendar-filter-close');
-                        if (firstControl) {
-                            firstControl.focus();
-                        } else if (elements.filterDrawer) {
-                            elements.filterDrawer.focus();
-                        }
-                    });
-                } else {
-                    elements.filterDropdown.classList.remove('is-open');
-                    elements.filterDropdown.setAttribute('aria-hidden', 'true');
-                    if (documentObject.body) {
-                        documentObject.body.classList.remove('calendar-filter-lock');
-                    }
-
-                    if (!elements.filterDropdown.hidden) {
-                        state.filterCloseTimer = windowObject.setTimeout(function () {
-                            elements.filterDropdown.hidden = true;
-                            state.filterCloseTimer = null;
-                        }, 250);
-                    }
-
-                    var returnFocus = state.filterReturnFocus || elements.filterToggle;
-                    state.filterReturnFocus = null;
-                    if (restoreFocus && returnFocus && typeof returnFocus.focus === 'function') {
-                        returnFocus.focus();
-                    }
-                }
-
+                elements.filterDropdown.hidden = !open;
+                elements.filterDropdown.style.display = open ? 'block' : 'none';
                 elements.filterToggle.classList.toggle('active', open);
                 elements.filterToggle.setAttribute('aria-expanded', String(open));
             }
 
             function filterIsOpen() {
-                return Boolean(
-                    elements.filterDropdown
-                    && !elements.filterDropdown.hidden
-                    && elements.filterDropdown.getAttribute('aria-hidden') === 'false'
-                );
-            }
-
-            function filterFocusableElements() {
-                if (!elements.filterDropdown) {
-                    return [];
-                }
-                return Array.from(elements.filterDropdown.querySelectorAll(
-                    'a[href], button:not([disabled]):not([tabindex="-1"]), input:not([disabled]), summary, [tabindex]:not([tabindex="-1"])'
-                )).filter(function (element) {
-                    return !element.closest('[hidden]') && element.getClientRects().length > 0;
-                });
-            }
-
-            function trapFilterFocus(event) {
-                if (event.key !== 'Tab' || !filterIsOpen()) {
-                    return;
-                }
-
-                var focusable = filterFocusableElements();
-                if (!focusable.length) {
-                    event.preventDefault();
-                    if (elements.filterDrawer) {
-                        elements.filterDrawer.focus();
-                    }
-                    return;
-                }
-
-                var first = focusable[0];
-                var last = focusable[focusable.length - 1];
-                if (event.shiftKey
-                    && (documentObject.activeElement === first
-                        || !elements.filterDropdown.contains(documentObject.activeElement))) {
-                    event.preventDefault();
-                    last.focus();
-                } else if (!event.shiftKey && documentObject.activeElement === last) {
-                    event.preventDefault();
-                    first.focus();
-                }
+                return Boolean(elements.filterDropdown && !elements.filterDropdown.hidden);
             }
 
             function setEffectiveView(view) {
@@ -883,13 +788,16 @@
                 });
             }
 
-            elements.filterCloseButtons.forEach(function (closeButton) {
-                closeButton.setAttribute('type', 'button');
-                closeButton.addEventListener('click', function (event) {
+            if (elements.filterClose) {
+                elements.filterClose.setAttribute('type', 'button');
+                elements.filterClose.addEventListener('click', function (event) {
                     event.preventDefault();
                     setFilterOpen(false);
+                    if (elements.filterToggle) {
+                        elements.filterToggle.focus();
+                    }
                 });
-            });
+            }
 
             if (elements.filterForm) {
                 elements.filterForm.addEventListener('submit', function (event) {
@@ -995,11 +903,13 @@
             });
 
             documentObject.addEventListener('keydown', function (event) {
-                trapFilterFocus(event);
                 if (event.key === 'Escape') {
                     hideEventHover();
                     if (filterIsOpen()) {
                         setFilterOpen(false);
+                        if (elements.filterToggle) {
+                            elements.filterToggle.focus();
+                        }
                     }
                 }
             });
