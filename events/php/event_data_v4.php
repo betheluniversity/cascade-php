@@ -9,6 +9,15 @@
 if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
+if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '1');
+}
+if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
+    define('EVENT_V4_NORMALIZED_CACHE_TTL', 300);
+}
+if (!defined('EVENT_V4_NORMALIZED_CACHE_CHUNK_BYTES')) {
+    define('EVENT_V4_NORMALIZED_CACHE_CHUNK_BYTES', 524288);
+}
 
 function event_v4_legacy_compatibility()
 {
@@ -172,6 +181,163 @@ function event_v4_flatten_values($value, &$flat)
     }
 }
 
+function event_v4_normalized_cache_client()
+{
+    static $initialized = false;
+    static $client = null;
+
+    if ($initialized) {
+        return $client;
+    }
+    $initialized = true;
+
+    if (!class_exists('Memcached')) {
+        return null;
+    }
+
+    try {
+        $client = new Memcached;
+        $client->addServer('localhost', 11211);
+    } catch (Exception $error) {
+        $client = null;
+    }
+    return $client;
+}
+
+function event_v4_normalized_cache_file_signature($path)
+{
+    if ($path === '' || !is_file($path)) {
+        return $path . '|missing';
+    }
+
+    $realPath = realpath($path);
+    return ($realPath !== false ? $realPath : $path)
+        . '|' . (string)@filemtime($path)
+        . '|' . (string)@filesize($path);
+}
+
+function event_v4_normalized_cache_key($sourceFile, $compatibility)
+{
+    $documentRoot = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
+    $categoryFile = $documentRoot === ''
+        ? ''
+        : rtrim($documentRoot, '/') . '/_shared-content/xml/calendar-categories.xml';
+    $signature = EVENT_V4_NORMALIZED_CACHE_VERSION
+        . '|' . ($compatibility ? '1' : '0')
+        . '|' . event_v4_normalized_cache_file_signature($sourceFile)
+        . '|' . event_v4_normalized_cache_file_signature($categoryFile);
+
+    return 'event-v4-normalized:' . md5($signature);
+}
+
+/**
+ * Read the normalized event collection from month-independent Memcached
+ * chunks. A manifest is written last, so an interrupted write is a cache miss
+ * rather than a partially decoded collection.
+ */
+function event_v4_read_normalized_cache($cache, $baseKey)
+{
+    if (!$cache) {
+        return null;
+    }
+
+    $manifest = $cache->get($baseKey . ':manifest');
+    if (!is_array($manifest) || empty($manifest['chunks'])) {
+        return null;
+    }
+
+    $chunkCount = (int)$manifest['chunks'];
+    if ($chunkCount < 1 || $chunkCount > 1000) {
+        return null;
+    }
+
+    $chunkKeys = array();
+    for ($index = 0; $index < $chunkCount; $index++) {
+        $chunkKeys[] = $baseKey . ':chunk:' . $index;
+    }
+    $storedChunks = $cache->getMulti($chunkKeys);
+    if (!is_array($storedChunks)) {
+        return null;
+    }
+
+    $payload = '';
+    foreach ($chunkKeys as $chunkKey) {
+        $chunk = isset($storedChunks[$chunkKey]) ? $storedChunks[$chunkKey] : null;
+        if (!is_string($chunk)) {
+            return null;
+        }
+        $payload .= $chunk;
+    }
+
+    if (isset($manifest['bytes']) && strlen($payload) !== (int)$manifest['bytes']) {
+        return null;
+    }
+    if (isset($manifest['checksum']) && md5($payload) !== $manifest['checksum']) {
+        return null;
+    }
+
+    if (!empty($manifest['compressed'])) {
+        if (!function_exists('gzuncompress')) {
+            return null;
+        }
+        $payload = @gzuncompress($payload);
+        if (!is_string($payload)) {
+            return null;
+        }
+    }
+
+    $events = json_decode($payload, true);
+    return is_array($events) ? $events : null;
+}
+
+function event_v4_write_normalized_cache($cache, $baseKey, $events)
+{
+    if (!$cache || !is_array($events)) {
+        return false;
+    }
+
+    $payload = json_encode($events);
+    if (!is_string($payload)) {
+        return false;
+    }
+    $compressed = false;
+    if (function_exists('gzcompress')) {
+        $compressedPayload = @gzcompress($payload, 6);
+        if (is_string($compressedPayload) && strlen($compressedPayload) < strlen($payload)) {
+            $payload = $compressedPayload;
+            $compressed = true;
+        }
+    }
+
+    // Keep each value below Memcached's common 1 MB item-size limit.
+    $chunks = str_split($payload, EVENT_V4_NORMALIZED_CACHE_CHUNK_BYTES);
+    $writtenKeys = array();
+    foreach ($chunks as $index => $chunk) {
+        $key = $baseKey . ':chunk:' . $index;
+        if (!$cache->set($key, $chunk, EVENT_V4_NORMALIZED_CACHE_TTL)) {
+            foreach ($writtenKeys as $writtenKey) {
+                $cache->delete($writtenKey);
+            }
+            return false;
+        }
+        $writtenKeys[] = $key;
+    }
+
+    $manifest = array(
+        'chunks' => count($chunks),
+        'bytes' => strlen($payload),
+        'checksum' => md5($payload),
+        'compressed' => $compressed
+    );
+    if (!$cache->set($baseKey . ':manifest', $manifest, EVENT_V4_NORMALIZED_CACHE_TTL)) {
+        foreach ($writtenKeys as $writtenKey) {
+            $cache->delete($writtenKey);
+        }
+        return false;
+    }
+    return true;
+}
+
 function event_v4_get_events($sourceFile = '')
 {
     if ($sourceFile === '') {
@@ -184,15 +350,17 @@ function event_v4_get_events($sourceFile = '')
     if (isset($requestCache[$requestKey])) {
         return $requestCache[$requestKey];
     }
-    if (function_exists('autoCache')) {
-        $requestCache[$requestKey] = autoCache(
-            'event_v4_build_normalized_events_from_file',
-            array($sourceFile, $compatibility)
-        );
-        return $requestCache[$requestKey];
+
+    $cache = event_v4_normalized_cache_client();
+    $cacheKey = event_v4_normalized_cache_key($sourceFile, $compatibility);
+    $cachedEvents = event_v4_read_normalized_cache($cache, $cacheKey);
+    if (is_array($cachedEvents)) {
+        $requestCache[$requestKey] = $cachedEvents;
+        return $cachedEvents;
     }
 
     $requestCache[$requestKey] = event_v4_build_normalized_events_from_file($sourceFile, $compatibility);
+    event_v4_write_normalized_cache($cache, $cacheKey, $requestCache[$requestKey]);
     return $requestCache[$requestKey];
 }
 
