@@ -5,6 +5,7 @@
  * Event v4 pages use the shared normalized event-data layer. Legacy Event
  * pages retain the established calendar_rest.php parsing behavior.
  */
+header('Content-Type: application/json; charset=utf-8');
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/events/php/event_data_v4.php';
 define('CALENDAR_REST_LIBRARY_ONLY', true);
@@ -20,18 +21,22 @@ if ($year < 1970 || $year > 9999) {
     $year = (int)date('Y');
 }
 
-$cachedData = autoCache(
-    'build_calendar_data_v5',
+$data = autoCache(
+    'build_calendar_payload_v5',
     array($month, $year)
 );
-$data = json_decode($cachedData, true);
+// Accept the previous cached string shape during a rolling deployment, but
+// keep the v5 cache payload as an array so the HTTP response is encoded once.
+if (is_string($data)) {
+    $data = json_decode($data, true);
+}
 if (!is_array($data)) {
     $data = array();
 }
 $data['remote_user'] = isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : null;
 echo json_encode($data);
 
-function build_calendar_data_v5($month, $year)
+function build_calendar_payload_v5($month, $year)
 {
     $next = calendar_v5_adjacent_month($month, $year, 1);
     $previous = calendar_v5_adjacent_month($month, $year, -1);
@@ -46,7 +51,7 @@ function build_calendar_data_v5($month, $year)
         'month_title' => calendar_v5_month_name($month) . ' ' . $year
     );
 
-    return json_encode($data);
+    return $data;
 }
 
 function calendar_v5_adjacent_month($month, $year, $direction)
