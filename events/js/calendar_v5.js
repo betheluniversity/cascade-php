@@ -335,6 +335,8 @@
             eventHover.id = 'event-hover';
             eventHover.hidden = true;
             eventHover.style.display = 'none';
+            eventHover.style.fontSize = '0.75rem';
+            eventHover.style.lineHeight = '1.4';
             eventHover.style.zIndex = '1000';
             eventHover.setAttribute('role', 'dialog');
             eventHover.setAttribute('aria-label', 'Event details');
@@ -383,18 +385,28 @@
 
                 eventHover.replaceChildren();
 
-                var eventLink = heading.querySelector('a[href]');
-                if (eventLink) {
-                    var visitLink = eventLink.cloneNode(false);
-                    visitLink.textContent = 'Visit Website';
-                    eventHover.appendChild(visitLink);
-                    eventHover.appendChild(documentObject.createElement('br'));
-                    eventLink.setAttribute('aria-expanded', 'true');
+                var titleLink = heading.querySelector('a[href]');
+                if (titleLink) {
+                    titleLink.setAttribute('aria-expanded', 'true');
                 }
 
                 Array.from(details.children).forEach(function (child) {
                     eventHover.appendChild(child.cloneNode(true));
                 });
+
+                var eventUrl = eventElement.getAttribute('data-event-url');
+                if (eventUrl) {
+                    var action = documentObject.createElement('p');
+                    var viewLink = documentObject.createElement('a');
+                    action.className = 'event-hover__action';
+                    action.style.margin = '0.75rem 0 0';
+                    viewLink.href = eventUrl;
+                    viewLink.target = '_blank';
+                    viewLink.rel = 'noopener';
+                    viewLink.textContent = 'View event';
+                    action.appendChild(viewLink);
+                    eventHover.appendChild(action);
+                }
 
                 calendarMain.appendChild(eventHover);
                 eventHover.hidden = false;

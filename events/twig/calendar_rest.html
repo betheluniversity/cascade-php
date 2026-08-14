@@ -18,7 +18,7 @@
         {% set outside_of_minnesota = event.specific_outside_of_minnesota %}
         {% set time_zone = event.specific_time_zone %}
         {% if event.published %}
-        <div class="vevent">
+        <div class="vevent" data-event-url="{{event.path}}">
             <dt class="summary">
                 {% if event.externallink != "" %}
                 <a href="{{event.externallink}}">{{event.title}}</a>
