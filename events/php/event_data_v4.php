@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '1');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '2');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     define('EVENT_V4_NORMALIZED_CACHE_TTL', 300);
@@ -868,12 +868,14 @@ function event_v4_location($data, $definition)
         }
     }
 
-    $mode = event_v4_key((string)$data->location);
-    if ($mode === 'oncampus') {
-        $other = trim((string)$data->{'other-on-campus'});
-        $location = $other !== '' ? $other : trim((string)$data->{'on-campus-location'});
+    $other = trim((string)$data->{'other-on-campus'});
+    if ($other !== '') {
+        $location = $other;
     } else {
-        $location = trim((string)$data->{'off-campus-location'});
+        $mode = event_v4_key((string)$data->location);
+        $location = $mode === 'oncampus'
+            ? trim((string)$data->{'on-campus-location'})
+            : trim((string)$data->{'off-campus-location'});
     }
     return strcasecmp($location, 'none') === 0 ? '' : $location;
 }

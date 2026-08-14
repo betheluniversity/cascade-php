@@ -331,7 +331,7 @@ function inspect_page($xml, $categories){
                 } else {
                     // The public filter intentionally shows four aggregate
                     // academic choices instead of every department/program.
-                    // Preserve each detailed metadata value so calendar_v5.js
+                    // Preserve each detailed metadata value so calendar_v4.js
                     // can match it by its field suffix.
                     if (in_array($name, $academicProgramFields, true)) {
                         array_push($page_info['md'], $value . '-' . $name);

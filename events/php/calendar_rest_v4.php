@@ -1,7 +1,10 @@
 <?php
 /**
- * V4-compatible calendar endpoint used by the v4 calendar client.
+ * V4 calendar endpoint.
+ *
+ * Event v4 and legacy Event pages use the shared normalized event-data layer.
  */
+header('Content-Type: application/json; charset=utf-8');
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/events/php/event_data_v4.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/code/vendor/autoload.php';
@@ -15,18 +18,22 @@ if ($year < 1970 || $year > 9999) {
     $year = (int)date('Y');
 }
 
-$cachedData = autoCache(
-    'build_calendar_data_v4',
+$data = autoCache(
+    'build_calendar_payload_v4',
     array($month, $year)
 );
-$data = json_decode($cachedData, true);
+// Accept the previous cached string shape during a rolling deployment, but
+// keep the v4 cache payload as an array so the HTTP response is encoded once.
+if (is_string($data)) {
+    $data = json_decode($data, true);
+}
 if (!is_array($data)) {
     $data = array();
 }
 $data['remote_user'] = isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : null;
 echo json_encode($data);
 
-function build_calendar_data_v4($month, $year)
+function build_calendar_payload_v4($month, $year)
 {
     $next = calendar_v4_adjacent_month($month, $year, 1);
     $previous = calendar_v4_adjacent_month($month, $year, -1);
@@ -41,7 +48,7 @@ function build_calendar_data_v4($month, $year)
         'month_title' => calendar_v4_month_name($month) . ' ' . $year
     );
 
-    return json_encode($data);
+    return $data;
 }
 
 function calendar_v4_adjacent_month($month, $year, $direction)
@@ -61,7 +68,15 @@ function draw_calendar_v4($month, $year)
 {
     $monthStart = mktime(0, 0, 0, $month, 1, $year);
     $monthEnd = strtotime('+1 month', $monthStart) - 1;
-    $eventsByDate = event_v4_calendar_date_map(event_v4_get_events(), $monthStart, $monthEnd);
+    $calendarEvents = array();
+    foreach (event_v4_get_events() as $event) {
+        // Match the populations used by the previous hybrid endpoint: the old
+        // parser selected Event pages and the normalized path selected Event v4.
+        if (in_array($event['definition'], array('Event', 'Event v4'), true)) {
+            $calendarEvents[] = $event;
+        }
+    }
+    $eventsByDate = event_v4_calendar_date_map($calendarEvents, $monthStart, $monthEnd);
     $classes = array(
         1 => 'sun',
         2 => 'mon',
