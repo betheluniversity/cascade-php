@@ -387,7 +387,13 @@
                         state.remoteUser
                     );
 
+                    // The legacy calendar stylesheet sets list events to
+                    // `display: flex`, which overrides the browser's default
+                    // `[hidden] { display: none }` rule. Keep the semantic
+                    // attribute and explicitly set display so filtering works
+                    // in both grid and list views.
                     eventElement.hidden = !visible;
+                    eventElement.style.display = visible ? '' : 'none';
                     if (visible) {
                         visibleCount += 1;
                     }
