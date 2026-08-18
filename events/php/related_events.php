@@ -209,7 +209,7 @@ function related_events_candidates(
 function related_events_is_event_page($page)
 {
     $definition = trim((string)$page->{'system-data-structure'}['definition-path']);
-    return in_array($definition, array('Event', 'Event v2', 'Event v4'), true);
+    return in_array($definition, array('Event', 'Event v4'), true);
 }
 
 function related_events_is_hidden($page)
@@ -410,25 +410,6 @@ function related_events_location($data)
         }
 
         return strtolower($location) === 'none' ? '' : $location;
-    }
-
-    if ($definition === 'Event v2') {
-        $type = strtolower(trim((string)$data->{'location-name'}));
-
-        if ($type === 'on_campus_location') {
-            return trim((string)$data->{'on-campus-location'});
-        }
-        if ($type === 'other_on_campus') {
-            return trim((string)$data->{'other-on-campus'});
-        }
-        if ($type === 'off_campus_location') {
-            return trim((string)$data->{'off-campus-location'}->{'off-campus-name'});
-        }
-        if ($type === 'online') {
-            return 'Online';
-        }
-
-        return '';
     }
 
     $location = $data->location;

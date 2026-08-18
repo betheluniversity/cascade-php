@@ -1,8 +1,8 @@
 <?php
 /**
- * Shared v4 event data and v1/v2 compatibility layer.
+ * Shared v4 event data and legacy compatibility layer.
  *
- * Set this one flag to false after every legacy Event and Event v2 page has
+ * Set this one flag to false after every legacy Event page has
  * been migrated. Legacy pages and legacy calendar aliases will then be
  * excluded automatically.
  */
@@ -477,7 +477,7 @@ function event_v4_normalize_page($page, $compatibility, $calendarCategories = nu
 {
     $data = $page->{'system-data-structure'};
     $definition = basename(trim((string)$data['definition-path']));
-    if (!in_array($definition, array('Event', 'Event v2', 'Event v4'), true)) {
+    if (!in_array($definition, array('Event', 'Event v4'), true)) {
         return null;
     }
 
@@ -848,7 +848,7 @@ function event_v4_location($data, $definition)
             return $label !== '' ? $label : 'On Campus';
         }
         if ($mode === 'offcampus') {
-            return event_v4_off_campus_location($location->offCampusLocation, false);
+            return event_v4_off_campus_location($location->offCampusLocation);
         }
         if ($mode === 'online') {
             return 'Online';
@@ -856,23 +856,10 @@ function event_v4_location($data, $definition)
         return '';
     }
 
-    if ($definition === 'Event v2') {
-        $mode = event_v4_key((string)$data->{'location-name'});
-        if ($mode === 'oncampuslocation') {
-            $other = trim((string)$data->{'other-on-campus'});
-            return $other !== '' ? $other : trim((string)$data->{'on-campus-location'});
-        }
-        if ($mode === 'offcampuslocation') {
-            return event_v4_off_campus_location($data->{'off-campus-location'}, true);
-        }
-        if ($mode === 'onlineurl') {
-            return 'Online';
-        }
-    }
-
-    $other = trim((string)$data->{'other-on-campus'});
-    if ($other !== '') {
-        $location = $other;
+    $mode = event_v4_key((string)$data->location);
+    if ($mode === 'oncampus') {
+        $other = trim((string)$data->{'other-on-campus'});
+        $location = $other !== '' ? $other : trim((string)$data->{'on-campus-location'});
     } else {
         $mode = event_v4_key((string)$data->location);
         $location = $mode === 'oncampus'
@@ -882,16 +869,16 @@ function event_v4_location($data, $definition)
     return strcasecmp($location, 'none') === 0 ? '' : $location;
 }
 
-function event_v4_off_campus_location($node, $legacyV2)
+function event_v4_off_campus_location($node)
 {
     if (!is_object($node)) {
         return '';
     }
-    $name = $legacyV2 ? 'off-campus-name' : 'name';
-    $address = $legacyV2 ? 'off-campus-address' : 'address';
-    $city = $legacyV2 ? 'off-campus-city' : 'city';
-    $state = $legacyV2 ? 'off-campus-state' : 'state';
-    $zip = $legacyV2 ? 'off-campus-zip' : 'zip';
+    $name = 'name';
+    $address = 'address';
+    $city = 'city';
+    $state = 'state';
+    $zip = 'zip';
 
     $label = trim((string)$node->{$name});
     if ($label !== '') {
