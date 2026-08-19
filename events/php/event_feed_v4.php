@@ -32,8 +32,7 @@ function create_event_feed_v4_logic($categories)
             continue;
         }
         foreach ($event['dates'] as $date) {
-            $occurrence = event_feed_v4_occurrence($event, $date);
-            if ($occurrence !== null) {
+            foreach (event_feed_v4_occurrences($event, $date) as $occurrence) {
                 $events[] = $occurrence;
             }
         }
@@ -52,6 +51,39 @@ function create_event_feed_v4_logic($categories)
     }
 
     return array(array(), $eventHtml, count($eventHtml));
+}
+
+function event_feed_v4_occurrences($event, $date)
+{
+    $occurrences = array();
+    $start = (int)$date['start-date'] / 1000;
+    $end = (int)$date['end-date'] / 1000;
+    if (!$start || $end < $start) {
+        $end = $start;
+    }
+
+    $dayStart = $start;
+    while ($dayStart <= $end) {
+        $dailyDate = $date;
+        $dailyDate['start-date'] = $dayStart * 1000;
+        $occurrence = event_feed_v4_occurrence($event, $dailyDate);
+        if ($occurrence !== null) {
+            $occurrences[] = $occurrence;
+        }
+
+        // Match the legacy feed: ranges lasting at least 24 hours produce
+        // one item per day, while shorter overnight events remain one item.
+        if ($end - $start < 86400) {
+            break;
+        }
+        $nextDayStart = strtotime(date('Y-m-d H:i:s', $dayStart) . ' +1 day');
+        if ($nextDayStart <= $dayStart) {
+            break;
+        }
+        $dayStart = $nextDayStart;
+    }
+
+    return $occurrences;
 }
 
 function event_feed_v4_occurrence($event, $date)
