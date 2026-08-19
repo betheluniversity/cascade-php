@@ -145,9 +145,10 @@ function inspect_page($xml, $categories){
     // Get the location
     $loc = $ds->location;
     if($loc == 'On campus' || $loc == "On Campus"){
-
         $location = $loc = $ds->{'on-campus-location'};
-    }else{
+    }else if($loc == 'Online') {
+        $location = 'Online';
+    }else {
         $location = $loc = $ds->{'off-campus-location'};
     }
     $other = $ds->{'other-on-campus'};
