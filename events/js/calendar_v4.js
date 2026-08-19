@@ -629,27 +629,6 @@
                 link.setAttribute('aria-label', label);
             }
 
-            function highlightSelectedDay(calendarState) {
-                calendarMain.querySelectorAll('.event.is-selected-day').forEach(function (dayElement) {
-                    dayElement.classList.remove('is-selected-day');
-                    dayElement.style.backgroundColor = '';
-                });
-
-                if (!calendarState.day) {
-                    return null;
-                }
-
-                var selectedSpan = Array.from(calendarMain.querySelectorAll('.event > span[name]')).find(function (span) {
-                    return Number.parseInt(span.getAttribute('name'), 10) === calendarState.day;
-                });
-                var selectedDay = selectedSpan ? selectedSpan.closest('.event') : null;
-                if (selectedDay) {
-                    selectedDay.classList.add('is-selected-day');
-                    selectedDay.style.backgroundColor = '#e9e9e9';
-                }
-                return selectedDay;
-            }
-
             function highlightCurrentDay(calendarState) {
                 calendarMain.querySelectorAll('.event.is-current-day').forEach(function (dayElement) {
                     dayElement.classList.remove('is-current-day');
@@ -708,11 +687,10 @@
                 applyFilters();
                 applyResponsiveView();
 
-                var selectedDay = highlightSelectedDay(calendarState);
-                highlightCurrentDay(calendarState);
-                if (selectedDay && state.scrollAfterLoad && state.effectiveView === 'list') {
+                var currentDay = highlightCurrentDay(calendarState);
+                if (currentDay && state.scrollAfterLoad && state.effectiveView === 'list') {
                     windowObject.requestAnimationFrame(function () {
-                        selectedDay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        currentDay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     });
                 }
                 state.scrollAfterLoad = false;
