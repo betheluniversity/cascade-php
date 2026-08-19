@@ -650,6 +650,28 @@
                 return selectedDay;
             }
 
+            function highlightCurrentDay(calendarState) {
+                calendarMain.querySelectorAll('.event.is-current-day').forEach(function (dayElement) {
+                    dayElement.classList.remove('is-current-day');
+                });
+
+                var today = new Date();
+                if (calendarState.month !== today.getMonth() + 1
+                    || calendarState.year !== today.getFullYear()) {
+                    return null;
+                }
+
+                var currentSpan = Array.from(calendarMain.querySelectorAll('.event > span[name]')).find(function (span) {
+                    return Number.parseInt(span.getAttribute('name'), 10) === today.getDate();
+                });
+                var currentDay = currentSpan ? currentSpan.closest('.event') : null;
+                if (currentDay) {
+                    currentDay.classList.add('is-current-day');
+                    currentDay.setAttribute('aria-current', 'date');
+                }
+                return currentDay;
+            }
+
             function showLoadError() {
                 hideEventHover();
                 var errorMessage = documentObject.createElement('p');
@@ -687,6 +709,7 @@
                 applyResponsiveView();
 
                 var selectedDay = highlightSelectedDay(calendarState);
+                highlightCurrentDay(calendarState);
                 if (selectedDay && state.scrollAfterLoad && state.effectiveView === 'list') {
                     windowObject.requestAnimationFrame(function () {
                         selectedDay.scrollIntoView({ behavior: 'smooth', block: 'start' });
