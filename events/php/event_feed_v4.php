@@ -28,7 +28,9 @@ function create_event_feed_v4_logic($categories)
     $filters = event_v4_normalize_filter_values($categories);
     $events = array();
     foreach ($allEvents as $event) {
-        if ($event['published'] === '' || !event_v4_event_matches_filters($event, $filters)) {
+        if ($event['published'] === ''
+            || event_feed_v4_event_is_other_only($event)
+            || !event_v4_event_matches_filters($event, $filters)) {
             continue;
         }
         foreach ($event['dates'] as $date) {
@@ -51,6 +53,30 @@ function create_event_feed_v4_logic($categories)
     }
 
     return array(array(), $eventHtml, count($eventHtml));
+}
+
+function event_feed_v4_event_is_other_only($event)
+{
+    $hasOtherEventType = false;
+    $hasAdditionalSelection = false;
+
+    foreach ($event['metadata'] as $field => $values) {
+        foreach ($values as $value) {
+            $value = trim((string)$value);
+            if ($value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0) {
+                continue;
+            }
+
+            if ($field === 'general' && strcasecmp($value, 'Other') === 0) {
+                $hasOtherEventType = true;
+                continue;
+            }
+
+            $hasAdditionalSelection = true;
+        }
+    }
+
+    return $hasOtherEventType && !$hasAdditionalSelection;
 }
 
 function event_feed_v4_occurrences($event, $date)
