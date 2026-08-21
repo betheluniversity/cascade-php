@@ -1,0 +1,18 @@
+<div class="events__item">
+    <p class="events__date-tile">
+        {{ month }}
+        <span>{{ day }}</span>
+        {{ year }}
+    </p>
+    <div class="events__content">
+        <p class="events__headline"><a href="{{ link }}">{{ title }}</a></p>
+
+        {% if time or location %}
+            <p class="events__location">{{ time }}{% if time and location %} {% endif %}{{ location }}</p>
+        {% endif %}
+
+        {% if description %}
+            <p class="events__description">{{ description }}</p>
+        {% endif %}
+    </div>
+</div>

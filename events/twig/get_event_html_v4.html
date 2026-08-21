@@ -1,6 +1,6 @@
-<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">
+<div class="events__item">
     {% if start != "" %}
-        <p class="events__date-tile" itemprop="startDate">
+        <p class="events__date-tile">
             {{ start|date("F")|get_month_shorthand_name }}
             <span>{{ start|date("j") }}</span>
             {{ start|date("Y") }}
@@ -9,7 +9,7 @@
 
     <div class="events__content">
         <p class="events__headline">
-            <a href="{{ event|convert_path_to_link }}"><span itemprop="name">{{ event.title }}</span></a>
+            <a href="{{ event|convert_path_to_link }}">{{ event.title }}</a>
         </p>
 
         {% set event_time = event.date|format_fancy_event_date %}
@@ -20,13 +20,13 @@
                 {% if event_timezone %} {{ event_timezone }}{% endif %}
                 {% if event.location %}
                     {% if event_time or event_timezone %} | {% endif %}
-                    <span itemprop="location">{{ event.location }}</span>
+                    {{ event.location }}
                 {% endif %}
             </p>
         {% endif %}
 
         {% if event.description %}
-            <p class="events__description"><span itemprop="description">{{ event.description }}</span></p>
+            <p class="events__description">{{ event.description }}</p>
         {% endif %}
     </div>
 </div>

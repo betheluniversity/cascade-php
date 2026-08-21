@@ -367,31 +367,17 @@ function related_events_render($event)
         $link = 'https://www.bethel.edu' . $event['path'];
     }
 
-    $html = '<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">';
-    $html .= '<p class="events__date-tile" itemprop="startDate">';
-    $html .= strtoupper(date('M', $displayDate));
-    $html .= '<span>' . date('j', $displayDate) . '</span>';
-    $html .= date('Y', $displayDate) . '</p>';
-    $html .= '<div class="events__content">';
-    $html .= '<p class="events__headline"><a href="' . related_events_escape($link) . '">';
-    $html .= '<span itemprop="name">' . related_events_escape($title) . '</span></a></p>';
-
-    if ($time !== '' || $location !== '') {
-        $html .= '<p class="events__location">' . related_events_escape($time);
-        if ($location !== '') {
-            $html .= ($time === '' ? '' : ' ') . '<span itemprop="location">';
-            $html .= related_events_escape($location) . '</span>';
-        }
-        $html .= '</p>';
-    }
-
-    if ($description !== '') {
-        $html .= '<p class="events__description"><span itemprop="description">';
-        $html .= related_events_escape($description) . '</span></p>';
-    }
-    $html .= '</div></div>';
-
-    return $html;
+    $twig = makeTwigEnviron('/code/events/twig');
+    return $twig->render('related_event_html.html', array(
+        'title' => $title,
+        'link' => $link,
+        'month' => strtoupper(date('M', $displayDate)),
+        'day' => date('j', $displayDate),
+        'year' => date('Y', $displayDate),
+        'time' => $time,
+        'location' => $location,
+        'description' => $description
+    ));
 }
 
 function related_events_location($data)

@@ -1,14 +1,6 @@
-{% if title == "Seminary San Diego InMinistry Fall Intensives" %}
-    <pre>
-        {{event.title}}
-        {{start}}
-        "  :   "
-        {{end}}
-    </pre>
-{% endif %}
 
-<div class="events__item" itemscope="itemscope" itemtype="https://schema.org/Event">
-    <p class="events__date-tile" itemprop="startDate">
+<div class="events__item">
+    <p class="events__date-tile">
 
         {% if start != "" %}
         <!--start and end date are on the same day-->
@@ -50,12 +42,12 @@
             <div class="events__content">
         {% endif %}
         <!--Title + Link-->
-                <p class="events__headline"><a href="{{event|convert_path_to_link}}"><span itemprop="name">{{event.title}}</span></a></p>
+                <p class="events__headline"><a href="{{event|convert_path_to_link}}">{{event.title}}</a></p>
                     <!--Time + Location-->
                     {% if event.date %}
                         {% set print_date = event.date|format_fancy_event_date %}
                         {% if event.location != "" %}
-                            <p class="events__location">{{print_date}} {{event.date|get_timezone_shorthand}} <span itemprop="location">{{event.location}}</span></p>
+                            <p class="events__location">{{print_date}} {{event.date|get_timezone_shorthand}} {{event.location}}</p>
                         {% else %}
                             <p class="events__location">{{print_date}} {{event.date|get_timezone_shorthand}}</p>
                         {% endif %}
@@ -66,6 +58,6 @@
                     {% endif %}
 
          <!--Description-->
-                <p class="events__description"><span itemprop="description">{{event.description}}</span></p>
+                <p class="events__description">{{event.description}}</p>
             </div>
 </div>
