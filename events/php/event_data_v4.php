@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '2');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '3');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -72,6 +72,15 @@ function event_v4_translation_rules()
             'Diversity, Equity, and Inclusion' => array(array('offices', 'Inclusive Excellence')),
             'Human Resources' => array(array('offices', 'People and Culture')),
             'Parents' => array(array('offices', 'Parent and Family Relations'))
+        ),
+        'internal' => array(
+            'BSSP Student' => array(array('internal', 'Students')),
+            'CAPS Students' => array(array('internal', 'Students')),
+            'CAS Students' => array(array('internal', 'Students')),
+            'GS Students' => array(array('internal', 'Students')),
+            'St. Paul Employees' => array(array('internal', 'Faculty/staff')),
+            'St. Paul Faculty' => array(array('internal', 'Faculty/staff')),
+            'St. Paul Students' => array(array('internal', 'Students'))
         ),
         'cas-departments' => array(
             'Art & Design' => array(array('undergraduate-departments', 'Art and Design')),
