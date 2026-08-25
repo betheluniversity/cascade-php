@@ -156,6 +156,12 @@
         });
     }
 
+    function eventHasInternalCategory(categories) {
+        return categories.some(function (category) {
+            return /-internal$/i.test(normalizeCategory(category));
+        });
+    }
+
     function eventIsVisible(
         categories,
         selectedExternal,
@@ -165,7 +171,8 @@
     ) {
         return eventMatchesExternalFilters(categories, selectedExternal, eventTypeFilters)
             || (Boolean(remoteUser)
-                && eventMatchesInternalFilters(categories, selectedInternal));
+                && (eventHasInternalCategory(categories)
+                    || eventMatchesInternalFilters(categories, selectedInternal)));
     }
 
     function validInteger(value, minimum, maximum) {
