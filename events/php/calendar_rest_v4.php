@@ -7,6 +7,7 @@
 header('Content-Type: application/json; charset=utf-8');
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/events/php/event_data_v4.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/msal.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/code/vendor/autoload.php';
 
 $month = isset($_GET['month']) ? (int)$_GET['month'] : (int)date('n');
@@ -30,8 +31,21 @@ if (is_string($data)) {
 if (!is_array($data)) {
     $data = array();
 }
-$data['remote_user'] = isset($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] : null;
+$data['remote_user'] = calendar_v4_authenticated_user();
 echo json_encode($data);
+
+function calendar_v4_authenticated_user()
+{
+    if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] !== '') {
+        return $_SERVER['REMOTE_USER'];
+    }
+
+    if (phpMSAL::checkAuthentication()) {
+        return phpMSAL::getUsername();
+    }
+
+    return null;
+}
 
 function build_calendar_payload_v4($month, $year)
 {
