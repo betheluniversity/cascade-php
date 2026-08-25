@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '5');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '6');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -79,8 +79,8 @@ function event_v4_translation_rules()
             'CAS Students' => array(array('internal', 'Students')),
             'GS Students' => array(array('internal', 'Students')),
             'Information Commons Workshops' => array(),
-            'St. Paul Employees' => array(array('internal', 'Faculty/staff')),
-            'St. Paul Faculty' => array(array('internal', 'Faculty/staff')),
+            'St. Paul Employees' => array(array('internal', 'staff')),
+            'St. Paul Faculty' => array(array('internal', 'staff')),
             'St. Paul Students' => array(array('internal', 'Students'))
         ),
         'cas-departments' => array(
