@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '3');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '4');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -570,7 +570,7 @@ function event_v4_normalize_metadata($page, $legacy, $compatibility, $calendarCa
                 continue;
             }
 
-            $pairs = $legacy
+            $pairs = ($legacy || $field === 'internal')
                 ? event_v4_translate_legacy_pair($field, $value)
                 : array(array(event_v4_canonical_field($field), $value));
 
