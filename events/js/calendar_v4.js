@@ -169,10 +169,12 @@
         selectedInternal,
         remoteUser
     ) {
-        return eventMatchesExternalFilters(categories, selectedExternal, eventTypeFilters)
-            || (Boolean(remoteUser)
-                && (eventHasInternalCategory(categories)
-                    || eventMatchesInternalFilters(categories, selectedInternal)));
+        if (eventHasInternalCategory(categories)) {
+            return Boolean(remoteUser)
+                && eventMatchesInternalFilters(categories, selectedInternal);
+        }
+
+        return eventMatchesExternalFilters(categories, selectedExternal, eventTypeFilters);
     }
 
     function validInteger(value, minimum, maximum) {
