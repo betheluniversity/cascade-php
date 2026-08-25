@@ -194,6 +194,7 @@ function inspect_event_page($xml, $categories){
         "md" => array(),
         "html" => "",
         "display-on-feed" => false,
+        "hide-from-calendar" => false,
         "external-link" => "",
         "image" => "",
         "xml" => $xml,
@@ -202,6 +203,18 @@ function inspect_event_page($xml, $categories){
         return "";
 
     $ds = $xml->{'system-data-structure'};
+
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        if (trim((string)$metadata->name) !== 'hide-from-calendar') {
+            continue;
+        }
+        foreach ($metadata->value as $value) {
+            if (strcasecmp(trim((string)$value), 'Yes') === 0) {
+                $page_info['hide-from-calendar'] = true;
+                break 2;
+            }
+        }
+    }
 
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
     $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
@@ -250,7 +263,7 @@ function inspect_event_page($xml, $categories){
         global $AddFeaturedEvents;
         // Check if it is a featured Event.
         // If so, get the featured event html.
-        if ( $AddFeaturedEvents == "Yes"){
+        if ( $AddFeaturedEvents == "Yes" && !$page_info['hide-from-calendar']){
             foreach( $featuredEventOptions as $key=>$featuredEvent)
             {
                 // Check if the url of the event = the url of the desired feature event.
@@ -272,6 +285,10 @@ function inspect_event_page($xml, $categories){
 function display_on_feed_events($page_info){
     global $StartDate;
     global $EndDate;
+
+    if (!empty($page_info['hide-from-calendar'])) {
+        return false;
+    }
 
     //Check if the event falls between the given range.
     if( $StartDate != "" && $EndDate != "" ){
@@ -495,5 +512,4 @@ function get_timezone_shorthand( $date ){
 }
 
 ?>
-
 

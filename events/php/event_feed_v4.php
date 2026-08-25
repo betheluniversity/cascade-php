@@ -29,6 +29,7 @@ function create_event_feed_v4_logic($categories)
     $events = array();
     foreach ($allEvents as $event) {
         if ($event['published'] === ''
+            || $event['hide-from-calendar']
             || event_feed_v4_event_is_other_only($event)
             || !event_v4_event_matches_filters($event, $filters)) {
             continue;
