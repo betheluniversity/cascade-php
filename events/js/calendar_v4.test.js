@@ -127,10 +127,10 @@ test('external filtering combines exact, aggregate, and Other behavior', functio
     );
 });
 
-test('internal metadata does not veto a matching public filter', function () {
+test('internal metadata requires an authenticated matching internal filter', function () {
     var categories = [
         'Physician Assistant (M.S.)-graduate-program',
-        'GS Students-internal'
+        'Students-internal'
     ];
     var eventTypes = ['Athletics-general', 'Other-general'];
 
@@ -140,26 +140,20 @@ test('internal metadata does not veto a matching public filter', function () {
             ['Graduate-academic-dates'],
             eventTypes,
             [],
-            null
-        ),
-        true
-    );
-    assert.equal(
-        calendar.eventIsVisible(
-            ['GS Students-internal'],
-            [],
-            eventTypes,
-            ['GS Students-internal'],
-            null
+            'mip79358'
         ),
         false
     );
     assert.equal(
+        calendar.eventIsVisible(['Students-internal'], [], eventTypes, ['Students-internal'], null),
+        false
+    );
+    assert.equal(
         calendar.eventIsVisible(
-            ['GS Students-internal'],
+            ['Students-internal'],
             [],
             eventTypes,
-            ['GS Students-internal'],
+            ['Students-internal'],
             'mip79358'
         ),
         true

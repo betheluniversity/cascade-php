@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '4');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '5');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -78,6 +78,7 @@ function event_v4_translation_rules()
             'CAPS Students' => array(array('internal', 'Students')),
             'CAS Students' => array(array('internal', 'Students')),
             'GS Students' => array(array('internal', 'Students')),
+            'Information Commons Workshops' => array(),
             'St. Paul Employees' => array(array('internal', 'Faculty/staff')),
             'St. Paul Faculty' => array(array('internal', 'Faculty/staff')),
             'St. Paul Students' => array(array('internal', 'Students'))
@@ -623,7 +624,12 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
     $tokens = array();
     foreach ($canonical as $field => $values) {
         foreach ($values as $value) {
-            $tokens[] = $value . '-' . $field;
+            $pairs = $field === 'internal'
+                ? event_v4_translate_legacy_pair($field, $value)
+                : array(array($field, $value));
+            foreach ($pairs as $pair) {
+                $tokens[] = $pair[1] . '-' . $pair[0];
+            }
         }
     }
 
@@ -636,7 +642,12 @@ function event_v4_calendar_tokens($canonical, $raw, $compatibility, $calendarCat
             continue;
         }
         foreach ($values as $value) {
-            $tokens[] = $value . '-' . $field;
+            $pairs = $field === 'internal'
+                ? event_v4_translate_legacy_pair($field, $value)
+                : array(array($field, $value));
+            foreach ($pairs as $pair) {
+                $tokens[] = $pair[1] . '-' . $pair[0];
+            }
         }
     }
 
