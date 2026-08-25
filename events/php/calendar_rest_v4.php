@@ -19,9 +19,11 @@ if ($year < 1970 || $year > 9999) {
     $year = (int)date('Y');
 }
 
+$access = calendar_v4_internal_access();
+
 $data = autoCache(
     'build_calendar_payload_v4',
-    array($month, $year)
+    array($month, $year, $access['level'])
 );
 // Accept the previous cached string shape during a rolling deployment, but
 // keep the v4 cache payload as an array so the HTTP response is encoded once.
@@ -32,7 +34,39 @@ if (!is_array($data)) {
     $data = array();
 }
 $data['remote_user'] = calendar_v4_authenticated_user();
+$data['internal_access'] = $access['level'];
 echo json_encode($data);
+
+function calendar_v4_internal_access()
+{
+    if (!phpMSAL::checkAuthentication()) {
+        return array('level' => 'guest');
+    }
+
+    $groups = phpMSAL::getUserGroups();
+    $groups = is_array($groups) ? $groups : array();
+    $isStaffOrFaculty = false;
+    $isStudent = false;
+
+    foreach ($groups as $group) {
+        $group = strtoupper(trim((string)$group));
+        if (strpos($group, 'STAFF') !== false || strpos($group, 'FACULTY') !== false) {
+            $isStaffOrFaculty = true;
+        }
+        if (strpos($group, 'STUDENT') !== false) {
+            $isStudent = true;
+        }
+    }
+
+    if ($isStaffOrFaculty) {
+        return array('level' => 'staff');
+    }
+    if ($isStudent) {
+        return array('level' => 'student');
+    }
+
+    return array('level' => 'guest');
+}
 
 function calendar_v4_authenticated_user()
 {
@@ -47,7 +81,7 @@ function calendar_v4_authenticated_user()
     return null;
 }
 
-function build_calendar_payload_v4($month, $year)
+function build_calendar_payload_v4($month, $year, $internalAccess = 'guest')
 {
     $next = calendar_v4_adjacent_month($month, $year, 1);
     $previous = calendar_v4_adjacent_month($month, $year, -1);
@@ -58,7 +92,7 @@ function build_calendar_payload_v4($month, $year)
         'next_month_qs' => 'month=' . $next->format('n') . '&year=' . $next->format('Y'),
         'previous_month_qs' => 'month=' . $previous->format('n') . '&year=' . $previous->format('Y'),
         'current_month_qs' => 'month=' . $month . '&year=' . $year,
-        'grid' => draw_calendar_v4($month, $year),
+        'grid' => draw_calendar_v4($month, $year, $internalAccess),
         'month_title' => calendar_v4_month_name($month) . ' ' . $year
     );
 
@@ -78,7 +112,7 @@ function calendar_v4_month_name($month)
     return $date->format('F');
 }
 
-function draw_calendar_v4($month, $year)
+function draw_calendar_v4($month, $year, $internalAccess = 'guest')
 {
     $monthStart = mktime(0, 0, 0, $month, 1, $year);
     $monthEnd = strtotime('+1 month', $monthStart) - 1;
@@ -90,7 +124,12 @@ function draw_calendar_v4($month, $year)
             $calendarEvents[] = $event;
         }
     }
-    $eventsByDate = event_v4_calendar_date_map($calendarEvents, $monthStart, $monthEnd);
+    $eventsByDate = event_v4_calendar_date_map(
+        $calendarEvents,
+        $monthStart,
+        $monthEnd,
+        $internalAccess
+    );
     $classes = array(
         1 => 'sun',
         2 => 'mon',

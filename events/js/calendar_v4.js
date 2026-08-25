@@ -337,6 +337,7 @@
                 preferredView: hasViewControls
                     ? initialCalendarState.mode || (savedView === 'list' ? 'list' : 'grid')
                     : 'grid',
+                internalAccess: 'guest',
                 remoteUser: null,
                 requestId: 0,
                 scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list'
@@ -620,7 +621,16 @@
 
             function updateInternalFilterVisibility() {
                 documentObject.querySelectorAll('.filter-list-internal').forEach(function (container) {
-                    container.hidden = !state.remoteUser;
+                    container.hidden = state.internalAccess === 'guest';
+                });
+
+                internalFilterInputs().forEach(function (input) {
+                    var isStaffFilter = normalizeCategory(input.value) === 'staff-internal';
+                    var hideForStudent = state.internalAccess === 'student' && isStaffFilter;
+                    input.closest('li').hidden = hideForStudent;
+                    if (hideForStudent) {
+                        input.checked = false;
+                    }
                 });
             }
 
@@ -691,6 +701,7 @@
                 calendarMain.innerHTML = data.grid;
 
                 state.remoteUser = data.remote_user || null;
+                state.internalAccess = data.internal_access || 'guest';
                 updateWelcomeBar(state.remoteUser);
                 updateInternalFilterVisibility();
                 applyFilters();

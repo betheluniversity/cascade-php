@@ -970,13 +970,21 @@ function event_v4_timezone_abbreviation($timeZone)
     return isset($zones[$timeZone]) ? $zones[$timeZone] : '';
 }
 
-function event_v4_calendar_date_map($events, $rangeStart = null, $rangeEnd = null)
+function event_v4_calendar_date_map(
+    $events,
+    $rangeStart = null,
+    $rangeEnd = null,
+    $internalAccess = 'guest'
+)
 {
     $dates = array();
     $pathIndexes = array();
 
     foreach ($events as $event) {
         if ($event['hide-from-calendar'] || $event['published'] === '') {
+            continue;
+        }
+        if (!event_v4_calendar_event_allowed_for_internal_access($event, $internalAccess)) {
             continue;
         }
         foreach ($event['dates'] as $date) {
@@ -1017,6 +1025,38 @@ function event_v4_calendar_date_map($events, $rangeStart = null, $rangeEnd = nul
         $dates[$key] = $dayEvents;
     }
     return $dates;
+}
+
+function event_v4_calendar_event_allowed_for_internal_access($event, $internalAccess)
+{
+    $internalValues = isset($event['metadata']['internal'])
+        && is_array($event['metadata']['internal'])
+        ? $event['metadata']['internal']
+        : array();
+
+    if (count($internalValues) === 0) {
+        return true;
+    }
+    if ($internalAccess === 'staff') {
+        return true;
+    }
+    if ($internalAccess !== 'student') {
+        return false;
+    }
+
+    $hasStaffOnlyValue = false;
+    $hasStudentValue = false;
+    foreach ($internalValues as $value) {
+        $value = strtolower(trim((string)$value));
+        if ($value === 'staff' || $value === 'faculty/staff') {
+            $hasStaffOnlyValue = true;
+        }
+        if ($value === 'students') {
+            $hasStudentValue = true;
+        }
+    }
+
+    return $hasStudentValue && !$hasStaffOnlyValue;
 }
 
 function event_v4_calendar_record($event, $date, $multiDay)
