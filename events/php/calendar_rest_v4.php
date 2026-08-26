@@ -70,12 +70,12 @@ function calendar_v4_internal_access()
 
 function calendar_v4_authenticated_user()
 {
-    if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] !== '') {
-        return $_SERVER['REMOTE_USER'];
-    }
-
     if (phpMSAL::checkAuthentication()) {
         return phpMSAL::getDisplayName();
+    }
+
+    if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] !== '') {
+        return $_SERVER['REMOTE_USER'];
     }
 
     return null;
