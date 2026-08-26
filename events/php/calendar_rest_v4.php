@@ -19,25 +19,19 @@ if ($year < 1970 || $year > 9999) {
     $year = (int)date('Y');
 }
 
-$access = calendar_v4_internal_access();
+$access = calendar_data_internal_access();
 
-$data = autoCache(
-    'build_calendar_payload_v4',
-    array($month, $year, $access['level'])
-);
-// Accept the previous cached string shape during a rolling deployment, but
-// keep the v4 cache payload as an array so the HTTP response is encoded once.
-if (is_string($data)) {
-    $data = json_decode($data, true);
-}
-if (!is_array($data)) {
-    $data = array();
-}
-$data['remote_user'] = calendar_v4_authenticated_user();
+// The rendered calendar is user-dependent: staff, students, and guests must
+// receive different event sets. The generic autoCache() helper does not use
+// function arguments in its cache key, so caching this payload could serve a
+// guest grid to a logged-in user (or expose internal events to a guest).
+// event_data_get_events() still caches the shared normalized event collection.
+$data = calendar_data_build_payload($month, $year, $access['level']);
+$data['remote_user'] = calendar_data_authenticated_user();
 $data['internal_access'] = $access['level'];
 echo json_encode($data);
 
-function calendar_v4_internal_access()
+function calendar_data_internal_access()
 {
     if (!phpMSAL::checkAuthentication()) {
         return array('level' => 'guest');
@@ -68,7 +62,7 @@ function calendar_v4_internal_access()
     return array('level' => 'guest');
 }
 
-function calendar_v4_authenticated_user()
+function calendar_data_authenticated_user()
 {
     if (phpMSAL::checkAuthentication()) {
         return phpMSAL::getDisplayName();
@@ -81,10 +75,10 @@ function calendar_v4_authenticated_user()
     return null;
 }
 
-function build_calendar_payload_v4($month, $year, $internalAccess = 'guest')
+function calendar_data_build_payload($month, $year, $internalAccess = 'guest')
 {
-    $next = calendar_v4_adjacent_month($month, $year, 1);
-    $previous = calendar_v4_adjacent_month($month, $year, -1);
+    $next = calendar_data_adjacent_month($month, $year, 1);
+    $previous = calendar_data_adjacent_month($month, $year, -1);
 
     $data = array(
         'previous_title' => 'Previous Month',
@@ -92,39 +86,39 @@ function build_calendar_payload_v4($month, $year, $internalAccess = 'guest')
         'next_month_qs' => 'month=' . $next->format('n') . '&year=' . $next->format('Y'),
         'previous_month_qs' => 'month=' . $previous->format('n') . '&year=' . $previous->format('Y'),
         'current_month_qs' => 'month=' . $month . '&year=' . $year,
-        'grid' => draw_calendar_v4($month, $year, $internalAccess),
-        'month_title' => calendar_v4_month_name($month) . ' ' . $year
+        'grid' => calendar_data_draw($month, $year, $internalAccess),
+        'month_title' => calendar_data_month_name($month) . ' ' . $year
     );
 
     return $data;
 }
 
-function calendar_v4_adjacent_month($month, $year, $direction)
+function calendar_data_adjacent_month($month, $year, $direction)
 {
     $date = new DateTime();
     $date->setDate($year, $month, 1);
     return $date->modify($direction > 0 ? '+1 month' : '-1 month');
 }
 
-function calendar_v4_month_name($month)
+function calendar_data_month_name($month)
 {
     $date = DateTime::createFromFormat('!m', $month);
     return $date->format('F');
 }
 
-function draw_calendar_v4($month, $year, $internalAccess = 'guest')
+function calendar_data_draw($month, $year, $internalAccess = 'guest')
 {
     $monthStart = mktime(0, 0, 0, $month, 1, $year);
     $monthEnd = strtotime('+1 month', $monthStart) - 1;
     $calendarEvents = array();
-    foreach (event_v4_get_events() as $event) {
+    foreach (event_data_get_events() as $event) {
         // Match the populations used by the previous hybrid endpoint: the old
         // parser selected Event pages and the normalized path selected Event v4.
         if (in_array($event['definition'], array('Event', 'Event v4'), true)) {
             $calendarEvents[] = $event;
         }
     }
-    $eventsByDate = event_v4_calendar_date_map(
+    $eventsByDate = event_data_calendar_date_map(
         $calendarEvents,
         $monthStart,
         $monthEnd,
