@@ -47,9 +47,44 @@ class phpMSAL {
         if (!$jwt) {
             return null;
         }
-        $username = $jwt['upn'];
-        $groups = self::getUserGroups();
-        return $username;
+        return isset($jwt['upn']) ? $jwt['upn'] : null;
+    }
+
+    public static function getDisplayName() {
+        $jwt = self::getDecodedToken();
+        if (!$jwt) {
+            return null;
+        }
+
+        if (isset($jwt['name']) && trim($jwt['name']) !== '') {
+            return trim($jwt['name']);
+        }
+
+        $givenName = isset($jwt['given_name']) ? trim($jwt['given_name']) : '';
+        $familyName = isset($jwt['family_name']) ? trim($jwt['family_name']) : '';
+        $displayName = trim($givenName . ' ' . $familyName);
+        if ($displayName !== '') {
+            return $displayName;
+        }
+
+        if (!isset($_SESSION['display_name']) && isset($_SESSION['access_token'])) {
+            $ch = curl_init('https://graph.microsoft.com/v1.0/me?$select=displayName');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $_SESSION['access_token'],
+            ]);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $profile = json_decode($response, true);
+            if (isset($profile['displayName']) && trim($profile['displayName']) !== '') {
+                $_SESSION['display_name'] = trim($profile['displayName']);
+            }
+        }
+
+        return isset($_SESSION['display_name'])
+            ? $_SESSION['display_name']
+            : self::getUsername();
     }
 
     public static function getUserGroups() {

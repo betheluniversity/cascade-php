@@ -612,11 +612,18 @@
                 link.href = remoteUser
                     ? '/code/general-cascade/logout'
                     : '/code/general-cascade/login';
-                link.textContent = remoteUser ? 'Logout' : 'Login';
-                elements.welcome.replaceChildren(
-                    documentObject.createTextNode('Welcome ' + user + ': '),
-                    link
-                );
+                link.textContent = remoteUser ? 'Log out' : 'Log in';
+                if (remoteUser) {
+                    elements.welcome.replaceChildren(
+                        documentObject.createTextNode('Logged in as: ' + user + ' '),
+                        link
+                    );
+                } else {
+                    elements.welcome.replaceChildren(
+                        link,
+                        documentObject.createTextNode(' to see internal events')
+                    );
+                }
             }
 
             function updateInternalFilterVisibility() {

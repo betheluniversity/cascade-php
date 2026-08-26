@@ -75,7 +75,7 @@ function calendar_v4_authenticated_user()
     }
 
     if (phpMSAL::checkAuthentication()) {
-        return phpMSAL::getUsername();
+        return phpMSAL::getDisplayName();
     }
 
     return null;
