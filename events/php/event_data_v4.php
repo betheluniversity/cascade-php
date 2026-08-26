@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '6');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '7');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -1029,10 +1029,7 @@ function event_v4_calendar_date_map(
 
 function event_v4_calendar_event_allowed_for_internal_access($event, $internalAccess)
 {
-    $internalValues = isset($event['metadata']['internal'])
-        && is_array($event['metadata']['internal'])
-        ? $event['metadata']['internal']
-        : array();
+    $internalValues = event_v4_calendar_internal_values($event);
 
     if (count($internalValues) === 0) {
         return true;
@@ -1057,6 +1054,35 @@ function event_v4_calendar_event_allowed_for_internal_access($event, $internalAc
     }
 
     return $hasStudentValue && !$hasStaffOnlyValue;
+}
+
+function event_v4_calendar_internal_values($event)
+{
+    $values = array();
+    if (isset($event['metadata']['internal']) && is_array($event['metadata']['internal'])) {
+        $values = $event['metadata']['internal'];
+    }
+
+    // Fall back to the rendered calendar tokens. This preserves access
+    // control for records produced by older normalized-data caches.
+    if (isset($event['md']) && is_array($event['md'])) {
+        foreach ($event['md'] as $token) {
+            if (preg_match('/^(.*)-internal$/i', (string)$token, $matches)) {
+                $values[] = $matches[1];
+            }
+        }
+    }
+
+    $normalized = array();
+    foreach ($values as $value) {
+        foreach (event_v4_translate_legacy_pair('internal', $value) as $pair) {
+            if (isset($pair[0]) && $pair[0] === 'internal' && isset($pair[1])) {
+                $normalized[] = strtolower(trim((string)$pair[1]));
+            }
+        }
+    }
+
+    return event_v4_unique_strings($normalized);
 }
 
 function event_v4_calendar_record($event, $date, $multiDay)
