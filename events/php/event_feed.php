@@ -216,6 +216,10 @@ function inspect_event_page($xml, $categories){
         }
     }
 
+    if (event_feed_event_has_internal_category($xml)) {
+        return "";
+    }
+
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
     $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
 
@@ -277,6 +281,32 @@ function inspect_event_page($xml, $categories){
     }
 
     return $page_info;
+}
+
+function event_feed_event_has_internal_category($xml)
+{
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        $field = strtolower(trim((string)$metadata->name));
+        if ($field !== 'internal' && $field !== 'general') {
+            continue;
+        }
+
+        foreach ($metadata->value as $value) {
+            $value = strtolower(trim((string)$value));
+            if ($field === 'internal'
+                && $value !== ''
+                && $value !== 'none'
+                && $value !== 'select') {
+                return true;
+            }
+            if ($field === 'general'
+                && ($value === 'internal' || $value === 'internal communications')) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 // Checks to see if the event falls between the range of
@@ -512,4 +542,3 @@ function get_timezone_shorthand( $date ){
 }
 
 ?>
-

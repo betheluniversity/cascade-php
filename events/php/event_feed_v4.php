@@ -30,6 +30,7 @@ function event_feed_create_logic($categories)
     foreach ($allEvents as $event) {
         if ($event['published'] === ''
             || $event['hide-from-calendar']
+            || event_feed_event_has_internal_category($event)
             || event_feed_event_is_other_only($event)
             || !event_data_event_matches_filters($event, $filters)) {
             continue;
@@ -54,6 +55,31 @@ function event_feed_create_logic($categories)
     }
 
     return array(array(), $eventHtml, count($eventHtml));
+}
+
+function event_feed_event_has_internal_category($event)
+{
+    foreach (array('internal', 'general') as $field) {
+        if (!isset($event['metadata'][$field]) || !is_array($event['metadata'][$field])) {
+            continue;
+        }
+
+        foreach ($event['metadata'][$field] as $value) {
+            $value = strtolower(trim((string)$value));
+            if ($field === 'internal'
+                && $value !== ''
+                && $value !== 'none'
+                && $value !== 'select') {
+                return true;
+            }
+            if ($field === 'general'
+                && ($value === 'internal' || $value === 'internal communications')) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 function event_feed_event_is_other_only($event)
