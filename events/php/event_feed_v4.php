@@ -26,6 +26,9 @@ function event_feed_create_logic($categories)
 
     $allEvents = event_data_get_events();
     $filters = event_data_normalize_filter_values($categories);
+    // "Other" is not a feed category. It is a catch-all value used by the
+    // calendar, so it must never make an event eligible for a site feed.
+    unset($filters['other'], $filters['other-general']);
     $events = array();
     foreach ($allEvents as $event) {
         if ($event['published'] === ''
