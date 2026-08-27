@@ -718,8 +718,11 @@ function event_data_event_matches_filters($event, $filters)
         return false;
     }
 
-    foreach ($event['metadata'] as $values) {
+    foreach ($event['metadata'] as $field => $values) {
         foreach ($values as $value) {
+            if ($field === 'general' && strcasecmp(trim((string)$value), 'Other') === 0) {
+                continue;
+            }
             if (isset($filters[strtolower($value)])) {
                 return true;
             }

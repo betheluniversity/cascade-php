@@ -228,7 +228,7 @@ function inspect_event_page($xml, $categories){
     }
 
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
-    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
+    $page_info['display-on-feed'] = event_feed_match_categories($xml, $categories, $options);
 
     $dataDefinition = $ds['definition-path'];
 
@@ -290,12 +290,43 @@ function inspect_event_page($xml, $categories){
     return $page_info;
 }
 
+function event_feed_match_categories($xml, $categories, $options){
+    foreach ($categories as $category) {
+        foreach ($xml->{'dynamic-metadata'} as $metadata) {
+            $field = trim((string)$metadata->name);
+            if (!in_array($field, $options, true)) {
+                continue;
+            }
+            foreach ($metadata->value as $value) {
+                $value = trim((string)$value);
+                if ($value === '' || strcasecmp($value, 'None') === 0
+                    || strcasecmp($value, 'Select') === 0
+                    || ($field === 'general' && strcasecmp($value, 'Other') === 0)) {
+                    continue;
+                }
+                if (in_array($value, $category, true)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 function event_feed_xml_has_other_only_event_type($xml){
     $hasOtherEventType = false;
     $hasAdditionalSelection = false;
+    $categoryFields = array(
+        'general', 'offices', 'academic-dates', 'cas-departments',
+        'adult-undergrad-program', 'graduate-program', 'seminary-program',
+        'internal'
+    );
 
     foreach ($xml->{'dynamic-metadata'} as $metadata) {
-        $field = trim((string)$metadata->name);
+        $field = strtolower(trim((string)$metadata->name));
+        if (!in_array($field, $categoryFields, true)) {
+            continue;
+        }
         foreach ($metadata->value as $value) {
             $value = trim((string)$value);
             if ($value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0) {
