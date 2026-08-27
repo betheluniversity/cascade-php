@@ -281,6 +281,20 @@ function autoCache($func, $inputs=array(), $cache_time=300, $blerts="No"){
             $cache_name .= $entry['line'];
     }
 
+    // Cache entries must vary with the arguments passed to the cached
+    // function. Without this, category-specific feeds invoked from the same
+    // call path reuse whichever feed was cached first.
+    $cache_name .= '|function=' . (string)$func;
+    try {
+        $serialized_inputs = serialize($inputs);
+    } catch (\Throwable $error) {
+        // Keep caching available for any legacy caller that passes an object
+        // PHP cannot serialize. The normal event/feed inputs are scalar or
+        // array values and use the stable serialized representation above.
+        $serialized_inputs = print_r($inputs, true);
+    }
+    $cache_name .= '|inputs=' . md5($serialized_inputs);
+
     $cache_name = md5($cache_name);
 
     //checks if cache_name is being used. if so it retrieves it's data otherwise it creates a new key using cache_name

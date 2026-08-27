@@ -22,10 +22,10 @@ if ($year < 1970 || $year > 9999) {
 $access = calendar_data_internal_access();
 
 // The rendered calendar is user-dependent: staff, students, and guests must
-// receive different event sets. The generic autoCache() helper does not use
-// function arguments in its cache key, so caching this payload could serve a
-// guest grid to a logged-in user (or expose internal events to a guest).
-// event_data_get_events() still caches the shared normalized event collection.
+// receive different event sets. Keep this payload request-scoped so a guest
+// grid cannot be served to a logged-in user (or expose internal events to a
+// guest). event_data_get_events() still caches the shared normalized event
+// collection.
 $data = calendar_data_build_payload($month, $year, $access['level']);
 $data['remote_user'] = calendar_data_authenticated_user();
 $data['internal_access'] = $access['level'];
