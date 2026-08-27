@@ -220,6 +220,13 @@ function inspect_event_page($xml, $categories){
         return "";
     }
 
+    // "Other" on its own is a catch-all Event Type and must not cause an
+    // event to appear in every category feed. It remains valid alongside a
+    // specific category.
+    if (event_feed_xml_has_other_only_event_type($xml)) {
+        return "";
+    }
+
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
     $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
 
@@ -281,6 +288,28 @@ function inspect_event_page($xml, $categories){
     }
 
     return $page_info;
+}
+
+function event_feed_xml_has_other_only_event_type($xml){
+    $hasOtherEventType = false;
+    $hasAdditionalSelection = false;
+
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        $field = trim((string)$metadata->name);
+        foreach ($metadata->value as $value) {
+            $value = trim((string)$value);
+            if ($value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0) {
+                continue;
+            }
+            if ($field === 'general' && strcasecmp($value, 'Other') === 0) {
+                $hasOtherEventType = true;
+            } else {
+                $hasAdditionalSelection = true;
+            }
+        }
+    }
+
+    return $hasOtherEventType && !$hasAdditionalSelection;
 }
 
 function event_feed_event_has_internal_category($xml)
