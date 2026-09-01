@@ -1,5 +1,16 @@
 <?php
 
+// Use the same legacy-to-v4 category translations as the event feed.
+if (!function_exists('event_data_translate_legacy_pair')) {
+    $eventDataFile = __DIR__ . '/event_data_v4.php';
+    if (!is_readable($eventDataFile) && isset($_SERVER['DOCUMENT_ROOT'])) {
+        $eventDataFile = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/code/events/php/event_data_v4.php';
+    }
+    if (is_readable($eventDataFile)) {
+        include_once $eventDataFile;
+    }
+}
+
 /**
  * Render related events using metadata supplied by the current page template.
  *
@@ -36,7 +47,7 @@ function create_related_events($currentEvent = null, $limit = 2)
     $currentPath = related_events_request_path();
     $organizationFields = array(
         'offices',
-        'cas-departments',
+        'undergraduate-departments',
         'adult-undergrad-program',
         'graduate-program',
         'seminary-program'
@@ -80,7 +91,7 @@ function create_related_events($currentEvent = null, $limit = 2)
     }
 
     $html = '<section class="pt2 pb4"><div class="inner--content pt3" style="border-top: 1px solid #ddd">';
-    $html .= '<section class="related-events"><h4 class="mt0">Related Events</h2>';
+    $html .= '<section class="related-events"><h3 class="mt0">Related Events</h3>';
     $html .= '<div class="grid grid-cols-2--large">';
     foreach ($selected as $event) {
         $html .= related_events_render($event);
@@ -95,37 +106,60 @@ function related_events_current_metadata($input)
     $fields = array(
         'general',
         'offices',
-        'cas-departments',
+        'undergraduate-departments',
         'adult-undergrad-program',
         'graduate-program',
-        'seminary-program'
+        'seminary-program',
+        'internal'
     );
     $metadata = array();
 
     foreach ($fields as $field) {
         $metadata[$field] = array();
-        if (!isset($input[$field])) {
-            continue;
+    }
+
+    related_events_add_normalized_metadata($metadata, $input);
+
+    return $metadata;
+}
+
+function related_events_add_normalized_metadata(&$metadata, $input)
+{
+    foreach ($input as $field => $values) {
+        if (!is_array($values)) {
+            $values = array($values);
         }
 
-        $values = is_array($input[$field]) ? $input[$field] : array($input[$field]);
         foreach ($values as $value) {
             if (is_array($value) || is_object($value)) {
                 continue;
             }
 
             $value = trim((string)$value);
-            if (
-                $value !== '' &&
-                !in_array(strtolower($value), array('none', 'select'), true) &&
-                !in_array($value, $metadata[$field], true)
-            ) {
-                $metadata[$field][] = $value;
+            if ($value === '' || in_array(strtolower($value), array('none', 'select'), true)) {
+                continue;
+            }
+
+            $normalizedField = strtolower(trim((string)$field));
+            $pairs = function_exists('event_data_translate_legacy_pair')
+                ? event_data_translate_legacy_pair($normalizedField, $value)
+                : array(array($normalizedField, $value));
+
+            foreach ($pairs as $pair) {
+                // Legacy academic dates are Event Type values in the v4
+                // model. Preserve unmapped values in that same field.
+                if ($normalizedField === 'academic-dates' && isset($pair[0]) && $pair[0] === 'academic-dates') {
+                    $pair[0] = 'general';
+                }
+                if (!isset($pair[0], $pair[1]) || !isset($metadata[$pair[0]])) {
+                    continue;
+                }
+                if (!in_array($pair[1], $metadata[$pair[0]], true)) {
+                    $metadata[$pair[0]][] = $pair[1];
+                }
             }
         }
     }
-
-    return $metadata;
 }
 
 function related_events_load_xml()
@@ -157,7 +191,11 @@ function related_events_candidates(
     $seenPaths = array();
 
     foreach ($pages as $page) {
-        if (!related_events_is_event_page($page) || related_events_is_hidden($page)) {
+        if (
+            !related_events_is_event_page($page) ||
+            related_events_is_hidden($page) ||
+            related_events_page_is_internal($page)
+        ) {
             continue;
         }
 
@@ -178,6 +216,9 @@ function related_events_candidates(
         $seenPaths[$path] = true;
 
         $candidateMetadata = related_events_page_metadata($page);
+        if (related_events_metadata_is_internal($candidateMetadata)) {
+            continue;
+        }
         $matchedFields = related_events_matching_fields(
             $currentMetadata,
             $candidateMetadata,
@@ -208,8 +249,14 @@ function related_events_candidates(
 
 function related_events_is_event_page($page)
 {
-    $definition = trim((string)$page->{'system-data-structure'}['definition-path']);
+    $definition = related_events_definition_name($page->{'system-data-structure'}['definition-path']);
     return in_array($definition, array('Event', 'Event v4'), true);
+}
+
+function related_events_definition_name($definition)
+{
+    $definition = trim((string)$definition);
+    return basename(str_replace('\\', '/', $definition));
 }
 
 function related_events_is_hidden($page)
@@ -235,23 +282,55 @@ function related_events_page_metadata($page)
 
     foreach ($page->{'dynamic-metadata'} as $field) {
         $name = trim((string)$field->name);
-        if (!isset($metadata[$name])) {
-            continue;
-        }
-
+        $values = array();
         foreach ($field->value as $value) {
-            $value = trim((string)$value);
-            if (
-                $value !== '' &&
-                !in_array(strtolower($value), array('none', 'select'), true) &&
-                !in_array($value, $metadata[$name], true)
-            ) {
-                $metadata[$name][] = $value;
+            $values[] = (string)$value;
+        }
+        related_events_add_normalized_metadata($metadata, array($name => $values));
+    }
+
+    return $metadata;
+}
+
+function related_events_metadata_is_internal($metadata)
+{
+    if (isset($metadata['internal']) && sizeof($metadata['internal']) > 0) {
+        return true;
+    }
+
+    if (!isset($metadata['general'])) {
+        return false;
+    }
+
+    foreach ($metadata['general'] as $value) {
+        $value = strtolower(trim((string)$value));
+        if ($value === 'internal' || $value === 'internal communications') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function related_events_page_is_internal($page)
+{
+    foreach ($page->{'dynamic-metadata'} as $field) {
+        $name = strtolower(trim((string)$field->name));
+        foreach ($field->value as $value) {
+            $value = strtolower(trim((string)$value));
+            if ($value === '' || $value === 'none' || $value === 'select') {
+                continue;
+            }
+            if ($name === 'internal' || (
+                $name === 'general' &&
+                ($value === 'internal' || $value === 'internal communications')
+            )) {
+                return true;
             }
         }
     }
 
-    return $metadata;
+    return false;
 }
 
 function related_events_matching_fields($current, $candidate, $fields)
@@ -382,7 +461,7 @@ function related_events_render($event)
 
 function related_events_location($data)
 {
-    $definition = trim((string)$data['definition-path']);
+    $definition = related_events_definition_name($data['definition-path']);
 
     if ($definition === 'Event') {
         $type = strtolower(trim((string)$data->location));
