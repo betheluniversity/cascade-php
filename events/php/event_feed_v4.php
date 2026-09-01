@@ -16,7 +16,7 @@ function create_event_feed($categories, $heading = '')
 {
     return autoCache(
         'event_feed_create_logic',
-        array($categories, 'event-per-day-v2')
+        array($categories, 'event-per-day-v3')
     );
 }
 
@@ -154,12 +154,8 @@ function event_feed_occurrence($event, $date)
         $end = $start;
     }
     $now = time();
-    // Match the legacy feed: without PriorToToday=Show, a daily occurrence
-    // is only eligible once that occurrence has started.
-    if ($PriorToToday !== 'Show' && $start < $now) {
-        return null;
-    }
-    if ($now > $end && $PriorToToday !== 'Show') {
+    if ($PriorToToday !== 'Show'
+        && !event_feed_v4_occurrence_is_current_or_future($start, $end, $date['all-day'])) {
         return null;
     }
 
@@ -176,6 +172,27 @@ function event_feed_occurrence($event, $date)
     $item['end-date'] = $end;
     $item['date-for-sorting'] = $start;
     return display_on_feed_events($item) ? $item : null;
+}
+
+function event_feed_v4_occurrence_is_current_or_future($start, $end, $allDay)
+{
+    $now = time();
+
+    if ($start >= $now) {
+        return true;
+    }
+
+    if (date('Y-m-d', $start) !== date('Y-m-d', $now)) {
+        return false;
+    }
+
+    if ($end >= $now) {
+        return true;
+    }
+
+    // All-day events are date-based, so an event that starts today remains
+    // valid for today's feed even though its timestamp is midnight.
+    return event_data_is_yes($allDay);
 }
 
 function event_feed_sort_events($a, $b)

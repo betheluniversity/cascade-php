@@ -32,7 +32,7 @@ function create_event_feed($categories, $heading=""){
     // you should only cache the array of html, not the full data.
     // Bump this when feed output semantics change so stale duplicate entries
     // are not served from the old five-minute cache entry.
-    $feed = autoCache("create_event_feed_logic", array($categories, $heading, 'event-per-day-v2'));
+    $feed = autoCache("create_event_feed_logic", array($categories, $heading, 'event-per-day-v3'));
     return $feed;
 }
 
@@ -64,7 +64,7 @@ function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
 
 
                     // This will hide all events prior to today.
-                    if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
+                    if (!event_feed_occurrence_is_current_or_future($newDate) && $PriorToToday != 'Show')
                         continue;
 
                     //hides gallery events three days after they begin.
@@ -106,7 +106,7 @@ function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
     $allEventArray = array();
     foreach( $eventArrayWithMultipleEvents as $event)
     {
-        if($event['date']['start-date'] >= time()) {
+        if (event_feed_occurrence_is_current_or_future($event['date'])) {
             array_push( $allEventArray, $event);
         }
 
@@ -124,7 +124,7 @@ function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
             $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
             
-            if($event['date']['start-date'] >= time()) {
+            if (event_feed_occurrence_is_current_or_future($event['date'])) {
                 array_push( $allEventArray, $event);
             }
         }
@@ -157,6 +157,29 @@ function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
     }
     $combinedArray = array($featuredEvents, $eventArray, $numEvents );
     return $combinedArray;
+}
+
+function event_feed_occurrence_is_current_or_future($date)
+{
+    $start = isset($date['start-date']) ? (int)$date['start-date'] : 0;
+    $end = isset($date['end-date']) ? (int)$date['end-date'] : $start;
+    $now = time();
+
+    if ($start >= $now) {
+        return true;
+    }
+
+    // A date that starts today is still a valid feed occurrence. This is
+    // especially important for all-day events, whose start is midnight.
+    if (date('Y-m-d', $start) !== date('Y-m-d', $now)) {
+        return false;
+    }
+
+    if ($end >= $now) {
+        return true;
+    }
+
+    return isset($date['all-day']) && strtolower((string)$date['all-day']) === 'yes';
 }
 
 // A function to check if the event is art or theatre.
