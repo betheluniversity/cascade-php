@@ -30,13 +30,15 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 function create_event_feed($categories, $heading=""){
     // you should only cache the array of html, not the full data.
-    $feed = autoCache("create_event_feed_logic", array($categories, $heading));
+    // Bump this when feed output semantics change so stale duplicate entries
+    // are not served from the old five-minute cache entry.
+    $feed = autoCache("create_event_feed_logic", array($categories, $heading, 'event-per-day-v2'));
     return $feed;
 }
 
 
 // Create the Event Feed events.
-function create_event_feed_logic($categories, $heading){
+function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
     $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
@@ -77,7 +79,12 @@ function create_event_feed_logic($categories, $heading){
                     $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
 
-                    $newEvent['html'] = get_event_html($newEvent);
+                    $eventForHtml = $newEvent;
+                    // The legacy template uses the end date to decide whether
+                    // to print today's date for an ongoing multi-day event.
+                    // Each feed occurrence needs its own date tile instead.
+                    $eventForHtml['date']['end-date'] = $eventForHtml['date']['start-date'];
+                    $newEvent['html'] = get_event_html($eventForHtml);
 
                     if (display_on_feed_events($newEvent)) {
                         array_push($eventArrayWithMultipleEvents, $newEvent);
@@ -111,7 +118,9 @@ function create_event_feed_logic($categories, $heading){
         while ($lengthOfEvent >= 86400) {
             $date = date('Y-m-d H:i:s', strtotime($date . ' +1 day'));
             $event['date']['start-date'] = strtotime($date);
-            $event['html'] = get_event_html($event);
+            $eventForHtml = $event;
+            $eventForHtml['date']['end-date'] = $eventForHtml['date']['start-date'];
+            $event['html'] = get_event_html($eventForHtml);
             $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
             

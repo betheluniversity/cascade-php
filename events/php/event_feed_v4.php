@@ -16,11 +16,11 @@ function create_event_feed($categories, $heading = '')
 {
     return autoCache(
         'event_feed_create_logic',
-        array($categories)
+        array($categories, 'event-per-day-v2')
     );
 }
 
-function event_feed_create_logic($categories)
+function event_feed_create_logic($categories, $cacheVersion = '')
 {
     global $NumEvents;
 
@@ -46,7 +46,6 @@ function event_feed_create_logic($categories)
     }
 
     usort($events, 'event_feed_sort_events');
-
     $limit = is_numeric($NumEvents) ? (int)$NumEvents : count($events);
     if ($limit >= 0) {
         $events = array_slice($events, 0, $limit, true);
@@ -155,27 +154,27 @@ function event_feed_occurrence($event, $date)
         $end = $start;
     }
     $now = time();
+    // Match the legacy feed: without PriorToToday=Show, a daily occurrence
+    // is only eligible once that occurrence has started.
+    if ($PriorToToday !== 'Show' && $start < $now) {
+        return null;
+    }
     if ($now > $end && $PriorToToday !== 'Show') {
         return null;
     }
 
-    $displayStart = $start;
-    if (date('Y-m-d', $start) !== date('Y-m-d', $end) && $start <= $now && $end >= $now) {
-        $displayStart = $now;
-    }
-
     $item = $event;
     $item['date'] = array(
-        'start-date' => $displayStart,
+        'start-date' => $start,
         'time-start-date' => $start,
         'end-date' => $end,
         'all-day' => $date['all-day'],
         'outside-of-minnesota' => $date['outside-of-minnesota'],
         'time-zone' => $date['time-zone']
     );
-    $item['start-date'] = $displayStart;
+    $item['start-date'] = $start;
     $item['end-date'] = $end;
-    $item['date-for-sorting'] = $displayStart;
+    $item['date-for-sorting'] = $start;
     return display_on_feed_events($item) ? $item : null;
 }
 
