@@ -45,6 +45,20 @@ function create_related_events($currentEvent = null, $limit = 2)
     }
 
     $currentPath = related_events_request_path();
+    foreach ($pages as $page) {
+        if (related_events_normalize_path((string)$page->path) !== $currentPath) {
+            continue;
+        }
+
+        // The caller can provide only the Event Type metadata. Enrich it
+        // from the published XML so legacy and Event v4 pages use all of
+        // their persisted categories for related-event matching.
+        $currentMetadata = related_events_merge_metadata(
+            $currentMetadata,
+            related_events_page_metadata($page)
+        );
+        break;
+    }
     $organizationFields = array(
         'offices',
         'undergraduate-departments',
@@ -121,6 +135,22 @@ function related_events_current_metadata($input)
     related_events_add_normalized_metadata($metadata, $input);
 
     return $metadata;
+}
+
+function related_events_merge_metadata($left, $right)
+{
+    foreach ($right as $field => $values) {
+        if (!isset($left[$field])) {
+            $left[$field] = array();
+        }
+        foreach ($values as $value) {
+            if (!in_array($value, $left[$field], true)) {
+                $left[$field][] = $value;
+            }
+        }
+    }
+
+    return $left;
 }
 
 function related_events_add_normalized_metadata(&$metadata, $input)
