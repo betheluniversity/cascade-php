@@ -5,6 +5,13 @@
  * Event v4 and legacy Event pages use the shared normalized event-data layer.
  */
 header('Content-Type: application/json; charset=utf-8');
+// This response varies by the authenticated user's role. Prevent browser,
+// proxy, and CDN caches from replaying a guest grid to a logged-in user (or
+// an internal grid to a different user).
+header('Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+header('Vary: Cookie');
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/code/events/php/event_data_v4.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/msal.php';

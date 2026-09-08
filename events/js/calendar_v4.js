@@ -167,10 +167,17 @@
         selectedExternal,
         eventTypeFilters,
         selectedInternal,
-        remoteUser
+        remoteUser,
+        internalAccess
     ) {
         if (eventHasInternalCategory(categories)) {
-            return Boolean(remoteUser)
+            // The endpoint has already authorized and filtered the payload.
+            // Use its access level as the source of truth; display-name
+            // resolution can fail independently of authentication.
+            var hasInternalAccess = internalAccess
+                ? normalizeCategory(internalAccess) !== 'guest'
+                : Boolean(remoteUser);
+            return hasInternalAccess
                 && eventMatchesInternalFilters(categories, selectedInternal);
         }
 
@@ -523,7 +530,8 @@
                         selectedExternal,
                         availableEventTypes,
                         selectedInternal,
-                        state.remoteUser
+                        state.remoteUser,
+                        state.internalAccess
                     );
 
                     // The legacy calendar stylesheet sets list events to
@@ -745,6 +753,7 @@
 
                 var requestOptions = {
                     credentials: 'same-origin',
+                    cache: 'no-store',
                     headers: { Accept: 'application/json' }
                 };
                 if (state.abortController) {

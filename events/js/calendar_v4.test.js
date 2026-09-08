@@ -158,6 +158,28 @@ test('internal metadata requires an authenticated matching internal filter', fun
         ),
         true
     );
+    assert.equal(
+        calendar.eventIsVisible(
+            ['Faculty/staff-internal'],
+            [],
+            eventTypes,
+            ['Faculty/staff-internal'],
+            null,
+            'staff'
+        ),
+        true
+    );
+    assert.equal(
+        calendar.eventIsVisible(
+            ['Faculty/staff-internal'],
+            [],
+            eventTypes,
+            ['Faculty/staff-internal'],
+            'mip79358',
+            'guest'
+        ),
+        false
+    );
 });
 
 test('parses query and hash calendar state with hash taking precedence', function () {
