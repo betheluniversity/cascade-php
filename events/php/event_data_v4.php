@@ -10,7 +10,7 @@ if (!defined('EVENT_V4_LEGACY_COMPATIBILITY')) {
     define('EVENT_V4_LEGACY_COMPATIBILITY', true);
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_VERSION')) {
-    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '7');
+    define('EVENT_V4_NORMALIZED_CACHE_VERSION', '8');
 }
 if (!defined('EVENT_V4_NORMALIZED_CACHE_TTL')) {
     // Six hours. The cache key includes the source XML signatures, so a new
@@ -516,9 +516,7 @@ function event_data_normalize_page($page, $compatibility, $calendarCategories = 
         'legacy' => $legacy,
         'title' => trim((string)$page->title),
         'published' => $published,
-        'description' => $definition === 'Event v4'
-            ? trim((string)$page->teaser)
-            : trim((string)$page->description),
+        'description' => trim((string)$page->description),
         'path' => $path,
         'external-link' => event_data_external_link($data),
         'location' => event_data_location($data, $definition),
