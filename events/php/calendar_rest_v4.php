@@ -44,10 +44,7 @@ function calendar_data_internal_access()
         return array('level' => 'guest');
     }
 
-    // Keep the calendar-specific membership lookup here so the shared MSAL
-    // bootstrap remains unchanged. Transitive membership is needed when a
-    // user's staff, faculty, or student group is nested in another group.
-    $groups = calendar_data_get_user_groups();
+    $groups = phpMSAL::getUserGroups();
     $groups = is_array($groups) ? $groups : array();
     $isStaffOrFaculty = false;
     $isStudent = false;
@@ -70,83 +67,6 @@ function calendar_data_internal_access()
     }
 
     return array('level' => 'guest');
-}
-
-function calendar_data_get_user_groups()
-{
-    if (!isset($_SESSION['access_token']) || trim((string)$_SESSION['access_token']) === '') {
-        return null;
-    }
-
-    $accessToken = $_SESSION['access_token'];
-    $graphUrls = array(
-        'https://graph.microsoft.com/v1.0/me/transitiveMemberOf?$select=displayName&$top=999',
-        'https://graph.microsoft.com/v1.0/me/memberOf?$select=displayName&$top=999'
-    );
-
-    foreach ($graphUrls as $graphUrl) {
-        $groups = calendar_data_fetch_graph_groups($graphUrl, $accessToken);
-        if ($groups !== null) {
-            return $groups;
-        }
-    }
-
-    return null;
-}
-
-function calendar_data_fetch_graph_groups($graphUrl, $accessToken)
-{
-    $groupList = array();
-    $nextUrl = $graphUrl;
-    $pageCount = 0;
-
-    // Protect the calendar request from an unexpectedly long or circular
-    // pagination response. A normal directory should never approach this.
-    while ($nextUrl !== '' && $pageCount < 20) {
-        $ch = curl_init($nextUrl);
-        if ($ch === false) {
-            return null;
-        }
-
-        curl_setopt_array($ch, array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 2,
-            CURLOPT_TIMEOUT => 5,
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . $accessToken,
-                'Accept: application/json'
-            )
-        ));
-
-        $response = curl_exec($ch);
-        $curlError = curl_errno($ch);
-        $statusCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($response === false || $curlError !== 0 || $statusCode < 200 || $statusCode >= 300) {
-            return null;
-        }
-
-        $payload = json_decode($response, true);
-        if (!is_array($payload) || !isset($payload['value']) || !is_array($payload['value'])) {
-            return null;
-        }
-
-        foreach ($payload['value'] as $group) {
-            $displayName = isset($group['displayName']) ? trim((string)$group['displayName']) : '';
-            if ($displayName !== '') {
-                $groupList[] = $displayName;
-            }
-        }
-
-        $nextUrl = isset($payload['@odata.nextLink'])
-            ? trim((string)$payload['@odata.nextLink'])
-            : '';
-        $pageCount++;
-    }
-
-    // Do not make an authorization decision from a truncated group list.
-    return $nextUrl === '' ? $groupList : null;
 }
 
 function calendar_data_authenticated_user()

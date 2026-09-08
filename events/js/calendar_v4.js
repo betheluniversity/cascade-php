@@ -58,6 +58,17 @@
         return String(value == null ? '' : value).trim().toLowerCase();
     }
 
+    function normalizeInternalCategory(value) {
+        var normalized = normalizeCategory(value);
+
+        // Cascade uses "Faculty/staff" in event metadata while the calendar
+        // filter is configured as "staff". Treat those two labels as the
+        // same internal audience without broadening Student matching.
+        return normalized === 'faculty/staff-internal'
+            ? 'staff-internal'
+            : normalized;
+    }
+
     function eventHoverPosition(headingRect, hoverRect, boundaryRect, viewportHeight) {
         var boundaryWidth = boundaryRect.right - boundaryRect.left;
         var left = headingRect.right - boundaryRect.left - 20;
@@ -151,7 +162,7 @@
     function eventMatchesInternalFilters(categories, selectedFilters) {
         return selectedFilters.some(function (filter) {
             return categories.some(function (category) {
-                return normalizeCategory(category) === normalizeCategory(filter);
+                return normalizeInternalCategory(category) === normalizeInternalCategory(filter);
             });
         });
     }
@@ -1028,6 +1039,7 @@
         eventMatchesOtherFilter: eventMatchesOtherFilter,
         eventIsVisible: eventIsVisible,
         normalizeCategory: normalizeCategory,
+        normalizeInternalCategory: normalizeInternalCategory,
         parseCalendarState: parseCalendarState,
         reconcileFilterSelection: reconcileFilterSelection
     });
