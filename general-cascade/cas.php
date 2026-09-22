@@ -28,7 +28,8 @@ if (isset($request_uri[1]) && $request_uri[1]) {
 }
 //Set the service URL and CA cert
 phpCAS::setFixedServiceURL($final_url);
-phpCAS::setCasServerCACert("/opt/webapps_certificates/" . $_SERVER['SERVER_NAME'] . "/DigiCertCA.crt");
+//phpCAS::setCasServerCACert("/opt/webapps_certificates/" . $_SERVER['SERVER_NAME'] . "/DigiCertCA.crt");
+phpCAS::setCasServerCACert("/opt/webapps_certificates/" . $_SERVER['SERVER_NAME'] . "/ISRGRootX1.crt");
 
 function _removeParameterFromQueryString($parameterName, $queryString)
 {
