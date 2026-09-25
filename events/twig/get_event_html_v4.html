@@ -9,7 +9,7 @@
 
     <div class="events__content">
         <p class="events__headline">
-            <a href="{{ event|convert_path_to_link }}">{{ event.title }}</a>
+            <a href="{{ event|convert_path_to_link|e }}">{{ event.title }}</a>
         </p>
 
         {% set event_time = event.date|format_fancy_event_date %}

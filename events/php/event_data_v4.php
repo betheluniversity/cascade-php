@@ -519,6 +519,7 @@ function event_data_normalize_page($page, $compatibility, $calendarCategories = 
         'description' => trim((string)$page->description),
         'path' => $path,
         'external-link' => event_data_external_link($data),
+        'urlOverride' => event_data_url_override($page),
         'location' => event_data_location($data, $definition),
         'dates' => event_data_dates($data, $definition),
         'metadata' => $metadataResult['canonical'],
@@ -848,6 +849,22 @@ function event_data_child_text($node, $names)
     return '';
 }
 
+function event_data_url_override($page)
+{
+    foreach ($page->{'dynamic-metadata'} as $metadata) {
+        if (trim((string)$metadata->name) !== 'urlOverride') {
+            continue;
+        }
+        foreach ($metadata->value as $value) {
+            $url = trim((string)$value);
+            if ($url !== '') {
+                return $url;
+            }
+        }
+    }
+    return '';
+}
+
 function event_data_external_link($data)
 {
     if (isset($data->link)) {
@@ -1091,6 +1108,9 @@ function event_data_calendar_record($event, $date, $multiDay)
         'description' => $event['description'],
         'path' => $event['path'],
         'externallink' => $event['external-link'],
+        'event_url' => isset($event['urlOverride']) && $event['urlOverride'] !== ''
+            ? $event['urlOverride']
+            : $event['path'],
         'location' => $event['location'],
         'md' => $event['md'],
         'specific_start' => $date['start-date'],

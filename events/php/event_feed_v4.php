@@ -258,6 +258,9 @@ function format_fancy_event_date($date)
 
 function convert_path_to_link($event)
 {
+    if (isset($event['urlOverride']) && $event['urlOverride'] !== '') {
+        return $event['urlOverride'];
+    }
     return $event['external-link'] !== ''
         ? $event['external-link']
         : 'https://www.bethel.edu' . $event['path'];

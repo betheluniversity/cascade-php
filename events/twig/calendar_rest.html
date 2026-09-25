@@ -18,9 +18,10 @@
         {% set outside_of_minnesota = event.specific_outside_of_minnesota %}
         {% set time_zone = event.specific_time_zone %}
         {% if event.published %}
-        <div class="vevent" data-event-url="{{event.path}}">
+        {% set event_url = event.event_url|default(event.path) %}
+        <div class="vevent" data-event-url="{{event_url|e}}">
             <dt class="summary">
-                <a href="{{event.path}}" rel="noopener" target="_blank">{{event.title}}</a>
+                <a href="{{event_url|e}}" rel="noopener" target="_blank">{{event.title}}</a>
             </dt>
             <dd>
                 {% if all_day == true %}
