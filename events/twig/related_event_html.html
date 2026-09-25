@@ -5,7 +5,7 @@
         {{ year }}
     </p>
     <div class="events__content">
-        <p class="events__headline"><a href="{{ link }}">{{ title }}</a></p>
+        <p class="events__headline"><a href="{{ link|e }}">{{ title }}</a></p>
 
         {% if time or location %}
             <p class="events__location">{{ time }}{% if time and location %} {% endif %}{{ location }}</p>

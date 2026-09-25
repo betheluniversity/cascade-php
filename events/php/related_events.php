@@ -470,10 +470,13 @@ function related_events_render($event)
     ) {
         $displayDate = time();
     }
-    $link = trim((string)$data->link);
+    $link = event_data_url_override($page);
 
-    if (strpos($link, 'http://') !== 0 && strpos($link, 'https://') !== 0) {
-        $link = 'https://www.bethel.edu' . $event['path'];
+    if ($link === '') {
+        $link = trim((string)$data->link);
+        if (strpos($link, 'http://') !== 0 && strpos($link, 'https://') !== 0) {
+            $link = 'https://www.bethel.edu' . $event['path'];
+        }
     }
 
     $twig = makeTwigEnviron('/code/events/twig');
