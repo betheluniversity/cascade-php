@@ -45,6 +45,13 @@ function find_matching_bios($xml, $categories){
             continue;
         }
 
+        // Skip the bio if any job-title entry is marked as adjunct.
+        foreach($ds->{'job-titles'} as $job_title){
+            if( strval($job_title->{'adjunct'}) == 'Yes' ) {
+                continue 2;
+            }
+        }
+
         // if the file doesn't exist, skip it.
         if( !file_exists($_SERVER["DOCUMENT_ROOT"] . '/' . $bio->{'path'} . '.php') ) {
             continue;
