@@ -1,16 +1,12 @@
 <div class="quote">
-
     {% if thumbURL != "" %}
-
         <div class="quote__avatar">
             {{thumbURL|raw}}
         </div>
-
     {% endif %}
 
     <div class="quote__text">
-        <p class="h3 mb0"><a href='{{ path }}'>{{ first }} {{ last }}</a></p>
+        <p class="fw500 mb0"><a href='{{ path }}'>{{ first }} {{ last }}</a></p>
         <p class="mt0">{{ title }}</p>
     </div>
-
 </div>
