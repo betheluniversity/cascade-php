@@ -30,13 +30,15 @@ require $_SERVER["DOCUMENT_ROOT"] . '/code/vendor/autoload.php';
 
 function create_event_feed($categories, $heading=""){
     // you should only cache the array of html, not the full data.
-    $feed = autoCache("create_event_feed_logic", array($categories, $heading));
+    // Bump this when feed output semantics change so stale duplicate entries
+    // are not served from the old five-minute cache entry.
+    $feed = autoCache("create_event_feed_logic", array($categories, $heading, 'event-per-day-v3'));
     return $feed;
 }
 
 
 // Create the Event Feed events.
-function create_event_feed_logic($categories, $heading){
+function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
     $arrayOfEvents = get_xml($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml", $categories, "inspect_event_page");
 
     //////////////////////////////////////////
@@ -62,7 +64,7 @@ function create_event_feed_logic($categories, $heading){
 
 
                     // This will hide all events prior to today.
-                    if (time() > $date->{'end-date'} / 1000 && $PriorToToday != 'Show')
+                    if (!event_feed_occurrence_is_current_or_future($newDate) && $PriorToToday != 'Show')
                         continue;
 
                     //hides gallery events three days after they begin.
@@ -77,7 +79,12 @@ function create_event_feed_logic($categories, $heading){
                     $newEvent['date-for-sorting'] = $date->{'start-date'} / 1000;
 
 
-                    $newEvent['html'] = get_event_html($newEvent);
+                    $eventForHtml = $newEvent;
+                    // The legacy template uses the end date to decide whether
+                    // to print today's date for an ongoing multi-day event.
+                    // Each feed occurrence needs its own date tile instead.
+                    $eventForHtml['date']['end-date'] = $eventForHtml['date']['start-date'];
+                    $newEvent['html'] = get_event_html($eventForHtml);
 
                     if (display_on_feed_events($newEvent)) {
                         array_push($eventArrayWithMultipleEvents, $newEvent);
@@ -99,7 +106,7 @@ function create_event_feed_logic($categories, $heading){
     $allEventArray = array();
     foreach( $eventArrayWithMultipleEvents as $event)
     {
-        if($event['date']['start-date'] >= time()) {
+        if (event_feed_occurrence_is_current_or_future($event['date'])) {
             array_push( $allEventArray, $event);
         }
 
@@ -111,11 +118,13 @@ function create_event_feed_logic($categories, $heading){
         while ($lengthOfEvent >= 86400) {
             $date = date('Y-m-d H:i:s', strtotime($date . ' +1 day'));
             $event['date']['start-date'] = strtotime($date);
-            $event['html'] = get_event_html($event);
+            $eventForHtml = $event;
+            $eventForHtml['date']['end-date'] = $eventForHtml['date']['start-date'];
+            $event['html'] = get_event_html($eventForHtml);
             $event['date-for-sorting'] = $event['date']['start-date'] / 1000;
             $lengthOfEvent -= 86400;
             
-            if($event['date']['start-date'] >= time()) {
+            if (event_feed_occurrence_is_current_or_future($event['date'])) {
                 array_push( $allEventArray, $event);
             }
         }
@@ -148,6 +157,29 @@ function create_event_feed_logic($categories, $heading){
     }
     $combinedArray = array($featuredEvents, $eventArray, $numEvents );
     return $combinedArray;
+}
+
+function event_feed_occurrence_is_current_or_future($date)
+{
+    $start = isset($date['start-date']) ? (int)$date['start-date'] : 0;
+    $end = isset($date['end-date']) ? (int)$date['end-date'] : $start;
+    $now = time();
+
+    if ($start >= $now) {
+        return true;
+    }
+
+    // A date that starts today is still a valid feed occurrence. This is
+    // especially important for all-day events, whose start is midnight.
+    if (date('Y-m-d', $start) !== date('Y-m-d', $now)) {
+        return false;
+    }
+
+    if ($end >= $now) {
+        return true;
+    }
+
+    return isset($date['all-day']) && strtolower((string)$date['all-day']) === 'yes';
 }
 
 // A function to check if the event is art or theatre.
@@ -194,6 +226,7 @@ function inspect_event_page($xml, $categories){
         "md" => array(),
         "html" => "",
         "display-on-feed" => false,
+        "hide-from-calendar" => false,
         "external-link" => "",
         "image" => "",
         "xml" => $xml,
@@ -203,8 +236,31 @@ function inspect_event_page($xml, $categories){
 
     $ds = $xml->{'system-data-structure'};
 
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        if (trim((string)$metadata->name) !== 'hide-from-calendar') {
+            continue;
+        }
+        foreach ($metadata->value as $value) {
+            if (strcasecmp(trim((string)$value), 'Yes') === 0) {
+                $page_info['hide-from-calendar'] = true;
+                break 2;
+            }
+        }
+    }
+
+    if (event_feed_event_has_internal_category($xml)) {
+        return "";
+    }
+
+    // "Other" on its own is a catch-all Event Type and must not cause an
+    // event to appear in every category feed. It remains valid alongside a
+    // specific category.
+    if (event_feed_xml_has_other_only_event_type($xml)) {
+        return "";
+    }
+
     $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'adult-undergrad-program', 'graduate-program', 'seminary-program', 'internal');
-    $page_info['display-on-feed'] = match_metadata_articles($xml, $categories, $options);
+    $page_info['display-on-feed'] = event_feed_match_categories($xml, $categories, $options);
 
     $dataDefinition = $ds['definition-path'];
 
@@ -250,7 +306,7 @@ function inspect_event_page($xml, $categories){
         global $AddFeaturedEvents;
         // Check if it is a featured Event.
         // If so, get the featured event html.
-        if ( $AddFeaturedEvents == "Yes"){
+        if ( $AddFeaturedEvents == "Yes" && !$page_info['hide-from-calendar']){
             foreach( $featuredEventOptions as $key=>$featuredEvent)
             {
                 // Check if the url of the event = the url of the desired feature event.
@@ -266,12 +322,104 @@ function inspect_event_page($xml, $categories){
     return $page_info;
 }
 
+function event_feed_match_categories($xml, $categories, $options){
+    foreach ($categories as $category) {
+        if (!is_array($category)) {
+            $category = array($category);
+        }
+
+        foreach ($xml->{'dynamic-metadata'} as $metadata) {
+            $field = trim((string)$metadata->name);
+            if (!in_array($field, $options, true)) {
+                continue;
+            }
+
+            foreach ($metadata->value as $value) {
+                $value = trim((string)$value);
+                if ($value === '' || strcasecmp($value, 'None') === 0
+                    || strcasecmp($value, 'Select') === 0
+                    || ($field === 'general' && strcasecmp($value, 'Other') === 0)) {
+                    continue;
+                }
+
+                foreach ($category as $selectedCategory) {
+                    if (strcasecmp($value, trim((string)$selectedCategory)) === 0
+                        && strcasecmp(trim((string)$selectedCategory), 'Other') !== 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function event_feed_xml_has_other_only_event_type($xml){
+    $hasOtherEventType = false;
+    $hasAdditionalSelection = false;
+    $categoryFields = array(
+        'general', 'offices', 'academic-dates', 'cas-departments',
+        'adult-undergrad-program', 'graduate-program', 'seminary-program',
+        'internal'
+    );
+
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        $field = strtolower(trim((string)$metadata->name));
+        if (!in_array($field, $categoryFields, true)) {
+            continue;
+        }
+        foreach ($metadata->value as $value) {
+            $value = trim((string)$value);
+            if ($value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0) {
+                continue;
+            }
+            if ($field === 'general' && strcasecmp($value, 'Other') === 0) {
+                $hasOtherEventType = true;
+            } else {
+                $hasAdditionalSelection = true;
+            }
+        }
+    }
+
+    return $hasOtherEventType && !$hasAdditionalSelection;
+}
+
+function event_feed_event_has_internal_category($xml)
+{
+    foreach ($xml->{'dynamic-metadata'} as $metadata) {
+        $field = strtolower(trim((string)$metadata->name));
+        if ($field !== 'internal' && $field !== 'general') {
+            continue;
+        }
+
+        foreach ($metadata->value as $value) {
+            $value = strtolower(trim((string)$value));
+            if ($field === 'internal'
+                && $value !== ''
+                && $value !== 'none'
+                && $value !== 'select') {
+                return true;
+            }
+            if ($field === 'general'
+                && ($value === 'internal' || $value === 'internal communications')) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 // Checks to see if the event falls between the range of
 // Returns true to display event.
 //   else returns false to get rid of the event.
 function display_on_feed_events($page_info){
     global $StartDate;
     global $EndDate;
+
+    if (!empty($page_info['hide-from-calendar'])) {
+        return false;
+    }
 
     //Check if the event falls between the given range.
     if( $StartDate != "" && $EndDate != "" ){
@@ -495,5 +643,3 @@ function get_timezone_shorthand( $date ){
 }
 
 ?>
-
-

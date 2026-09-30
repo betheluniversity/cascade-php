@@ -158,7 +158,7 @@ function get_event_xml(){
     }
 //        $xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml");
     $xml = autoCache("simplexml_load_file", array($_SERVER["DOCUMENT_ROOT"] . "/_shared-content/xml/events.xml"));
-    $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event' or @definition-path='Event v2']]");
+    $event_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Event']]");
     $dates = array();
     $datePaths = array();
     foreach($event_pages as $child ){
@@ -296,21 +296,46 @@ function inspect_page($xml, $categories){
         $location = "";
     }
     $page_info['location'] = $location;
+    $options = array(
+        'general',
+        'offices',
+        'academic-dates',
+        'cas-departments',
+        'undergraduate-departments',
+        'adult-undergrad-program',
+        'graduate-program',
+        'seminary-program',
+        'internal',
+        'hide-from-calendar'
+    );
+    $academicProgramFields = array(
+        'cas-departments',
+        'undergraduate-departments',
+        'adult-undergrad-program',
+        'graduate-program',
+        'seminary-program'
+    );
+
     foreach ($xml->{'dynamic-metadata'} as $md){
-        $name = $md->name;
-        $options = array('general', 'offices', 'academic-dates', 'cas-departments', 'internal', 'hide-from-calendar');
+        $name = (string)$md->name;
         foreach($md->value as $value ){
+            $value = (string)$value;
             if($value == "None"){
                 continue;
             }
-            if (in_array($name,$options)){
+            if (in_array($name, $options, true)){
                 if ($name == 'hide-from-calendar'){
                     if ($value == "Yes"){
                         $page_info["hide-from-calendar"] = true;
                     }
                 } else {
-                    //Is this a calendar category?
-                    if (in_array($value, $categories)) {
+                    // The public filter intentionally shows four aggregate
+                    // academic choices instead of every department/program.
+                    // Preserve each detailed metadata value so calendar_v4.js
+                    // can match it by its field suffix.
+                    if (in_array($name, $academicProgramFields, true)) {
+                        array_push($page_info['md'], $value . '-' . $name);
+                    } elseif (in_array($value, $categories)) {
                         array_push($page_info['md'], $value . '-' . $name);
                     } else {
                         array_push($page_info['md'], 'other');

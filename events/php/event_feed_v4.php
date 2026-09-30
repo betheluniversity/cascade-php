@@ -15,32 +15,37 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/code/vendor/autoload.php';
 function create_event_feed($categories, $heading = '')
 {
     return autoCache(
-        'create_event_feed_v4_logic',
-        array($categories)
+        'event_feed_create_logic',
+        array($categories, 'event-per-day-v3')
     );
 }
 
-function create_event_feed_v4_logic($categories)
+function event_feed_create_logic($categories, $cacheVersion = '')
 {
     global $NumEvents;
 
-    $allEvents = event_v4_get_events();
-    $filters = event_v4_normalize_filter_values($categories);
+    $allEvents = event_data_get_events();
+    $filters = event_data_normalize_filter_values($categories);
+    // "Other" is not a feed category. It is a catch-all value used by the
+    // calendar, so it must never make an event eligible for a site feed.
+    unset($filters['other'], $filters['other-general']);
     $events = array();
     foreach ($allEvents as $event) {
-        if ($event['published'] === '' || !event_v4_event_matches_filters($event, $filters)) {
+        if ($event['published'] === ''
+            || $event['hide-from-calendar']
+            || event_feed_event_has_internal_category($event)
+            || event_feed_event_is_other_only($event)
+            || !event_data_event_matches_filters($event, $filters)) {
             continue;
         }
         foreach ($event['dates'] as $date) {
-            $occurrence = event_feed_v4_occurrence($event, $date);
-            if ($occurrence !== null) {
+            foreach (event_feed_occurrences($event, $date) as $occurrence) {
                 $events[] = $occurrence;
             }
         }
     }
 
-    usort($events, 'event_feed_v4_sort_events');
-
+    usort($events, 'event_feed_sort_events');
     $limit = is_numeric($NumEvents) ? (int)$NumEvents : count($events);
     if ($limit >= 0) {
         $events = array_slice($events, 0, $limit, true);
@@ -54,7 +59,89 @@ function create_event_feed_v4_logic($categories)
     return array(array(), $eventHtml, count($eventHtml));
 }
 
-function event_feed_v4_occurrence($event, $date)
+function event_feed_event_has_internal_category($event)
+{
+    foreach (array('internal', 'general') as $field) {
+        if (!isset($event['metadata'][$field]) || !is_array($event['metadata'][$field])) {
+            continue;
+        }
+
+        foreach ($event['metadata'][$field] as $value) {
+            $value = strtolower(trim((string)$value));
+            if ($field === 'internal'
+                && $value !== ''
+                && $value !== 'none'
+                && $value !== 'select') {
+                return true;
+            }
+            if ($field === 'general'
+                && ($value === 'internal' || $value === 'internal communications')) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function event_feed_event_is_other_only($event)
+{
+    $hasOtherEventType = false;
+    $hasAdditionalSelection = false;
+
+    foreach ($event['metadata'] as $field => $values) {
+        foreach ($values as $value) {
+            $value = trim((string)$value);
+            if ($value === '' || strcasecmp($value, 'None') === 0 || strcasecmp($value, 'Select') === 0) {
+                continue;
+            }
+
+            if ($field === 'general' && strcasecmp($value, 'Other') === 0) {
+                $hasOtherEventType = true;
+                continue;
+            }
+
+            $hasAdditionalSelection = true;
+        }
+    }
+
+    return $hasOtherEventType && !$hasAdditionalSelection;
+}
+
+function event_feed_occurrences($event, $date)
+{
+    $occurrences = array();
+    $start = (int)$date['start-date'] / 1000;
+    $end = (int)$date['end-date'] / 1000;
+    if (!$start || $end < $start) {
+        $end = $start;
+    }
+
+    $dayStart = $start;
+    while ($dayStart <= $end) {
+        $dailyDate = $date;
+        $dailyDate['start-date'] = $dayStart * 1000;
+        $occurrence = event_feed_occurrence($event, $dailyDate);
+        if ($occurrence !== null) {
+            $occurrences[] = $occurrence;
+        }
+
+        // Match the legacy feed: ranges lasting at least 24 hours produce
+        // one item per day, while shorter overnight events remain one item.
+        if ($end - $start < 86400) {
+            break;
+        }
+        $nextDayStart = strtotime(date('Y-m-d H:i:s', $dayStart) . ' +1 day');
+        if ($nextDayStart <= $dayStart) {
+            break;
+        }
+        $dayStart = $nextDayStart;
+    }
+
+    return $occurrences;
+}
+
+function event_feed_occurrence($event, $date)
 {
     global $PriorToToday;
 
@@ -67,31 +154,48 @@ function event_feed_v4_occurrence($event, $date)
         $end = $start;
     }
     $now = time();
-    if ($now > $end && $PriorToToday !== 'Show') {
+    if ($PriorToToday !== 'Show'
+        && !event_feed_v4_occurrence_is_current_or_future($start, $end, $date['all-day'])) {
         return null;
-    }
-
-    $displayStart = $start;
-    if (date('Y-m-d', $start) !== date('Y-m-d', $end) && $start <= $now && $end >= $now) {
-        $displayStart = $now;
     }
 
     $item = $event;
     $item['date'] = array(
-        'start-date' => $displayStart,
+        'start-date' => $start,
         'time-start-date' => $start,
         'end-date' => $end,
         'all-day' => $date['all-day'],
         'outside-of-minnesota' => $date['outside-of-minnesota'],
         'time-zone' => $date['time-zone']
     );
-    $item['start-date'] = $displayStart;
+    $item['start-date'] = $start;
     $item['end-date'] = $end;
-    $item['date-for-sorting'] = $displayStart;
+    $item['date-for-sorting'] = $start;
     return display_on_feed_events($item) ? $item : null;
 }
 
-function event_feed_v4_sort_events($a, $b)
+function event_feed_v4_occurrence_is_current_or_future($start, $end, $allDay)
+{
+    $now = time();
+
+    if ($start >= $now) {
+        return true;
+    }
+
+    if (date('Y-m-d', $start) !== date('Y-m-d', $now)) {
+        return false;
+    }
+
+    if ($end >= $now) {
+        return true;
+    }
+
+    // All-day events are date-based, so an event that starts today remains
+    // valid for today's feed even though its timestamp is midnight.
+    return event_data_is_yes($allDay);
+}
+
+function event_feed_sort_events($a, $b)
 {
     if ($a['date-for-sorting'] == $b['date-for-sorting']) {
         return strcasecmp($a['title'], $b['title']);
@@ -140,7 +244,7 @@ function format_fancy_event_date($date)
     if (!isset($date['start-date']) || $date['start-date'] === '') {
         return '';
     }
-    if (event_v4_is_yes($date['all-day'])) {
+    if (event_data_is_yes($date['all-day'])) {
         return '';
     }
     $start = isset($date['time-start-date']) ? $date['time-start-date'] : $date['start-date'];
@@ -154,6 +258,9 @@ function format_fancy_event_date($date)
 
 function convert_path_to_link($event)
 {
+    if (isset($event['urlOverride']) && $event['urlOverride'] !== '') {
+        return $event['urlOverride'];
+    }
     return $event['external-link'] !== ''
         ? $event['external-link']
         : 'https://www.bethel.edu' . $event['path'];
@@ -173,8 +280,8 @@ function get_month_shorthand_name($month)
 
 function get_timezone_shorthand($date)
 {
-    if (isset($date['outside-of-minnesota']) && event_v4_is_yes($date['outside-of-minnesota'])) {
-        return event_v4_timezone_abbreviation($date['time-zone']);
+    if (isset($date['outside-of-minnesota']) && event_data_is_yes($date['outside-of-minnesota'])) {
+        return event_data_timezone_abbreviation($date['time-zone']);
     }
     return '';
 }

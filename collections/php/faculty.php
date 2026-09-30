@@ -31,10 +31,6 @@ function create_faculty_carousel($categories){
         $carousel_items .= carousel_item($html, "", null, false);
     }
     carousel_create("flickity  carousel--employee", $carousel_items);
-    // todo: Display 7 bios that match one of the values in $categories and have the following info:
-    //   -  name, job title, image
-    //   - Name should link to the bio page.
-    // They should be in a carousel (see general-cascade/marcos.php and example above)
 }
 function find_matching_bios($xml, $categories){
     $return_bios = array();
@@ -43,6 +39,13 @@ function find_matching_bios($xml, $categories){
 
         if( strval($ds->deactivate) == 'Yes' ) {
             continue;
+        }
+
+        // Skip the bio if any job-title entry is marked as adjunct.
+        foreach($ds->{'job-titles'} as $job_title){
+            if( strval($job_title->{'adjunct'}) == 'Yes' ) {
+                continue 2;
+            }
         }
 
         // if the file doesn't exist, skip it.
@@ -70,8 +73,6 @@ function find_matching_bios($xml, $categories){
     return $return_bios;
 }
 
-
-
 function create_twig_html($image, $first, $last, $title, $path){
 
     $twig = makeTwigEnviron('/code/collections/twig');
@@ -96,17 +97,15 @@ function create_new_job_titles($titles){
     foreach($titles as $title){
         array_push($school_array, strval($title->{'school'}));
 
-        if($title->{'department'}){
-            array_push($program_array, $title->{'department'});
-        }elseif($title->{'adult-undergrad-program'}){
-            array_push($program_array, $title->{'adult-undergrad-program'});
-        }elseif($title->{'graduate-program'}){
-            array_push($program_array, $title->{'graduate-program'});
-        }elseif($title->{'seminary-program'}){
-            array_push($program_array, $title->{'seminary-program'});
-        }else{
-            array_push($program_array, '');
+        $program = '';
+        foreach(array('department', 'adult-undergrad-program', 'graduate-program', 'seminary-program') as $field){
+            $value = trim(strval($title->{$field}));
+            if($value != '' && $value != '-select-'){
+                $program = $value;
+                break;
+            }
         }
+        array_push($program_array, $program);
 
         if($title->{'department-chair'} == 'Yes'){
             array_push($job_title_array, 'Department Chair');
@@ -137,22 +136,22 @@ function create_new_job_titles($titles){
     $jobsAsString = "";
     foreach($job_map as $key => $value){
         foreach($value as $key2 => $value2) {
+            if(trim($jobsAsString) != "") {
+                $jobsAsString = rtrim($jobsAsString) . ", ";
+            }
             $size = sizeof($value2);
             for($j = 0; $j < $size; $j++) {
-                if($j == ($size-1) && $size > 1){
-                    $jobsAsString = $jobsAsString . " and ";
-                }
-                $jobsAsString = $jobsAsString . "$value2[$j]";
-                if($j < ($size-1) && $size > 2){
+                if($j > 0){
                     $jobsAsString = $jobsAsString . ", ";
                 }
+                $jobsAsString = $jobsAsString . "$value2[$j]";
             }
-            if($key2 != "None") {
+            if($key2 != "" && $key2 != "None") {
                 $jobsAsString = $jobsAsString . " in $key2 ";
             }
         }
         
     }
-    return $jobsAsString;
+    return trim($jobsAsString);
 
 }

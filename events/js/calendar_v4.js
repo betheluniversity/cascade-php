@@ -58,6 +58,17 @@
         return String(value == null ? '' : value).trim().toLowerCase();
     }
 
+    function normalizeInternalCategory(value) {
+        var normalized = normalizeCategory(value);
+
+        // Cascade uses "Faculty/staff" in event metadata while the calendar
+        // filter is configured as "staff". Treat those two labels as the
+        // same internal audience without broadening Student matching.
+        return normalized === 'faculty/staff-internal'
+            ? 'staff-internal'
+            : normalized;
+    }
+
     function eventHoverPosition(headingRect, hoverRect, boundaryRect, viewportHeight) {
         var boundaryWidth = boundaryRect.right - boundaryRect.left;
         var left = headingRect.right - boundaryRect.left - 20;
@@ -151,8 +162,14 @@
     function eventMatchesInternalFilters(categories, selectedFilters) {
         return selectedFilters.some(function (filter) {
             return categories.some(function (category) {
-                return normalizeCategory(category) === normalizeCategory(filter);
+                return normalizeInternalCategory(category) === normalizeInternalCategory(filter);
             });
+        });
+    }
+
+    function eventHasInternalCategory(categories) {
+        return categories.some(function (category) {
+            return /-internal$/i.test(normalizeCategory(category));
         });
     }
 
@@ -161,11 +178,21 @@
         selectedExternal,
         eventTypeFilters,
         selectedInternal,
-        remoteUser
+        remoteUser,
+        internalAccess
     ) {
-        return eventMatchesExternalFilters(categories, selectedExternal, eventTypeFilters)
-            || (Boolean(remoteUser)
-                && eventMatchesInternalFilters(categories, selectedInternal));
+        if (eventHasInternalCategory(categories)) {
+            // The endpoint has already authorized and filtered the payload.
+            // Use its access level as the source of truth; display-name
+            // resolution can fail independently of authentication.
+            var hasInternalAccess = internalAccess
+                ? normalizeCategory(internalAccess) !== 'guest'
+                : Boolean(remoteUser);
+            return hasInternalAccess
+                && eventMatchesInternalFilters(categories, selectedInternal);
+        }
+
+        return eventMatchesExternalFilters(categories, selectedExternal, eventTypeFilters);
     }
 
     function validInteger(value, minimum, maximum) {
@@ -328,6 +355,7 @@
                 preferredView: hasViewControls
                     ? initialCalendarState.mode || (savedView === 'list' ? 'list' : 'grid')
                     : 'grid',
+                internalAccess: 'guest',
                 remoteUser: null,
                 requestId: 0,
                 scrollAfterLoad: initialCalendarState.day !== null && initialCalendarState.mode === 'list'
@@ -513,7 +541,8 @@
                         selectedExternal,
                         availableEventTypes,
                         selectedInternal,
-                        state.remoteUser
+                        state.remoteUser,
+                        state.internalAccess
                     );
 
                     // The legacy calendar stylesheet sets list events to
@@ -602,16 +631,32 @@
                 link.href = remoteUser
                     ? '/code/general-cascade/logout'
                     : '/code/general-cascade/login';
-                link.textContent = remoteUser ? 'Logout' : 'Login';
-                elements.welcome.replaceChildren(
-                    documentObject.createTextNode('Welcome ' + user + ': '),
-                    link
-                );
+                link.textContent = remoteUser ? 'Log out' : 'Log in';
+                if (remoteUser) {
+                    elements.welcome.replaceChildren(
+                        documentObject.createTextNode('Logged in as: ' + user + ' '),
+                        link
+                    );
+                } else {
+                    elements.welcome.replaceChildren(
+                        link,
+                        documentObject.createTextNode(' to see internal events')
+                    );
+                }
             }
 
             function updateInternalFilterVisibility() {
                 documentObject.querySelectorAll('.filter-list-internal').forEach(function (container) {
-                    container.hidden = !state.remoteUser;
+                    container.hidden = state.internalAccess === 'guest';
+                });
+
+                internalFilterInputs().forEach(function (input) {
+                    var isStaffFilter = normalizeCategory(input.value) === 'staff-internal';
+                    var hideForStudent = state.internalAccess === 'student' && isStaffFilter;
+                    input.closest('li').hidden = hideForStudent;
+                    if (hideForStudent) {
+                        input.checked = false;
+                    }
                 });
             }
 
@@ -629,25 +674,26 @@
                 link.setAttribute('aria-label', label);
             }
 
-            function highlightSelectedDay(calendarState) {
-                calendarMain.querySelectorAll('.event.is-selected-day').forEach(function (dayElement) {
-                    dayElement.classList.remove('is-selected-day');
-                    dayElement.style.backgroundColor = '';
+            function highlightCurrentDay(calendarState) {
+                calendarMain.querySelectorAll('.event.is-current-day').forEach(function (dayElement) {
+                    dayElement.classList.remove('is-current-day');
                 });
 
-                if (!calendarState.day) {
+                var today = new Date();
+                if (calendarState.month !== today.getMonth() + 1
+                    || calendarState.year !== today.getFullYear()) {
                     return null;
                 }
 
-                var selectedSpan = Array.from(calendarMain.querySelectorAll('.event > span[name]')).find(function (span) {
-                    return Number.parseInt(span.getAttribute('name'), 10) === calendarState.day;
+                var currentSpan = Array.from(calendarMain.querySelectorAll('.event > span[name]')).find(function (span) {
+                    return Number.parseInt(span.getAttribute('name'), 10) === today.getDate();
                 });
-                var selectedDay = selectedSpan ? selectedSpan.closest('.event') : null;
-                if (selectedDay) {
-                    selectedDay.classList.add('is-selected-day');
-                    selectedDay.style.backgroundColor = '#e9e9e9';
+                var currentDay = currentSpan ? currentSpan.closest('.event') : null;
+                if (currentDay) {
+                    currentDay.classList.add('is-current-day');
+                    currentDay.setAttribute('aria-current', 'date');
                 }
-                return selectedDay;
+                return currentDay;
             }
 
             function showLoadError() {
@@ -681,15 +727,16 @@
                 calendarMain.innerHTML = data.grid;
 
                 state.remoteUser = data.remote_user || null;
+                state.internalAccess = data.internal_access || 'guest';
                 updateWelcomeBar(state.remoteUser);
                 updateInternalFilterVisibility();
                 applyFilters();
                 applyResponsiveView();
 
-                var selectedDay = highlightSelectedDay(calendarState);
-                if (selectedDay && state.scrollAfterLoad && state.effectiveView === 'list') {
+                var currentDay = highlightCurrentDay(calendarState);
+                if (currentDay && state.scrollAfterLoad && state.effectiveView === 'list') {
                     windowObject.requestAnimationFrame(function () {
-                        selectedDay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        currentDay.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     });
                 }
                 state.scrollAfterLoad = false;
@@ -717,6 +764,7 @@
 
                 var requestOptions = {
                     credentials: 'same-origin',
+                    cache: 'no-store',
                     headers: { Accept: 'application/json' }
                 };
                 if (state.abortController) {
@@ -991,6 +1039,7 @@
         eventMatchesOtherFilter: eventMatchesOtherFilter,
         eventIsVisible: eventIsVisible,
         normalizeCategory: normalizeCategory,
+        normalizeInternalCategory: normalizeInternalCategory,
         parseCalendarState: parseCalendarState,
         reconcileFilterSelection: reconcileFilterSelection
     });
