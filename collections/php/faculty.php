@@ -31,10 +31,6 @@ function create_faculty_carousel($categories){
         $carousel_items .= carousel_item($html, "", null, false);
     }
     carousel_create("flickity  carousel--employee", $carousel_items);
-    // todo: Display 7 bios that match one of the values in $categories and have the following info:
-    //   -  name, job title, image
-    //   - Name should link to the bio page.
-    // They should be in a carousel (see general-cascade/marcos.php and example above)
 }
 function find_matching_bios($xml, $categories){
     $return_bios = array();
@@ -76,8 +72,6 @@ function find_matching_bios($xml, $categories){
     }
     return $return_bios;
 }
-
-
 
 function create_twig_html($image, $first, $last, $title, $path){
 
