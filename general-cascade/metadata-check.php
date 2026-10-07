@@ -1,11 +1,16 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
+$metadata_auth_enabled = strpos($require_auth, "Yes") !== false || $check_auth == "Yes";
+// Preserve the legacy referral block's session use without starting a session
+// on every public page. Keep its existing matching behavior unchanged.
+$metadata_referrer_uses_session = in_array('HTTP_REFERER', $_SERVER);
+if (($metadata_auth_enabled || $metadata_referrer_uses_session)
+    && session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $staging = strstr(getcwd(), "/staging");
 $soda = strstr(getcwd(), "soda");
 
-if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
+if ($metadata_auth_enabled){
     header("Cache-Control: no-cache, must-revalidate");
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/wufoo/embed_preload.php";
@@ -15,6 +20,9 @@ if ( strpos($require_auth,"Yes") !== false || $check_auth == "Yes"){
     } else {
         include_once 'auth-cas.php';
     }
+}elseif (session_status() == PHP_SESSION_ACTIVE){
+    // Session-dependent responses must not be stored in a shared page cache.
+    header("Cache-Control: private, no-store, no-cache, must-revalidate");
 }else{
     header("Cache-Control: public, must-revalidate, max-age=86400");
 }
