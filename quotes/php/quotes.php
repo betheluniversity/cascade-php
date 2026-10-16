@@ -20,7 +20,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
-        carousel_create("swiper--quotes", $html);
+        carousel_create("swiper swiper--quotes", $html);
     }elseif(sizeof($quotesToDisplay) > 0){
         echo $quotesToDisplay[0];
     }
