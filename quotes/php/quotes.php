@@ -20,13 +20,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
-        $html = '<div class="swiper-wrapper">' . $html . '</div>';
-        $html .= '<div class="swiper-navigation">
-            <button type="button" class="swiper-button-prev" aria-label="Previous quote"></button>
-            <button type="button" class="swiper-button-next" aria-label="Next quote"></button>
-            <div class="swiper-pagination"></div>
-        </div>';
-        carousel_create("swiper swiper--quotes", $html);
+        carousel_create("swiper swiper--quotes", $html, true, true);
     }elseif(sizeof($quotesToDisplay) > 0){
         echo $quotesToDisplay[0];
     }

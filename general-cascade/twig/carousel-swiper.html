@@ -1,0 +1,16 @@
+<div class="{{class}}">
+    <div class="swiper-wrapper">
+        {{content|raw}}
+    </div>
+    {% if arrows or pagination %}
+    <div class="swiper-navigation">
+        {% if arrows %}
+        <button type="button" class="swiper-button-prev" aria-label="Previous slide"></button>
+        <button type="button" class="swiper-button-next" aria-label="Next slide"></button>
+        {% endif %}
+        {% if pagination %}
+        <div class="swiper-pagination"></div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

@@ -11,21 +11,26 @@ function pre($content){
     echo $twig->render('pre.html', array('content' => $content));
 }
 
-function carousel_create($class = "", $content){
-   $twig = makeTwigEnviron('/code/general-cascade/twig');
-    echo $twig->render('carousel.html', array(
+// Swiper controls are opt-in; other carousels keep the legacy template.
+function carousel_create($class = "", $content, $arrows=false, $pagination=false){
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $is_swiper = in_array('swiper', preg_split('/\s+/', trim($class)), true);
+    $template = $is_swiper ? 'carousel-swiper.html' : 'carousel.html';
+    echo $twig->render($template, array(
         'class' => $class,
-        'content' => $content
+        'content' => $content,
+        'arrows' => $arrows,
+        'pagination' => $pagination
     ));
 }
 
-function build_carousel_from_array($array, $class){
+function build_carousel_from_array($array, $class, $arrows=false, $pagination=false){
     $content = "";
     foreach($array as $item){
         $content .= $item;
     }
 
-    carousel_create($class, $content);
+    carousel_create($class, $content, $arrows, $pagination);
 }
 
 // Currently some velocity files are using this. (should be deleted soon)
