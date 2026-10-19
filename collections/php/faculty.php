@@ -30,7 +30,7 @@ function create_faculty_carousel($categories){
         }
         $carousel_items .= carousel_item($html, "", null, false);
     }
-    carousel_create("swiper", $carousel_items);
+    carousel_create("swiper swiper--quotes", $carousel_items, true, true);
 }
 function find_matching_bios($xml, $categories){
     $return_bios = array();
