@@ -14,13 +14,15 @@ function pre($content){
 // Swiper controls are opt-in; other carousels keep the legacy template.
 function carousel_create($class = "", $content, $arrows=false, $pagination=false){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
-    $is_swiper = in_array('swiper', preg_split('/\s+/', trim($class)), true);
+    $classes = preg_split('/\s+/', trim($class));
+    $is_swiper = in_array('swiper', $classes, true);
     $template = $is_swiper ? 'carousel-swiper.html' : 'carousel.html';
     echo $twig->render($template, array(
         'class' => $class,
         'content' => $content,
         'arrows' => $arrows,
-        'pagination' => $pagination
+        'pagination' => $pagination,
+        'quote_collection' => in_array('swiper--quotes', $classes, true)
     ));
 }
 

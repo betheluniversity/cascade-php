@@ -1,3 +1,6 @@
+{% if quote_collection %}
+<div class="quote-collection">
+{% endif %}
 <div class="{{class}}">
     <div class="swiper-wrapper">
         {{content|raw}}
@@ -14,3 +17,6 @@
     </div>
     {% endif %}
 </div>
+{% if quote_collection %}
+</div>
+{% endif %}
