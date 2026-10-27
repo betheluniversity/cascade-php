@@ -5,16 +5,17 @@ require_once __DIR__ . '/faculty-bio-listing-v2.php';
 /**
  * Render one faculty Swiper. Null selections use metadata; an array of selections
  * uses the supplied bios in order, without metadata filtering, exclusion or limits.
- * Metadata feeds exclude emeritus/emerita roles and missing/default-avatar images.
- * They use a random subset when a positive maximum is supplied; otherwise
- * they include every match in the existing leadership/status and last-name order.
+ * A positive metadata maximum excludes emeritus/emerita roles and default-avatar
+ * images before random selection. Without a maximum, include those entries and use
+ * the existing leadership/status and last-name sorting. Adjunct exclusion applies
+ * in both modes when requested.
  */
 function create_faculty_feed($metadata, $excludeAdjunct = false, $selectedBios = null, $maxEntries = null) {
     if ($selectedBios !== null) {
         $bios = $selectedBios;
     } else {
-        $bios = filter_faculty_feed_bios(get_faculty_bio_xml(), $metadata, $excludeAdjunct);
         $maxEntries = filter_var($maxEntries, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
+        $bios = filter_faculty_feed_bios(get_faculty_bio_xml(), $metadata, $excludeAdjunct, $maxEntries !== false);
         if ($maxEntries !== false) {
             shuffle($bios);
             $bios = array_slice($bios, 0, $maxEntries);
@@ -125,8 +126,8 @@ function faculty_feed_uses_default_avatar($bio) {
         && strcasecmp(basename(rawurldecode($imagePath)), 'default-avatar.svg') === 0;
 }
 
-/** Filter roles first, then combine their titles and sort flags into one bio. */
-function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
+/** Limit-specific exclusions precede title aggregation, deduplication and sampling. */
+function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false, $limitedSelection = false) {
     $filters = array();
     foreach (array('school', 'department', 'adult-undergrad-program', 'graduate-program', 'seminary-program') as $field) {
         $filters[$field] = faculty_feed_values(isset($metadata[$field]) ? $metadata[$field] : array());
@@ -137,7 +138,7 @@ function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
     $excludeAdjunct = ($excludeAdjunct === true || $excludeAdjunct === 'yes');
     $result = array();
     foreach ($bios as $bio) {
-        if (faculty_feed_uses_default_avatar($bio)) {
+        if ($limitedSelection && faculty_feed_uses_default_avatar($bio)) {
             continue;
         }
         $titles = array();
@@ -160,7 +161,7 @@ function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
             if ($excludeAdjunct && strtolower(trim($job['adjunct'])) === 'yes') {
                 continue;
             }
-            if (in_array(strtolower(trim($job['emeritus'])), array('emeritus', 'emerita'), true)) {
+            if ($limitedSelection && in_array(strtolower(trim($job['emeritus'])), array('emeritus', 'emerita'), true)) {
                 continue;
             }
             if (!$nursingMatch && !faculty_feed_job_matches($job, $filters)) {
