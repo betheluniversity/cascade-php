@@ -35,18 +35,7 @@ function build_carousel_from_array($array, $class, $arrows=false, $pagination=fa
     carousel_create($class, $content, $arrows, $pagination);
 }
 
-// Currently some velocity files are using this. (should be deleted soon)
-function carousel_open($class = ""){
-    echo "<div class='flickity js-rotate-order-carousel js-load-on-demand  $class'>";
-}
-
-// Currently some velocity files are using this. (should be deleted soon)
-function carousel_close(){
-    // basic for now but just in case it gets more complicated
-    echo "</div>";
-}
-
-// $print is to support image banks not echo-ing the carousel_item call.
+// Set $print to false to return a slide without echoing it.
 function carousel_item($content, $classes, $link = null, $print=true){
 
     $twig = makeTwigEnviron('/code/general-cascade/twig');
@@ -62,29 +51,6 @@ function carousel_item($content, $classes, $link = null, $print=true){
         return $render_content;
     }
 }
-
-function image_carousel($images){
-    shuffle($images);
-    $final_content = '';
-    foreach($images as $img){
-        if( is_array($img) ){
-            $img_path = $img[0];
-            $alt = $img[1];
-        } else {
-            $img_path = $img;
-            $alt = '';
-        }
-
-        $content = srcset("$img_path", $print=false,$lazy=true, $classes='', $alt_text=$alt);
-        $final_content = $final_content . carousel_item($content, '','',false);
-    }
-    if( sizeof($images) > 0 ) {
-        echo '<div class="site__image-bank">';
-        carousel_create('flickity  carousel--image-bank', $final_content);
-        echo '</div>';
-    }
-}
-
 
 function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
     // todo: in the move to imgix, we don't want this anymore
