@@ -4,14 +4,20 @@ require_once __DIR__ . '/faculty-bio-listing-v2.php';
 
 /**
  * Render one faculty Swiper. Null selections use metadata; an array of selections
- * uses the supplied bios in order, without metadata filtering or adjunct exclusion.
+ * uses the supplied bios in order, without metadata filtering, exclusion or limits.
+ * Metadata feeds use a random subset when a positive maximum is supplied; otherwise
+ * they include every match in the existing leadership/status and last-name order.
  */
-function create_faculty_feed($metadata, $excludeAdjunct = false, $selectedBios = null) {
+function create_faculty_feed($metadata, $excludeAdjunct = false, $selectedBios = null, $maxEntries = null) {
     if ($selectedBios !== null) {
         $bios = $selectedBios;
     } else {
         $bios = filter_faculty_feed_bios(get_faculty_bio_xml(), $metadata, $excludeAdjunct);
-        if (count($bios) > 1) {
+        $maxEntries = filter_var($maxEntries, FILTER_VALIDATE_INT, array('options' => array('min_range' => 1)));
+        if ($maxEntries !== false) {
+            shuffle($bios);
+            $bios = array_slice($bios, 0, $maxEntries);
+        } elseif (count($bios) > 1) {
             $bios = sort_bios_by_lead_and_last_name($bios, true);
         }
     }
