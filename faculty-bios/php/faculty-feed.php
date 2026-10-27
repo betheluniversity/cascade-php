@@ -1,6 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/code/vendor/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/code/general-cascade/macros.php';
 
 /** Decode the Cascade payload; a missing individual selection is an empty feed. */
 function create_faculty_feed_from_context($payload) {
@@ -319,8 +320,7 @@ function faculty_feed_format_titles($titles) {
 
 function faculty_feed_render_card($bio, $twig) {
     $image = $bio['image-path'] !== '/'
-        ? $twig->render('srcset.html', array('end_path' => $bio['image-path'], 'lazy' => true,
-            'classes' => '', 'alt_text' => $bio['first'] . ' ' . $bio['last']))
+        ? srcset($bio['image-path'], false, true, '', $bio['first'] . ' ' . $bio['last'], '18em')
         : "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' alt='A default silhouette for faculty without images.' />";
     return $twig->render('faculty-bio-swiper.html', array('bio' => $bio,
         'bio_image' => $image, 'job_titles' => faculty_feed_format_titles($bio['array_of_job_titles'])));

@@ -1,32 +1,12 @@
-{% if lazy %}
-<img 
-        src='https://bethel-university.imgix.net/{{end_path}}?w=320'
-        srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        data-srcset='   https://bethel-university.imgix.net/{{end_path}}?w=1400 1400w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=1200 1200w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=1000 1000w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=800 800w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=600 600w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=400 400w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=200 200w'
-        data-sizes="auto"
-        class="lazyload {{ classes }}"
-        alt="{{alt_text}}"
-     />
-{% else %}
+{% if end_path and end_path != '/' %}
 <img
-        src='https://bethel-university.imgix.net/{{end_path}}?w?320'
-        srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-        data-srcset='   https://bethel-university.imgix.net/{{end_path}}?w=1400 1400w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=1200 1200w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=1000 1000w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=800 800w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=600 600w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=400 400w,
-                        https://bethel-university.imgix.net/{{end_path}}?w=200 200w'
-        data-sizes="auto"
+        src="https://bethel-university.imgix.net/{{end_path}}?w={{ src_width|default(320) }}&amp;auto=format,compress&amp;fit=max"
+        srcset="{% for width in widths|default([200, 400, 600, 800, 1000, 1200, 1400, 1600, 1884, 2000, 2512]) %}https://bethel-university.imgix.net/{{end_path}}?w={{ width }}&amp;auto=format,compress&amp;fit=max {{ width }}w{% if not loop.last %}, {% endif %}{% endfor %}"
+        sizes="{% if lazy and image_width and image_height %}auto, {% endif %}{{ sizes|default('100vw') }}"
         class="{{ classes }}"
         alt="{{alt_text}}"
-        />
-
+        loading="{% if lazy %}lazy{% else %}eager{% endif %}"
+        decoding="async"
+        {% if image_width and image_height %}width="{{ image_width }}" height="{{ image_height }}"{% endif %}
+/>
 {% endif %}

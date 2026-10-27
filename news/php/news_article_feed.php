@@ -304,7 +304,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '<div class="grid-cell  u-medium-1-2">';
         $html .= '<div class="grid-pad-1x">';
 
-        $html .= thumborURL($imagePath, "400", true, true, $page_info['description']);
+        $html .= srcset($imagePath, false, true, '', $page_info['description']);
 
         $html .= '</div>';
         $html .= '</div>';

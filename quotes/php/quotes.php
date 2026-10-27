@@ -70,15 +70,11 @@ function get_quote_html($xml){
 }
 
 function get_twig_html($imagePath, $text, $source, $gradYear, $job){
-    # add a slash if there isn't one
-    if( $imagePath[0] != '/')
-        $imagePath = "/$imagePath";
-
-    if( strpos($imagePath, 'bethel.edu') !== false[0] )
-        $imagePath = "https://www.bethel.edu$imagePath";
+    // Keep the image path site-relative with one leading slash.
+    $imagePath = '/' . ltrim((string) $imagePath, '/');
 
     if( $imagePath != "/" && $imagePath != "") {
-        $thumbURL = thumborURL($imagePath, 200, true, false, $text);
+        $thumbURL = srcset($imagePath, false, true, '', $text, '8em');
     }else {
         $thumbURL = "";
     }

@@ -321,7 +321,7 @@ function create_bio_html($bio, $departmental){
     if( $departmental ) {
         if( $bio['image-path'] != '/') {
             $alt_text = $bio['first'] . ' ' . $bio['last'];
-            $bio_image = srcset($bio['image-path'], false, true, '', "$alt_text");
+            $bio_image = srcset($bio['image-path'], false, true, '', "$alt_text", '18em');
         } else {
             $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' alt='A default silhouette for faculty without images.' />";
         }

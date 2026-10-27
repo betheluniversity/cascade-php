@@ -52,18 +52,38 @@ function carousel_item($content, $classes, $link = null, $print=true){
     }
 }
 
-function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
-    // todo: in the move to imgix, we don't want this anymore
-//    if( strpos($end_path,"www.bethel.edu") == false ) {
-//        $end_path = "https://www.bethel.edu/$end_path";
-//    }
+// Read local image dimensions once per request; never fetch remote images here.
+function native_image_dimensions($end_path){
+    static $dimensions = array();
+    $path = parse_url((string) $end_path, PHP_URL_PATH);
+    $local_path = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/' . ltrim((string) $path, '/');
+    if (!array_key_exists($local_path, $dimensions)) {
+        $dimensions[$local_path] = is_file($local_path) ? @getimagesize($local_path) : false;
+    }
+    return $dimensions[$local_path];
+}
 
+function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text='', $sizes='100vw'){
     $twig = makeTwigEnviron('/code/general-cascade/twig');
+    $dimensions = native_image_dimensions($end_path);
+    $widths = array();
+    // Keep small-image options and allow up to 2x the 1256px content width.
+    foreach (array(200, 400, 600, 800, 1000, 1200, 1400, 1600, 1884, 2000, 2512) as $width) {
+        $width = $dimensions ? min($width, $dimensions[0]) : $width;
+        if (!in_array($width, $widths, true)) {
+            $widths[] = $width;
+        }
+    }
     $content = $twig->render('srcset.html', array(
         'end_path'  => $end_path,
         'lazy'      => $lazy,
         'classes'   => $classes,
-        'alt_text'  => $alt_text)
+        'alt_text'  => $alt_text,
+        'sizes'     => $sizes,
+        'widths'    => $widths,
+        'src_width' => $dimensions ? min(320, $dimensions[0]) : 320,
+        'image_width' => $dimensions ? $dimensions[0] : null,
+        'image_height' => $dimensions ? $dimensions[1] : null)
     );
 
     if($print){
@@ -74,30 +94,6 @@ function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text=''){
 
 }
 
-
-function thumborURL($end_path, $width, $lazy=true, $print=true, $alt_text=''){
-
-    // todo: this is gross, but its a way to clean up the end_path
-    $end_path = str_replace('http://', '', $end_path);
-    $end_path = str_replace('https://', '', $end_path);
-    $end_path = str_replace('www.bethel.edu', '', $end_path);
-    $end_path = str_replace('staging.bethel.edu/', '', $end_path);
-    $end_path = str_replace('staging.xp.bethel.edu/', '', $end_path);
-
-    $twig = makeTwigEnviron('/code/general-cascade/twig');
-    $html = $twig->render('thumborURL.html', array(
-        'end_path'  => $end_path,
-        'width'     => $width,
-        'lazy'      => $lazy,
-        'alt_text'  => $alt_text
-    ));
-
-    if($print){
-        echo $html;
-    }else{
-        return $html;
-    }
-}
 
 function xml2array($xml){
     $arr = array();
