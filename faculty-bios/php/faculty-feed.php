@@ -5,7 +5,8 @@ require_once __DIR__ . '/faculty-bio-listing-v2.php';
 /**
  * Render one faculty Swiper. Null selections use metadata; an array of selections
  * uses the supplied bios in order, without metadata filtering, exclusion or limits.
- * Metadata feeds use a random subset when a positive maximum is supplied; otherwise
+ * Metadata feeds exclude emeritus/emerita roles and missing/default-avatar images.
+ * They use a random subset when a positive maximum is supplied; otherwise
  * they include every match in the existing leadership/status and last-name order.
  */
 function create_faculty_feed($metadata, $excludeAdjunct = false, $selectedBios = null, $maxEntries = null) {
@@ -113,6 +114,17 @@ function faculty_feed_nursing_match($bio, $filters) {
     return false;
 }
 
+/** Missing images use the default avatar when rendered, as do explicit avatar paths. */
+function faculty_feed_uses_default_avatar($bio) {
+    $imagePath = isset($bio['image-path']) ? trim($bio['image-path']) : '';
+    if (trim($imagePath, '/') === '') {
+        return true;
+    }
+    $imagePath = parse_url($imagePath, PHP_URL_PATH);
+    return is_string($imagePath)
+        && strcasecmp(basename(rawurldecode($imagePath)), 'default-avatar.svg') === 0;
+}
+
 /** Filter roles first, then combine their titles and sort flags into one bio. */
 function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
     $filters = array();
@@ -125,6 +137,9 @@ function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
     $excludeAdjunct = ($excludeAdjunct === true || $excludeAdjunct === 'yes');
     $result = array();
     foreach ($bios as $bio) {
+        if (faculty_feed_uses_default_avatar($bio)) {
+            continue;
+        }
         $titles = array();
         $bio['is_lead'] = false;
         $bio['top_lead'] = false;
@@ -143,6 +158,9 @@ function filter_faculty_feed_bios($bios, $metadata, $excludeAdjunct = false) {
                 'adjunct' => 'No', 'fulltime' => 'Yes', 'emeritus' => 'Neither'
             ), $job);
             if ($excludeAdjunct && strtolower(trim($job['adjunct'])) === 'yes') {
+                continue;
+            }
+            if (in_array(strtolower(trim($job['emeritus'])), array('emeritus', 'emerita'), true)) {
                 continue;
             }
             if (!$nursingMatch && !faculty_feed_job_matches($job, $filters)) {
