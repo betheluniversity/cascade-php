@@ -13,6 +13,17 @@ function create_faculty_bio_listing($schools, $cas, $caps, $gs, $sem, $displayFa
     $bios = get_faculty_bio_xml();
     $bios = filter_bios($bios, $schools, $cas, $caps, $gs, $sem);
 
+    // Carousel output is a flat list without the listing headings.
+    if ($departmental) {
+        $bios = sort_bios_by_lead_and_last_name($bios, $displayFaculty != 'All programs');
+        foreach ($bios as $bio) {
+            if (is_array($bio)) {
+                echo create_bio_html($bio, true);
+            }
+        }
+        return;
+    }
+
     // Sort bios
     $grouped_bios = array(
         'Dean of Nursing' => array(),
@@ -396,6 +407,61 @@ function get_job_title($job_title, $id){
         return $returned_title;
     }
 
+}
+
+
+function sort_bios_by_lead_and_last_name($bios, $top_lead_sort){
+    $top_lead = array();
+    $is_lead = array();
+    $last = array();
+    $fulltime = array();
+    $emeritus = array();
+    $adjunct = array();
+
+    // Obtain a list of columns
+    foreach ($bios as $key => $row) {
+        if (array_key_exists('top_lead', $row))
+            $top_lead[$key] = $row['top_lead'];
+        else
+            $top_lead[$key] = false;
+
+        if (array_key_exists('is_lead', $row))
+            $is_lead[$key] = $row['is_lead'];
+        else
+            $is_lead[$key] = false;
+
+        if (array_key_exists('fulltime', $row))
+            $fulltime[$key] = $row['fulltime'];
+        else
+            $fulltime[$key] = false;
+
+        if (array_key_exists('emeritus', $row) and $row['emeritus'] != 'Neither')
+            $emeritus[$key] = 'Emeritus';
+        else
+            $emeritus[$key] = 'Neither';
+
+        if (array_key_exists('adjunct', $row))
+            $adjunct[$key] = $row['adjunct'];
+        else
+            $adjunct[$key] = false;
+
+        if (array_key_exists('last', $row))
+            $last[$key] = $row['last'];
+        else
+            $last[$key] = 'z';
+    }
+
+    // Sort the data with leads on top, then alpha sort
+    // code gotten from http://stackoverflow.com/questions/4582649/php-sort-array-by-two-field-values
+    if( $top_lead_sort ) {
+        array_multisort($top_lead, SORT_DESC, $is_lead, SORT_DESC, $emeritus, SORT_DESC,
+            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
+    } else {
+        array_multisort($is_lead, SORT_DESC, $emeritus, SORT_DESC,
+            $adjunct, SORT_ASC, $fulltime, SORT_DESC, $last, SORT_ASC, $bios);
+    }
+
+    return $bios;
 }
 
 

@@ -13,24 +13,30 @@ function create_faculty_carousel($categories){
     $faculty_pages = $xml->xpath("//system-page[system-data-structure[@definition-path='Faculty Bio']]");
     shuffle($faculty_pages);
     $bios = find_matching_bios($faculty_pages, $categories);
+    $twig = makeTwigEnviron('/code/faculty-bios/twig');
     $carousel_items = "";
     foreach($bios as $bio){
         $ds = $bio->{'system-data-structure'};
         $first = $ds->first;
         $last = $ds->last;
         $path = $bio->path;
-        $image = "https://www.bethel.edu" . $ds->image->path[0];
         $title = $ds->{'job-title'};
         $titles = $ds->{'job-titles'};
         if($titles[0]->{'school'} != "") {
-            $jobsAsSting = create_new_job_titles($titles);
-            $html = create_twig_html($image, $first, $last, $jobsAsSting, $path);
-        }else {
-            $html = create_twig_html($image, $first, $last, $title, $path);
+            $title = create_new_job_titles($titles);
         }
-        $carousel_items .= carousel_item($html, "", null, false);
+        $bio_image = srcset($ds->image->path[0], false, true, '', $first . ' ' . $last);
+        $carousel_items .= $twig->render('faculty-bio-swiper.html', array(
+            'bio' => array(
+                'path' => $path,
+                'first' => $first,
+                'last' => $last
+            ),
+            'bio_image' => $bio_image,
+            'job_titles' => $title
+        ));
     }
-    carousel_create("flickity  carousel--employee", $carousel_items);
+    carousel_create("swiper swiper--cards", $carousel_items, true, false);
 }
 function find_matching_bios($xml, $categories){
     $return_bios = array();

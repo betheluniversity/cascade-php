@@ -20,7 +20,7 @@ function show_quote_collection($numItems, $School, $Topic, $CAS, $CAPS, $GS, $SE
         foreach ($quotesToDisplay as $finalQuote) {
             $html .= carousel_item($finalQuote, "", null, false);
         }
-        carousel_create("js-flickity  carousel--quote", $html);
+        carousel_create("swiper swiper--quotes", $html, true, true);
     }elseif(sizeof($quotesToDisplay) > 0){
         echo $quotesToDisplay[0];
     }
