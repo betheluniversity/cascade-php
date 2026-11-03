@@ -63,35 +63,93 @@ function native_image_dimensions($end_path){
     return $dimensions[$local_path];
 }
 
-function srcset($end_path, $print=true, $lazy=true, $classes='', $alt_text='', $sizes='100vw'){
-    $twig = makeTwigEnviron('/code/general-cascade/twig');
-    $dimensions = native_image_dimensions($end_path);
-    $widths = array();
-    // Keep small-image options and allow up to 2x the 1256px content width.
-    foreach (array(200, 400, 600, 800, 1000, 1200, 1400, 1600, 1884, 2000, 2512) as $width) {
-        $width = $dimensions ? min($width, $dimensions[0]) : $width;
-        if (!in_array($width, $widths, true)) {
-            $widths[] = $width;
+/*
+ * Responsive imgix image; mirrors the responsiveImage macro in Cascade's image.vm.
+ * $path is site-relative; an empty path returns ''. $alt is escaped by Twig.
+ *
+ * Supported $options:
+ * "class": CSS classes. Default: no class attribute.
+ * "sizes": fallback layout description (default "100vw"). Lazy images with known
+ *   dimensions automatically prepend "auto, " so the browser measures the layout.
+ * "autoSizes": true (default) or false. False never adds auto; use it for
+ *   object-fit: cover crops and for imgs that are themselves flex items.
+ * "loading": "lazy" (default) or "eager".
+ * "fetchpriority": "high" or "low"; omitted by default.
+ * "width" and "height": original image dimensions; supply both. Otherwise they are
+ *   read from the local file. They reserve the aspect ratio and cap the requests.
+ */
+function responsive_image($path, $alt = '', $options = array()){
+    // Strip the leading slash so imgix URLs never contain "//", then percent-encode
+    // characters that would break the URL or the srcset list. "%" goes first.
+    $url_path = ltrim(trim((string) $path), '/');
+    $url_path = str_replace(array('%', ' ', '&', '#', '?'), array('%25', '%20', '%26', '%23', '%3F'), $url_path);
+    if ($url_path === '') {
+        return '';
+    }
+
+    // Legacy src fallback only; not a CSS cap or the largest srcset candidate.
+    $fallback_width = 1152;
+    $class = isset($options['class']) ? trim((string) $options['class']) : '';
+    $sizes = !empty($options['sizes']) ? trim((string) $options['sizes']) : '100vw';
+    $auto_sizes = !(isset($options['autoSizes']) && $options['autoSizes'] === false);
+    $loading = (isset($options['loading']) && $options['loading'] === 'eager') ? 'eager' : 'lazy';
+    $priority = (isset($options['fetchpriority']) && in_array($options['fetchpriority'], array('high', 'low'), true))
+        ? $options['fetchpriority'] : '';
+
+    // Supplied dimensions avoid the file lookup.
+    $width = 0;
+    $height = 0;
+    if (isset($options['width'], $options['height']) && $options['width'] > 0 && $options['height'] > 0) {
+        $width = (int) $options['width'];
+        $height = (int) $options['height'];
+    } else {
+        $dimensions = native_image_dimensions($path);
+        if ($dimensions && $dimensions[0] > 0 && $dimensions[1] > 0) {
+            $width = (int) $dimensions[0];
+            $height = (int) $dimensions[1];
         }
     }
-    $content = $twig->render('srcset.html', array(
-        'end_path'  => $end_path,
-        'lazy'      => $lazy,
-        'classes'   => $classes,
-        'alt_text'  => $alt_text,
-        'sizes'     => $sizes,
-        'widths'    => $widths,
-        'src_width' => $dimensions ? min(320, $dimensions[0]) : 320,
-        'image_width' => $dimensions ? $dimensions[0] : null,
-        'image_height' => $dimensions ? $dimensions[1] : null)
-    );
 
-    if($print){
-        echo $content;
-    }else{
-        return $content;
+    // Treat caller sizes as a fallback description. Strip any leading auto, then
+    // add it only for lazy images with dimensions or an explicit auto override.
+    $explicit_auto = false;
+    if (strtolower($sizes) === 'auto' || strpos(strtolower($sizes), 'auto,') === 0) {
+        $explicit_auto = true;
+        $sizes = trim(ltrim(trim(substr($sizes, 4)), ','));
+    }
+    if ($sizes === '') {
+        $sizes = '100vw';
+    }
+    if ($auto_sizes && $loading === 'lazy' && (($width > 0 && $height > 0) || $explicit_auto)) {
+        $sizes = 'auto, ' . $sizes;
     }
 
+    $params = 'auto=format,compress&fit=max';
+
+    // 3840 supports a 1920px hero at 2x; known source dimensions cap the requests.
+    $widths = array();
+    $srcset = array();
+    foreach (array(200, 256, 320, 400, 480, 640, 800, 960, 1152, 1440, 1600, 1920, 2304, 2560, 2880, 3200, 3840) as $requested_width) {
+        $candidate_width = ($width > 0) ? min($requested_width, $width) : $requested_width;
+        if (!in_array($candidate_width, $widths, true)) {
+            $widths[] = $candidate_width;
+            $srcset[] = "https://bethel-university.imgix.net/$url_path?w=$candidate_width&$params {$candidate_width}w";
+        }
+    }
+    $src_width = ($width > 0) ? min($fallback_width, $width) : $fallback_width;
+
+    $twig = makeTwigEnviron('/code/general-cascade/twig');
+    return $twig->render('srcset.html', array(
+        'class'         => $class,
+        'alt'           => (string) $alt,
+        'loading'       => $loading,
+        'fetchpriority' => $priority,
+        'width'         => $width,
+        'height'        => $height,
+        'src'           => "https://bethel-university.imgix.net/$url_path?w=$src_width&$params",
+        'srcset'        => implode(', ', $srcset),
+        'sizes'         => $sizes
+    ));
 }
 
 

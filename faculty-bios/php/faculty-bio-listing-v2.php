@@ -321,9 +321,9 @@ function create_bio_html($bio, $departmental){
     if( $departmental ) {
         if( $bio['image-path'] != '/') {
             $alt_text = $bio['first'] . ' ' . $bio['last'];
-            $bio_image = srcset($bio['image-path'], false, true, '', "$alt_text", '18em');
+            $bio_image = responsive_image($bio['image-path'], $alt_text, array('sizes' => '18em'));
         } else {
-            $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' alt='A default silhouette for faculty without images.' />";
+            $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' loading='lazy' decoding='async' alt='A default silhouette for faculty without images.' />";
         }
         $html = $twig->render('faculty-bio-swiper.html', array(
             'bio'                   =>  $bio,
@@ -333,9 +333,9 @@ function create_bio_html($bio, $departmental){
     } else {
         if( $bio['image-path'] != '/') {
             $alt_text = $bio['first'] . ' ' . $bio['last'];
-            $bio_image = srcset($bio['image-path'], false, true, 'image--round', "$alt_text");
+            $bio_image = responsive_image($bio['image-path'], $alt_text, array('class' => 'image--round'));
         } else {
-            $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' class='image--round' alt='A default silhouette for faculty without images.' />";
+            $bio_image = "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' loading='lazy' decoding='async' class='image--round' alt='A default silhouette for faculty without images.' />";
         }
         $html = $twig->render('faculty-bio-v2.html', array(
             'bio'                   =>  $bio,

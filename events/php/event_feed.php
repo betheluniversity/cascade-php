@@ -153,7 +153,7 @@ function create_event_feed_logic($categories, $heading, $cacheVersion = ''){
 
     // Print No upcoming events if there are no events.
     if( sizeOf( $eventArray) == 0){
-        $eventsArray = array("<img class='d-flex mr-3 mb-3' loading='lazy' src='https://bethel-university.imgix.net/events/images/event-feed-fallback.jpg?w=300&amp;auto=format' alt='Events feed' /><p>See yourself at Bethel—join us for one of our in-person or virtual events!</p>");
+        $eventArray = array(responsive_image('/events/images/event-feed-fallback.jpg', 'Events feed', array('class' => 'd-flex mr-3 mb-3')) . "<p>See yourself at Bethel—join us for one of our in-person or virtual events!</p>");
     }
     $combinedArray = array($featuredEvents, $eventArray, $numEvents );
     return $combinedArray;
@@ -495,7 +495,7 @@ function get_featured_event_html($event, $featuredEventOptions){
     if( $event['image'] != "" && $event['image'] != "/"){
         $twig = makeTwigEnviron('/code/events/twig');
         $html = $twig->render('get_featured_event_html.html', array(
-            'thumborURL'=> srcset($event['image'], $print=false, $lazy=true, "", $description),
+            'thumborURL'=> responsive_image($event['image'], strip_tags($description)),
             'path' => $path,
             'title' => $title,
             'date' => $date,

@@ -114,7 +114,7 @@
         $twig = makeTwigEnviron('/code/profile-stories/twig');
         $html = $twig->render('profile_story_collection.html', array(
             'path' => $xml->path,
-            'thumborURL' => srcset($imagePath, false, true, '', $teaser),
+            'thumborURL' => responsive_image($imagePath, $teaser),
             'quote' => $quote,
             'teaser' => $teaser)
         );

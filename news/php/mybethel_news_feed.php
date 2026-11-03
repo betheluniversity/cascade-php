@@ -40,6 +40,12 @@ function mybethel_news_feed($categories, $blerts='No'){
                 ($blerts == 'No' and $article['bethel-alert'] != 'No')){
                 continue;
             }
+            // The ratio box stretches the img, so auto sizes can't measure the drawn width.
+            $article['image'] = responsive_image($article['image-path'], $article['title'], array(
+                'class' => 'd-flex  mr-3  mb-3',
+                'sizes' => '240px',
+                'autoSizes' => false
+            ));
             array_push($sortedArticles, $article);
         }
     }

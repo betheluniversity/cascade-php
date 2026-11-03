@@ -74,7 +74,7 @@ function get_twig_html($imagePath, $text, $source, $gradYear, $job){
     $imagePath = '/' . ltrim((string) $imagePath, '/');
 
     if( $imagePath != "/" && $imagePath != "") {
-        $thumbURL = srcset($imagePath, false, true, '', $text, '8em');
+        $thumbURL = responsive_image($imagePath, $text, array('sizes' => '8em'));
     }else {
         $thumbURL = "";
     }

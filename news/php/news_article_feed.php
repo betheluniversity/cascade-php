@@ -79,7 +79,7 @@ function create_news_article_feed_logic($categories, $blerts){
     // we need to check size, to see if we actually found one
     $numArticles = sizeof($articleArray );
     if( $numArticles == 0){
-        $articleArray = array("<img class='mr-3 mb-3' loading='lazy' src='https://bethel-university.imgix.net/_shared-content/images/generic/roy-monument.jpg?w=1600&amp;auto=format' alt='News Feed' /><p>We believe everyone has a story to tell. Envision how Bethel could become part of yours.<br/><br/><a class='btn btn-primary' href='https://www.bethel.edu/news/'>Latest news and stories</a></p>");
+        $articleArray = array(responsive_image('/_shared-content/images/generic/roy-monument.jpg', 'News Feed', array('class' => 'mr-3 mb-3')) . "<p>We believe everyone has a story to tell. Envision how Bethel could become part of yours.<br/><br/><a class='btn btn-primary' href='https://www.bethel.edu/news/'>Latest news and stories</a></p>");
     }
 
     $combinedArray = array($featuredArticles, $articleArray, $numArticles );
@@ -163,11 +163,7 @@ function inspect_news_article($xml, $categories){
     if( ($DisplayImages && $DisplayImages === "No") || $page_info['image-path'] == '/')
         $page_info['image'] = '';
     else {
-        // We add the mybethel class for the community dashboard
-        $add_mybethel_class = '';
-        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
-            $add_mybethel_class = 'img-fluid';
-        $page_info['image'] = srcset($page_info['image-path'], $print = false, $lazy = true, $classes = $add_mybethel_class, $page_info['title']);
+        $page_info['image'] = responsive_image($page_info['image-path'], $page_info['title']);
     }
 
     // if its a bethel alert, always pass it on to be checked by the feed code!
@@ -304,7 +300,7 @@ function get_featured_article_html($page_info, $xml, $options){
         $html .= '<div class="grid-cell  u-medium-1-2">';
         $html .= '<div class="grid-pad-1x">';
 
-        $html .= srcset($imagePath, false, true, '', $page_info['description']);
+        $html .= responsive_image($imagePath, $page_info['description']);
 
         $html .= '</div>';
         $html .= '</div>';

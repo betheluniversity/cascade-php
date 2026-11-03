@@ -125,7 +125,7 @@
             //render image here.
             global $destinationName;
             $html = $twig->render('get-quotes.html', array(
-                'thumbURL' => srcset($imagePath, false, true, '', $title, '8em'),
+                'thumbURL' => responsive_image($imagePath, $title, array('sizes' => '8em')),
                 'text' => $text,
                 'source' => $source));
         }

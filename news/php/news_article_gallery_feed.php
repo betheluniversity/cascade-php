@@ -54,12 +54,8 @@ function create_news_article_gallery_feed($categories, $galleryStyle, $myBethel,
             continue;
         }
 
-        // We add the mybethel class for the community dashboard
-        $add_mybethel_class = '';
-        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
-            $add_mybethel_class = 'img-fluid';
         // Add the srcset to the gallery-image to be passed along to the html twig file
-        $article['gallery-image'] = srcset($article['image-path'], false, true, $classes = $add_mybethel_class, $article['title']);
+        $article['gallery-image'] = responsive_image($article['image-path'], $article['title']);
 
         // don't use this story on this page again
         array_push($GLOBALS['stories-already-used'], $id);

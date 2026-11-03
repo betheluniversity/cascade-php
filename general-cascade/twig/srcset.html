@@ -1,12 +1,11 @@
-{% if end_path and end_path != '/' %}
 <img
-        src="https://bethel-university.imgix.net/{{end_path}}?w={{ src_width|default(320) }}&amp;auto=format,compress&amp;fit=max"
-        srcset="{% for width in widths|default([200, 400, 600, 800, 1000, 1200, 1400, 1600, 1884, 2000, 2512]) %}https://bethel-university.imgix.net/{{end_path}}?w={{ width }}&amp;auto=format,compress&amp;fit=max {{ width }}w{% if not loop.last %}, {% endif %}{% endfor %}"
-        sizes="{% if lazy and image_width and image_height %}auto, {% endif %}{{ sizes|default('100vw') }}"
-        class="{{ classes }}"
-        alt="{{alt_text}}"
-        loading="{% if lazy %}lazy{% else %}eager{% endif %}"
+        {% if class %}class="{{ class }}"{% endif %}
+        alt="{{ alt }}"
+        loading="{{ loading }}"
         decoding="async"
-        {% if image_width and image_height %}width="{{ image_width }}" height="{{ image_height }}"{% endif %}
+        {% if fetchpriority %}fetchpriority="{{ fetchpriority }}"{% endif %}
+        {% if width and height %}width="{{ width }}" height="{{ height }}"{% endif %}
+        src="{{ src }}"
+        srcset="{{ srcset }}"
+        sizes="{{ sizes }}"
 />
-{% endif %}

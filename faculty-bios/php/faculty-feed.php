@@ -320,8 +320,8 @@ function faculty_feed_format_titles($titles) {
 
 function faculty_feed_render_card($bio, $twig) {
     $image = $bio['image-path'] !== '/'
-        ? srcset($bio['image-path'], false, true, '', $bio['first'] . ' ' . $bio['last'], '18em')
-        : "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' alt='A default silhouette for faculty without images.' />";
+        ? responsive_image($bio['image-path'], $bio['first'] . ' ' . $bio['last'], array('sizes' => '18em'))
+        : "<img src='https://bethel-university.imgix.net/cdn/images/default-avatar.svg' loading='lazy' decoding='async' alt='A default silhouette for faculty without images.' />";
     return $twig->render('faculty-bio-swiper.html', array('bio' => $bio,
         'bio_image' => $image, 'job_titles' => faculty_feed_format_titles($bio['array_of_job_titles'])));
 }
