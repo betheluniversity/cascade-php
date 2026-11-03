@@ -163,7 +163,11 @@ function inspect_news_article($xml, $categories){
     if( ($DisplayImages && $DisplayImages === "No") || $page_info['image-path'] == '/')
         $page_info['image'] = '';
     else {
-        $page_info['image'] = responsive_image($page_info['image-path'], $page_info['title']);
+        // We add the mybethel class for the community dashboard
+        $add_mybethel_class = '';
+        if( strpos($_SERVER['REQUEST_URI'], '_portal/') !== false )
+            $add_mybethel_class = 'img-fluid';
+        $page_info['image'] = responsive_image($page_info['image-path'], $page_info['title'], array('class' => $add_mybethel_class));
     }
 
     // if its a bethel alert, always pass it on to be checked by the feed code!
