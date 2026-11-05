@@ -1,6 +1,7 @@
 <div class="swiper-slide">
     <div class="facultyBox">
-        <a href="https://www.bethel.edu{{ bio.path }}">{{ bio_image|raw }}</a>
+        {# Mouse shortcut only: the name link below is the real link for keyboard and screen reader users. #}
+        <a href="https://www.bethel.edu{{ bio.path }}" tabindex="-1" aria-hidden="true">{{ bio_image|raw }}</a>
         <div class="facultyBox__content">
             <h4 class="mt0"><a href="https://www.bethel.edu{{ bio.path }}">{{ bio.first }} {{ bio.last }}</a></h4>
             {% if job_titles %}
