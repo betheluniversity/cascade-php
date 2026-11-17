@@ -105,7 +105,7 @@ function create_related_events($currentEvent = null, $limit = 2)
     }
 
     $html = '<section class="pt2 pb4"><div class="inner--content pt3" style="border-top: 1px solid #ddd">';
-    $html .= '<section class="related-events"><h3 class="mt0">Related Events</h3>';
+    $html .= '<section class="related-events"><h2 class="mt0 shrink--1x">Related Events</h2>';
     $html .= '<div class="grid grid-cols-2--large">';
     foreach ($selected as $event) {
         $html .= related_events_render($event);

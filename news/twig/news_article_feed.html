@@ -1,7 +1,8 @@
 {% if horizontal != 'Yes' %}
     <div class="news__item" itemscope="itemscope" itemtype="https://schema.org/NewsArticle">
         <div class="news__content">
-            <h4 class="mt0"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h4>
+            {# Article titles sit one level below the feed's heading (headingLevel, from news_article_feed.php). #}
+            <h{{ headingLevel }} class="mt0 shrink--1x"><a href="{{article['url']}}"><span itemprop="headline">{{article['title']}}</span></a></h{{ headingLevel }}>
 
             {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
                 <p>{{article['teaser']}}</p>
@@ -30,7 +31,7 @@
         </div>
         {% endif %}
         <div>
-            <h3><a href="{{article['url']}}">{{article['title']}}</a></h3>
+            <h{{ headingLevel }}><a href="{{article['url']}}">{{article['title']}}</a></h{{ headingLevel }}>
 
             {% if DisplayTeaser == "Yes" and article['teaser'] and article['teaser'] != '' %}
                 <p>{{article['teaser']}}</p>

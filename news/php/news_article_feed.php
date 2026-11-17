@@ -18,16 +18,27 @@ $ExpireAfterXDays;
 $DisplayTeaser;
 $DisplayImages;
 $Horizontal;
+$ItemHeadingLevel;   // heading level of each article title, set by the feed format (one below the feed's heading)
 
 $featuredArticleOptions;
 
 function create_news_article_feed($categories, $blerts="No"){
-    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts), 300, $blerts);
+    // The heading level is part of the cached HTML, so it is part of the cache key.
+    $feed = autoCache("create_news_article_feed_logic", array($categories, $blerts, news_item_heading_level()), 300, $blerts);
     return $feed;
 }
 
+// Heading level for article titles: 2-6 from the feed format, otherwise 3 (titles under the default h2 heading).
+function news_item_heading_level(){
+    global $ItemHeadingLevel;
+    $level = (int)$ItemHeadingLevel;
+    return ($level >= 2 && $level <= 6) ? $level : 3;
+}
+
 // returns an array of html elements.
-function create_news_article_feed_logic($categories, $blerts){
+// $itemHeadingLevel isn't read here (the template reads news_item_heading_level()); it is passed so feeds
+// with different title levels get separate cache entries.
+function create_news_article_feed_logic($categories, $blerts, $itemHeadingLevel = 3){
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/php_helper_for_cascade.php";
     include_once $_SERVER["DOCUMENT_ROOT"] . "/code/general-cascade/feed_helper.php";
 
@@ -221,7 +232,8 @@ function get_news_article_html( $article ){
         'DisplayTeaser'     => $DisplayTeaser,
         'article'           => $article,
         'image'             => $article['image'],
-        'horizontal'        => $article['horizontal']
+        'horizontal'        => $article['horizontal'],
+        'headingLevel'      => news_item_heading_level()
     ));
 
     return $html;
