@@ -204,44 +204,6 @@ function createGridCell($classes, $content){
 }
 
 
-function checkInPath($url, $name){
-    $path = $_SERVER['REQUEST_URI'];
-    $pos = 0 === strpos($path, $url);
-    //is this an index false positive?
-    if($pos && $name == "Home"){
-        $pos = $url == $_SERVER['REQUEST_URI'];
-    }
-
-    $twig = makeTwigEnviron('/code/general-cascade/twig');
-    echo $twig->render('checkInPath.html', array(
-        'pos' => $pos,
-        'name' => $name,
-        'url' => $url
-    ));
-}
-
-
-function semCheckInPath($url, $name){
-
-    if ($name != "Programs") {
-        echo checkInPath($url, $name);
-    } else {
-        // if the name is Programs and its a faculty URL, skip it.
-        $path = $_SERVER['REQUEST_URI'];
-        $pos = 0 === strpos($path, $url . 'faculty');
-        if (!$pos) {
-            echo checkInPath($url, $name);
-        }else{
-            $twig = makeTwigEnviron('/code/general-cascade/twig');
-            echo $twig->render('checkInPath.html', array(
-                'pos' => false,
-                'name' => $name,
-                'url' => $url
-            ));
-        }
-    }
-}
-
 function navListItem($pageStartsWith, $test_starts_with, $path, $label, $classes=''){
 
     //twig version
